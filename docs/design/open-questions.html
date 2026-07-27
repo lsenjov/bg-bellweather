@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Ranked design questions for Ladder Bidding.">
+    <title>Open Questions — Ladder Bidding</title>
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../index.html">
+          <span class="brand-mark" aria-hidden="true">LB</span>
+          Design archive / 01.3
+        </a>
+        <h1>Open questions</h1>
+        <p class="meta">Resolve the questions that unlock a prototype before the ones that decorate it.</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Open questions</nav>
+      <p class="intro">The first four questions are structural. Until they have rough answers, component counts and theme are likely to create false certainty.</p>
+
+      <div class="table-wrap">
+        <table>
+          <caption>Priority queue / draft 00</caption>
+          <thead>
+            <tr>
+              <th>Priority</th>
+              <th>Question</th>
+              <th>Why it matters</th>
+              <th>Smallest useful test</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>01</td>
+              <td>What does the ladder represent?</td>
+              <td>Position could be progress, turn order, price, status, or eligibility; each creates a different game.</td>
+              <td>Sketch one loop for each interpretation using the same six-space track.</td>
+            </tr>
+            <tr>
+              <td>02</td>
+              <td>What are players bidding to gain or change?</td>
+              <td>The prize determines whether bids express valuation, timing, denial, or prediction.</td>
+              <td>Run five contests with one recurring prize and no scoring layer.</td>
+            </tr>
+            <tr>
+              <td>03</td>
+              <td>What does a bid cost?</td>
+              <td>Reusable, spent, and future-punishing bids produce very different incentives.</td>
+              <td>Compare finite coins with a bid that moves a player backward.</td>
+            </tr>
+            <tr>
+              <td>04</td>
+              <td>How are bids made and revealed?</td>
+              <td>Open, sealed, simultaneous, and once-around bidding create different information games.</td>
+              <td>Play the same contest three times using open, sealed, and once-around bids.</td>
+            </tr>
+            <tr>
+              <td>05</td>
+              <td>Why does a player want to climb?</td>
+              <td>The ladder needs an intrinsic incentive or a clear relationship to winning.</td>
+              <td>Test immediate privileges against end-game position scoring.</td>
+            </tr>
+            <tr>
+              <td>06</td>
+              <td>Can players fall, block, pass, or share a rung?</td>
+              <td>Movement constraints define the game’s sharpest interaction.</td>
+              <td>Prototype exclusive rungs first, then allow sharing and compare.</td>
+            </tr>
+            <tr>
+              <td>07</td>
+              <td>What happens to a losing bidder?</td>
+              <td>Repeated non-results can create runaway leaders or disengagement.</td>
+              <td>Compare keeping the bid, gaining priority, and moving on another track.</td>
+            </tr>
+            <tr>
+              <td>08</td>
+              <td>What ends the game?</td>
+              <td>The end trigger determines whether climbing is a race, a timer, or a positional contest.</td>
+              <td>Test reaching the top against a fixed number of auctions.</td>
+            </tr>
+            <tr>
+              <td>09</td>
+              <td>What theme makes these incentives intuitive?</td>
+              <td>Theme should explain the loop after the loop proves interesting.</td>
+              <td>Retheme one proven prototype, not the whole possibility space.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <footer class="page-footer">
+      <div class="page-footer-inner">
+        <a href="../rules/current-rules.html">Turn answers into rules →</a>
+        <span>9 open / 0 resolved</span>
+      </div>
+    </footer>
+  </body>
+</html>

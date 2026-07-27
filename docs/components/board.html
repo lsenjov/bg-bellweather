@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Board and track specification for Ladder Bidding.">
+    <title>Board — Ladder Bidding</title>
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../index.html">
+          <span class="brand-mark" aria-hidden="true">LB</span>
+          Design archive / 03.1
+        </a>
+        <h1>Board</h1>
+        <p class="meta">Spatial structure, tracks, and shared information.</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Board</nav>
+      <p class="intro">A literal ladder is an attractive prototype, but it is not yet a required component. Use a numbered strip until position proves meaningful.</p>
+
+      <section>
+        <span class="status">Open</span>
+        <h2>Board role</h2>
+        <ul>
+          <li>What information must be shared and ordered?</li>
+          <li>Does one ladder hold all players, or does each player have one?</li>
+          <li>Are rungs exclusive, shared, or capacity-limited?</li>
+          <li>Does position show progress, privilege, risk, price, or turn order?</li>
+          <li>Can the same information live on cards or a small track?</li>
+        </ul>
+      </section>
+
+      <section>
+        <span class="status hypothesis">Prototype hypothesis</span>
+        <h2>First track</h2>
+        <p>Draw six ordered spaces on one sheet of paper. Number them from bottom to top, leave room for every player marker on every space, and add no printed effects.</p>
+        <div class="callout">
+          <p><strong>Reason:</strong> six spaces are enough to create relative position without making track length the main balance decision.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Specification checklist</h2>
+        <ul class="checklist">
+          <li>Every space has a unique, readable identifier.</li>
+          <li>Player markers remain distinguishable when they share a space.</li>
+          <li>Direction of movement reads from every seat.</li>
+          <li>Any triggered effect is printed where it occurs.</li>
+          <li>The board shows state, not rules players must memorize.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Open measurements</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>Current value</th>
+                <th>Evidence needed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Number of ladders</td>
+                <td>Unresolved</td>
+                <td>Chosen core loop</td>
+              </tr>
+              <tr>
+                <td>Rungs per ladder</td>
+                <td>Six for the first sketch only</td>
+                <td>Observed movement range</td>
+              </tr>
+              <tr>
+                <td>Rung capacity</td>
+                <td>Unresolved</td>
+                <td>Interaction test</td>
+              </tr>
+              <tr>
+                <td>Board size</td>
+                <td>One sheet of paper</td>
+                <td>Component and table-space test</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <div class="page-footer-inner">
+        <a href="cards.html">Next component: Cards →</a>
+        <span class="stamp">Sketch only</span>
+      </div>
+    </footer>
+  </body>
+</html>
