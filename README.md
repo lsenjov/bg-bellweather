@@ -16,3 +16,14 @@ Start here:
 
 Open `docs/index.html` directly in a browser. No build step or web server is
 required.
+
+## Validate the archive
+
+Requires Node.js 22 or newer.
+
+```sh
+node scripts/check-docs.mjs
+```
+
+The check verifies document structure, local links, stylesheet references,
+fragment targets, duplicate IDs, and reachability from the docs index.
