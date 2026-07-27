@@ -19,8 +19,11 @@ function displayPath(file) {
 }
 
 function extractAttributeValues(source, attribute) {
-  const pattern = new RegExp(`\\b${attribute}=(["'])(.*?)\\1`, "gi");
-  return [...source.matchAll(pattern)].map((match) => match[2]);
+  const pattern = new RegExp(
+    `\\b${attribute}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s"'=<>\\x60]+))`,
+    "gi",
+  );
+  return [...source.matchAll(pattern)].map((match) => match[1] ?? match[2] ?? match[3]);
 }
 
 function extractIds(source) {

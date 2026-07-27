@@ -429,6 +429,11 @@ li + li {
   box-shadow: 7px 7px 0 var(--soft-line);
 }
 
+.table-wrap:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+}
+
 table {
   width: 100%;
   min-width: 640px;
@@ -562,6 +567,19 @@ tbody th {
     box-shadow: none;
   }
 
+  .table-wrap::before {
+    position: sticky;
+    left: 0;
+    display: block;
+    width: fit-content;
+    padding: 7px 14px;
+    background: var(--yellow);
+    content: "Scroll table ↔";
+    font: 800 0.68rem/1 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
   .page-footer-inner {
     align-items: flex-start;
     flex-direction: column;
@@ -653,5 +671,23 @@ tbody th {
   .prompt,
   .note {
     box-shadow: none;
+  }
+
+  .table-wrap {
+    overflow: visible;
+  }
+
+  .table-wrap::before {
+    display: none;
+  }
+
+  table {
+    min-width: 0;
+    font-size: 8.5pt;
+  }
+
+  th,
+  td {
+    padding: 7px 8px;
   }
 }
