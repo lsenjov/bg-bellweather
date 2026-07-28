@@ -245,7 +245,7 @@ main {
 .bonus-family {
   display: block;
   max-width: 43mm;
-  color: var(--accent);
+  color: var(--ink);
 }
 
 .bonus h3 {
@@ -295,7 +295,7 @@ main {
   position: absolute;
   top: 3mm;
   left: 3.5mm;
-  color: var(--accent);
+  color: var(--ink);
 }
 
 .opening-bid strong {
