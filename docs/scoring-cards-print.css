@@ -195,14 +195,53 @@ main {
 }
 
 .objective-copy {
+  position: relative;
   display: flex;
   min-width: 0;
-  padding: 1.1mm 1.4mm 0.9mm;
+  padding: 1.1mm 8.5mm 0.9mm 1.4mm;
   flex-direction: column;
   justify-content: center;
 }
 
+.objective-copy::after {
+  position: absolute;
+  right: 0.8mm;
+  width: 9.5mm;
+  height: 9.5mm;
+  opacity: 0.2;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: "";
+}
+
+.party-honeycomb .objective-copy::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 7l10 6v12l-10 6-10-6V13zM42 7l10 6v12l-10 6-10-6V13zM32 25l10 6v12l-10 6-10-6V31zM12 31l10 6v12l-10 6L2 49V37zM52 31l10 6v12l-10 6-10-6V37z'/%3E%3C/svg%3E");
+}
+
+.party-old-shell .objective-copy::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 48c0-20 10-34 27-34 13 0 21 9 21 21 0 13-9 21-21 21-10 0-17-6-17-15 0-8 6-14 14-14 7 0 12 4 12 10 0 5-4 9-9 9-4 0-7-2-7-6'/%3E%3C/svg%3E");
+}
+
+.party-foxglove .objective-copy::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 10l15 10h10l15-10-5 19c5 5 7 10 7 16-7 8-14 12-22 12S17 53 10 45c0-6 2-11 7-16zM24 38l8 6 8-6M23 31h1M40 31h1'/%3E%3C/svg%3E");
+}
+
+.party-riverworks .objective-copy::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 16h42l8 9-8 9H7l8-9zM7 38h42l8 9-8 9H7l8-9zM21 16v18M43 38v18'/%3E%3C/svg%3E");
+}
+
+.party-many-wings .objective-copy::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 18q8-8 16 0M25 12q8-8 16 0M43 20q8-8 16 0M13 37q8-8 16 0M35 43q8-8 16 0'/%3E%3C/svg%3E");
+}
+
+.party-night .objective-copy::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 12l13 8h22l13-8-4 20v17L40 57H24L12 49V32zM17 30a9 9 0 1 0 18 0 9 9 0 1 0-18 0M29 30a9 9 0 1 0 18 0 9 9 0 1 0-18 0M28 44l4 5 4-5'/%3E%3C/svg%3E");
+}
+
 .district {
+  position: relative;
+  z-index: 1;
   overflow: hidden;
   font: 800 6.7pt/1 var(--display);
   letter-spacing: -0.015em;
@@ -212,24 +251,13 @@ main {
 }
 
 .party-line {
+  position: relative;
+  z-index: 1;
   display: flex;
   min-width: 0;
   margin-top: 0.7mm;
   color: #2a2924;
   align-items: center;
-  gap: 1mm;
-}
-
-.party-code {
-  display: inline-grid;
-  width: 4mm;
-  height: 4mm;
-  flex: 0 0 auto;
-  border: 0.3mm solid var(--ink);
-  background: var(--paper);
-  color: var(--ink);
-  font: 900 5.5pt/1 var(--mono);
-  place-items: center;
 }
 
 .party-name {
