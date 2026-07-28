@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" role="img" aria-labelledby="title description">
+<svg xmlns="http://www.w3.org/2000/svg" width="396mm" height="297mm" viewBox="0 0 1600 1200" role="img" aria-labelledby="title description">
   <title id="title">Ring-and-cross district map</title>
   <desc id="description">Twelve districts form an outer ring. Three inner districts link the north, southeast, and southwest of the ring to a central district. Three grey outer districts have six Support spots, their ring neighbors have four, the center has three, and the remaining districts have two.</desc>
   <style>
@@ -9,9 +9,7 @@
     .district-large { fill: #898985; }
     .district-center { fill: #f2bc3b; stroke-width: 9; }
     .district-id { fill: #171612; font: 800 24px "Avenir Next", Avenir, "Century Gothic", Futura, sans-serif; letter-spacing: 2px; text-anchor: middle; }
-    .district-id-light { fill: #fffaf0; }
-    .capacity { fill: #625f57; font: 800 15px "IBM Plex Mono", "Aptos Mono", Consolas, monospace; letter-spacing: 2px; text-anchor: middle; }
-    .capacity-light { fill: #fffaf0; }
+    .capacity { fill: #171612; font: 800 15px "IBM Plex Mono", "Aptos Mono", Consolas, monospace; letter-spacing: 2px; text-anchor: middle; }
     .spot { fill: #f2eadb; stroke: #171612; stroke-width: 4; }
     .spot-large { fill: #fffaf0; }
     .heading { fill: #171612; font: 800 38px "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; letter-spacing: -1px; }
@@ -55,8 +53,8 @@
 
     <g transform="translate(1230 390)" aria-label="Ring district 3, capacity 6">
       <circle class="district district-large" r="100"/>
-      <text class="district-id district-id-light" y="-58">R3</text>
-      <text class="capacity capacity-light" y="-35">CAP 6</text>
+      <text class="district-id" y="-58">R3</text>
+      <text class="capacity" y="-35">CAP 6</text>
       <circle class="spot spot-large" cx="-48" cy="0" r="20"/>
       <circle class="spot spot-large" cy="0" r="20"/>
       <circle class="spot spot-large" cx="48" cy="0" r="20"/>
@@ -95,8 +93,8 @@
 
     <g transform="translate(800 1095)" aria-label="Ring district 7, capacity 6">
       <circle class="district district-large" r="100"/>
-      <text class="district-id district-id-light" y="-58">R7</text>
-      <text class="capacity capacity-light" y="-35">CAP 6</text>
+      <text class="district-id" y="-58">R7</text>
+      <text class="capacity" y="-35">CAP 6</text>
       <circle class="spot spot-large" cx="-48" cy="0" r="20"/>
       <circle class="spot spot-large" cy="0" r="20"/>
       <circle class="spot spot-large" cx="48" cy="0" r="20"/>
@@ -135,8 +133,8 @@
 
     <g transform="translate(370 390)" aria-label="Ring district 11, capacity 6">
       <circle class="district district-large" r="100"/>
-      <text class="district-id district-id-light" y="-58">R11</text>
-      <text class="capacity capacity-light" y="-35">CAP 6</text>
+      <text class="district-id" y="-58">R11</text>
+      <text class="capacity" y="-35">CAP 6</text>
       <circle class="spot spot-large" cx="-48" cy="0" r="20"/>
       <circle class="spot spot-large" cy="0" r="20"/>
       <circle class="spot spot-large" cx="48" cy="0" r="20"/>
@@ -191,5 +189,5 @@
     </g>
   </g>
 
-  <text class="map-note" x="60" y="1150">PRINT A3 LANDSCAPE / 100% FOR 10 MM CUBES</text>
+  <text class="map-note" x="60" y="1150">FIT TO A3 LANDSCAPE / SUPPORT SPOTS ≈10 MM</text>
 </svg>
