@@ -52,8 +52,8 @@
 
   <g aria-label="Inner cross districts">
     <path class="district district-two" aria-label="Crown Road district, capacity 2" d="M707 330Q800 290 893 330L950 510H650Z"/>
-    <path class="district district-two" aria-label="Canal Ward district, capacity 2" d="M1148 685Q1105 755 1055 815L800 770L950 510Z"/>
-    <path class="district district-two" aria-label="Old Quarter district, capacity 2" d="M545 815Q495 755 452 685L650 510L800 770Z"/>
+    <path class="district district-two" aria-label="Canal Ward district, capacity 2" d="M1148 685Q1080 770 1055 815L800 770L950 510Z"/>
+    <path class="district district-two" aria-label="Old Quarter district, capacity 2" d="M545 815Q460 750 452 685L650 510L800 770Z"/>
     <path class="district district-center" aria-label="Bellwether Centre district, capacity 3" d="M650 510H950L800 770Z"/>
   </g>
 
@@ -197,9 +197,9 @@
       <text class="region-name region-name-small" x="800" y="555">Bellwether</text>
       <text class="region-name region-name-small" x="800" y="580">Centre</text>
       <text class="capacity" x="800" y="605">3 SPOTS</text>
-      <use href="#support-spot" x="748" y="642"/>
+      <use href="#support-spot" x="755" y="642"/>
       <use href="#support-spot" x="800" y="642"/>
-      <use href="#support-spot" x="852" y="642"/>
+      <use href="#support-spot" x="845" y="642"/>
     </g>
   </g>
 
