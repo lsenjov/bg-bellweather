@@ -1,0 +1,433 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+  --paper: #eee6d7;
+  --paper-bright: #fffaf0;
+  --ink: #171713;
+  --muted: #615e56;
+  --display: "Bodoni 72 Smallcaps", Didot, "Iowan Old Style", Georgia, serif;
+  --body: "Avenir Next Condensed", "Gill Sans", "Trebuchet MS", sans-serif;
+  --mono: "IBM Plex Mono", "Aptos Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+html {
+  background: #1b1b18;
+}
+
+body {
+  min-width: 297mm;
+  margin: 0;
+  background:
+    repeating-linear-gradient(135deg, rgb(255 255 255 / 3%) 0 1px, transparent 1px 12px),
+    #1b1b18;
+  color: var(--ink);
+  font-family: var(--body);
+}
+
+.screen-header {
+  width: min(297mm, calc(100vw - 40px));
+  min-width: 257mm;
+  margin: 0 auto;
+  padding: 26px 0 22px;
+  color: var(--paper-bright);
+}
+
+.screen-header a {
+  color: #f1b84a;
+  font: 800 0.76rem/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.screen-header h1 {
+  margin: 18px 0 4px;
+  font: 800 clamp(2.4rem, 6vw, 5rem) / 0.9 var(--display);
+  letter-spacing: -0.045em;
+}
+
+.screen-header p {
+  max-width: 78ch;
+  margin: 12px 0 0;
+  color: #d7d0c4;
+  line-height: 1.5;
+}
+
+main {
+  display: flex;
+  padding: 0 0 36px;
+  align-items: center;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.print-sheet {
+  display: grid;
+  width: 297mm;
+  height: 210mm;
+  flex: 0 0 auto;
+  grid-template-rows: repeat(2, 95mm);
+  gap: 10mm;
+  padding: 5mm;
+  background: #fff;
+  box-shadow: 0 10px 35px rgb(0 0 0 / 35%);
+}
+
+.house-kit {
+  --accent: #b8492f;
+  --tint: #f0d6ca;
+  --accent-ink: #fffaf0;
+  display: grid;
+  width: 287mm;
+  height: 95mm;
+  grid-template-columns: 43mm 70mm 70mm 87mm;
+  gap: 3mm;
+  padding: 4mm;
+  border: 0.5mm solid var(--ink);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 7.8mm, rgb(23 23 19 / 3%) 7.8mm 8mm),
+    var(--paper-bright);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.pairliament {
+  --accent: #2b6185;
+  --tint: #d2e0e8;
+}
+
+.triumvirat {
+  --accent: #a46616;
+  --tint: #ecdabf;
+  --accent-ink: #171713;
+}
+
+.ivy-league {
+  --accent: #496b3b;
+  --tint: #d8e1cf;
+}
+
+.vested {
+  --accent: #714663;
+  --tint: #e5d4df;
+}
+
+.vip-access {
+  --accent: #25716c;
+  --tint: #cde2df;
+}
+
+.kit-identity {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  height: 87mm;
+  padding: 3.5mm;
+  overflow: hidden;
+  border: 0.5mm solid var(--ink);
+  background: var(--accent);
+  color: var(--accent-ink);
+  flex-direction: column;
+}
+
+.kit-identity::before {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  content: "";
+  pointer-events: none;
+}
+
+.swoop .kit-identity::before {
+  background: repeating-linear-gradient(153deg, transparent 0 7mm, currentColor 7mm 7.5mm);
+}
+
+.pairliament .kit-identity::before {
+  background: repeating-linear-gradient(90deg, transparent 0 8mm, currentColor 8mm 8.5mm);
+}
+
+.triumvirat .kit-identity::before {
+  background:
+    radial-gradient(circle, currentColor 0 0.8mm, transparent 0.9mm) 0 0 / 8mm 8mm;
+}
+
+.ivy-league .kit-identity::before {
+  background:
+    linear-gradient(45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 10mm 10mm,
+    linear-gradient(-45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 10mm 10mm;
+}
+
+.vested .kit-identity::before {
+  background:
+    linear-gradient(135deg, transparent 43%, currentColor 44% 49%, transparent 50%) 0 0 / 12mm 12mm,
+    linear-gradient(225deg, transparent 43%, currentColor 44% 49%, transparent 50%) 0 0 / 12mm 12mm;
+}
+
+.vip-access .kit-identity::before {
+  background:
+    linear-gradient(30deg, transparent 44%, currentColor 45% 50%, transparent 51%) 0 0 / 11mm 19mm,
+    linear-gradient(150deg, transparent 44%, currentColor 45% 50%, transparent 51%) 0 0 / 11mm 19mm;
+}
+
+.kit-identity > * {
+  position: relative;
+  z-index: 1;
+}
+
+.emblem {
+  width: 20mm;
+  height: 20mm;
+  margin-bottom: 2.5mm;
+}
+
+.emblem svg,
+.cover-emblem svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.8;
+}
+
+.house-index,
+.token-type,
+.token-house,
+.mount-note,
+.reveal-seal small,
+.open-marker small {
+  font: 800 5.4pt/1.1 var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.house-index {
+  margin: 0 0 1.4mm;
+}
+
+.house-name {
+  margin: 0;
+  font: 800 13pt/0.92 var(--display);
+  letter-spacing: -0.035em;
+}
+
+.house-name span {
+  display: block;
+}
+
+.identity-number {
+  margin: auto 0 0;
+  font: 800 37pt/0.74 var(--display);
+  letter-spacing: -0.08em;
+}
+
+.mount-note {
+  margin: 3mm 0 0;
+  padding-top: 2mm;
+  border-top: 0.35mm solid currentColor;
+  font-size: 4.7pt;
+  line-height: 1.25;
+}
+
+.bid-cover {
+  position: relative;
+  display: flex;
+  width: 70mm;
+  height: 70mm;
+  margin: auto;
+  padding: 7mm;
+  overflow: hidden;
+  border: 0.7mm solid var(--ink);
+  border-radius: 50%;
+  outline: 0.35mm dashed var(--accent);
+  outline-offset: -2.5mm;
+  background:
+    radial-gradient(circle at center, transparent 0 55%, rgb(23 23 19 / 5%) 56% 57%, transparent 58%),
+    var(--tint);
+  color: var(--ink);
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.bid-cover::before,
+.bid-cover::after {
+  position: absolute;
+  width: 15mm;
+  height: 0.5mm;
+  background: var(--accent);
+  content: "";
+}
+
+.bid-cover::before {
+  top: 12mm;
+  left: 4mm;
+  transform: rotate(-28deg);
+}
+
+.bid-cover::after {
+  right: 4mm;
+  bottom: 12mm;
+  transform: rotate(-28deg);
+}
+
+.cover-emblem {
+  width: 17mm;
+  height: 17mm;
+  color: var(--accent);
+}
+
+.token-type {
+  display: block;
+  margin-top: 1.3mm;
+  color: var(--accent);
+}
+
+.cover-letter {
+  margin: 0.8mm 0 0;
+  font: 800 23pt/0.8 var(--display);
+}
+
+.token-house {
+  display: block;
+  max-width: 42mm;
+  margin-top: 1.4mm;
+  line-height: 1.25;
+}
+
+.bid-cover .house-stamp {
+  position: absolute;
+  right: 0;
+  bottom: 5mm;
+  left: 0;
+  color: rgb(23 23 19 / 55%);
+  font: 800 4.5pt/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.small-tokens {
+  display: grid;
+  width: 87mm;
+  height: 87mm;
+  padding: 2mm;
+  border: 0.5mm solid var(--ink);
+  background: var(--paper);
+  grid-template-columns: 50mm 1fr;
+  grid-template-rows: 50mm 30mm;
+  gap: 3mm;
+  place-items: center;
+}
+
+.open-marker,
+.reveal-seal,
+.score-marker {
+  display: flex;
+  border: 0.65mm solid var(--ink);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.open-marker {
+  width: 50mm;
+  height: 50mm;
+  grid-row: 1;
+}
+
+.open-marker strong {
+  margin: 0.8mm 0;
+  font: 800 16pt/0.9 var(--display);
+}
+
+.open-marker small {
+  max-width: 30mm;
+  font-size: 4.6pt;
+  line-height: 1.2;
+}
+
+.score-marker {
+  width: 20mm;
+  height: 20mm;
+  grid-column: 2;
+  grid-row: 1;
+  box-shadow: 0 0 0 1.8mm var(--tint), 0 0 0 2.2mm var(--accent);
+}
+
+.score-marker strong {
+  font: 800 13pt/1 var(--display);
+}
+
+.score-marker small {
+  font: 800 4.2pt/1 var(--mono);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.reveal-pair {
+  display: flex;
+  grid-column: 1 / 3;
+  grid-row: 2;
+  gap: 5mm;
+}
+
+.reveal-seal {
+  width: 30mm;
+  height: 30mm;
+  background: var(--tint);
+  color: var(--ink);
+}
+
+.reveal-seal strong {
+  font: 800 13pt/0.9 var(--display);
+}
+
+.reveal-seal small {
+  margin-top: 1mm;
+  color: var(--accent);
+  font-size: 4.5pt;
+}
+
+@page {
+  size: A4 landscape;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+
+  body {
+    min-width: 0;
+  }
+
+  .screen-header {
+    display: none;
+  }
+
+  main {
+    display: block;
+    padding: 0;
+  }
+
+  .print-sheet {
+    margin: 0;
+    break-after: page;
+    box-shadow: none;
+  }
+
+  .print-sheet:last-child {
+    break-after: auto;
+  }
+}
