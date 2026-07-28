@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="396mm" height="297mm" viewBox="0 0 1600 1200" role="img" aria-labelledby="title description">
   <title id="title">Territorial district map of Bellwether</title>
-  <desc id="description">Sixteen named districts form an irregular land ring and three causeways across Crownwater to Bellwether Centre. Shared black borders define adjacency. Three grey districts have six Support spots, six neighboring districts have four, the center has three, and the remaining districts have two.</desc>
+  <desc id="description">Sixteen named districts form an irregular land ring and three causeways across Crownwater to Bellwether Centre. Shared black borders define adjacency. Clockwise from north, the outer ring is Northreach with 2 Support spots, Cloverfield with 4, Harbormouth with 6, Millbank with 4, Reedwater with 2, Sunmeadow with 4, Grand Market with 6, Red Orchard with 4, Westgate with 2, Mossfield with 4, Ironwood with 6, and High Pastures with 4. Crown Road has 2 spots and borders Northreach and Bellwether Centre. Canal Ward has 2 spots and borders Reedwater and Bellwether Centre. Old Quarter has 2 spots and borders Westgate and Bellwether Centre. Bellwether Centre has 3 spots and borders the three causeways.</desc>
   <defs>
     <pattern id="water" width="52" height="28" patternUnits="userSpaceOnUse">
       <rect width="52" height="28" fill="#c9d9da"/>
