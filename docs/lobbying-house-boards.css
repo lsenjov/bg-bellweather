@@ -1,0 +1,461 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+  --paper: #eee6d7;
+  --paper-bright: #fffaf0;
+  --ink: #171713;
+  --muted: #615e56;
+  --display: "Bodoni 72 Smallcaps", Didot, "Iowan Old Style", Georgia, serif;
+  --body: "Avenir Next Condensed", "Gill Sans", "Trebuchet MS", sans-serif;
+  --mono: "IBM Plex Mono", "Aptos Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+html {
+  background: #1b1b18;
+}
+
+body {
+  min-width: 210mm;
+  margin: 0;
+  background:
+    repeating-linear-gradient(135deg, rgb(255 255 255 / 3%) 0 1px, transparent 1px 12px),
+    #1b1b18;
+  color: var(--ink);
+  font-family: var(--body);
+}
+
+.screen-header {
+  width: min(210mm, calc(100vw - 40px));
+  min-width: 180mm;
+  margin: 0 auto;
+  padding: 26px 0 22px;
+  color: var(--paper-bright);
+}
+
+.screen-header a {
+  color: #f1b84a;
+  font: 800 0.76rem/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.screen-header h1 {
+  margin: 18px 0 4px;
+  font: 800 clamp(2.4rem, 6vw, 5rem) / 0.9 var(--display);
+  letter-spacing: -0.045em;
+}
+
+.screen-header p {
+  max-width: 70ch;
+  margin: 12px 0 0;
+  color: #d7d0c4;
+  line-height: 1.5;
+}
+
+main {
+  display: flex;
+  padding: 0 0 36px;
+  align-items: center;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.print-sheet {
+  display: grid;
+  width: 210mm;
+  height: 297mm;
+  flex: 0 0 auto;
+  grid-template-rows: repeat(2, 140mm);
+  gap: 7mm;
+  padding: 5mm;
+  background: #fff;
+  box-shadow: 0 10px 35px rgb(0 0 0 / 35%);
+}
+
+.house-board {
+  --accent: #b8492f;
+  --tint: #f0d6ca;
+  --accent-ink: #fffaf0;
+  position: relative;
+  display: grid;
+  width: 200mm;
+  height: 140mm;
+  grid-template-columns: 45mm 63mm 78mm;
+  grid-template-rows: 34mm 60mm 32mm;
+  gap: 3mm;
+  padding: 4mm;
+  overflow: hidden;
+  border: 0.65mm solid var(--ink);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 7.8mm, rgb(23 23 19 / 3%) 7.8mm 8mm),
+    var(--paper-bright);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.house-board::after {
+  position: absolute;
+  right: 2mm;
+  bottom: 1.5mm;
+  color: rgb(23 23 19 / 38%);
+  content: "BELLWETHER REGISTERED INFLUENCE BUREAU";
+  font: 800 4.5pt/1 var(--mono);
+  letter-spacing: 0.12em;
+}
+
+.pairliament {
+  --accent: #2b6185;
+  --tint: #d2e0e8;
+}
+
+.triumvirat {
+  --accent: #a46616;
+  --tint: #ecdabf;
+  --accent-ink: #171713;
+}
+
+.ivy-league {
+  --accent: #496b3b;
+  --tint: #d8e1cf;
+}
+
+.vested {
+  --accent: #714663;
+  --tint: #e5d4df;
+}
+
+.vip-access {
+  --accent: #25716c;
+  --tint: #cde2df;
+}
+
+.identity {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  grid-row: 1 / 4;
+  padding: 4mm 3.5mm;
+  overflow: hidden;
+  border: 0.5mm solid var(--ink);
+  background: var(--accent);
+  color: var(--accent-ink);
+  flex-direction: column;
+}
+
+.identity::before,
+.identity::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+}
+
+.identity::before {
+  opacity: 0.18;
+}
+
+.swoop .identity::before {
+  background: repeating-linear-gradient(153deg, transparent 0 7mm, currentColor 7mm 7.5mm);
+}
+
+.pairliament .identity::before {
+  background: repeating-linear-gradient(90deg, transparent 0 8mm, currentColor 8mm 8.5mm);
+}
+
+.triumvirat .identity::before {
+  background:
+    radial-gradient(circle, currentColor 0 0.8mm, transparent 0.9mm) 0 0 / 8mm 8mm;
+}
+
+.ivy-league .identity::before {
+  background:
+    linear-gradient(45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 10mm 10mm,
+    linear-gradient(-45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 10mm 10mm;
+}
+
+.vested .identity::before {
+  background:
+    linear-gradient(135deg, transparent 43%, currentColor 44% 49%, transparent 50%) 0 0 / 12mm 12mm,
+    linear-gradient(225deg, transparent 43%, currentColor 44% 49%, transparent 50%) 0 0 / 12mm 12mm;
+}
+
+.vip-access .identity::before {
+  background:
+    linear-gradient(30deg, transparent 44%, currentColor 45% 50%, transparent 51%) 0 0 / 11mm 19mm,
+    linear-gradient(150deg, transparent 44%, currentColor 45% 50%, transparent 51%) 0 0 / 11mm 19mm;
+}
+
+.identity > * {
+  position: relative;
+  z-index: 1;
+}
+
+.emblem {
+  width: 25mm;
+  height: 25mm;
+  margin-bottom: 3mm;
+}
+
+.emblem svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.8;
+}
+
+.house-index,
+.identity-kicker,
+.panel-kicker,
+.agenda-label,
+.operation-name,
+.round-number,
+.kit-token span {
+  font: 800 5.7pt/1.1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.house-index {
+  margin: 0 0 1.4mm;
+}
+
+.house-name {
+  margin: 0;
+  font: 800 15.5pt/0.91 var(--display);
+  letter-spacing: -0.035em;
+}
+
+.house-name span {
+  display: block;
+}
+
+.identity-kicker {
+  margin: 3mm 0 0;
+  line-height: 1.35;
+}
+
+.house-number {
+  margin: auto 0 0;
+  font: 800 46pt/0.74 var(--display);
+  letter-spacing: -0.08em;
+}
+
+.private-note {
+  margin: 3mm 0 0;
+  padding-top: 2.5mm;
+  border-top: 0.4mm solid currentColor;
+  font: 750 6.3pt/1.3 var(--body);
+}
+
+.agenda {
+  position: relative;
+  display: flex;
+  grid-row: 1 / 3;
+  padding: 3mm;
+  overflow: hidden;
+  border: 0.5mm solid var(--ink);
+  background:
+    linear-gradient(135deg, transparent 0 47%, rgb(23 23 19 / 5%) 48% 52%, transparent 53%),
+    var(--paper);
+  flex-direction: column;
+}
+
+.agenda::before {
+  position: absolute;
+  inset: 6mm;
+  border: 0.45mm dashed var(--accent);
+  content: "";
+}
+
+.agenda-label {
+  position: relative;
+  color: var(--accent);
+}
+
+.agenda strong {
+  position: relative;
+  max-width: 43mm;
+  margin: auto;
+  font: 800 16pt/0.95 var(--display);
+  letter-spacing: -0.03em;
+  text-align: center;
+}
+
+.agenda small {
+  position: relative;
+  padding: 0 1mm;
+  background: var(--paper);
+  margin-top: auto;
+  font: 750 6pt/1.3 var(--body);
+  align-self: center;
+  text-align: center;
+}
+
+.kit-check {
+  display: grid;
+  padding: 2.6mm 3mm;
+  border: 0.5mm solid var(--ink);
+  border-top: 2.2mm solid var(--accent);
+  background: var(--paper-bright);
+  grid-template-columns: 25mm 1fr;
+  gap: 2mm;
+}
+
+.kit-copy {
+  min-width: 0;
+}
+
+.panel-kicker {
+  display: block;
+  margin-bottom: 1mm;
+  color: var(--accent);
+}
+
+.kit-copy strong {
+  display: block;
+  font: 800 9pt/0.95 var(--display);
+}
+
+.kit-copy p {
+  margin: 1mm 0 0;
+  font: 700 5.8pt/1.2 var(--body);
+}
+
+.kit-tokens {
+  display: grid;
+  grid-template-columns: repeat(2, 11mm);
+  grid-template-rows: repeat(2, 11mm);
+  gap: 1.2mm;
+}
+
+.kit-token {
+  display: grid;
+  place-items: center;
+  border: 0.45mm solid var(--accent);
+  border-radius: 50%;
+  background: var(--tint);
+  color: var(--ink);
+}
+
+.kit-token.open {
+  grid-row: 1 / 3;
+  height: 23.2mm;
+  border-radius: 8mm;
+}
+
+.kit-token span {
+  font-size: 4.8pt;
+  letter-spacing: 0;
+}
+
+.operations {
+  display: grid;
+  min-width: 0;
+  padding: 2.5mm;
+  border: 0.5mm solid var(--ink);
+  background: var(--paper-bright);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto repeat(2, 1fr);
+  gap: 1.5mm;
+}
+
+.operations > .panel-kicker {
+  grid-column: 1 / 3;
+}
+
+.operation {
+  min-width: 0;
+  padding: 1.5mm;
+  border-left: 1.4mm solid var(--accent);
+  background: var(--tint);
+}
+
+.operation-name {
+  display: block;
+  margin-bottom: 0.8mm;
+}
+
+.operation p {
+  margin: 0;
+  font: 750 5.6pt/1.18 var(--body);
+}
+
+.round {
+  display: grid;
+  min-width: 0;
+  grid-column: 2 / 4;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border: 0.5mm solid var(--ink);
+  background: var(--paper-bright);
+}
+
+.round-step {
+  position: relative;
+  min-width: 0;
+  padding: 4mm 1.5mm 1.5mm;
+  border-right: 0.3mm solid var(--ink);
+}
+
+.round-step:last-child {
+  border-right: 0;
+}
+
+.round-number {
+  position: absolute;
+  top: 1.2mm;
+  left: 1.5mm;
+  color: var(--accent);
+}
+
+.round-step strong {
+  display: block;
+  margin-bottom: 0.6mm;
+  font: 800 6.3pt/1 var(--display);
+}
+
+.round-step p {
+  margin: 0;
+  font: 700 4.9pt/1.12 var(--body);
+}
+
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+
+  body {
+    min-width: 0;
+  }
+
+  .screen-header {
+    display: none;
+  }
+
+  main {
+    display: block;
+    padding: 0;
+  }
+
+  .print-sheet {
+    margin: 0;
+    break-after: page;
+    box-shadow: none;
+  }
+
+  .print-sheet:last-child {
+    break-after: auto;
+  }
+}
