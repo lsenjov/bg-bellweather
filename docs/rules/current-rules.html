@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Current draft rules for Ladder Bidding, with unresolved areas clearly marked.">
+    <meta name="description" content="Current draft rules for lobbying houses influencing animal political parties in the Republic of Bellwether.">
     <title>Current Rules — Ladder Bidding</title>
     <link rel="stylesheet" href="../styles.css">
   </head>
@@ -21,7 +21,7 @@
 
     <main>
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Current rules</nav>
-      <p class="intro">The auction and command sequence is the current playable core. Theme, board effects, economy, victory, and several physical procedures remain unresolved.</p>
+      <p class="intro">The influence and Revolving Door sequence is the current playable core. Party effects, constituencies, Election Day, victory, and several physical procedures remain unresolved.</p>
 
       <section>
         <h2>Document legend</h2>
@@ -32,13 +32,13 @@
         <span class="status decided">Decided</span>
         <h2>Identity</h2>
         <p><strong>Working title:</strong> Ladder Bidding.</p>
-        <p>The title may change. It does not establish a theme, auction format, track structure, or victory condition.</p>
+        <p>The title may change. The game is set in the fictional Republic of Bellwether, where rival lobbying houses influence animal political parties.</p>
       </section>
 
       <section>
-        <span class="status">Open</span>
+        <span class="status decided">Decided</span>
         <h2>Pitch</h2>
-        <p class="empty">No pitch has been selected.</p>
+        <p>Rival lobbying houses commit Clout and operatives to expand animal political parties, reshape their platforms, form coalitions, and manipulate the media Pecking Order before Election Day.</p>
       </section>
 
       <section>
@@ -67,17 +67,17 @@
       <section>
         <span class="status">Open</span>
         <h2>Objective</h2>
-        <p class="empty">The victory condition and end trigger are unresolved.</p>
+        <p>Parties will compete for electoral success while lobbying houses compete to influence the resulting government. The exact constituency model, Election Day procedure, government-formation procedure, victory condition, and end trigger are unresolved.</p>
       </section>
 
       <section>
         <span class="status decided">Decided</span>
         <h2>Components</h2>
-        <p>The current mechanic requires reusable currency, reusable command pieces, hidden bid containers, distinct board targets, and a Priority Order area listing those targets. Candidate prototype materials are tracked in the component documents:</p>
+        <p>The current mechanic requires reusable Clout, reusable operative cards, hidden influence containers, six party targets, and a Press Perch listing the parties in Pecking Order. Candidate prototype materials are tracked in the component documents:</p>
         <ul>
-          <li><a href="../components/board.html">Board or ladder track</a></li>
+          <li><a href="../components/board.html">Parties and Pecking Order</a></li>
           <li><a href="../components/cards.html">Cards</a></li>
-          <li><a href="../components/tokens.html">Bid and position tokens</a></li>
+          <li><a href="../components/tokens.html">Clout, bid, and state tokens</a></li>
           <li><a href="../components/player-aids.html">Player aids</a></li>
         </ul>
       </section>
@@ -85,53 +85,103 @@
       <section>
         <span class="status decided">Decided</span>
         <h2>Private information</h2>
-        <p>Each player physically conceals their total available currency as well as the identities and total count of their uncommitted commands. Players may remember, infer, or track holdings from previously revealed exchanges; there is no rule that makes the information unknowable. Opening bids reveal their currency amount and command count; counterbids conceal their contents until the simultaneous reveal. Every bid must hold the actual tokens and cards committed to it; one component cannot occupy multiple bids.</p>
-        <p>The total supplies of currency and command cards are fixed after setup. Rules and effects may transfer them but never create, destroy, discard, or bank them.</p>
+        <p>Each lobbying house physically conceals its total available Clout as well as the identities and total count of its uncommitted operatives. Players may remember, infer, or track holdings from previously revealed exchanges; there is no rule that makes the information unknowable. Opening influence bids reveal their Clout amount and operative count; counterbids conceal their contents until the simultaneous reveal. Every bid must hold the actual tokens and cards committed to it; one component cannot occupy multiple bids.</p>
+        <p>The total supplies of Clout and operative cards are fixed after setup. Rules and effects may transfer them but never create, destroy, discard, or bank them.</p>
       </section>
 
       <section>
         <span class="status decided">Decided</span>
         <h2>Setup</h2>
-        <p>For the first four-player prototype, give each player 20 currency represented in whole-number denominations of 1 and 5, plus an identical set of commands. Place the targets in one fixed starting Priority Order for every initial test. Command types and quantities, target state, exact token mix, and all other setup details remain open.</p>
+        <p>For the first four-player prototype, give each lobbying house 20 Clout represented in whole-number denominations of 1 and 5, plus an identical set of operatives. Place the six parties in one fixed starting Pecking Order for every initial test. Operative quantities, party effects and state, exact token mix, and all other setup details remain open.</p>
+      </section>
+
+      <section>
+        <span class="status decided">Decided</span>
+        <h2>Parties and operations</h2>
+        <p>The six party targets are the Honeycomb Cooperative, Old Shell Union, Foxglove League, Riverworks Party, Many Wings Coalition, and Night Parliament. They are fictional animal institutions distinguished by how they organize, not direct equivalents of current real-world parties.</p>
+        <div class="table-wrap" role="region" aria-label="Party operation compatibility" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th>Party</th>
+                <th>Animals</th>
+                <th>Compatible operations</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Honeycomb Cooperative</td>
+                <td>Bees</td>
+                <td>Campaign and Expansion</td>
+              </tr>
+              <tr>
+                <td>Old Shell Union</td>
+                <td>Tortoises</td>
+                <td>Platform and Coalition</td>
+              </tr>
+              <tr>
+                <td>Foxglove League</td>
+                <td>Foxes</td>
+                <td>Campaign and Platform</td>
+              </tr>
+              <tr>
+                <td>Riverworks Party</td>
+                <td>Beavers</td>
+                <td>Expansion and Platform</td>
+              </tr>
+              <tr>
+                <td>Many Wings Coalition</td>
+                <td>Starlings</td>
+                <td>Expansion and Coalition</td>
+              </tr>
+              <tr>
+                <td>Night Parliament</td>
+                <td>Owls</td>
+                <td>Campaign and Coalition</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Operatives belong to the Campaign, Expansion, Platform, or Coalition family. An operative may be used at a party with its matching operation icon; that party defines the concrete effect. Exact effects and starting quantities remain open.</p>
       </section>
 
       <section>
         <span class="status decided">Decided</span>
         <h2>Round structure</h2>
-        <h3>1. Open auctions</h3>
-        <p>In a two- or three-player game, each player opens two auctions. In a game with four or more players, each player opens one auction. For each auction, its opener chooses a visible board target. Each target may host no more than one auction. The procedure for simultaneous attempts to open the same target is an <a href="../design/open-questions.html">open question</a>.</p>
-        <p>The opening player places a bid containing at least one currency and any number of optional commands. A player may commit as many commands as they own; there is no per-bid cap. The bid’s currency amount and number of commands are public, but the commands remain hidden. Opening bids lock before counterbid placement begins and cannot be revised.</p>
-        <p>A player must open as many of their allotted auctions as they can fund at the one-currency minimum. If they cannot fund the full allotment, they open fewer or none. They still retain their full counterbid allowance and may use those opportunities as empty bids.</p>
+        <h3>1. Open influence contests</h3>
+        <p>In a two- or three-player game, each player opens two contests. In a game with four or more players, each player opens one contest. For each contest, its opener chooses a visible party or the Press Perch. Each target may host no more than one contest. The procedure for simultaneous attempts to open the same target is an <a href="../design/open-questions.html">open question</a>.</p>
+        <p>The opening lobbying house places a bid containing at least one Clout and any number of optional operatives. A player may commit as many operatives as they own; there is no per-bid cap. The bid’s Clout amount and number of operatives are public, but the operative identities remain hidden. Opening bids lock before counterbid placement begins and cannot be revised.</p>
+        <p>A player must open as many of their allotted contests as they can fund at the one-Clout minimum. If they cannot fund the full allotment, they open fewer or none. They still retain their full counterbid allowance and may use those opportunities as empty bids.</p>
 
         <h3>2. Place counterbids</h3>
-        <p>In a two- or three-player game, each player may place up to four counterbids. In a game with four or more players, each player may place up to two. Counterbids may target any auction, including their owner’s, and any number may share one auction. A counterbid may be empty. Its target is public, while its currency and commands remain hidden.</p>
-        <p>All players place counterbids simultaneously during a timed phase. Use 90 seconds for the first four-player prototype. A player may have no more counterbid markers on the board than their player-count allowance. Until the timer expires, players may retrieve a counterbid, change its physically escrowed currency or commands behind their screen, relocate it, or withdraw it. Changes made at the last second are legal. Players may negotiate, lie about bids, coordinate, and break promises, but agreements are never binding. They may not show hidden bid contents or transfer resources outside normal resolution. When time expires, every released counterbid clearly inside one target’s bid area locks with its current contents and location. A held, moving, or ambiguously placed counterbid is withdrawn to its owner’s reserve.</p>
+        <p>In a two- or three-player game, each player may place up to four counterbids. In a game with four or more players, each player may place up to two. Counterbids may target any contest, including their owner’s, and any number may share one contest. A counterbid may be empty. Its target is public, while its Clout and operatives remain hidden.</p>
+        <p>All players place counterbids simultaneously during a timed phase. Use 90 seconds for the first four-player prototype. A player may have no more counterbid markers on the board than their player-count allowance. Until the timer expires, players may retrieve a counterbid, change its physically escrowed Clout or operatives behind their screen, relocate it, or withdraw it. Changes made at the last second are legal. Players may negotiate, lie about bids, coordinate, and break promises, but agreements are never binding. They may not show hidden bid contents or transfer resources outside normal resolution. When time expires, every released counterbid clearly inside one target’s bid area locks with its current contents and location. A held, moving, or ambiguously placed counterbid is withdrawn to its owner’s reserve.</p>
 
         <h3>3. Reveal and remove equal counterbids</h3>
-        <p>Reveal the currency and commands in every counterbid simultaneously across the board before resolving any auction. Counterbids with equal currency amounts in the same auction are returned to their owners and do not execute, regardless of ownership or command contents. Zero-value counterbids follow this rule. Equal values in different auctions do not interact. Only the original opening bid is protected from matching another bid: counterbids equal to its currency amount are returned while the opening bid remains active. An additional bid placed by the opener receives no special protection.</p>
+        <p>Reveal the Clout and operatives in every counterbid simultaneously across the board before resolving any contest. Counterbids with equal Clout amounts in the same contest are returned to their owners and do not execute, regardless of ownership or operative contents. Zero-value counterbids follow this rule. Equal values in different contests do not interact. Only the original opening bid is protected from matching another bid: counterbids equal to its Clout amount are returned while the opening bid remains active. An additional bid placed by the opener receives no special protection.</p>
 
-        <h3>4. Resolve auctions</h3>
-        <p>If the Priority Order area has an auction, resolve it first. Each command executed there swaps one adjacent pair of targets. Changes apply immediately for the current round, and the updated list persists across rounds until another command changes it. Resolve every other auction in full, following the current target list.</p>
-        <p>Within an auction, rank active bids from most currency to least. Bids, not players, occupy ranks. Starting with the highest bid, each bid owner executes that bid’s commands in any order they choose. A command may be used on a target with its matching category; that target defines the command’s concrete effect. A committed command card or type is fixed, but its owner chooses its legal variable parameters when it executes.</p>
-        <p>Check whether each command is legal when it would execute. An illegal command fails and cannot be replaced, but remains part of its bid for transfer.</p>
-        <p>If an earlier effect removes or disables an unresolved auction’s target, that auction still resolves. Its newly illegal commands fail, then its active bids transfer normally.</p>
+        <h3>4. Resolve influence contests</h3>
+        <p>If the Press Perch has a contest, resolve it first. Each operative executed there swaps one adjacent pair of parties in the Pecking Order. Changes apply immediately for the current round, and the updated list persists across rounds until another operative changes it. Resolve every party contest in full, following the current Pecking Order.</p>
+        <p>Within a contest, rank active bids from most Clout to least. Bids, not players, occupy ranks. Starting with the highest bid, each bid owner executes that bid’s operatives in any order they choose. An operative may be used at a party with its matching operation icon; that party defines the operative’s concrete effect. A committed operative card or family is fixed, but its owner chooses its legal variable parameters when it executes.</p>
+        <p>Check whether each operative is legal when it would execute. An illegal operative fails and cannot be replaced, but remains part of its bid for transfer.</p>
+        <p>If an earlier effect removes or disables an unresolved contest’s party, that contest still resolves. Its newly illegal operatives fail, then its active bids transfer normally.</p>
 
-        <h3>5. Transfer bids</h3>
-        <p>After all commands in the auction have resolved, transfer each complete bid—its currency and reusable commands—to the owner of the bid immediately below it. The lowest bid transfers to the owner of the highest bid. A player occupying multiple ranks receives once for each rank. If only one active bid remains, its owner receives it back.</p>
+        <h3>5. Resolve the Revolving Door</h3>
+        <p>After all operatives in the contest have resolved, transfer each complete bid—its Clout and reusable operatives—to the owner of the bid immediately below it. The lowest bid transfers to the owner of the highest bid. A player occupying multiple ranks receives once for each rank. If only one active bid remains, its owner receives it back.</p>
 
         <h3>6. End the round</h3>
-        <p>After the final auction transfers its bids, players collect their received resources into their concealed reserves. Preserve the board and Priority Order state, then begin the next opening phase. There is no automatic income, draw, refresh, or other resource change.</p>
+        <p>After the final contest resolves its Revolving Door, players collect their received resources into their concealed reserves. Preserve party state and the Pecking Order, then begin the next opening phase. There is no automatic income, draw, refresh, or other resource change.</p>
       </section>
 
       <section>
         <span class="status">Open</span>
         <h2>End of game</h2>
-        <p>End trigger, scoring, and tie-breakers are unresolved. Held currency and command cards do not score directly; victory must come from target or board outcomes selected with the theme.</p>
+        <p>End trigger, Election Day, government formation, scoring, and tie-breakers are unresolved. Held Clout and operative cards do not score directly; victory must come from party, constituency, platform, coalition, or other board outcomes.</p>
       </section>
 
       <section>
         <h2>Next rule-writing threshold</h2>
-        <p>Define the effects and supply of commands, the currency economy, target behavior, and a victory condition. Record each committed choice and the evidence that could reopen it in the <a href="../design/decisions.html">decision log</a>.</p>
+        <p>Define each party’s operation effects, operative supply, constituency model, Election Day procedure, government formation, and victory condition. Record each committed choice and the evidence that could reopen it in the <a href="../design/decisions.html">decision log</a>.</p>
       </section>
     </main>
 
