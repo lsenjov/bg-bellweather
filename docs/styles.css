@@ -434,6 +434,43 @@ li + li {
   outline-offset: 4px;
 }
 
+.board-map {
+  max-width: 100%;
+  margin: 28px 0;
+}
+
+.board-map-frame {
+  overflow: hidden;
+  border: 3px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 9px 9px 0 var(--soft-line);
+}
+
+.board-map img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.board-map figcaption {
+  display: flex;
+  max-width: none;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 2px 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.board-map figcaption a {
+  flex: 0 0 auto;
+  color: var(--ink);
+  font: 800 0.72rem/1.35 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 table {
   width: 100%;
   min-width: 640px;
@@ -567,6 +604,30 @@ tbody th {
     box-shadow: none;
   }
 
+  .board-map {
+    margin-right: -16px;
+    margin-left: -16px;
+  }
+
+  .board-map-frame {
+    overflow-x: auto;
+    border-right: 0;
+    border-left: 0;
+    box-shadow: none;
+  }
+
+  .board-map img {
+    width: 880px;
+    max-width: none;
+  }
+
+  .board-map figcaption {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
   .table-wrap::before {
     position: sticky;
     left: 0;
@@ -660,6 +721,7 @@ tbody th {
 
   section,
   table,
+  .board-map,
   .callout,
   .prompt,
   .note {
@@ -667,6 +729,7 @@ tbody th {
   }
 
   .table-wrap,
+  .board-map-frame,
   .callout,
   .prompt,
   .note {
@@ -675,6 +738,15 @@ tbody th {
 
   .table-wrap {
     overflow: visible;
+  }
+
+  .board-map-frame {
+    border: 0;
+    overflow: visible;
+  }
+
+  .board-map img {
+    width: 100%;
   }
 
   .table-wrap::before {
