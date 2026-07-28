@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const docsRoot = join(repositoryRoot, "docs");
+const archiveRoot = join(repositoryRoot, "archive");
 const indexPath = join(docsRoot, "index.html");
 const errors = [];
 
@@ -89,7 +90,7 @@ function checkReference(fromFile, reference, sources) {
   }
 }
 
-const htmlFiles = collectHtmlFiles(docsRoot);
+const htmlFiles = [docsRoot, archiveRoot].flatMap(collectHtmlFiles);
 const sources = new Map(htmlFiles.map((file) => [file, readFileSync(file, "utf8")]));
 
 for (const [file, source] of sources) {
