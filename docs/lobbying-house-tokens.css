@@ -77,6 +77,7 @@ main {
 
 .house-kit {
   --accent: #b8492f;
+  --detail: var(--accent);
   --tint: #f0d6ca;
   --accent-ink: #fffaf0;
   display: grid;
@@ -100,6 +101,7 @@ main {
 
 .triumvirat {
   --accent: #b8791d;
+  --detail: #83500d;
   --tint: #ecdabf;
   --accent-ink: #171713;
 }
@@ -242,7 +244,7 @@ main {
   overflow: hidden;
   border: 0.7mm solid var(--ink);
   border-radius: 50%;
-  outline: 0.35mm dashed var(--accent);
+  outline: 0.35mm dashed var(--detail);
   outline-offset: -2.5mm;
   background:
     radial-gradient(circle at center, transparent 0 55%, rgb(23 23 19 / 5%) 56% 57%, transparent 58%),
@@ -259,7 +261,7 @@ main {
   position: absolute;
   width: 15mm;
   height: 0.5mm;
-  background: var(--accent);
+  background: var(--detail);
   content: "";
 }
 
@@ -278,7 +280,7 @@ main {
 .cover-emblem {
   width: 17mm;
   height: 17mm;
-  color: var(--accent);
+  color: var(--detail);
 }
 
 .token-type {
@@ -382,7 +384,7 @@ main {
 .score-marker .marker-emblem {
   width: 10mm;
   height: 10mm;
-  color: var(--accent);
+  color: var(--detail);
 }
 
 .score-marker strong {
