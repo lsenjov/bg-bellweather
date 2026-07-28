@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Board and track specification for Ladder Bidding.">
+    <meta name="description" content="Party targets, the Press Perch, and the media Pecking Order for Ladder Bidding.">
     <title>Board — Ladder Bidding</title>
     <link rel="stylesheet" href="../styles.css">
   </head>
@@ -15,25 +15,87 @@
           Design archive / 03.1
         </a>
         <h1>Board</h1>
-        <p class="meta">Spatial structure, tracks, and shared information.</p>
+        <p class="meta">Animal parties, political state, and shared media order.</p>
       </div>
     </header>
 
     <main>
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Board</nav>
-      <p class="intro">The current mechanic requires distinct auction targets and a persistent Priority Order area. Target theme, effects, categories, and layout remain open.</p>
+      <p class="intro">Six animal political parties are the ordinary influence targets. The Press Perch holds their persistent media Pecking Order and may itself host a contest.</p>
 
       <section>
         <span class="status decided">Decided</span>
         <h2>Current board role</h2>
         <ul>
-          <li>Give every auction target a unique, readable identity and command category.</li>
-          <li>Provide one public location for each opening auction and its ranked bids.</li>
-          <li>List every ordinary target in a persistent Priority Order area.</li>
-          <li>Allow the Priority Order area itself to receive an auction and resolve it first.</li>
-          <li>Swap one adjacent pair in the list for each command executed on the Priority Order area.</li>
+          <li>Give every party a unique, readable identity and two compatible operation icons.</li>
+          <li>Provide one public location for each opening influence contest and its ranked bids.</li>
+          <li>List every party in a persistent Pecking Order at the Press Perch.</li>
+          <li>Allow the Press Perch itself to receive a contest and resolve it first.</li>
+          <li>Swap one adjacent pair in the Pecking Order for each operative executed at the Press Perch.</li>
           <li>Use the same fixed starting order in every first-prototype session.</li>
         </ul>
+      </section>
+
+      <section>
+        <span class="status decided">Decided</span>
+        <h2>Party targets</h2>
+        <div class="table-wrap" role="region" aria-label="Animal party specifications" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th>Party</th>
+                <th>Animals</th>
+                <th>Compatible operations</th>
+                <th>Organizational identity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Honeycomb Cooperative</td>
+                <td>Bees</td>
+                <td>Campaign and Expansion</td>
+                <td>Connected grassroots organization</td>
+              </tr>
+              <tr>
+                <td>Old Shell Union</td>
+                <td>Tortoises</td>
+                <td>Platform and Coalition</td>
+                <td>Durable policy and alliances</td>
+              </tr>
+              <tr>
+                <td>Foxglove League</td>
+                <td>Foxes</td>
+                <td>Campaign and Platform</td>
+                <td>Media agility and opportunistic positions</td>
+              </tr>
+              <tr>
+                <td>Riverworks Party</td>
+                <td>Beavers</td>
+                <td>Expansion and Platform</td>
+                <td>Infrastructure-led organization</td>
+              </tr>
+              <tr>
+                <td>Many Wings Coalition</td>
+                <td>Starlings</td>
+                <td>Expansion and Coalition</td>
+                <td>Numerous local groups and alliances</td>
+              </tr>
+              <tr>
+                <td>Night Parliament</td>
+                <td>Owls</td>
+                <td>Campaign and Coalition</td>
+                <td>Debates, endorsements, and timing</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The names, animals, and compatibility pairs are rules. The organizational identities guide later effect design but do not yet grant abilities.</p>
+      </section>
+
+      <section>
+        <span class="status">Open</span>
+        <h2>Party state</h2>
+        <p>Party effects, constituencies, support, organization, platforms, coalitions, Election Day, and government formation remain unresolved. Do not add tracks or markers for these concepts until their rules are selected.</p>
       </section>
 
       <section>
@@ -60,9 +122,10 @@
       <section>
         <h2>Specification checklist</h2>
         <ul class="checklist">
-          <li>Every space has a unique, readable identifier.</li>
-          <li>Player markers remain distinguishable when they share a space.</li>
-          <li>Direction of movement reads from every seat.</li>
+          <li>Every party has a unique name, animal identity, and pair of operation icons.</li>
+          <li>Opening bids and counterbid locations remain readable around every party.</li>
+          <li>The Pecking Order and direction of resolution read from every seat.</li>
+          <li>The Press Perch is visibly distinct from the six parties.</li>
           <li>Any triggered effect is printed where it occurs.</li>
           <li>The board shows state, not rules players must memorize.</li>
         </ul>
@@ -81,24 +144,24 @@
             </thead>
             <tbody>
               <tr>
-                <td>Number of ladders</td>
-                <td>Superseded by target areas and one Priority Order list</td>
-                <td>None; retained as design history</td>
+                <td>Party targets</td>
+                <td>Six plus the Press Perch</td>
+                <td>Test whether six parties spread four opening contests too thinly</td>
               </tr>
               <tr>
-                <td>Rungs per ladder</td>
-                <td>Six for the first sketch only</td>
-                <td>Observed movement range</td>
+                <td>Pecking Order positions</td>
+                <td>One per party</td>
+                <td>Verify that adjacent swaps materially change plans</td>
               </tr>
               <tr>
-                <td>Rung capacity</td>
+                <td>Party state areas</td>
                 <td>Unresolved</td>
-                <td>Interaction test</td>
+                <td>Select party effects, constituencies, and victory outcomes first</td>
               </tr>
               <tr>
                 <td>Board size</td>
                 <td>One sheet of paper</td>
-                <td>Fit target areas, bid containers, and a readable priority list</td>
+                <td>Fit seven contest areas, bid containers, and a readable Pecking Order</td>
               </tr>
             </tbody>
           </table>

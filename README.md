@@ -2,9 +2,11 @@
 
 Working repository for the board game currently titled **Ladder Bidding**.
 
-The game is at idea stage. The documents deliberately separate known decisions,
-working hypotheses, and open questions so an evocative name does not quietly
-become a ruleset.
+Rival lobbying houses use Clout and operatives to influence six animal political
+parties in the fictional Republic of Bellwether. The game is at pre-prototype
+stage; party effects, elections, government formation, and victory remain open.
+The documents deliberately separate committed rules, working hypotheses, and
+open questions.
 
 Start here:
 

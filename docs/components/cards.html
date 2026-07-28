@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Card specification and inventory for Ladder Bidding.">
+    <meta name="description" content="Operative card families and inventory for lobbying houses in the Republic of Bellwether.">
     <title>Cards — Ladder Bidding</title>
     <link rel="stylesheet" href="../styles.css">
   </head>
@@ -15,19 +15,58 @@
           Design archive / 03.2
         </a>
         <h1>Cards</h1>
-        <p class="meta">Deck roles, information structure, and prototype counts.</p>
+        <p class="meta">Political operations, compatibility, and prototype counts.</p>
       </div>
     </header>
 
     <main>
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Cards</nav>
-      <p class="intro">Reusable command cards are part of the current auction core. Their identities and quantities are concealed in players’ reserves, committed physically to bids, revealed together, executed, and transferred intact.</p>
+      <p class="intro">Reusable operative cards are part of the current influence core. Their identities and quantities are concealed in lobbying-house reserves, committed physically to bids, revealed together, executed, and transferred intact through the Revolving Door.</p>
 
       <section>
         <span class="status decided">Decided</span>
-        <h2>Command cards</h2>
-        <p>Each command shows a target-category icon rather than naming one specific board target. Any target in that category defines what the command does there. The card or command type is committed during bidding; legal parameters are chosen when it executes.</p>
-        <p>The total command-card supply is fixed after setup. Every player begins the first prototype with an identical set, although the exact types and quantities remain open.</p>
+        <h2>Operative cards</h2>
+        <p>Each operative belongs to the Campaign, Expansion, Platform, or Coalition family. A party accepts two families and defines the concrete effect of a matching operative. The card family is committed during bidding; legal parameters are chosen when it executes.</p>
+        <p>The total operative supply is fixed after setup. Every lobbying house begins the first prototype with an identical set, although the quantity from each family remains open.</p>
+      </section>
+
+      <section>
+        <span class="status decided">Decided</span>
+        <h2>Operation families</h2>
+        <div class="table-wrap" role="region" aria-label="Operative families" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th>Family</th>
+                <th>Thematic scope</th>
+                <th>Compatible parties</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Campaign</td>
+                <td>Rallies, advertising, debates, attacks, and endorsements</td>
+                <td>Honeycomb Cooperative, Foxglove League, Night Parliament</td>
+              </tr>
+              <tr>
+                <td>Expansion</td>
+                <td>Branches, organizers, constituencies, and membership</td>
+                <td>Honeycomb Cooperative, Riverworks Party, Many Wings Coalition</td>
+              </tr>
+              <tr>
+                <td>Platform</td>
+                <td>Adopting, replacing, protecting, or removing policies</td>
+                <td>Old Shell Union, Foxglove League, Riverworks Party</td>
+              </tr>
+              <tr>
+                <td>Coalition</td>
+                <td>Alliances, agreements, endorsements, and government formation</td>
+                <td>Old Shell Union, Many Wings Coalition, Night Parliament</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The thematic scopes are boundaries for effect design, not executable rules. Each party’s concrete effects remain open.</p>
       </section>
 
       <section>
@@ -77,8 +116,7 @@
         <h2>Card anatomy</h2>
         <ul class="checklist">
           <li>Name states the card’s role, not its flavor alone.</li>
-          <li>Target-category icon is readable while held in a fanned hand.</li>
-          <li>Primary value is readable while held in a fanned hand.</li>
+          <li>Operation-family icon is readable while held in a fanned hand.</li>
           <li>Timing appears in the same location across a card family.</li>
           <li>Rules text uses terms from the glossary.</li>
           <li>Prototype cards use IDs so feedback identifies the exact card.</li>
@@ -87,14 +125,14 @@
 
       <section>
         <h2>Inventory</h2>
-        <p class="empty">Command cards are required, but their categories, effects, and identical per-player starting counts remain open.</p>
+        <p class="empty">Campaign, Expansion, Platform, and Coalition operative cards are required, but their effects and identical per-player starting counts remain open.</p>
       </section>
     </main>
 
     <footer class="page-footer">
       <div class="page-footer-inner">
         <a href="tokens.html">Next component: Tokens →</a>
-        <span>Command family committed / counts open</span>
+        <span>4 operative families committed / counts open</span>
       </div>
     </footer>
   </body>
