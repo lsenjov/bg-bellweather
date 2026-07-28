@@ -21,7 +21,7 @@
 
     <main>
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Current rules</nav>
-      <p class="intro">The influence and Revolving Door sequence is the current playable core. Operation baselines, party bonuses, constituencies, Election Day, victory, and several physical procedures remain unresolved.</p>
+      <p class="intro">The influence and Revolving Door sequence, district Support actions, and first four party bonuses are the current playable core. The district layout, eight party bonuses, Election Day, victory, and several physical procedures remain unresolved.</p>
 
       <section>
         <h2>Document legend</h2>
@@ -92,7 +92,7 @@
       <section>
         <span class="status decided">Decided</span>
         <h2>Setup</h2>
-        <p>For the first four-player prototype, give each lobbying house 20 Clout represented in whole-number denominations of 1 and 5, plus an identical set of operatives. Place the six parties in one fixed starting Pecking Order for every initial test. Operative quantities, operation baselines, party bonuses and state, exact token mix, and all other setup details remain open.</p>
+        <p>For the first four-player prototype, give each lobbying house 20 Clout represented in whole-number denominations of 1 and 5, plus an identical set of operatives. Place the district map, party Support, party overtures, and the six parties in one fixed starting Pecking Order. Operative quantities, district layout and capacities, Support quantities and starting positions, starting overtures, eight party bonuses, exact token mix, and all other setup details remain open.</p>
       </section>
 
       <section>
@@ -112,40 +112,119 @@
               <tr>
                 <td>Honeycomb Cooperative</td>
                 <td>Bees</td>
-                <td>Campaign and Expansion</td>
+                <td>Organise and Rally</td>
               </tr>
               <tr>
                 <td>Old Shell Union</td>
                 <td>Tortoises</td>
-                <td>Platform and Coalition</td>
+                <td>Smear and Court</td>
               </tr>
               <tr>
                 <td>Foxglove League</td>
                 <td>Foxes</td>
-                <td>Campaign and Platform</td>
+                <td>Rally and Smear</td>
               </tr>
               <tr>
                 <td>Riverworks Party</td>
                 <td>Beavers</td>
-                <td>Expansion and Platform</td>
+                <td>Organise and Smear</td>
               </tr>
               <tr>
                 <td>Many Wings Coalition</td>
                 <td>Starlings</td>
-                <td>Expansion and Coalition</td>
+                <td>Organise and Court</td>
               </tr>
               <tr>
                 <td>Night Parliament</td>
                 <td>Owls</td>
-                <td>Campaign and Coalition</td>
+                <td>Rally and Court</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <p>Operatives belong to the Campaign, Expansion, Platform, or Coalition family. Every family has one baseline effect that may be used at every party. Each party favors two families and offers one distinct bonus for each. The six parties retain every unique pair of the four operation families, so every family is favored by three parties.</p>
-        <p>The Press Perch accepts all four families but does not use their party baselines or bonuses. Every operative executed there instead swaps one adjacent pair in the Pecking Order. Exact baseline effects, party bonuses, and starting quantities remain open.</p>
+        <p>Operatives belong to the Organise, Rally, Smear, or Court family. Every family has one baseline effect that may be used at every party. Each party favors two families and offers one distinct bonus for each. The six parties retain every unique pair of the four operation families, so every family is favored by three parties.</p>
+
+        <h3>Districts and Support</h3>
+        <p>The map contains connected political districts. Each district has a limited number of Support spots. A free spot contains no Support; a party is present in a district while at least one of its Support occupies a spot there. Two districts are neighboring when a printed connection joins them.</p>
+        <p>Added Support comes from that party’s reserve. Removed Support returns to its party’s reserve. All Support, free spots, connections, and reserves are public. Exact district topology, capacities, Support quantities, and starting positions remain open.</p>
+
+        <h3>Operation baselines</h3>
+        <div class="table-wrap" role="region" aria-label="Operation baseline effects" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th>Operation</th>
+                <th>Party has Support on the map</th>
+                <th>Party has no Support on the map</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Organise</td>
+                <td>Move one of the party’s Support from its district to a free spot in a neighboring district. The final Support may leave its source district.</td>
+                <td>Add one of the party’s Support to any free spot on the map.</td>
+              </tr>
+              <tr>
+                <td>Rally</td>
+                <td>Add one of the party’s Support to a free spot in a district where it is already present.</td>
+                <td>Add one of the party’s Support to any free spot on the map.</td>
+              </tr>
+              <tr>
+                <td>Smear</td>
+                <td>Remove one rival party’s Support from a district where the acting party is present or from a district neighboring one where it is present.</td>
+                <td>Remove one rival party’s Support from any district on the map.</td>
+              </tr>
+              <tr>
+                <td>Court</td>
+                <td colspan="2">Point the party’s overture toward another party.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Check whether the party has any Support when each operative executes. Earlier operatives in the same bid may therefore change the later operatives’ available districts.</p>
+
+        <h3>Overtures and coalitions</h3>
+        <p>Each party has one directional overture that may point toward one other party. When two parties’ overtures point toward each other, those parties form a coalition. Redirecting either overture immediately breaks that coalition. Starting overtures and the consequences of coalition membership remain open.</p>
+
+        <h3>Decided party bonuses</h3>
+        <div class="table-wrap" role="region" aria-label="Party operation bonuses" tabindex="0">
+          <table>
+            <thead>
+              <tr>
+                <th>Party</th>
+                <th>Operation</th>
+                <th>Bonus</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Honeycomb Cooperative</td>
+                <td>Organise</td>
+                <td><strong>Leave a Cell Behind:</strong> After moving Support, add one Honeycomb Support to the vacated source spot. If Honeycomb had no Support before the baseline, add a second Honeycomb Support to a free spot in the destination district instead.</td>
+              </tr>
+              <tr>
+                <td>Honeycomb Cooperative</td>
+                <td>Rally</td>
+                <td><strong>Swarm:</strong> Add a second Honeycomb Support to another free spot in the Rally district.</td>
+              </tr>
+              <tr>
+                <td>Old Shell Union</td>
+                <td>Smear</td>
+                <td><strong>Stonewall:</strong> Remove a second Support belonging to the same rival from the same district.</td>
+              </tr>
+              <tr>
+                <td>Old Shell Union</td>
+                <td>Court</td>
+                <td><strong>Binding Pact:</strong> After successfully redirecting Old Shell’s overture, reinforce it with the Shell marker. The next Court operative that would redirect the reinforced overture removes the Shell marker instead and does not redirect it.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Foxglove League, Riverworks Party, Many Wings Coalition, and Night Parliament have no decided bonuses yet.</p>
+
+        <p>The Press Perch accepts all four families but does not use their party baselines or bonuses. Every operative executed there instead swaps one adjacent pair in the Pecking Order.</p>
         <div class="note">
-          <p><strong>Superseded:</strong> An earlier rule allowed an operative to execute only at a party displaying its family icon. That version is retained in the <a href="../../archive/rules/party-operation-compatibility-2026-07-28.html">rules archive</a>.</p>
+          <p><strong>Superseded:</strong> Earlier rules used party compatibility restrictions and later provisional operation families without concrete effects. Both versions remain in the <a href="../../archive/rules/party-operation-compatibility-2026-07-28.html">compatibility archive</a> and <a href="../../archive/rules/provisional-operation-families-2026-07-28.html">operation-family archive</a>.</p>
         </div>
       </section>
 
@@ -167,7 +246,7 @@
         <h3>4. Resolve influence contests</h3>
         <p>If the Press Perch has a contest, resolve it first. Each operative executed there swaps one adjacent pair of parties in the Pecking Order. Changes apply immediately for the current round, and the updated list persists across rounds until another operative changes it. Resolve every party contest in full, following the current Pecking Order.</p>
         <p>Within a contest, rank active bids from most Clout to least. Bids, not players, occupy ranks. At the start of a party contest, both of that party’s operation bonuses are available. Each bonus corresponds to one of the party’s favored families and may be applied once during that contest.</p>
-        <p>Starting with the highest bid, each bid owner executes that bid’s operatives in any order they choose. In a party contest, every operative performs its family’s baseline effect. As a matching operative executes, its owner may also apply the corresponding party bonus if that bonus is still available; applying it makes the bonus unavailable for the rest of the contest. A bid containing both favored families may claim both bonuses. When a bid finishes, any bonus it could not or chose not to claim remains available to lower-ranked bids. Each bid receives its own opportunity, even when one player owns multiple ranks. A committed operative card or family is fixed, but its owner chooses its legal variable parameters when it executes.</p>
+        <p>Starting with the highest bid, each bid owner executes that bid’s operatives in any order they choose. In a party contest, every operative performs its family’s baseline effect. As a matching operative executes, its owner may also apply the corresponding party bonus if that bonus is still available and both the baseline and bonus can resolve; applying it makes the bonus unavailable for the rest of the contest. A bid containing both favored families may claim both bonuses. When a bid finishes, any bonus it could not or chose not to claim remains available to lower-ranked bids. Each bid receives its own opportunity, even when one player owns multiple ranks. A committed operative card or family is fixed, but its owner chooses its legal variable parameters when it executes.</p>
         <p>Check whether each operative is legal when it would execute. An illegal operative fails and cannot be replaced, but remains part of its bid for transfer.</p>
         <p>If an earlier effect removes or disables an unresolved contest’s party, that contest still resolves. Its newly illegal operatives fail, then its active bids transfer normally.</p>
 
@@ -181,12 +260,12 @@
       <section>
         <span class="status">Open</span>
         <h2>End of game</h2>
-        <p>End trigger, Election Day, government formation, scoring, and tie-breakers are unresolved. Held Clout and operative cards do not score directly; victory must come from party, constituency, platform, coalition, or other board outcomes.</p>
+        <p>End trigger, Election Day, government formation, scoring, and tie-breakers are unresolved. Held Clout and operative cards do not score directly; victory must come from district Support, coalitions, or other board outcomes.</p>
       </section>
 
       <section>
         <h2>Next rule-writing threshold</h2>
-        <p>Define the four operation baselines, the twelve party bonuses, operative supply, constituency model, Election Day procedure, government formation, and victory condition. Record each committed choice and the evidence that could reopen it in the <a href="../design/decisions.html">decision log</a>.</p>
+        <p>Define the remaining eight party bonuses, operative and Support quantities, district topology and capacities, starting Support and overtures, Election Day procedure, government formation, and victory condition. Record each committed choice and the evidence that could reopen it in the <a href="../design/decisions.html">decision log</a>.</p>
       </section>
     </main>
 
