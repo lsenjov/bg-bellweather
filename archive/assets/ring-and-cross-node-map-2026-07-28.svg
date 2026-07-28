@@ -1,0 +1,193 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="396mm" height="297mm" viewBox="0 0 1600 1200" role="img" aria-labelledby="title description">
+  <title id="title">Archived ring-and-cross node map</title>
+  <desc id="description">Twelve districts form an outer ring. Three inner districts link the north, southeast, and southwest of the ring to a central district. Three grey outer districts have six Support spots, their ring neighbors have four, the center has three, and the remaining districts have two.</desc>
+  <style>
+    .paper { fill: #f2eadb; }
+    .connection-underlay { fill: none; stroke: #f2eadb; stroke-linecap: round; stroke-linejoin: round; stroke-width: 22; }
+    .connection { fill: none; stroke: #171612; stroke-linecap: round; stroke-linejoin: round; stroke-width: 7; }
+    .district { fill: #fffaf0; stroke: #171612; stroke-width: 6; }
+    .district-large { fill: #898985; }
+    .district-center { fill: #f2bc3b; stroke-width: 9; }
+    .district-id { fill: #171612; font: 800 24px "Avenir Next", Avenir, "Century Gothic", Futura, sans-serif; letter-spacing: 2px; text-anchor: middle; }
+    .capacity { fill: #171612; font: 800 15px "IBM Plex Mono", "Aptos Mono", Consolas, monospace; letter-spacing: 2px; text-anchor: middle; }
+    .spot { fill: #f2eadb; stroke: #171612; stroke-width: 4; }
+    .spot-large { fill: #fffaf0; }
+    .heading { fill: #171612; font: 800 38px "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; letter-spacing: -1px; }
+    .eyebrow { fill: #9f2c1e; font: 800 15px "IBM Plex Mono", "Aptos Mono", Consolas, monospace; letter-spacing: 3px; }
+    .map-note { fill: #625f57; font: 800 14px "IBM Plex Mono", "Aptos Mono", Consolas, monospace; letter-spacing: 2px; }
+    .registration { fill: none; stroke: #d9432f; stroke-width: 3; }
+  </style>
+
+  <rect class="paper" width="1600" height="1200"/>
+  <path class="registration" d="M28 52V28h24 M1548 28h24v24 M28 1148v24h24 M1548 1172h24v-24"/>
+
+  <text class="eyebrow" x="60" y="65">REPUBLIC OF BELLWETHER / PROTOTYPE MAP 01</text>
+  <text class="heading" x="60" y="108">Ring + cross districts</text>
+  <text class="map-note" x="1540" y="65" text-anchor="end">16 DISTRICTS / 18 CONNECTIONS / 57 SUPPORT SPOTS</text>
+
+  <g aria-label="Printed district connections">
+    <path class="connection-underlay" d="M800 145L1050 212L1230 390L1295 620L1230 850L1050 1028L800 1095L550 1028L370 850L305 620L370 390L550 212Z"/>
+    <path class="connection" d="M800 145L1050 212L1230 390L1295 620L1230 850L1050 1028L800 1095L550 1028L370 850L305 620L370 390L550 212Z"/>
+    <path class="connection-underlay" d="M800 610L800 365L800 145 M800 610L1000 745L1230 850 M800 610L600 745L370 850"/>
+    <path class="connection" d="M800 610L800 365L800 145 M800 610L1000 745L1230 850 M800 610L600 745L370 850"/>
+  </g>
+
+  <g aria-label="Outer ring districts">
+    <g transform="translate(800 145)" aria-label="Ring district 1, capacity 2">
+      <circle class="district" r="82"/>
+      <text class="district-id" y="-29">R1</text>
+      <text class="capacity" y="-5">CAP 2</text>
+      <circle class="spot" cx="-25" cy="30" r="20"/>
+      <circle class="spot" cx="25" cy="30" r="20"/>
+    </g>
+
+    <g transform="translate(1050 212)" aria-label="Ring district 2, capacity 4">
+      <circle class="district" r="88"/>
+      <text class="district-id" y="-43">R2</text>
+      <text class="capacity" y="-19">CAP 4</text>
+      <circle class="spot" cx="-26" cy="12" r="20"/>
+      <circle class="spot" cx="26" cy="12" r="20"/>
+      <circle class="spot" cx="-26" cy="56" r="20"/>
+      <circle class="spot" cx="26" cy="56" r="20"/>
+    </g>
+
+    <g transform="translate(1230 390)" aria-label="Ring district 3, capacity 6">
+      <circle class="district district-large" r="100"/>
+      <text class="district-id" y="-58">R3</text>
+      <text class="capacity" y="-35">CAP 6</text>
+      <circle class="spot spot-large" cx="-48" cy="0" r="20"/>
+      <circle class="spot spot-large" cy="0" r="20"/>
+      <circle class="spot spot-large" cx="48" cy="0" r="20"/>
+      <circle class="spot spot-large" cx="-48" cy="47" r="20"/>
+      <circle class="spot spot-large" cy="47" r="20"/>
+      <circle class="spot spot-large" cx="48" cy="47" r="20"/>
+    </g>
+
+    <g transform="translate(1295 620)" aria-label="Ring district 4, capacity 4">
+      <circle class="district" r="88"/>
+      <text class="district-id" y="-43">R4</text>
+      <text class="capacity" y="-19">CAP 4</text>
+      <circle class="spot" cx="-26" cy="12" r="20"/>
+      <circle class="spot" cx="26" cy="12" r="20"/>
+      <circle class="spot" cx="-26" cy="56" r="20"/>
+      <circle class="spot" cx="26" cy="56" r="20"/>
+    </g>
+
+    <g transform="translate(1230 850)" aria-label="Ring district 5, capacity 2">
+      <circle class="district" r="82"/>
+      <text class="district-id" y="-29">R5</text>
+      <text class="capacity" y="-5">CAP 2</text>
+      <circle class="spot" cx="-25" cy="30" r="20"/>
+      <circle class="spot" cx="25" cy="30" r="20"/>
+    </g>
+
+    <g transform="translate(1050 1028)" aria-label="Ring district 6, capacity 4">
+      <circle class="district" r="88"/>
+      <text class="district-id" y="-43">R6</text>
+      <text class="capacity" y="-19">CAP 4</text>
+      <circle class="spot" cx="-26" cy="12" r="20"/>
+      <circle class="spot" cx="26" cy="12" r="20"/>
+      <circle class="spot" cx="-26" cy="56" r="20"/>
+      <circle class="spot" cx="26" cy="56" r="20"/>
+    </g>
+
+    <g transform="translate(800 1095)" aria-label="Ring district 7, capacity 6">
+      <circle class="district district-large" r="100"/>
+      <text class="district-id" y="-58">R7</text>
+      <text class="capacity" y="-35">CAP 6</text>
+      <circle class="spot spot-large" cx="-48" cy="0" r="20"/>
+      <circle class="spot spot-large" cy="0" r="20"/>
+      <circle class="spot spot-large" cx="48" cy="0" r="20"/>
+      <circle class="spot spot-large" cx="-48" cy="47" r="20"/>
+      <circle class="spot spot-large" cy="47" r="20"/>
+      <circle class="spot spot-large" cx="48" cy="47" r="20"/>
+    </g>
+
+    <g transform="translate(550 1028)" aria-label="Ring district 8, capacity 4">
+      <circle class="district" r="88"/>
+      <text class="district-id" y="-43">R8</text>
+      <text class="capacity" y="-19">CAP 4</text>
+      <circle class="spot" cx="-26" cy="12" r="20"/>
+      <circle class="spot" cx="26" cy="12" r="20"/>
+      <circle class="spot" cx="-26" cy="56" r="20"/>
+      <circle class="spot" cx="26" cy="56" r="20"/>
+    </g>
+
+    <g transform="translate(370 850)" aria-label="Ring district 9, capacity 2">
+      <circle class="district" r="82"/>
+      <text class="district-id" y="-29">R9</text>
+      <text class="capacity" y="-5">CAP 2</text>
+      <circle class="spot" cx="-25" cy="30" r="20"/>
+      <circle class="spot" cx="25" cy="30" r="20"/>
+    </g>
+
+    <g transform="translate(305 620)" aria-label="Ring district 10, capacity 4">
+      <circle class="district" r="88"/>
+      <text class="district-id" y="-43">R10</text>
+      <text class="capacity" y="-19">CAP 4</text>
+      <circle class="spot" cx="-26" cy="12" r="20"/>
+      <circle class="spot" cx="26" cy="12" r="20"/>
+      <circle class="spot" cx="-26" cy="56" r="20"/>
+      <circle class="spot" cx="26" cy="56" r="20"/>
+    </g>
+
+    <g transform="translate(370 390)" aria-label="Ring district 11, capacity 6">
+      <circle class="district district-large" r="100"/>
+      <text class="district-id" y="-58">R11</text>
+      <text class="capacity" y="-35">CAP 6</text>
+      <circle class="spot spot-large" cx="-48" cy="0" r="20"/>
+      <circle class="spot spot-large" cy="0" r="20"/>
+      <circle class="spot spot-large" cx="48" cy="0" r="20"/>
+      <circle class="spot spot-large" cx="-48" cy="47" r="20"/>
+      <circle class="spot spot-large" cy="47" r="20"/>
+      <circle class="spot spot-large" cx="48" cy="47" r="20"/>
+    </g>
+
+    <g transform="translate(550 212)" aria-label="Ring district 12, capacity 4">
+      <circle class="district" r="88"/>
+      <text class="district-id" y="-43">R12</text>
+      <text class="capacity" y="-19">CAP 4</text>
+      <circle class="spot" cx="-26" cy="12" r="20"/>
+      <circle class="spot" cx="26" cy="12" r="20"/>
+      <circle class="spot" cx="-26" cy="56" r="20"/>
+      <circle class="spot" cx="26" cy="56" r="20"/>
+    </g>
+  </g>
+
+  <g aria-label="Inner cross districts">
+    <g transform="translate(800 365)" aria-label="North cross district, capacity 2">
+      <circle class="district" r="82"/>
+      <text class="district-id" y="-29">XN</text>
+      <text class="capacity" y="-5">CAP 2</text>
+      <circle class="spot" cx="-25" cy="30" r="20"/>
+      <circle class="spot" cx="25" cy="30" r="20"/>
+    </g>
+
+    <g transform="translate(1000 745)" aria-label="Southeast cross district, capacity 2">
+      <circle class="district" r="82"/>
+      <text class="district-id" y="-29">XSE</text>
+      <text class="capacity" y="-5">CAP 2</text>
+      <circle class="spot" cx="-25" cy="30" r="20"/>
+      <circle class="spot" cx="25" cy="30" r="20"/>
+    </g>
+
+    <g transform="translate(600 745)" aria-label="Southwest cross district, capacity 2">
+      <circle class="district" r="82"/>
+      <text class="district-id" y="-29">XSW</text>
+      <text class="capacity" y="-5">CAP 2</text>
+      <circle class="spot" cx="-25" cy="30" r="20"/>
+      <circle class="spot" cx="25" cy="30" r="20"/>
+    </g>
+
+    <g transform="translate(800 610)" aria-label="Central district, capacity 3">
+      <circle class="district district-center" r="92"/>
+      <text class="district-id" y="-42">CENTRE</text>
+      <text class="capacity" y="-17">CAP 3</text>
+      <circle class="spot" cx="-46" cy="34" r="20"/>
+      <circle class="spot" cy="34" r="20"/>
+      <circle class="spot" cx="46" cy="34" r="20"/>
+    </g>
+  </g>
+
+  <text class="map-note" x="60" y="1150">FIT TO A3 LANDSCAPE / SUPPORT SPOTS ≈10 MM</text>
+</svg>
