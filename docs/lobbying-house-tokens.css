@@ -197,9 +197,7 @@ main {
 .house-index,
 .token-type,
 .token-house,
-.mount-note,
-.reveal-seal small,
-.open-marker small {
+.mount-note {
   font: 800 5.4pt/1.1 var(--mono);
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -285,7 +283,7 @@ main {
 .token-type {
   display: block;
   margin-top: 1.3mm;
-  color: var(--accent);
+  color: var(--ink);
 }
 
 .cover-letter {
@@ -305,96 +303,60 @@ main {
   right: 0;
   bottom: 5mm;
   left: 0;
-  color: rgb(23 23 19 / 55%);
+  color: var(--ink);
   font: 800 4.5pt/1 var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .small-tokens {
-  display: grid;
+  display: flex;
   width: 87mm;
   height: 87mm;
   padding: 2mm;
   border: 0.5mm solid var(--ink);
   background: var(--paper);
-  grid-template-columns: 50mm 1fr;
-  grid-template-rows: 50mm 30mm;
-  gap: 3mm;
-  place-items: center;
+  align-items: center;
+  justify-content: center;
 }
 
-.open-marker,
-.reveal-seal,
-.score-marker {
+.open-marker {
+  position: relative;
   display: flex;
+  width: 50mm;
+  height: 50mm;
+  overflow: hidden;
   border: 0.65mm solid var(--ink);
   border-radius: 50%;
   background: var(--accent);
   color: var(--accent-ink);
   align-items: center;
-  flex-direction: column;
   justify-content: center;
   text-align: center;
 }
 
-.open-marker {
-  width: 50mm;
-  height: 50mm;
-  grid-row: 1;
-}
-
 .open-marker strong {
-  margin: 0.8mm 0;
-  font: 800 16pt/0.9 var(--display);
-}
-
-.open-marker small {
-  max-width: 30mm;
-  font-size: 4.6pt;
-  line-height: 1.2;
-}
-
-.score-marker {
-  width: 20mm;
-  height: 20mm;
-  grid-column: 2;
-  grid-row: 1;
-  box-shadow: 0 0 0 1.8mm var(--tint), 0 0 0 2.2mm var(--accent);
-}
-
-.score-marker strong {
-  font: 800 13pt/1 var(--display);
-}
-
-.score-marker small {
-  font: 800 4.2pt/1 var(--mono);
-  letter-spacing: 0.03em;
+  max-width: 21mm;
+  font: 800 9pt/0.9 var(--mono);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.reveal-pair {
-  display: flex;
-  grid-column: 1 / 3;
-  grid-row: 2;
-  gap: 5mm;
+.open-number {
+  position: absolute;
+  right: 0;
+  left: 0;
+  font: 800 18pt/0.8 var(--display);
+  letter-spacing: -0.04em;
 }
 
-.reveal-seal {
-  width: 30mm;
-  height: 30mm;
-  background: var(--tint);
-  color: var(--ink);
+.open-number.top {
+  top: 3mm;
 }
 
-.reveal-seal strong {
-  font: 800 13pt/0.9 var(--display);
-}
-
-.reveal-seal small {
-  margin-top: 1mm;
-  color: var(--accent);
-  font-size: 4.5pt;
+.open-number.bottom {
+  bottom: 3mm;
+  transform: rotate(180deg);
 }
 
 @page {

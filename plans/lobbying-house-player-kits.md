@@ -8,11 +8,9 @@ Create printable player boards and identity tokens for the six lobbying houses. 
 
 ### Per lobbying-house kit
 
-- One A5 player board with the house identity, number, emblem, component parking, hidden-agenda space, concealed-reserve reminder, and compact Campaign Round reference.
+- One 200 × 140 mm player board with the house identity, number, emblem, component parking, hidden-agenda space, concealed-reserve reminder, and compact Campaign Round reference.
 - Two 70 mm circular counterbid cover roundels, labelled A and B.
-- Two matching reveal seals, labelled A and B, which remain with bid contents after the cover lifts so ownership stays unambiguous.
-- One opening-bid marker sized to fit the party-board opening area.
-- One score/seat marker. Use one marker per human player; return the extra marker when a human controls two houses.
+- One opening-bid marker sized to fit the party-board opening area, with two large copies of the house number.
 
 ### Per human player
 
@@ -48,20 +46,20 @@ Treat the six houses as competing influence bureaux whose stationery escaped fro
 1. **Specify the kits in the live documentation.**
    - Record the user-committed kit allocation in the decision log.
    - Update component inventory, player-aid requirements, setup language, the documentation index, and changelog.
-   - Keep proposed reveal seals, score markers, and screen requirements clearly provisional where the rules have not committed them.
+   - Keep screen requirements clearly provisional where the rules have not committed their physical format.
    - Validate and commit.
 
 2. **Create printable player boards.**
    - Add a six-board HTML print artifact and dedicated CSS.
-   - Lay out two A5 boards per A4 portrait sheet at exact physical dimensions.
+   - Lay out two 200 × 140 mm boards per A4 portrait sheet at exact physical dimensions.
    - Include all six identities and a shared reference that does not invent unresolved rules.
    - Inspect in the collaborative browser at screen and print-oriented sizes, validate, and commit.
 
 3. **Create printable house tokens.**
    - Add a six-kit HTML print artifact and dedicated CSS.
    - Lay out two kits per A4 landscape sheet.
-   - Make every counterbid cover roundel exactly 70 mm across and pair it with an A/B reveal seal.
-   - Include one opening-bid marker and one score/seat marker per kit.
+   - Make every counterbid cover roundel exactly 70 mm across.
+   - Include one opening-bid marker per kit, with two large number labels readable from opposite sides.
    - Inspect dimensions and visual output, validate, and commit.
 
 4. **Integrate and review.**
@@ -69,4 +67,3 @@ Treat the six houses as competing influence bureaux whose stationery escaped fro
    - Run document, whitespace, and physical-dimension checks.
    - Request an independent review and fix every high or medium issue, repeating review until none remain.
    - Report any low issues before further work.
-
