@@ -183,7 +183,8 @@ main {
 }
 
 .emblem svg,
-.cover-emblem svg {
+.cover-emblem svg,
+.marker-emblem svg {
   display: block;
   width: 100%;
   height: 100%;
@@ -317,27 +318,39 @@ main {
   border: 0.5mm solid var(--ink);
   background: var(--paper);
   align-items: center;
+  gap: 4mm;
   justify-content: center;
 }
 
-.open-marker {
+.open-marker,
+.score-marker {
   position: relative;
   display: flex;
-  width: 50mm;
-  height: 50mm;
   overflow: hidden;
   border: 0.65mm solid var(--ink);
   border-radius: 50%;
-  background: var(--accent);
-  color: var(--accent-ink);
   align-items: center;
+  flex-direction: column;
   justify-content: center;
   text-align: center;
 }
 
+.open-marker {
+  width: 50mm;
+  height: 50mm;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.open-marker .marker-emblem {
+  width: 13mm;
+  height: 13mm;
+  margin-bottom: 1mm;
+}
+
 .open-marker strong {
   max-width: 21mm;
-  font: 800 9pt/0.9 var(--mono);
+  font: 800 7pt/0.9 var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -357,6 +370,26 @@ main {
 .open-number.bottom {
   bottom: 3mm;
   transform: rotate(180deg);
+}
+
+.score-marker {
+  width: 25mm;
+  height: 25mm;
+  background: var(--tint);
+  color: var(--ink);
+}
+
+.score-marker .marker-emblem {
+  width: 10mm;
+  height: 10mm;
+  color: var(--accent);
+}
+
+.score-marker strong {
+  margin-top: 0.8mm;
+  font: 800 7pt/0.8 var(--mono);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 @page {

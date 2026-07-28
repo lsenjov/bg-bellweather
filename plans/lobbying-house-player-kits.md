@@ -2,7 +2,7 @@
 
 ## Goal
 
-Create printable player boards and identity tokens for the six lobbying houses. Each house kit must provide two circular 70 mm counterbid covers and one opening-bid marker. At two or three players, each human takes two house kits so the existing allowance of two openings and four counterbids is represented without changing the player economy.
+Create printable player boards and identity tokens for the six lobbying houses. Each house kit must provide two circular 70 mm counterbid covers, one opening-bid marker, and one score marker. At two or three players, each human takes two house kits so the existing allowance of two openings and four counterbids is represented without changing the player economy or score.
 
 ## Component boundary
 
@@ -10,7 +10,8 @@ Create printable player boards and identity tokens for the six lobbying houses. 
 
 - One 200 × 140 mm player board with the house identity, number, emblem, component parking, hidden-agenda space, concealed-reserve reminder, and compact Campaign Round reference.
 - Two 70 mm circular counterbid cover roundels, labelled A and B.
-- One opening-bid marker sized to fit the party-board opening area, with two large copies of the house number.
+- One opening-bid marker sized to fit the party-board opening area, with the house emblem and two large copies of the house number.
+- One score marker with the house emblem and number.
 
 ### Per human player
 
@@ -18,6 +19,7 @@ Create printable player boards and identity tokens for the six lobbying houses. 
 - 20 total Clout for the first prototype, not 20 per controlled house.
 - One identical operative supply, with its quantity still open.
 - One hidden scoring card.
+- One active score marker on the shared score track. At two or three players, leave the second controlled house’s marker unused.
 - One privacy screen or equivalent concealment. The player board identifies reserve areas but is not itself an opaque screen.
 
 ### Shared or unresolved
@@ -59,7 +61,8 @@ Treat the six houses as competing influence bureaux whose stationery escaped fro
    - Add a six-kit HTML print artifact and dedicated CSS.
    - Lay out two kits per A4 landscape sheet.
    - Make every counterbid cover roundel exactly 70 mm across.
-   - Include one opening-bid marker per kit, with two large number labels readable from opposite sides.
+   - Include one opening-bid marker per kit, with its emblem and two large number labels readable from opposite sides.
+   - Include one score marker per kit with its emblem and number.
    - Inspect dimensions and visual output, validate, and commit.
 
 4. **Integrate and review.**
