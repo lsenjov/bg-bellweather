@@ -76,10 +76,10 @@ main {
 }
 
 .house-board {
-  --accent: #b8492f;
-  --detail: var(--accent);
-  --tint: #f0d6ca;
-  --accent-ink: #fffaf0;
+  --accent: #efcfca;
+  --detail: #3f3b35;
+  --tint: #f7e9e6;
+  --accent-ink: #171713;
   position: relative;
   display: grid;
   width: 200mm;
@@ -108,30 +108,28 @@ main {
 }
 
 .pairliament {
-  --accent: #2b6185;
-  --tint: #d2e0e8;
+  --accent: #d4e1eb;
+  --tint: #eaf1f5;
 }
 
 .triumvirat {
-  --accent: #b8791d;
-  --detail: #83500d;
-  --tint: #ecdabf;
-  --accent-ink: #171713;
+  --accent: #eeddb8;
+  --tint: #f7efdc;
 }
 
 .ivy-league {
-  --accent: #496b3b;
-  --tint: #d8e1cf;
+  --accent: #d8e4d1;
+  --tint: #edf3e9;
 }
 
 .vested {
-  --accent: #714663;
-  --tint: #e5d4df;
+  --accent: #e5d4e1;
+  --tint: #f3eaf1;
 }
 
 .vip-access {
-  --accent: #25716c;
-  --tint: #cde2df;
+  --accent: #cfe4df;
+  --tint: #e8f2ef;
 }
 
 .identity {
