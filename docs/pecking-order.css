@@ -308,7 +308,7 @@ main {
 
 .procedure-panel p:last-child {
   margin: 2mm 0 0;
-  font: 700 6.3pt/1.25 var(--body);
+  font: 700 7.2pt/1.25 var(--body);
 }
 
 .auction-edge {
