@@ -435,8 +435,17 @@ main {
 
 .token-number {
   position: absolute;
+  z-index: 1;
   top: 4mm;
   left: 6mm;
+  display: grid;
+  width: 7mm;
+  height: 7mm;
+  border: 0.3mm solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper-bright);
+  color: var(--ink);
+  place-items: center;
 }
 
 .party-emblem {
