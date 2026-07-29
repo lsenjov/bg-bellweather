@@ -8,8 +8,8 @@ const archiveRoot = join(repositoryRoot, "archive");
 const indexPath = join(docsRoot, "index.html");
 const errors = [];
 const generatedPrintOutputs = new Set([
-  "lobbying-house-boards-a4.pdf",
-  "lobbying-house-tokens-a4.pdf",
+  "lobbying-firm-boards-a4.pdf",
+  "lobbying-firm-tokens-a4.pdf",
   "operation-tokens-a4.pdf",
   "party-boards-a4.pdf",
   "pecking-order-a4.pdf",

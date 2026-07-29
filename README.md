@@ -2,7 +2,7 @@
 
 Working repository for the board game currently titled **Ladder Bidding**.
 
-Rival lobbying houses use Clout and operatives to influence six animal political
+Rival lobbying firms use Clout and operatives to influence six animal political
 parties in the fictional Republic of Bellwether. The game is at pre-prototype
 stage; a printable map of sixteen named districts, Support actions, and all
 twelve party bonuses are committed, while starting Support, elections,
@@ -58,8 +58,8 @@ physical-size checks pass.
 | --- | --- |
 | `assets/print/ring-and-cross-district-map-a3.pdf` | One A3 landscape district map |
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
-| `assets/print/lobbying-house-boards-a4.pdf` | Three A4 portrait player-board sheets |
-| `assets/print/lobbying-house-tokens-a4.pdf` | Three A4 landscape house-token sheets |
+| `assets/print/lobbying-firm-boards-a4.pdf` | Three A4 portrait player-board sheets |
+| `assets/print/lobbying-firm-tokens-a4.pdf` | Three A4 landscape firm-token sheets |
 | `assets/print/operation-tokens-a4.pdf` | One A4 portrait operation-token sheet |
 | `assets/print/scoring-cards-a4.pdf` | Two A4 portrait scoring-card sheets |
 | `assets/print/pecking-order-a4.pdf` | Two A4 landscape Pecking Order sheets |
