@@ -11,9 +11,9 @@
   --red: #9c3d31;
   --yellow: #e9b72b;
   --muted: #625e55;
-  --display: "Bodoni 72 Smallcaps", Didot, "Iowan Old Style", Georgia, serif;
-  --body: "Avenir Next Condensed", "Gill Sans", "Trebuchet MS", sans-serif;
-  --mono: "IBM Plex Mono", "Aptos Mono", "SFMono-Regular", Consolas, monospace;
+  --display: "Liberation Serif", serif;
+  --body: "Liberation Sans", sans-serif;
+  --mono: "Noto Sans Mono", monospace;
 }
 
 html {

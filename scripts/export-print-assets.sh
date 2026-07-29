@@ -7,7 +7,7 @@ board_source="$repository_root/docs/assets/ring-and-cross-district-map.svg"
 board_output="$repository_root/assets/print/ring-and-cross-district-map-a3.pdf"
 html_exporter="$repository_root/scripts/export-html-print-pages.cjs"
 
-for required_command in fc-match gs inkscape node npm pdfinfo; do
+for required_command in fc-match gs inkscape node npm pdffonts pdfinfo; do
   if ! command -v "$required_command" >/dev/null 2>&1; then
     printf 'Missing required command: %s\n' "$required_command" >&2
     exit 1
@@ -21,6 +21,7 @@ font_requirements=(
   "Liberation Serif:weight=bold|Liberation Serif|Bold"
   "Liberation Sans:weight=regular|Liberation Sans|Regular"
   "Liberation Sans:weight=bold|Liberation Sans|Bold"
+  "DejaVu Sans:weight=regular|DejaVu Sans|Book"
 )
 
 for font_requirement in "${font_requirements[@]}"; do
@@ -64,6 +65,18 @@ pdf_page_count_matches() {
       }
       END { exit !(found && valid) }
     '
+}
+
+pdf_fonts_are_embedded() {
+  local pdf_file="$1"
+
+  LC_ALL=C pdffonts "$pdf_file" | awk '
+    NR > 2 && NF {
+      found = 1
+      if (substr($0, 73, 3) != "yes") invalid = 1
+    }
+    END { exit !(found && !invalid) }
+  '
 }
 
 validate_pdf() {
@@ -145,6 +158,11 @@ for export_specification in "${html_exports[@]}"; do
     "$expected_width" \
     "$expected_height" \
     "$export_name"
+
+  if ! pdf_fonts_are_embedded "$export_directory/$export_name.pdf"; then
+    printf '%s export contains missing or unembedded fonts.\n' "$export_name" >&2
+    exit 1
+  fi
 done
 
 install -m 0644 "$a3_pdf" "$board_output"

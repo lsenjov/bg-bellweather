@@ -8,9 +8,9 @@
   --paper-bright: #fffaf0;
   --ink: #171612;
   --muted: #615e56;
-  --display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --body: "Avenir Next", Avenir, "Century Gothic", Futura, sans-serif;
-  --mono: "IBM Plex Mono", "Aptos Mono", "SFMono-Regular", Consolas, monospace;
+  --display: "Liberation Serif", serif;
+  --body: "Liberation Sans", sans-serif;
+  --mono: "Noto Sans Mono", monospace;
 }
 
 html {
