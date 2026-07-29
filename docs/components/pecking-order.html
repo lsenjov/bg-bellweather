@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Printable Pecking Order board and six party-order tokens for Bellwether.">
+    <title>Printable Pecking Order — Ladder Bidding</title>
+    <link rel="stylesheet" href="../pecking-order.css">
+  </head>
+  <body>
+    <header class="screen-header">
+      <a href="board.html#pecking-order">← Board specification</a>
+      <h1>Pecking Order</h1>
+      <p>Print at actual size on two A4 landscape sheets. The first sheet is the shared board; the second contains the six movable party-order tokens. Place covered bids beside the board’s yellow auction edge.</p>
+    </header>
+
+    <main>
+      <section class="print-sheet" aria-label="Pecking Order board">
+        <article class="order-board">
+          <header class="masthead">
+            <div class="masthead-copy">
+              <p class="kicker">Bellwether media register / mandatory auction</p>
+              <h2>Pecking Order</h2>
+              <p class="deck">Set the party sequence before any party contest resolves.</p>
+            </div>
+            <div class="edition">
+              <span>Campaign Round</span>
+              <strong>Resolve first</strong>
+              <small>Persistent until changed</small>
+            </div>
+          </header>
+
+          <section class="order-track" aria-label="Six Pecking Order positions, first party contest to last party contest">
+            <div class="order-position">
+              <span class="rank">01</span>
+              <div class="token-well"><span>Party<br>token</span></div>
+              <strong>First party</strong>
+            </div>
+            <div class="order-position">
+              <span class="rank">02</span>
+              <div class="token-well"><span>Party<br>token</span></div>
+              <strong>Second</strong>
+            </div>
+            <div class="order-position">
+              <span class="rank">03</span>
+              <div class="token-well"><span>Party<br>token</span></div>
+              <strong>Third</strong>
+            </div>
+            <div class="order-position">
+              <span class="rank">04</span>
+              <div class="token-well"><span>Party<br>token</span></div>
+              <strong>Fourth</strong>
+            </div>
+            <div class="order-position">
+              <span class="rank">05</span>
+              <div class="token-well"><span>Party<br>token</span></div>
+              <strong>Fifth</strong>
+            </div>
+            <div class="order-position">
+              <span class="rank">06</span>
+              <div class="token-well"><span>Party<br>token</span></div>
+              <strong>Last party</strong>
+            </div>
+          </section>
+
+          <section class="procedure" aria-label="Pecking Order auction procedure">
+            <div class="procedure-panel mandatory">
+              <span class="panel-number">A</span>
+              <p class="panel-kicker">Automatic auction</p>
+              <h3>No opener.<br>No opening bid.</h3>
+              <p>Use ordinary covered counterbids. Equal Clout cancels, including zero.</p>
+            </div>
+            <div class="procedure-panel execute">
+              <span class="panel-number">B</span>
+              <p class="panel-kicker">Execute operatives</p>
+              <h3><span>Lowest Clout</span><b>→</b><span>Highest Clout</span></h3>
+              <p>Highest acts last. Every operative swaps one adjacent pair; choose the pair when it executes.</p>
+            </div>
+            <div class="procedure-panel revolve">
+              <span class="panel-number">C</span>
+              <p class="panel-kicker">Revolving Door</p>
+              <h3><span>Most Clout</span><b>→</b><span>Least Clout</span></h3>
+              <p>Transfer in the normal rank direction. The lowest bid loops to the highest.</p>
+            </div>
+          </section>
+
+          <footer class="auction-edge">
+            <div>
+              <span class="edge-kicker">Pecking Order auction</span>
+              <strong>Place covered bids beside this edge</strong>
+            </div>
+            <p>Mandatory every Campaign Round · resolves before the parties · no opening marker</p>
+          </footer>
+        </article>
+      </section>
+
+      <section class="print-sheet" aria-label="Pecking Order party token sheet">
+        <article class="token-sheet">
+          <header class="token-header">
+            <div>
+              <p class="kicker">Bellwether media register / movable pieces</p>
+              <h2>Party order tokens</h2>
+            </div>
+            <p>Cut six 44 mm tokens. Place one in every numbered board position. These tokens show resolution order, not district Support.</p>
+          </header>
+
+          <section class="party-tokens" aria-label="Six party-order tokens">
+            <div class="party-token party-honeycomb" aria-label="Honeycomb Cooperative party-order token">
+              <span class="token-number">01</span>
+              <div class="party-emblem" aria-hidden="true">
+                <svg viewBox="0 0 64 64"><path d="M22 7l10 6v12l-10 6-10-6V13zM42 7l10 6v12l-10 6-10-6V13zM32 25l10 6v12l-10 6-10-6V31zM12 31l10 6v12l-10 6L2 49V37zM52 31l10 6v12l-10 6-10-6V37z"/></svg>
+              </div>
+              <strong>Honeycomb</strong>
+              <span class="animal">Bees</span>
+            </div>
+
+            <div class="party-token party-old-shell" aria-label="Old Shell Union party-order token">
+              <span class="token-number">02</span>
+              <div class="party-emblem" aria-hidden="true">
+                <svg viewBox="0 0 64 64"><path d="M9 48c0-20 10-34 27-34 13 0 21 9 21 21 0 13-9 21-21 21-10 0-17-6-17-15 0-8 6-14 14-14 7 0 12 4 12 10 0 5-4 9-9 9-4 0-7-2-7-6"/></svg>
+              </div>
+              <strong>Old Shell</strong>
+              <span class="animal">Tortoises</span>
+            </div>
+
+            <div class="party-token party-foxglove" aria-label="Foxglove League party-order token">
+              <span class="token-number">03</span>
+              <div class="party-emblem" aria-hidden="true">
+                <svg viewBox="0 0 64 64"><path d="M12 10l15 10h10l15-10-5 19c5 5 7 10 7 16-7 8-14 12-22 12S17 53 10 45c0-6 2-11 7-16zM24 38l8 6 8-6M23 31h1M40 31h1"/></svg>
+              </div>
+              <strong>Foxglove</strong>
+              <span class="animal">Foxes</span>
+            </div>
+
+            <div class="party-token party-riverworks" aria-label="Riverworks Party party-order token">
+              <span class="token-number">04</span>
+              <div class="party-emblem" aria-hidden="true">
+                <svg viewBox="0 0 64 64"><path d="M7 16h42l8 9-8 9H7l8-9zM7 38h42l8 9-8 9H7l8-9zM21 16v18M43 38v18"/></svg>
+              </div>
+              <strong>Riverworks</strong>
+              <span class="animal">Beavers</span>
+            </div>
+
+            <div class="party-token party-many-wings" aria-label="Many Wings Coalition party-order token">
+              <span class="token-number">05</span>
+              <div class="party-emblem" aria-hidden="true">
+                <svg viewBox="0 0 64 64"><path d="M5 18q8-8 16 0M25 12q8-8 16 0M43 20q8-8 16 0M13 37q8-8 16 0M35 43q8-8 16 0"/></svg>
+              </div>
+              <strong>Many Wings</strong>
+              <span class="animal">Starlings</span>
+            </div>
+
+            <div class="party-token party-night" aria-label="Night Parliament party-order token">
+              <span class="token-number">06</span>
+              <div class="party-emblem" aria-hidden="true">
+                <svg viewBox="0 0 64 64"><path d="M8 12l13 8h22l13-8-4 20v17L40 57H24L12 49V32zM17 30a9 9 0 1 0 18 0 9 9 0 1 0-18 0M29 30a9 9 0 1 0 18 0 9 9 0 1 0-18 0M28 44l4 5 4-5"/></svg>
+              </div>
+              <strong>Night</strong>
+              <span class="animal">Parliament</span>
+            </div>
+          </section>
+
+          <section class="handling-guide">
+            <div class="swap-diagram" aria-hidden="true">
+              <span>03</span><b>⇄</b><span>04</span>
+            </div>
+            <div>
+              <p class="panel-kicker">One operative / one adjacent swap</p>
+              <h3>Move the tokens, not the position labels.</h3>
+              <p>Resolve a multi-operative bid one token at a time. After each swap, use the updated order before choosing the next adjacent pair.</p>
+            </div>
+            <div class="identity-rule">
+              <span>Colour</span>
+              <span>Number</span>
+              <span>Emblem</span>
+              <strong>Three matching identifiers</strong>
+            </div>
+          </section>
+
+          <footer class="registration">
+            <span>Pecking Order component / sheet 2 of 2</span>
+            <span>6 party tokens · 44 mm</span>
+          </footer>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
