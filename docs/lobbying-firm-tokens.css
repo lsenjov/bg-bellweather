@@ -75,7 +75,7 @@ main {
   box-shadow: 0 10px 35px rgb(0 0 0 / 35%);
 }
 
-.house-kit {
+.firm-kit {
   --accent: #efcfca;
   --detail: #3f3b35;
   --tint: #f7e9e6;
@@ -195,26 +195,26 @@ main {
   stroke-width: 2.8;
 }
 
-.house-index,
+.firm-index,
 .token-type,
-.token-house,
+.token-firm,
 .mount-note {
   font: 800 5.4pt/1.1 var(--mono);
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
 
-.house-index {
+.firm-index {
   margin: 0 0 1.4mm;
 }
 
-.house-name {
+.firm-name {
   margin: 0;
   font: 800 13pt/0.92 var(--display);
   letter-spacing: -0.035em;
 }
 
-.house-name span {
+.firm-name span {
   display: block;
 }
 
@@ -292,14 +292,14 @@ main {
   font: 800 23pt/0.8 var(--display);
 }
 
-.token-house {
+.token-firm {
   display: block;
   max-width: 42mm;
   margin-top: 1.4mm;
   line-height: 1.25;
 }
 
-.bid-cover .house-stamp {
+.bid-cover .firm-stamp {
   position: absolute;
   right: 0;
   bottom: 5mm;

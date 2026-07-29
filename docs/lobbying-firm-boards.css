@@ -75,7 +75,7 @@ main {
   box-shadow: 0 10px 35px rgb(0 0 0 / 35%);
 }
 
-.house-board {
+.firm-board {
   --accent: #efcfca;
   --detail: #3f3b35;
   --tint: #f7e9e6;
@@ -97,7 +97,7 @@ main {
   -webkit-print-color-adjust: exact;
 }
 
-.house-board::after {
+.firm-board::after {
   position: absolute;
   right: 2mm;
   bottom: 1.5mm;
@@ -210,7 +210,7 @@ main {
   stroke-width: 2.8;
 }
 
-.house-index,
+.firm-index,
 .identity-kicker,
 .panel-kicker,
 .agenda-label,
@@ -222,17 +222,17 @@ main {
   text-transform: uppercase;
 }
 
-.house-index {
+.firm-index {
   margin: 0 0 1.4mm;
 }
 
-.house-name {
+.firm-name {
   margin: 0;
   font: 800 15.5pt/0.91 var(--display);
   letter-spacing: -0.035em;
 }
 
-.house-name span {
+.firm-name span {
   display: block;
 }
 
@@ -241,7 +241,7 @@ main {
   line-height: 1.35;
 }
 
-.house-number {
+.firm-number {
   margin: auto 0 0;
   font: 800 46pt/0.74 var(--display);
   letter-spacing: -0.08em;
