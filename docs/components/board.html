@@ -125,9 +125,12 @@
           </div>
           <figcaption>
             <span>Shared black borders define adjacency. Crownwater separates non-neighbors. Designed for A3 landscape when using standard cubes.</span>
-            <a href="../assets/ring-and-cross-district-map.svg">Open printable SVG →</a>
+            <span><a href="../../assets/print/ring-and-cross-district-map-a3.pdf">Open A3 PDF →</a> · <a href="../assets/ring-and-cross-district-map.svg">Open SVG source →</a></span>
           </figcaption>
         </figure>
+        <h3>A3 print export</h3>
+        <p>The print-ready PDF is one 420 × 297 mm A3 landscape page. It keeps the 396 × 297 mm artwork at 100% scale and centers it with 12 mm white margins on the left and right. Print at “Actual size” or 100% with “Fit to page” disabled.</p>
+        <p>To regenerate the PDF from the SVG source, install Inkscape, Ghostscript, Fontconfig’s <code>fc-match</code>, Poppler’s <code>pdfinfo</code>, and the Noto Serif Black, Noto Serif Black Italic, and Noto Sans Mono Black font faces. Then run <code>./scripts/export-game-board-a3.sh</code> from the repository root. The command verifies the fonts and the 396 × 297 mm source size before converting text to paths, so the printed result does not depend on fonts installed at the printer.</p>
         <p>The grey districts—Harbormouth, Grand Market, and Ironwood—hold six Support each. Their six ring neighbors hold four each. Bellwether Centre holds three. Northreach, Reedwater, Westgate, and the three causeway districts hold two each. The complete map has fifty-seven Support spots and eighteen shared borders.</p>
         <h3>District reference</h3>
         <div class="table-wrap" role="region" aria-label="District capacities and neighboring districts" tabindex="0">

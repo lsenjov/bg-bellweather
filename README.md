@@ -31,3 +31,20 @@ node scripts/check-docs.mjs
 
 The check verifies document structure, local links, stylesheet references,
 fragment targets, duplicate IDs, and reachability from the docs index.
+
+## Export the A3 game board
+
+Requires Inkscape, Ghostscript, Fontconfig's `fc-match`, Poppler's `pdfinfo`,
+and the Noto Serif Black, Noto Serif Black Italic, and Noto Sans Mono Black
+font faces.
+
+```sh
+./scripts/export-game-board-a3.sh
+```
+
+The command exports `docs/assets/ring-and-cross-district-map.svg` to
+`assets/print/ring-and-cross-district-map-a3.pdf`. It keeps the 396 × 297 mm
+artwork at 100% scale, centers it on one 420 × 297 mm A3 landscape page, and
+converts the pinned Noto fonts to paths for portable printing. The command
+rejects the export if the source artwork is no longer 396 × 297 mm. Print the
+PDF at “Actual size” or 100%, with any “Fit to page” option disabled.

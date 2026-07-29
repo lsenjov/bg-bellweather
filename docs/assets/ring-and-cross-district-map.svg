@@ -17,13 +17,13 @@
     .district-four { fill: #d8dfcf; }
     .district-six { fill: #898985; }
     .district-center { fill: #f2bc3b; stroke-width: 9; }
-    .region-name { fill: #171612; font: 800 25px "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; letter-spacing: -0.4px; text-anchor: middle; }
+    .region-name { fill: #171612; font: 900 25px "Noto Serif", serif; letter-spacing: -0.4px; text-anchor: middle; }
     .region-name-small { font-size: 22px; }
-    .capacity { fill: #171612; font: 800 14px "IBM Plex Mono", "Aptos Mono", Consolas, monospace; letter-spacing: 2px; text-anchor: middle; }
-    .heading { fill: #171612; font: 800 38px "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; letter-spacing: -1px; }
-    .eyebrow { fill: #9f2c1e; font: 800 15px "IBM Plex Mono", "Aptos Mono", Consolas, monospace; letter-spacing: 3px; }
-    .map-note { fill: #625f57; font: 800 14px "IBM Plex Mono", "Aptos Mono", Consolas, monospace; letter-spacing: 2px; }
-    .water-label { fill: #314e54; font: italic 800 15px "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; letter-spacing: 4px; text-anchor: middle; }
+    .capacity { fill: #171612; font: 900 14px "Noto Sans Mono", monospace; letter-spacing: 2px; text-anchor: middle; }
+    .heading { fill: #171612; font: 900 38px "Noto Serif", serif; letter-spacing: -1px; }
+    .eyebrow { fill: #9f2c1e; font: 900 15px "Noto Sans Mono", monospace; letter-spacing: 3px; }
+    .map-note { fill: #625f57; font: 900 14px "Noto Sans Mono", monospace; letter-spacing: 2px; }
+    .water-label { fill: #314e54; font: italic 900 15px "Noto Serif", serif; letter-spacing: 4px; text-anchor: middle; }
     .registration { fill: none; stroke: #d9432f; stroke-width: 3; }
   </style>
 
