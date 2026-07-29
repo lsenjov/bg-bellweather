@@ -125,7 +125,6 @@ main {
 .edition span,
 .edition small,
 .animal,
-.token-number,
 .registration {
   font: 800 5.6pt/1.1 var(--mono);
   letter-spacing: 0.1em;
@@ -431,21 +430,6 @@ main {
   background: currentColor;
   content: "";
   opacity: 0.6;
-}
-
-.token-number {
-  position: absolute;
-  z-index: 1;
-  top: 4mm;
-  left: 6mm;
-  display: grid;
-  width: 7mm;
-  height: 7mm;
-  border: 0.3mm solid var(--ink);
-  border-radius: 50%;
-  background: var(--paper-bright);
-  color: var(--ink);
-  place-items: center;
 }
 
 .party-emblem {

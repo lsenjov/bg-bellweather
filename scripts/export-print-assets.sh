@@ -7,6 +7,8 @@ board_source="$repository_root/docs/assets/ring-and-cross-district-map.svg"
 board_output="$repository_root/assets/print/ring-and-cross-district-map-a3.pdf"
 html_exporter="$repository_root/scripts/export-html-print-pages.cjs"
 
+mkdir -p "$repository_root/assets/print"
+
 for required_command in fc-match gs inkscape node npm pdffonts pdfinfo; do
   if ! command -v "$required_command" >/dev/null 2>&1; then
     printf 'Missing required command: %s\n' "$required_command" >&2

@@ -7,6 +7,15 @@ const docsRoot = join(repositoryRoot, "docs");
 const archiveRoot = join(repositoryRoot, "archive");
 const indexPath = join(docsRoot, "index.html");
 const errors = [];
+const generatedPrintOutputs = new Set([
+  "lobbying-house-boards-a4.pdf",
+  "lobbying-house-tokens-a4.pdf",
+  "operation-tokens-a4.pdf",
+  "party-boards-a4.pdf",
+  "pecking-order-a4.pdf",
+  "ring-and-cross-district-map-a3.pdf",
+  "scoring-cards-a4.pdf",
+].map((name) => join(repositoryRoot, "assets", "print", name)));
 
 function collectHtmlFiles(directory) {
   return readdirSync(directory)
@@ -78,6 +87,9 @@ function checkReference(fromFile, reference, sources) {
 
   const { target, fragment } = resolveReference(fromFile, reference);
   if (!existsSync(target)) {
+    if (generatedPrintOutputs.has(target)) {
+      return;
+    }
     errors.push(`${displayPath(fromFile)}: unresolved reference "${reference}"`);
     return;
   }
