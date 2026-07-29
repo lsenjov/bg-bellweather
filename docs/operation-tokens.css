@@ -72,16 +72,16 @@ main {
 
 .token-grid {
   display: grid;
-  width: 193mm;
-  height: 165mm;
+  width: 175mm;
+  height: 150mm;
   grid-template-rows: repeat(6, 25mm);
-  gap: 3mm;
+  gap: 0;
 }
 
 .supply-row {
   display: grid;
   grid-template-columns: repeat(7, 25mm);
-  gap: 3mm;
+  gap: 0;
 }
 
 .operation-token {
