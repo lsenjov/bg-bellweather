@@ -129,8 +129,8 @@ main {
 }
 
 .objective {
-  --party: #d49d18;
-  --tint: #f4dfa0;
+  --party: #d7aa12;
+  --tint: #f5e6a6;
   display: grid;
   min-height: 0;
   border-bottom: 0.25mm solid var(--ink);
@@ -143,28 +143,28 @@ main {
 }
 
 .party-old-shell {
-  --party: #5e6b52;
-  --tint: #dbe1d3;
+  --party: #3f7447;
+  --tint: #d7e6d6;
 }
 
 .party-foxglove {
-  --party: #963e5a;
-  --tint: #ead2da;
+  --party: #bd4777;
+  --tint: #f0d4df;
 }
 
 .party-riverworks {
-  --party: #296b8f;
-  --tint: #cedfe7;
+  --party: #2d6fa3;
+  --tint: #d3e4ef;
 }
 
 .party-many-wings {
-  --party: #3f776d;
-  --tint: #cfe1dc;
+  --party: #d86f24;
+  --tint: #f2d5bd;
 }
 
 .party-night {
-  --party: #35364e;
-  --tint: #d4d5df;
+  --party: #252522;
+  --tint: #dadad5;
 }
 
 .draw-count {
@@ -179,7 +179,8 @@ main {
   justify-content: center;
 }
 
-.party-honeycomb .draw-count {
+.party-honeycomb .draw-count,
+.party-many-wings .draw-count {
   color: var(--ink);
 }
 

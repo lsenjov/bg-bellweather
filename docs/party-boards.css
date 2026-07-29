@@ -75,8 +75,8 @@ main {
 }
 
 .party-board {
-  --accent: #d09b17;
-  --tint: #f3dfa4;
+  --accent: #d7aa12;
+  --tint: #f5e6a6;
   --identity-ink: #171612;
   display: grid;
   width: 287mm;
@@ -95,38 +95,38 @@ main {
 }
 
 .honeycomb {
-  --accent: #d49d18;
-  --tint: #f4dfa0;
+  --accent: #d7aa12;
+  --tint: #f5e6a6;
   --identity-ink: #171612;
 }
 
 .old-shell {
-  --accent: #5e6b52;
-  --tint: #dbe1d3;
+  --accent: #3f7447;
+  --tint: #d7e6d6;
   --identity-ink: #fffaf0;
 }
 
 .foxglove {
-  --accent: #963e5a;
-  --tint: #ead2da;
+  --accent: #bd4777;
+  --tint: #f0d4df;
   --identity-ink: #fffaf0;
 }
 
 .riverworks {
-  --accent: #296b8f;
-  --tint: #cedfe7;
+  --accent: #2d6fa3;
+  --tint: #d3e4ef;
   --identity-ink: #fffaf0;
 }
 
 .many-wings {
-  --accent: #3f776d;
-  --tint: #cfe1dc;
-  --identity-ink: #fffaf0;
+  --accent: #d86f24;
+  --tint: #f2d5bd;
+  --identity-ink: #171612;
 }
 
 .night-parliament {
-  --accent: #35364e;
-  --tint: #d4d5df;
+  --accent: #252522;
+  --tint: #dadad5;
   --identity-ink: #fffaf0;
 }
 
