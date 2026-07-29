@@ -6,9 +6,9 @@ Rival lobbying firms use Clout and operatives to influence six animal political
 parties in the fictional Republic of Bellwether. The game is at pre-prototype
 stage; a printable map of sixteen named districts, Support actions, and all
 twelve party bonuses are committed. Coalition partners share Election Day
-scoring, players may trade Clout and operation tokens, and immediate deals are
-binding while future promises are not. Starting Support and tie-breakers remain
-open.
+scoring, players may trade Clout and operation tokens held behind their
+screens, and immediate deals are binding while future promises are not.
+Starting Support and tie-breakers remain open.
 The documents deliberately separate committed rules, working hypotheses, and
 open questions.
 
