@@ -32,19 +32,39 @@ node scripts/check-docs.mjs
 The check verifies document structure, local links, stylesheet references,
 fragment targets, duplicate IDs, and reachability from the docs index.
 
-## Export the A3 game board
+## Export print assets
 
-Requires Inkscape, Ghostscript, Fontconfig's `fc-match`, Poppler's `pdfinfo`,
-and the Noto Serif Black, Noto Serif Black Italic, and Noto Sans Mono Black
-font faces.
+The exporter requires:
+
+- Node.js 22 or newer, npm, and Playwright with its Chromium browser installed
+- Inkscape and Ghostscript
+- Fontconfig's `fc-match`
+- Poppler's `pdfinfo` and `pdffonts`
+- Noto Serif Black and Black Italic, Noto Sans Mono Black, Liberation Serif
+  Bold, Liberation Sans Regular and Bold, and DejaVu Sans Book
+
+Playwright may be installed locally or globally. Install its Chromium browser
+for the same Playwright installation before exporting.
 
 ```sh
-./scripts/export-game-board-a3.sh
+./scripts/export-print-assets.sh
 ```
 
-The command exports `docs/assets/ring-and-cross-district-map.svg` to
-`assets/print/ring-and-cross-district-map-a3.pdf`. It keeps the 396 × 297 mm
-artwork at 100% scale, centers it on one 420 × 297 mm A3 landscape page, and
-converts the pinned Noto fonts to paths for portable printing. The command
-rejects the export if the source artwork is no longer 396 × 297 mm. Print the
-PDF at “Actual size” or 100%, with any “Fit to page” option disabled.
+The command validates every source, renders all print backgrounds, embeds or
+outlines every font, and replaces the PDFs only after all page-count and
+physical-size checks pass.
+
+| PDF | Contents |
+| --- | --- |
+| `assets/print/ring-and-cross-district-map-a3.pdf` | One A3 landscape district map |
+| `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
+| `assets/print/lobbying-house-boards-a4.pdf` | Three A4 portrait player-board sheets |
+| `assets/print/lobbying-house-tokens-a4.pdf` | Three A4 landscape house-token sheets |
+| `assets/print/operation-tokens-a4.pdf` | One A4 portrait operation-token sheet |
+| `assets/print/scoring-cards-a4.pdf` | Two A4 portrait scoring-card sheets |
+| `assets/print/pecking-order-a4.pdf` | Two A4 landscape Pecking Order sheets |
+
+The A3 export keeps the 396 × 297 mm map artwork at 100% scale and centers it
+with 12 mm side margins. The A4 exports preserve the millimetre dimensions in
+their print CSS. Print every PDF at “Actual size” or 100%, with any “Fit to
+page” option disabled.
