@@ -37,6 +37,36 @@
           <tbody>
             <tr>
               <td>2026-07-30</td>
+              <td>Make the simultaneous counterbid timer configurable and optional. The host either disables it or chooses its duration before play. Lock the phase when every player is ready or, when enabled, when the timer expires, whichever happens first. A ready player may become unready until unanimous readiness locks the phase.</td>
+              <td>A configurable clock supports both time-pressured human play and deterministic automated playtests. Unanimous readiness avoids dead time without forcing a clock on groups that prefer deliberate negotiation.</td>
+              <td>Players use readiness to pressure others, repeated ready changes create confusion, untimed games stall, or different timer settings make playtest results difficult to compare.</td>
+            </tr>
+            <tr>
+              <td>2026-07-30</td>
+              <td>Play twelve total Campaign Rounds in three sets of four, with Election Days after rounds 4, 8, and 12. Begin each player with 5 public points, doubled to 10 at two or three players. Election scoring changes that public balance and may take it below zero. After the third Election Day, every player tied for the highest point balance shares the win; use no tie-breaker.</td>
+              <td>Three shorter scoring intervals keep every agenda active for four rounds while preserving three Election Days. Starting points create a transferable score resource before the first election, and shared victory makes an equal final balance a complete result.</td>
+              <td>Four rounds do not give players enough opportunity to pursue an agenda, transferable starting points overwhelm Election Day scoring, or shared victories make final-round choices less consequential.</td>
+            </tr>
+            <tr>
+              <td>2026-07-30</td>
+              <td>At four to six players, give each human 10 Clout, two Organise, two Rally, two Smear, one Court, one opening-bid marker, and two counterbids. At two or three players, double the complete supply to 20 Clout, four Organise, four Rally, four Smear, two Court, two opening-bid markers, and four counterbids; also double the starting point balance.</td>
+              <td>The low-player game gives each human two firm kits and twice the bidding responsibility, so doubling their economy, bid pieces, and initial points preserves the intended resources per controlled firm.</td>
+              <td>The low-player economy produces disproportionately large bids or gifts, the four- to six-player economy is too constrained, or doubling points distorts election incentives.</td>
+            </tr>
+            <tr>
+              <td>2026-07-30</td>
+              <td>Give every party an unlimited Support supply. Begin every party with one Support in each of the three 6-capacity districts: Harbormouth, Grand Market, and Ironwood. Begin every overture unpointed. Randomize the six party tokens to create the starting Pecking Order.</td>
+              <td>District capacity remains the only limit on adding Support. The three large districts begin symmetrically occupied by all six parties, coalitions must be created during play, and changing the initial Pecking Order avoids a permanent scripted setup.</td>
+              <td>Unlimited Support makes Rally growth too easy, full large districts make early Rally actions too brittle, an unpointed start delays Court relevance, or random order creates excessive setup variance.</td>
+            </tr>
+            <tr>
+              <td>2026-07-30</td>
+              <td>Allow a player to give one other player any mixture of eligible Clout, operation tokens, and public points as a one-way atomic gift. Clout and operation tokens are eligible only behind the giver’s screen; committed bid contents remain ineligible. A gift cannot exceed any eligible holding or the giver’s current point balance. It has no recipient acceptance step and cannot be reversed. The game does not enforce agreements; players may keep or break promises and enforce deals socially.</td>
+              <td>One-way gifts express negotiated settlements without requiring the rules or application to model contracts, exchanges, acceptance, rollback, or future conditions. Atomic validation prevents partial transfers when any stated resource is unavailable.</td>
+              <td>Accidental or coercive gifts need recipient protection, point transfers dominate the scoring game, atomic mixed gifts are hard to understand, or unenforced deals undermine negotiation.</td>
+            </tr>
+            <tr>
+              <td>2026-07-30</td>
               <td>Place opening bids in clockwise player order. Randomly choose the first opener at setup and track that role with one shared opening-priority marker. In later rounds, the player who placed the previous round’s highest active Pecking Order bid opens first; if no active bid remained, keep the existing first opener. Each player completes their full opening allocation during one turn, choosing only parties that have not already received an opening bid.</td>
               <td>Sequential placement gives the Pecking Order auction a consequence in the following round and resolves competing attempts to open the same party without a separate collision procedure. Completing a player’s allocation on one turn keeps the sequence readable at two and three players.</td>
               <td>First choice becomes too strong, clockwise seating creates a persistent advantage, low-player turns reveal too much before the next player acts, or an empty Pecking Order auction leaves initiative static for too long.</td>
@@ -49,9 +79,9 @@
             </tr>
             <tr>
               <td>2026-07-29</td>
-              <td>Allow players to trade Clout and operation tokens at any time, but only while those components are physically behind a player’s screen. Components committed to opening bids or counterbids cannot be traded, even before a bid locks; retrieved or withdrawn components become eligible again after returning behind the screen. Make a deal binding only when every term can be satisfied immediately; any promise depending on a later action, choice, transfer, state, or outcome remains nonbinding. Do not reverse completed transfers when a related future promise is broken.</td>
+              <td><strong>Superseded:</strong> Allow players to trade Clout and operation tokens at any time, but only while those components are physically behind a player’s screen. Components committed to opening bids or counterbids cannot be traded, even before a bid locks; retrieved or withdrawn components become eligible again after returning behind the screen. Make a deal binding only when every term can be satisfied immediately; any promise depending on a later action, choice, transfer, state, or outcome remains nonbinding. Do not reverse completed transfers when a related future promise is broken.</td>
               <td>Immediate exchanges create enforceable resource negotiation without requiring the game to police future behavior or resolve conditional contracts. The screen boundary gives trade eligibility a visible physical test and preserves bid escrow throughout placement and resolution.</td>
-              <td>Trading interrupts resolution excessively, binding exchanges cause disputes about simultaneous completion, future promises create coercive or misleading play, or resource concentration overwhelms the Revolving Door economy.</td>
+              <td>Replaced on 2026-07-30 by atomic one-way gifts of Clout, operation tokens, and points with no rules-enforced agreements.</td>
             </tr>
             <tr>
               <td>2026-07-29</td>
@@ -67,9 +97,9 @@
             </tr>
             <tr>
               <td>2026-07-29</td>
-              <td>Double the operation-token supply to four Organise, four Rally, four Smear, and two Court per player: eighty-four tokens for six players. Pack the sheet as an eight-by-eleven zero-gutter grid with four positions unused. Shift the operation families to lobbying-house-style pastel stationery colours while retaining distinct names, glyphs, and patterns.</td>
+              <td><strong>Superseded:</strong> Double the operation-token supply to four Organise, four Rally, four Smear, and two Court per player: eighty-four tokens for six players. Pack the sheet as an eight-by-eleven zero-gutter grid with four positions unused. Shift the operation families to lobbying-house-style pastel stationery colours while retaining distinct names, glyphs, and patterns.</td>
               <td>The doubled supply fits on the existing A4 sheet and allows larger or more numerous operation commitments without adding another page. The softer palette aligns the shared resources with the lobbying-house component family, while redundant graphic identifiers preserve operation readability.</td>
-              <td>The larger closed economy makes individual tokens feel disposable, bid covers cannot conceal token bulk, the eighty-four-token sheet is tedious to cut, pastel families are difficult to distinguish, or the four unused grid positions create avoidable waste.</td>
+              <td>Replaced on 2026-07-30 by a player-count-scaled supply: 2/2/2/1 at four to six players and 4/4/4/2 at two or three. The pastel palette remains current.</td>
             </tr>
             <tr>
               <td>2026-07-29</td>
@@ -103,9 +133,9 @@
             </tr>
             <tr>
               <td>2026-07-29</td>
-              <td>Support two to six players in the first prototype. Give each lobbying house one player board, two circular 70 mm counterbid covers, one opening-bid marker, and one score marker. Put the house emblem on both markers and repeat a large Arabic house number at opposite edges of the opening marker. At four to six players, each human controls one house kit; at two or three, each controls two. Taking a second kit supplies the second opening marker and two additional counterbid covers required by the existing low-player allowance, but does not add another Clout supply, operation-token reserve, scoring card, or score; leave its score marker unused.</td>
+              <td><strong>Partially superseded:</strong> Support two to six players in the first prototype. Give each lobbying house one player board, two circular 70 mm counterbid covers, one opening-bid marker, and one score marker. Put the house emblem on both markers and repeat a large Arabic house number at opposite edges of the opening marker. At four to six players, each human controls one house kit; at two or three, each controls two. Taking a second kit supplies the second opening marker and two additional counterbid covers required by the existing low-player allowance, but does not add another Clout supply, operation-token reserve, scoring card, or score; leave its score marker unused.</td>
               <td>Binding the physical bid allowance to identity kits makes ownership visible and lets the same six kits support the two-to-six-player prototype range without changing the existing player-based economy or scoring rules.</td>
-              <td>The second identity suggests separate resources or goals, 70 mm covers cannot conceal the selected operation-token format, the component count is excessive, or bid ownership becomes harder to read after reveal.</td>
+              <td>The identity-kit specification remains current. On 2026-07-30, the low-player economy and starting points changed to double the four- to six-player supply; players still use one scoring card, one score, and one active score marker.</td>
             </tr>
             <tr>
               <td>2026-07-29</td>
@@ -115,9 +145,9 @@
             </tr>
             <tr>
               <td>2026-07-28</td>
-              <td>Use a twenty-four-card hidden scoring deck. Each card pairs different parties with one 6-, one 4-, and one 2-capacity district, and its districts are pairwise non-neighboring. On Election Day, draw three, two, and one current Support respectively; one shared draw resolves each named district, drawn Support returns unchanged, and a matching party scores one point per Support. In games with four or more players, add one referenced player’s base district score and subtract a different referenced player’s base district score without copying seat adjustments; ignore both references at two or three. Scores may be negative. Deal a new hidden card after each of the first two Election Days. For the first test, hold Election Day after every twelve complete Campaign Rounds and end after the third; neither player count, contest count, nor insolvency changes the round count. Highest cumulative score wins.</td>
+              <td><strong>Partially superseded:</strong> Use a twenty-four-card hidden scoring deck. Each card pairs different parties with one 6-, one 4-, and one 2-capacity district, and its districts are pairwise non-neighboring. On Election Day, draw three, two, and one current Support respectively; one shared draw resolves each named district, drawn Support returns unchanged, and a matching party scores one point per Support. In games with four or more players, add one referenced player’s base district score and subtract a different referenced player’s base district score without copying seat adjustments; ignore both references at two or three. Scores may be negative. Deal a new hidden card after each of the first two Election Days. For the first test, hold Election Day after every twelve complete Campaign Rounds and end after the third; neither player count, contest count, nor insolvency changes the round count. Highest cumulative score wins.</td>
               <td>Hidden district–party agendas make the mutable map valuable to different players without publicly assigning any lobbying house to a party. Shared partial draws preserve uncertainty while giving every card a common election result. The positive and negative seat references add indirect interests in rivals’ plans, while fixed Campaign Round counting keeps the clock independent of auction allotments and resources.</td>
-              <td>The random draw obscures deliberate map play, seat references outweigh a player’s own objectives, hidden cards produce aimless interference, negative scores discourage players, twelve rounds make a campaign period drag or end before objectives develop, or three Election Days produce the wrong game length.</td>
+              <td>The scoring-card and draw procedure remains current. On 2026-07-30, the clock changed to Election Days after rounds 4, 8, and 12, points began above zero and became transferable, and tied highest totals became shared wins.</td>
             </tr>
             <tr>
               <td>2026-07-28</td>
@@ -145,15 +175,15 @@
             </tr>
             <tr>
               <td>2026-07-28</td>
-              <td>Use a district map with limited Support spots. Replace Campaign, Expansion, Platform, and Coalition with Organise, Rally, Smear, and Court. Organise moves one party Support to a neighboring free spot and may move the final Support from its source district. Rally adds Support from the party reserve where the party is present. Smear removes another party’s Support where the acting party is present or neighboring and returns it to its reserve. Court changes the party’s overture to a different target. If the party has no Support, Organise and Rally instead add one Support from its reserve to any free spot, while Smear may remove rival Support anywhere. Check the party’s Support when each operative executes.</td>
+              <td><strong>Partially superseded:</strong> Use a district map with limited Support spots. Replace Campaign, Expansion, Platform, and Coalition with Organise, Rally, Smear, and Court. Organise moves one party Support to a neighboring free spot and may move the final Support from its source district. Rally adds Support from the party reserve where the party is present. Smear removes another party’s Support where the acting party is present or neighboring and returns it to its reserve. Court changes the party’s overture to a different target. If the party has no Support, Organise and Rally instead add one Support from its reserve to any free spot, while Smear may remove rival Support anywhere. Check the party’s Support when each operative executes.</td>
               <td>Limited district capacity makes vacancies valuable. Relocation, reinforcement, and attack create an interdependent spatial loop, while global recovery actions prevent a party without Support from becoming unable to act.</td>
-              <td>The map state is difficult to read, global Smears make absent parties preferable to present ones, parties cannot recover reliably, or the four actions do not create meaningfully different bids.</td>
+              <td>The operation baselines remain current. On 2026-07-30, party reserves were replaced by unlimited Support; district capacity still limits every placement.</td>
             </tr>
             <tr>
               <td>2026-07-28</td>
-              <td>Give each party one directional overture that may point toward another party. Two parties form a coalition only while their overtures point toward each other; redirecting either overture immediately breaks the coalition. Starting targets, including whether any overtures begin unpointed, remain open.</td>
+              <td><strong>Partially superseded:</strong> Give each party one directional overture that may point toward another party. Two parties form a coalition only while their overtures point toward each other; redirecting either overture immediately breaks the coalition. Starting targets, including whether any overtures begin unpointed, remain open.</td>
               <td>Mutual formation requires influence at both parties while one-way state keeps each Court action consequential and publicly readable.</td>
-              <td>Coalitions are too difficult to form, bilateral coalitions cannot support government formation, or overture changes create excessive kingmaking.</td>
+              <td>The directional and reciprocal rules remain current. On 2026-07-30, the starting state was resolved: every overture begins unpointed.</td>
             </tr>
             <tr>
               <td>2026-07-28</td>
@@ -187,9 +217,9 @@
             </tr>
             <tr>
               <td>2026-07-28</td>
-              <td>Use a fixed starting Pecking Order in the first prototype.</td>
+              <td><strong>Superseded:</strong> Use a fixed starting Pecking Order in the first prototype.</td>
               <td>A stable initial sequence makes sessions comparable and exposes structural party-order advantages before adding setup variance.</td>
-              <td>The ordering effects are understood well enough that random setup would improve replayability without obscuring balance.</td>
+              <td>Replaced on 2026-07-30 by randomizing all six party tokens during setup.</td>
             </tr>
             <tr>
               <td>2026-07-28</td>
@@ -217,9 +247,9 @@
             </tr>
             <tr>
               <td>2026-07-28</td>
-              <td>Use a 90-second counterbid timer in the first four-player prototype.</td>
+              <td><strong>Superseded:</strong> Use a 90-second counterbid timer in the first four-player prototype.</td>
               <td>Players need time to assess four openings and physically construct and revise two concealed bids before component handling becomes familiar.</td>
-              <td>Players consistently lock early or the phase lacks meaningful time pressure.</td>
+              <td>Replaced on 2026-07-30 by a configurable optional timer and unanimous ready trigger.</td>
             </tr>
             <tr>
               <td>2026-07-28</td>
@@ -253,9 +283,9 @@
             </tr>
             <tr>
               <td>2026-07-28</td>
-              <td>Give each player 20 currency in the first four-player prototype.</td>
+              <td><strong>Superseded:</strong> Give each player 20 currency in the first four-player prototype.</td>
               <td>The first test needs enough range to split resources across three possible bids while still making large commitments consequential.</td>
-              <td>Players rarely approach insolvency, ties are too rare, or bids cluster in a narrow part of the range.</td>
+              <td>Replaced on 2026-07-30 by 10 Clout at four to six players and 20 Clout at two or three players.</td>
             </tr>
             <tr>
               <td>2026-07-28</td>
@@ -295,13 +325,13 @@
             </tr>
             <tr>
               <td>2026-07-28</td>
-              <td>Limit each player to their player-count counterbid allowance throughout the timed phase, not merely when the timer expires.</td>
+              <td>Limit each player to their player-count counterbid allowance throughout the counterbid phase, not merely when the phase locks.</td>
               <td>Visible feints should require relocating a scarce bid slot rather than adding unlimited temporary decoys.</td>
               <td>The live-marker allowance does not create enough movement or misdirection during the timed phase.</td>
             </tr>
             <tr>
               <td>2026-07-28</td>
-              <td>Lock opening bids before the counterbid timer begins, and allow players to use either additional bid on their own auction.</td>
+              <td>Lock opening bids before the counterbid phase begins, and allow players to use either additional bid on their own auction.</td>
               <td>The public opening offer remains reliable while self-bidding permits intentional multi-rank, collection, and insurance tactics.</td>
               <td>Self-bidding routinely eliminates the opening bid’s transfer risk or becomes compulsory rather than situational.</td>
             </tr>
