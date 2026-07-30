@@ -84,8 +84,8 @@ main {
   display: grid;
   width: 200mm;
   height: 140mm;
-  grid-template-columns: 45mm 63mm 78mm;
-  grid-template-rows: 34mm 60mm 32mm;
+  grid-template-columns: 45mm 40mm 101mm;
+  grid-template-rows: 61mm 68mm;
   gap: 3mm;
   padding: 4mm;
   overflow: hidden;
@@ -136,7 +136,7 @@ main {
   position: relative;
   display: flex;
   min-width: 0;
-  grid-row: 1 / 4;
+  grid-row: 1 / 3;
   padding: 4mm 3.5mm;
   overflow: hidden;
   border: 0.5mm solid var(--ink);
@@ -214,9 +214,7 @@ main {
 .identity-kicker,
 .panel-kicker,
 .agenda-label,
-.operation-name,
-.round-number,
-.kit-token span {
+.operation-name {
   font: 800 5.7pt/1.1 var(--mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -257,7 +255,10 @@ main {
 .agenda {
   position: relative;
   display: flex;
-  grid-row: 1 / 3;
+  width: 40mm;
+  height: 61mm;
+  grid-column: 2;
+  grid-row: 1;
   padding: 3mm;
   overflow: hidden;
   border: 0.5mm solid var(--ink);
@@ -269,7 +270,7 @@ main {
 
 .agenda::before {
   position: absolute;
-  inset: 6mm;
+  inset: 2mm;
   border: 0.45mm dashed var(--detail);
   content: "";
 }
@@ -281,9 +282,9 @@ main {
 
 .agenda strong {
   position: relative;
-  max-width: 43mm;
+  max-width: 29mm;
   margin: auto;
-  font: 800 16pt/0.95 var(--display);
+  font: 800 12pt/0.95 var(--display);
   letter-spacing: -0.03em;
   text-align: center;
 }
@@ -293,23 +294,9 @@ main {
   padding: 0 1mm;
   background: var(--paper);
   margin-top: auto;
-  font: 750 6pt/1.3 var(--body);
+  font: 750 5.3pt/1.25 var(--body);
   align-self: center;
   text-align: center;
-}
-
-.kit-check {
-  display: grid;
-  padding: 2.6mm 3mm;
-  border: 0.5mm solid var(--ink);
-  border-top: 2.2mm solid var(--detail);
-  background: var(--paper-bright);
-  grid-template-columns: 25mm 1fr;
-  gap: 2mm;
-}
-
-.kit-copy {
-  min-width: 0;
 }
 
 .panel-kicker {
@@ -318,46 +305,11 @@ main {
   color: var(--detail);
 }
 
-.kit-copy strong {
-  display: block;
-  font: 800 9pt/0.95 var(--display);
-}
-
-.kit-copy p {
-  margin: 1mm 0 0;
-  font: 700 5.8pt/1.2 var(--body);
-}
-
-.kit-tokens {
-  display: grid;
-  grid-template-columns: repeat(2, 11mm);
-  grid-template-rows: repeat(2, 11mm);
-  gap: 1.2mm;
-}
-
-.kit-token {
-  display: grid;
-  place-items: center;
-  border: 0.45mm solid var(--detail);
-  border-radius: 50%;
-  background: var(--tint);
-  color: var(--ink);
-}
-
-.kit-token.open {
-  grid-row: 1 / 3;
-  height: 23.2mm;
-  border-radius: 8mm;
-}
-
-.kit-token span {
-  font-size: 4.8pt;
-  letter-spacing: 0;
-}
-
 .operations {
   display: grid;
   min-width: 0;
+  grid-column: 3;
+  grid-row: 1;
   padding: 2.5mm;
   border: 0.5mm solid var(--ink);
   background: var(--paper-bright);
@@ -387,42 +339,82 @@ main {
   font: 750 5.6pt/1.18 var(--body);
 }
 
-.round {
+.party-reference {
   display: grid;
   min-width: 0;
+  padding: 2.5mm;
   grid-column: 2 / 4;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-row: 2;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto repeat(2, minmax(0, 1fr));
+  gap: 1.5mm;
   border: 0.5mm solid var(--ink);
   background: var(--paper-bright);
 }
 
-.round-step {
-  position: relative;
+.party-reference > .panel-kicker {
+  grid-column: 1 / 4;
+}
+
+.party-power {
+  --party: #171713;
   min-width: 0;
-  padding: 4mm 1.5mm 1.5mm;
-  border-right: 0.3mm solid var(--ink);
+  padding: 1.5mm 2mm;
+  border-top: 1.8mm solid var(--party);
+  background: var(--paper);
 }
 
-.round-step:last-child {
-  border-right: 0;
-}
-
-.round-number {
-  position: absolute;
-  top: 1.2mm;
-  left: 1.5mm;
-  color: var(--detail);
-}
-
-.round-step strong {
+.party-power strong {
   display: block;
-  margin-bottom: 0.6mm;
-  font: 800 6.3pt/1 var(--display);
+  margin-bottom: 1mm;
+  font: 800 8pt/0.95 var(--display);
 }
 
-.round-step p {
-  margin: 0;
-  font: 700 4.9pt/1.12 var(--body);
+.party-power span {
+  display: block;
+  margin-top: 0.6mm;
+  font: 750 5.6pt/1.1 var(--body);
+}
+
+.party-power b {
+  display: inline-grid;
+  width: 4mm;
+  height: 4mm;
+  margin-right: 1mm;
+  border-radius: 50%;
+  background: var(--party);
+  color: #fffaf0;
+  font: 800 4.7pt/1 var(--mono);
+  place-items: center;
+}
+
+.power-honeycomb {
+  --party: #d7aa12;
+}
+
+.power-honeycomb b,
+.power-many-wings b {
+  color: var(--ink);
+}
+
+.power-old-shell {
+  --party: #3f7447;
+}
+
+.power-foxglove {
+  --party: #b83d6d;
+}
+
+.power-riverworks {
+  --party: #2d6fa3;
+}
+
+.power-many-wings {
+  --party: #d86f24;
+}
+
+.power-night {
+  --party: #252522;
 }
 
 @page {
