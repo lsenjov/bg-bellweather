@@ -83,7 +83,7 @@ main {
   display: grid;
   width: 287mm;
   height: 95mm;
-  grid-template-columns: 43mm 70mm 70mm 87mm;
+  grid-template-columns: 55mm 40mm 40mm 135mm;
   gap: 3mm;
   padding: 4mm;
   border: 0.5mm solid var(--ink);
@@ -235,17 +235,18 @@ main {
 .bid-cover {
   position: relative;
   display: flex;
-  width: 70mm;
-  height: 70mm;
+  width: 40mm;
+  height: 61mm;
   margin: auto;
-  padding: 7mm;
+  padding: 5mm 3mm;
   overflow: hidden;
-  border: 0.7mm solid var(--ink);
-  border-radius: 50%;
-  outline: 0.35mm dashed var(--detail);
-  outline-offset: -2.5mm;
+  border: 0.6mm solid var(--ink);
+  border-radius: 1.5mm;
+  outline: 0.3mm dashed var(--detail);
+  outline-offset: -2mm;
   background:
-    radial-gradient(circle at center, transparent 0 55%, rgb(23 23 19 / 5%) 56% 57%, transparent 58%),
+    linear-gradient(135deg, transparent 0 48%, rgb(23 23 19 / 5%) 49% 51%, transparent 52%),
+    repeating-linear-gradient(0deg, transparent 0 8mm, rgb(23 23 19 / 4%) 8mm 8.4mm),
     var(--tint);
   color: var(--ink);
   align-items: center;
@@ -257,52 +258,52 @@ main {
 .bid-cover::before,
 .bid-cover::after {
   position: absolute;
-  width: 15mm;
+  width: 12mm;
   height: 0.5mm;
   background: var(--detail);
   content: "";
 }
 
 .bid-cover::before {
-  top: 12mm;
-  left: 4mm;
+  top: 9mm;
+  left: 2mm;
   transform: rotate(-28deg);
 }
 
 .bid-cover::after {
-  right: 4mm;
-  bottom: 12mm;
+  right: 2mm;
+  bottom: 9mm;
   transform: rotate(-28deg);
 }
 
 .cover-emblem {
-  width: 17mm;
-  height: 17mm;
+  width: 14mm;
+  height: 14mm;
   color: var(--detail);
 }
 
 .token-type {
   display: block;
-  margin-top: 1.3mm;
+  margin-top: 1mm;
   color: var(--ink);
 }
 
 .cover-letter {
-  margin: 0.8mm 0 0;
-  font: 800 23pt/0.8 var(--display);
+  margin: 0.5mm 0 0;
+  font: 800 21pt/0.8 var(--display);
 }
 
 .token-firm {
   display: block;
-  max-width: 42mm;
-  margin-top: 1.4mm;
+  max-width: 31mm;
+  margin-top: 1mm;
   line-height: 1.25;
 }
 
 .bid-cover .firm-stamp {
   position: absolute;
   right: 0;
-  bottom: 5mm;
+  bottom: 3.2mm;
   left: 0;
   color: var(--ink);
   font: 800 4.5pt/1 var(--mono);
@@ -312,7 +313,7 @@ main {
 
 .small-tokens {
   display: flex;
-  width: 87mm;
+  width: 135mm;
   height: 87mm;
   padding: 2mm;
   border: 0.5mm solid var(--ink);

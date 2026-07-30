@@ -1,0 +1,352 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+  --paper: #fffaf0;
+  --paper-deep: #eee6d7;
+  --ink: #171713;
+  --navy: #203947;
+  --red: #9c3d31;
+  --yellow: #e9b72b;
+  --display: "Liberation Serif", serif;
+  --body: "Liberation Sans", sans-serif;
+  --mono: "Noto Sans Mono", monospace;
+}
+
+html {
+  background: #1b1b18;
+}
+
+body {
+  min-width: 210mm;
+  margin: 0;
+  background:
+    repeating-linear-gradient(135deg, rgb(255 255 255 / 3%) 0 1px, transparent 1px 12px),
+    #1b1b18;
+  color: var(--ink);
+  font-family: var(--body);
+}
+
+.screen-header {
+  width: min(210mm, calc(100vw - 40px));
+  min-width: 170mm;
+  margin: 0 auto;
+  padding: 26px 0 22px;
+  color: var(--paper);
+}
+
+.screen-header a {
+  color: var(--yellow);
+  font: 800 0.76rem/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.screen-header h1 {
+  margin: 18px 0 4px;
+  font: 800 clamp(2.4rem, 8vw, 5rem) / 0.9 var(--display);
+  letter-spacing: -0.045em;
+}
+
+.screen-header p {
+  max-width: 72ch;
+  margin: 12px 0 0;
+  color: #d7d0c4;
+  line-height: 1.5;
+}
+
+main {
+  display: flex;
+  padding: 0 0 36px;
+  align-items: center;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.print-sheet {
+  position: relative;
+  display: grid;
+  width: 210mm;
+  height: 297mm;
+  flex: 0 0 auto;
+  background: #fff;
+  box-shadow: 0 10px 35px rgb(0 0 0 / 35%);
+  place-items: center;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.sheet-label {
+  position: absolute;
+  right: 12mm;
+  bottom: 7mm;
+  margin: 0;
+  color: #666259;
+  font: 800 5pt/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.card-grid {
+  display: grid;
+  width: 166mm;
+  height: 250mm;
+  grid-template-columns: repeat(4, 40mm);
+  grid-template-rows: repeat(4, 61mm);
+  gap: 2mm;
+}
+
+.bid-card,
+.blank-card {
+  display: block;
+  width: 40mm;
+  height: 61mm;
+}
+
+.bid-card {
+  position: relative;
+  overflow: hidden;
+  border: 0.45mm solid var(--ink);
+  background: var(--paper);
+}
+
+.front {
+  --accent: #d9bf79;
+  --tint: #f4e8c5;
+  display: grid;
+  padding: 3mm;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 7.8mm, rgb(23 23 19 / 4%) 7.8mm 8mm),
+    var(--tint);
+  grid-template-rows: 7mm 1fr 18mm 6mm;
+}
+
+.front::before {
+  position: absolute;
+  inset: 0;
+  opacity: 0.15;
+  content: "";
+  pointer-events: none;
+}
+
+.clout::before {
+  background:
+    linear-gradient(45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 11mm 11mm,
+    linear-gradient(-45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 11mm 11mm;
+}
+
+.bluff {
+  --accent: #b8b6af;
+  --tint: #efeee9;
+}
+
+.bluff::before {
+  background: repeating-linear-gradient(135deg, transparent 0 3.5mm, currentColor 3.5mm 3.8mm);
+}
+
+.organise {
+  --accent: #c99c43;
+  --tint: #eeddb8;
+}
+
+.organise::before {
+  background: repeating-linear-gradient(135deg, transparent 0 5mm, currentColor 5mm 5.5mm);
+}
+
+.rally {
+  --accent: #67845d;
+  --tint: #d8e4d1;
+}
+
+.rally::before {
+  background: radial-gradient(circle, currentColor 0 0.65mm, transparent 0.75mm) 0 0 / 6mm 6mm;
+}
+
+.smear {
+  --accent: #ac5a52;
+  --tint: #efcfca;
+}
+
+.smear::before {
+  background:
+    linear-gradient(45deg, transparent 46%, currentColor 47% 53%, transparent 54%) 0 0 / 9mm 9mm,
+    linear-gradient(-45deg, transparent 46%, currentColor 47% 53%, transparent 54%) 0 0 / 9mm 9mm;
+}
+
+.court {
+  --accent: #557889;
+  --tint: #d4e1eb;
+}
+
+.court::before {
+  background: repeating-radial-gradient(circle at center, transparent 0 6mm, currentColor 6.1mm 6.5mm);
+}
+
+.front > * {
+  position: relative;
+  z-index: 1;
+}
+
+.card-kicker {
+  padding-bottom: 2mm;
+  border-bottom: 1.4mm solid var(--accent);
+  font: 800 5pt/1.1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.card-glyph {
+  display: grid;
+  color: var(--ink);
+  font: 800 37pt/0.8 var(--display);
+  place-items: center;
+}
+
+.clout .card-glyph {
+  font-size: 46pt;
+}
+
+.bluff .card-glyph {
+  color: #817e77;
+}
+
+.card-title {
+  display: flex;
+  padding: 2mm 0 1.5mm;
+  border-top: 0.45mm solid var(--ink);
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-title b {
+  font: 800 15pt/0.9 var(--display);
+  letter-spacing: -0.035em;
+}
+
+.card-title span {
+  margin-top: 1.2mm;
+  font: 700 6.3pt/1.22 var(--body);
+}
+
+.front small {
+  display: flex;
+  padding-top: 1.5mm;
+  border-top: 0.35mm solid rgb(23 23 19 / 45%);
+  font: 800 4.6pt/1.15 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  align-items: flex-end;
+}
+
+.back {
+  display: flex;
+  padding: 3mm;
+  border-color: var(--navy);
+  background:
+    linear-gradient(45deg, transparent 47%, rgb(255 250 240 / 8%) 48% 52%, transparent 53%) 0 0 / 10mm 10mm,
+    linear-gradient(-45deg, transparent 47%, rgb(255 250 240 / 8%) 48% 52%, transparent 53%) 0 0 / 10mm 10mm,
+    var(--navy);
+  color: var(--paper);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.back::before,
+.back::after {
+  position: absolute;
+  inset: 2.5mm;
+  border: 0.5mm solid var(--yellow);
+  content: "";
+}
+
+.back::after {
+  inset: 4.2mm;
+  border-width: 0.25mm;
+  border-color: rgb(255 250 240 / 65%);
+}
+
+.back > * {
+  position: relative;
+  z-index: 1;
+}
+
+.back-register {
+  position: absolute;
+  top: 7mm;
+  font: 800 4.7pt/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.back-seal {
+  display: grid;
+  width: 22mm;
+  height: 22mm;
+  border: 0.7mm solid var(--yellow);
+  border-radius: 50%;
+  background: var(--red);
+  place-items: center;
+}
+
+.back-seal b {
+  margin-top: 3.5mm;
+  font: 800 20pt/0.6 var(--display);
+}
+
+.back-seal span {
+  margin-bottom: 3mm;
+  font: 800 3.3pt/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.back > strong {
+  margin-top: 3.5mm;
+  color: var(--yellow);
+  font: 800 15pt/0.9 var(--display);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.back > small {
+  position: absolute;
+  bottom: 7mm;
+  font: 800 4.3pt/1 var(--mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    min-width: 0;
+    background: #fff;
+  }
+
+  .screen-header {
+    display: none;
+  }
+
+  main {
+    display: block;
+    padding: 0;
+  }
+
+  .print-sheet {
+    box-shadow: none;
+    break-after: page;
+  }
+
+  .print-sheet:last-child {
+    break-after: auto;
+  }
+}
