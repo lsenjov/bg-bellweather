@@ -845,9 +845,9 @@ function CounterbidForm(props: {
         void send({ contestId, firmId, clout, bluff, operations });
       }}
     >
-      <h3>Covered counterbids</h3>
+      <h3>Counterbids</h3>
       <label>
-        Firm cover
+        Firm identity card
         <select
           value={slotIndex}
           onChange={(event) => setSlotIndex(Number(event.target.value))}
@@ -897,7 +897,7 @@ function CounterbidForm(props: {
       <TokenFields value={operations} onChange={setOperations} />
       <div className="form-actions">
         <button className="ink-button" disabled={props.busy}>
-          Place / replace cover
+          Place / replace counterbid
         </button>
         <button
           type="button"
@@ -905,7 +905,7 @@ function CounterbidForm(props: {
           disabled={props.busy || slots[slotIndex] === null}
           onClick={() => void send(null)}
         >
-          Withdraw this cover
+          Withdraw this counterbid
         </button>
       </div>
     </form>

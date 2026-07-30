@@ -375,8 +375,8 @@ function setCounterbid(
   const slotFirm = seat.firmIds[Math.floor(slotIndex / 2)];
   if (input.firmId !== slotFirm) {
     throw new GameRuleError(
-      "wrong_counterbid_cover",
-      "Counterbid slot must use its firm's cover"
+      "wrong_counterbid_identity",
+      "Counterbid slot must use its firm's identity card"
     );
   }
   validatePackage(input, true);
