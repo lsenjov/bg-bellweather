@@ -132,9 +132,12 @@ main {
 }
 
 .clout::before {
-  background:
-    linear-gradient(45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 11mm 11mm,
-    linear-gradient(-45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 11mm 11mm;
+  background: none;
+}
+
+.clout {
+  --tint: #fbf1d4;
+  background: var(--tint);
 }
 
 .bluff {
@@ -166,13 +169,12 @@ main {
 
 .smear {
   --accent: #ac5a52;
-  --tint: #efcfca;
+  --tint: #f7e3df;
+  background: var(--tint);
 }
 
 .smear::before {
-  background:
-    linear-gradient(45deg, transparent 46%, currentColor 47% 53%, transparent 54%) 0 0 / 9mm 9mm,
-    linear-gradient(-45deg, transparent 46%, currentColor 47% 53%, transparent 54%) 0 0 / 9mm 9mm;
+  background: none;
 }
 
 .court {
