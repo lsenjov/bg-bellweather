@@ -279,6 +279,9 @@ export class AgentClient {
   }
 
   sendCommand(gameId: GameId, request: CommandEnvelope): Promise<CommandAccepted> {
+    if (gameId !== request.gameId) {
+      throw new Error("Command gameId must match the requested game");
+    }
     return this.request(
       "POST",
       this.routes.commands(gameId),
