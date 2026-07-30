@@ -19,12 +19,16 @@
     .district-center { fill: #f2bc3b; stroke-width: 9; }
     .region-name { fill: #171612; font: 900 25px "Noto Serif", serif; letter-spacing: -0.4px; text-anchor: middle; }
     .region-name-small { font-size: 22px; }
-    .capacity { fill: #171612; font: 900 14px "Noto Sans Mono", monospace; letter-spacing: 2px; text-anchor: middle; }
     .heading { fill: #171612; font: 900 38px "Noto Serif", serif; letter-spacing: -1px; }
     .eyebrow { fill: #9f2c1e; font: 900 15px "Noto Sans Mono", monospace; letter-spacing: 3px; }
     .map-note { fill: #625f57; font: 900 14px "Noto Sans Mono", monospace; letter-spacing: 2px; }
     .water-label { fill: #314e54; font: italic 900 15px "Noto Serif", serif; letter-spacing: 4px; text-anchor: middle; }
     .registration { fill: none; stroke: #d9432f; stroke-width: 3; }
+    .tracker-rail { fill: #fffaf0; stroke: #171612; stroke-width: 3; }
+    .tracker-election { fill: #e9b72b; }
+    .tracker-label { fill: #171612; font: 900 17px "Noto Sans Mono", monospace; letter-spacing: 2px; }
+    .tracker-note { fill: #625f57; font: 900 11px "Noto Sans Mono", monospace; letter-spacing: 1px; }
+    .tracker-value { fill: #171612; font: 900 15px "Noto Sans Mono", monospace; text-anchor: middle; dominant-baseline: middle; }
   </style>
 
   <rect class="paper" width="1600" height="1200"/>
@@ -33,6 +37,7 @@
   <text class="heading" x="60" y="103">The sixteen districts</text>
   <text class="map-note" x="1540" y="62" text-anchor="end">16 DISTRICTS / 57 SUPPORT SPOTS</text>
 
+  <g class="map-art" transform="translate(96 70) scale(.88)">
   <ellipse cx="800" cy="610" rx="375" ry="305" fill="url(#water)" stroke="#171612" stroke-width="5"/>
 
   <g aria-label="Outer ring districts">
@@ -66,14 +71,12 @@
   <g aria-label="District labels and Support spots">
     <g aria-label="Northreach, 2 Support spots">
       <text class="region-name" x="800" y="133">Northreach</text>
-      <text class="capacity" x="800" y="159">2 SPOTS</text>
       <use href="#support-spot" x="774" y="205"/>
       <use href="#support-spot" x="826" y="205"/>
     </g>
 
     <g aria-label="Cloverfield, 4 Support spots">
       <text class="region-name" x="1045" y="205">Cloverfield</text>
-      <text class="capacity" x="1045" y="231">4 SPOTS</text>
       <use href="#support-spot" x="1019" y="273"/>
       <use href="#support-spot" x="1071" y="273"/>
       <use href="#support-spot" x="1019" y="321"/>
@@ -82,7 +85,6 @@
 
     <g aria-label="Harbormouth, 6 Support spots">
       <text class="region-name" x="1270" y="322">Harbormouth</text>
-      <text class="capacity" x="1270" y="348">6 SPOTS</text>
       <use href="#support-spot" x="1218" y="392"/>
       <use href="#support-spot" x="1270" y="392"/>
       <use href="#support-spot" x="1322" y="392"/>
@@ -93,7 +95,6 @@
 
     <g aria-label="Millbank, 4 Support spots">
       <text class="region-name" x="1305" y="542">Millbank</text>
-      <text class="capacity" x="1305" y="568">4 SPOTS</text>
       <use href="#support-spot" x="1279" y="610"/>
       <use href="#support-spot" x="1331" y="610"/>
       <use href="#support-spot" x="1279" y="658"/>
@@ -102,14 +103,12 @@
 
     <g aria-label="Reedwater, 2 Support spots">
       <text class="region-name" x="1240" y="788">Reedwater</text>
-      <text class="capacity" x="1240" y="814">2 SPOTS</text>
       <use href="#support-spot" x="1214" y="858"/>
       <use href="#support-spot" x="1266" y="858"/>
     </g>
 
     <g aria-label="Sunmeadow, 4 Support spots">
       <text class="region-name" x="1045" y="921">Sunmeadow</text>
-      <text class="capacity" x="1045" y="947">4 SPOTS</text>
       <use href="#support-spot" x="1019" y="989"/>
       <use href="#support-spot" x="1071" y="989"/>
       <use href="#support-spot" x="1019" y="1037"/>
@@ -118,7 +117,6 @@
 
     <g aria-label="Grand Market, 6 Support spots">
       <text class="region-name" x="800" y="958">Grand Market</text>
-      <text class="capacity" x="800" y="984">6 SPOTS</text>
       <use href="#support-spot" x="748" y="1028"/>
       <use href="#support-spot" x="800" y="1028"/>
       <use href="#support-spot" x="852" y="1028"/>
@@ -129,7 +127,6 @@
 
     <g aria-label="Red Orchard, 4 Support spots">
       <text class="region-name" x="555" y="921">Red Orchard</text>
-      <text class="capacity" x="555" y="947">4 SPOTS</text>
       <use href="#support-spot" x="529" y="989"/>
       <use href="#support-spot" x="581" y="989"/>
       <use href="#support-spot" x="529" y="1037"/>
@@ -138,14 +135,12 @@
 
     <g aria-label="Westgate, 2 Support spots">
       <text class="region-name" x="360" y="788">Westgate</text>
-      <text class="capacity" x="360" y="814">2 SPOTS</text>
       <use href="#support-spot" x="334" y="858"/>
       <use href="#support-spot" x="386" y="858"/>
     </g>
 
     <g aria-label="Mossfield, 4 Support spots">
       <text class="region-name" x="295" y="542">Mossfield</text>
-      <text class="capacity" x="295" y="568">4 SPOTS</text>
       <use href="#support-spot" x="269" y="610"/>
       <use href="#support-spot" x="321" y="610"/>
       <use href="#support-spot" x="269" y="658"/>
@@ -154,7 +149,6 @@
 
     <g aria-label="Ironwood, 6 Support spots">
       <text class="region-name" x="330" y="322">Ironwood</text>
-      <text class="capacity" x="330" y="348">6 SPOTS</text>
       <use href="#support-spot" x="278" y="392"/>
       <use href="#support-spot" x="330" y="392"/>
       <use href="#support-spot" x="382" y="392"/>
@@ -165,7 +159,6 @@
 
     <g aria-label="High Pastures, 4 Support spots">
       <text class="region-name region-name-small" x="555" y="205">High Pastures</text>
-      <text class="capacity" x="555" y="231">4 SPOTS</text>
       <use href="#support-spot" x="529" y="273"/>
       <use href="#support-spot" x="581" y="273"/>
       <use href="#support-spot" x="529" y="321"/>
@@ -174,21 +167,18 @@
 
     <g aria-label="Crown Road, 2 Support spots">
       <text class="region-name region-name-small" x="800" y="374">Crown Road</text>
-      <text class="capacity" x="800" y="400">2 SPOTS</text>
       <use href="#support-spot" x="774" y="447"/>
       <use href="#support-spot" x="826" y="447"/>
     </g>
 
     <g aria-label="Canal Ward, 2 Support spots">
       <text class="region-name region-name-small" x="1004" y="662">Canal Ward</text>
-      <text class="capacity" x="1004" y="688">2 SPOTS</text>
       <use href="#support-spot" x="978" y="735"/>
       <use href="#support-spot" x="1030" y="735"/>
     </g>
 
     <g aria-label="Old Quarter, 2 Support spots">
       <text class="region-name region-name-small" x="596" y="662">Old Quarter</text>
-      <text class="capacity" x="596" y="688">2 SPOTS</text>
       <use href="#support-spot" x="570" y="735"/>
       <use href="#support-spot" x="622" y="735"/>
     </g>
@@ -196,12 +186,61 @@
     <g aria-label="Bellwether Centre, 3 Support spots">
       <text class="region-name region-name-small" x="800" y="555">Bellwether</text>
       <text class="region-name region-name-small" x="800" y="580">Centre</text>
-      <text class="capacity" x="800" y="605">3 SPOTS</text>
       <use href="#support-spot" x="755" y="642"/>
       <use href="#support-spot" x="800" y="642"/>
       <use href="#support-spot" x="845" y="642"/>
     </g>
   </g>
 
-  <text class="map-note" x="60" y="1150">SHARED BLACK BORDER = NEIGHBORING / FIT TO A3 LANDSCAPE</text>
+  </g>
+
+  <g aria-label="Campaign round tracker: four rounds then Election Day, repeated three times">
+    <text class="tracker-label" x="60" y="1102">CAMPAIGN</text>
+    <text class="tracker-note" x="60" y="1119">ROUND / ELECTION</text>
+    <g transform="translate(250 1084)">
+      <g><rect class="tracker-rail" width="82" height="34"/><text class="tracker-value" x="41" y="18">R1</text></g>
+      <g transform="translate(87)"><rect class="tracker-rail" width="82" height="34"/><text class="tracker-value" x="41" y="18">R2</text></g>
+      <g transform="translate(174)"><rect class="tracker-rail" width="82" height="34"/><text class="tracker-value" x="41" y="18">R3</text></g>
+      <g transform="translate(261)"><rect class="tracker-rail" width="82" height="34"/><text class="tracker-value" x="41" y="18">R4</text></g>
+      <g transform="translate(348)"><rect class="tracker-rail tracker-election" width="82" height="34"/><text class="tracker-value" x="41" y="18">E1</text></g>
+      <g transform="translate(435)"><rect class="tracker-rail" width="82" height="34"/><text class="tracker-value" x="41" y="18">R5</text></g>
+      <g transform="translate(522)"><rect class="tracker-rail" width="82" height="34"/><text class="tracker-value" x="41" y="18">R6</text></g>
+      <g transform="translate(609)"><rect class="tracker-rail" width="82" height="34"/><text class="tracker-value" x="41" y="18">R7</text></g>
+      <g transform="translate(696)"><rect class="tracker-rail" width="82" height="34"/><text class="tracker-value" x="41" y="18">R8</text></g>
+      <g transform="translate(783)"><rect class="tracker-rail tracker-election" width="82" height="34"/><text class="tracker-value" x="41" y="18">E2</text></g>
+      <g transform="translate(870)"><rect class="tracker-rail" width="82" height="34"/><text class="tracker-value" x="41" y="18">R9</text></g>
+      <g transform="translate(957)"><rect class="tracker-rail" width="82" height="34"/><text class="tracker-value" x="41" y="18">R10</text></g>
+      <g transform="translate(1044)"><rect class="tracker-rail" width="82" height="34"/><text class="tracker-value" x="41" y="18">R11</text></g>
+      <g transform="translate(1131)"><rect class="tracker-rail" width="82" height="34"/><text class="tracker-value" x="41" y="18">R12</text></g>
+      <g transform="translate(1218)"><rect class="tracker-rail tracker-election" width="82" height="34"/><text class="tracker-value" x="41" y="18">E3</text></g>
+    </g>
+  </g>
+
+  <g aria-label="Score tracker from 0 through 20">
+    <text class="tracker-label" x="60" y="1153">SCORE</text>
+    <text class="tracker-note" x="60" y="1170">OUTSIDE = NOTE</text>
+    <g transform="translate(170 1135)">
+      <g><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">0</text></g>
+      <g transform="translate(65)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">1</text></g>
+      <g transform="translate(130)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">2</text></g>
+      <g transform="translate(195)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">3</text></g>
+      <g transform="translate(260)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">4</text></g>
+      <g transform="translate(325)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">5</text></g>
+      <g transform="translate(390)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">6</text></g>
+      <g transform="translate(455)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">7</text></g>
+      <g transform="translate(520)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">8</text></g>
+      <g transform="translate(585)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">9</text></g>
+      <g transform="translate(650)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">10</text></g>
+      <g transform="translate(715)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">11</text></g>
+      <g transform="translate(780)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">12</text></g>
+      <g transform="translate(845)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">13</text></g>
+      <g transform="translate(910)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">14</text></g>
+      <g transform="translate(975)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">15</text></g>
+      <g transform="translate(1040)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">16</text></g>
+      <g transform="translate(1105)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">17</text></g>
+      <g transform="translate(1170)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">18</text></g>
+      <g transform="translate(1235)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">19</text></g>
+      <g transform="translate(1300)"><rect class="tracker-rail" width="61" height="34"/><text class="tracker-value" x="30.5" y="18">20</text></g>
+    </g>
+  </g>
 </svg>
