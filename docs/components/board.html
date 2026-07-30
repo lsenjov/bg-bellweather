@@ -118,7 +118,7 @@
       <section>
         <span class="status decided">Prototype map decided / setup open</span>
         <h2 id="district-map">District map</h2>
-        <p>The first prototype uses sixteen named districts in a ring-and-cross layout. Twelve districts form the outer land ring. Bellwether Centre connects through Crown Road, Canal Ward, and Old Quarter to Northreach, Reedwater, and Westgate. Districts are neighboring when they share a black border segment; meeting only at a point or across Crownwater does not make them neighbors. The map also carries the twelve-round/three-election tracker and a public score track from 0 through 20.</p>
+        <p>The first prototype uses sixteen named districts in a ring-and-cross layout. Twelve districts form the outer land ring. Bellwether Centre connects through Crown Road, Canal Ward, and Old Quarter to Northreach, Reedwater, and Westgate. Districts are neighboring when they share a black border segment; meeting only at a point or across Crownwater does not make them neighbors. The map also carries a right-side 3 × 5 campaign tracker—one column for each four-round cycle and its Election Day—and a two-row public score track from 0 through 20.</p>
         <figure class="board-map">
           <div class="board-map-frame">
             <img src="../assets/ring-and-cross-district-map.svg" alt="Territorial map of sixteen named districts surrounding Crownwater. Twelve districts form the outer land ring, and three causeway districts connect Bellwether Centre to the ring.">
@@ -131,7 +131,7 @@
         <h3>A3 print export</h3>
         <p>The print-ready PDF is one 420 × 297 mm A3 landscape page. It keeps the 396 × 297 mm artwork at 100% scale and centers it with 12 mm white margins on the left and right. Print at “Actual size” or 100% with “Fit to page” disabled.</p>
         <p>Run <code>./scripts/export-print-assets.sh</code> from the repository root to regenerate this PDF and every other print-ready component. The command verifies the fonts and the 396 × 297 mm source size before converting map text to paths, so the printed result does not depend on fonts installed at the printer. The repository README lists all tool and font prerequisites.</p>
-        <p>The grey districts—Harbormouth, Grand Market, and Ironwood—hold six Support each. Their six ring neighbors hold four each. Bellwether Centre holds three. Northreach, Reedwater, Westgate, and the three causeway districts hold two each. The complete map has fifty-seven Support spots and eighteen shared borders. Capacity remains visible through the number of printed Support circles; redundant “2 spots,” “4 spots,” and “6 spots” labels are omitted.</p>
+        <p>The grey districts—Harbormouth, Grand Market, and Ironwood—hold six Support each. Their six ring neighbors hold four each. Bellwether Centre holds three. Northreach, Reedwater, Westgate, and the three causeway districts hold two each. The complete map has fifty-seven Support spots and eighteen shared borders. Capacity remains visible through the number of printed Support circles; redundant “2 spots,” “4 spots,” and “6 spots” labels are omitted. Each score-track space is approximately 26 mm square so the firms’ 25 mm score markers fit inside it.</p>
         <h3>District reference</h3>
         <div class="table-wrap" role="region" aria-label="District capacities and neighboring districts" tabindex="0">
           <table>
