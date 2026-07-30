@@ -362,6 +362,8 @@ main {
 .overture-target {
   display: grid;
   min-width: 0;
+  grid-template-rows: 1fr auto;
+  padding: 1.2mm 0.8mm;
   place-items: center;
   border: 0.4mm solid var(--ink);
   background: var(--paper-bright);
@@ -371,9 +373,53 @@ main {
   text-transform: uppercase;
 }
 
+.overture-target b {
+  font: 800 11pt/0.8 var(--display);
+  letter-spacing: -0.02em;
+}
+
+.overture-target > span {
+  font: 800 4.7pt/1 var(--mono);
+  letter-spacing: 0.02em;
+}
+
+.target-honeycomb {
+  background: #d7aa12;
+  color: #171612;
+}
+
+.target-old-shell {
+  background: #3f7447;
+  color: #fffaf0;
+}
+
+.target-foxglove {
+  background: #b83d6d;
+  color: #fffaf0;
+}
+
+.target-riverworks {
+  background: #2d6fa3;
+  color: #fffaf0;
+}
+
+.target-many-wings {
+  background: #d86f24;
+  color: #171612;
+}
+
+.target-night {
+  background: #252522;
+  color: #fffaf0;
+}
+
 .overture-target.unpointed {
+  display: flex;
+  padding: 1mm;
   border-style: dashed;
   color: var(--muted);
+  flex-direction: column;
+  justify-content: center;
 }
 
 .overture-target small {
