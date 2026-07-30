@@ -278,7 +278,7 @@ function submitOpenings(
   }
   const seat = getSeat(state, seatId);
   const setup = setupFor(state);
-  const required = Math.min(setup.openingBidMarkers, seat.reserve.clout);
+  const required = Math.min(setup.openingBids, seat.reserve.clout);
   if (openings.length !== required) {
     throw new GameRuleError(
       "wrong_opening_count",

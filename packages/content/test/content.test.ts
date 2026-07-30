@@ -260,8 +260,11 @@ describe("setup constants", () => {
     expect(DOUBLED_PLAYER_SETUP.points).toBe(
       STANDARD_PLAYER_SETUP.points * 2
     );
-    expect(DOUBLED_PLAYER_SETUP.openingBidMarkers).toBe(
-      STANDARD_PLAYER_SETUP.openingBidMarkers * 2
+    expect(DOUBLED_PLAYER_SETUP.openingBids).toBe(
+      STANDARD_PLAYER_SETUP.openingBids * 2
+    );
+    expect(DOUBLED_PLAYER_SETUP.identityCards).toBe(
+      STANDARD_PLAYER_SETUP.identityCards * 2
     );
     expect(DOUBLED_PLAYER_SETUP.counterbidSlots).toBe(
       STANDARD_PLAYER_SETUP.counterbidSlots * 2

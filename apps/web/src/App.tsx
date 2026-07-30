@@ -567,7 +567,7 @@ export function ContestCard(props: {
                     String(bid.firmId) as keyof typeof FIRMS_BY_ID
                   ]?.name ?? String(bid.firmId)} · {String(bid.kind)}
                   {typeof bid.slotIndex === "number"
-                    ? ` · cover ${bid.slotIndex % 2 === 0 ? "A" : "B"}`
+                    ? " · identity card"
                     : ""} · {String(bid.status ?? "covered")}
                 </small>
               </div>
@@ -858,7 +858,7 @@ function CounterbidForm(props: {
               <option key={index} value={index}>
                 {FIRMS_BY_ID[slotFirm as keyof typeof FIRMS_BY_ID]?.numeral ??
                   "Firm"}{" "}
-                · cover {index % 2 === 0 ? "A" : "B"}
+                · counterbid {(index % 2) + 1}
                 {bidId ? " · placed" : ""}
               </option>
             );

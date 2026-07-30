@@ -88,6 +88,6 @@ describe("browser play surface", () => {
     expect(screen.getByText(/3 Clout/i)).toBeTruthy();
     expect(screen.getByText(/1 organise.*1 smear/i)).toBeTruthy();
     expect(screen.getByText(/One Fell Swoop Public Affairs/i)).toBeTruthy();
-    expect(screen.getByText(/counterbid · cover A · active/i)).toBeTruthy();
+    expect(screen.getByText(/counterbid · identity card · active/i)).toBeTruthy();
   });
 });

@@ -83,7 +83,7 @@ main {
   display: grid;
   width: 287mm;
   height: 95mm;
-  grid-template-columns: 55mm 40mm 40mm 135mm;
+  grid-template-columns: 55mm 40mm 40mm 40mm 92mm;
   gap: 3mm;
   padding: 4mm;
   border: 0.5mm solid var(--ink);
@@ -183,7 +183,7 @@ main {
 }
 
 .emblem svg,
-.cover-emblem svg,
+.card-emblem svg,
 .marker-emblem svg {
   display: block;
   width: 100%;
@@ -196,7 +196,6 @@ main {
 }
 
 .firm-index,
-.token-type,
 .token-firm,
 .mount-note {
   font: 800 5.4pt/1.1 var(--mono);
@@ -232,20 +231,19 @@ main {
   line-height: 1.25;
 }
 
-.bid-cover {
+.firm-card {
   position: relative;
   display: flex;
   width: 40mm;
   height: 61mm;
   margin: auto;
-  padding: 5mm 3mm;
+  padding: 4mm 3mm;
   overflow: hidden;
   border: 0.6mm solid var(--ink);
   border-radius: 1.5mm;
   outline: 0.3mm dashed var(--detail);
   outline-offset: -2mm;
   background:
-    linear-gradient(135deg, transparent 0 48%, rgb(23 23 19 / 5%) 49% 51%, transparent 52%),
     repeating-linear-gradient(0deg, transparent 0 8mm, rgb(23 23 19 / 4%) 8mm 8.4mm),
     var(--tint);
   color: var(--ink);
@@ -255,52 +253,21 @@ main {
   text-align: center;
 }
 
-.bid-cover::before,
-.bid-cover::after {
-  position: absolute;
-  width: 12mm;
-  height: 0.5mm;
-  background: var(--detail);
-  content: "";
-}
-
-.bid-cover::before {
-  top: 9mm;
-  left: 2mm;
-  transform: rotate(-28deg);
-}
-
-.bid-cover::after {
-  right: 2mm;
-  bottom: 9mm;
-  transform: rotate(-28deg);
-}
-
-.cover-emblem {
-  width: 14mm;
-  height: 14mm;
+.card-emblem {
+  width: 28mm;
+  height: 28mm;
+  margin-bottom: 3mm;
   color: var(--detail);
-}
-
-.token-type {
-  display: block;
-  margin-top: 1mm;
-  color: var(--ink);
-}
-
-.cover-letter {
-  margin: 0.5mm 0 0;
-  font: 800 21pt/0.8 var(--display);
 }
 
 .token-firm {
   display: block;
-  max-width: 31mm;
-  margin-top: 1mm;
+  max-width: 32mm;
+  font-size: 6pt;
   line-height: 1.25;
 }
 
-.bid-cover .firm-stamp {
+.firm-card .firm-stamp {
   position: absolute;
   right: 0;
   bottom: 3.2mm;
@@ -311,19 +278,17 @@ main {
   text-transform: uppercase;
 }
 
-.small-tokens {
+.score-token-panel {
   display: flex;
-  width: 135mm;
+  width: 92mm;
   height: 87mm;
   padding: 2mm;
   border: 0.5mm solid var(--ink);
   background: var(--paper);
   align-items: center;
-  gap: 4mm;
   justify-content: center;
 }
 
-.open-marker,
 .score-marker {
   position: relative;
   display: flex;
@@ -334,43 +299,6 @@ main {
   flex-direction: column;
   justify-content: center;
   text-align: center;
-}
-
-.open-marker {
-  width: 50mm;
-  height: 50mm;
-  background: var(--accent);
-  color: var(--accent-ink);
-}
-
-.open-marker .marker-emblem {
-  width: 13mm;
-  height: 13mm;
-  margin-bottom: 1mm;
-}
-
-.open-marker strong {
-  max-width: 21mm;
-  font: 800 7pt/0.9 var(--mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.open-number {
-  position: absolute;
-  right: 0;
-  left: 0;
-  font: 800 18pt/0.8 var(--display);
-  letter-spacing: -0.04em;
-}
-
-.open-number.top {
-  top: 3mm;
-}
-
-.open-number.bottom {
-  bottom: 3mm;
-  transform: rotate(180deg);
 }
 
 .score-marker {

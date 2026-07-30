@@ -8,7 +8,8 @@ export interface PlayerSetup {
   readonly bluff: number;
   readonly operations: Readonly<Record<OperationId, number>>;
   readonly points: number;
-  readonly openingBidMarkers: 1 | 2;
+  readonly openingBids: 1 | 2;
+  readonly identityCards: 3 | 6;
   readonly counterbidSlots: 2 | 4;
 }
 
@@ -23,7 +24,8 @@ export const STANDARD_PLAYER_SETUP = deepFreeze({
     court: 1
   },
   points: 5,
-  openingBidMarkers: 1,
+  openingBids: 1,
+  identityCards: 3,
   counterbidSlots: 2
 } as const satisfies PlayerSetup);
 
@@ -38,7 +40,8 @@ export const DOUBLED_PLAYER_SETUP = deepFreeze({
     court: 2
   },
   points: 10,
-  openingBidMarkers: 2,
+  openingBids: 2,
+  identityCards: 6,
   counterbidSlots: 4
 } as const satisfies PlayerSetup);
 
