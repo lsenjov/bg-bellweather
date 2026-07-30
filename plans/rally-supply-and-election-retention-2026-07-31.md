@@ -6,7 +6,7 @@ Increase board growth by giving each standard player four Rally cards, doubled t
 
 ## Steps
 
-- [ ] Update setup data, printable bid-card quantities, component specifications, and tests for the 2 Organise / 4 Rally / 2 Smear / 1 Court standard supply.
+- [x] Update setup data, printable bid-card quantities, component specifications, and tests for the 2 Organise / 4 Rally / 2 Smear / 1 Court standard supply.
 - [ ] Change Election Day so each named district keeps its shared 3/2/1 draw while every undrawn Support there returns to supply; leave unnamed districts, including Bellwether Centre, unchanged.
 - [ ] Regenerate print exports, inspect the repacked bid-card sheets, and run full repository validation.
 - [ ] Obtain an independent review and resolve every high or medium finding before handoff.

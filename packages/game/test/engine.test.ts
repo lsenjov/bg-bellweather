@@ -16,14 +16,14 @@ import {
 
 describe("game setup and private projections", () => {
   it.each([
-    [2, 2, 20, 8, 10, 4],
-    [3, 2, 20, 8, 10, 4],
-    [4, 1, 10, 4, 5, 2],
-    [5, 1, 10, 4, 5, 2],
-    [6, 1, 10, 4, 5, 2]
+    [2, 2, 20, 8, 8, 10, 4],
+    [3, 2, 20, 8, 8, 10, 4],
+    [4, 1, 10, 4, 4, 5, 2],
+    [5, 1, 10, 4, 4, 5, 2],
+    [6, 1, 10, 4, 4, 5, 2]
   ])(
     "creates the committed economy for %i players",
-    (playerCount, firms, clout, bluff, points, slots) => {
+    (playerCount, firms, clout, bluff, rally, points, slots) => {
       const state = initializeGame(
         configuration(playerCount, null),
         zeroRandom
@@ -38,6 +38,9 @@ describe("game setup and private projections", () => {
       expect(state.seats.every((seat) => seat.reserve.bluff === bluff)).toBe(
         true
       );
+      expect(
+        state.seats.every((seat) => seat.reserve.operations.rally === rally)
+      ).toBe(true);
       expect(state.seats.every((seat) => seat.reserve.points === points)).toBe(
         true
       );
@@ -57,7 +60,7 @@ describe("game setup and private projections", () => {
     expect(state.seats[0]?.reserve).toEqual({
       clout: 20,
       bluff: 8,
-      operations: { organise: 4, rally: 4, smear: 4, court: 2 },
+      operations: { organise: 4, rally: 8, smear: 4, court: 2 },
       points: 10
     });
     expect(state.partyOrder).toHaveLength(6);

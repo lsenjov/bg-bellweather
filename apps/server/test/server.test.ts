@@ -441,7 +441,7 @@ describe("game server", () => {
       reserve: {
         clout: 20,
         bluff: 8,
-        operations: { organise: 4, rally: 4, smear: 4, court: 2 },
+        operations: { organise: 4, rally: 8, smear: 4, court: 2 },
         points: 10
       }
     });
