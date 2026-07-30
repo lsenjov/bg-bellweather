@@ -214,6 +214,7 @@ describe("game server", () => {
             type: "give_resources",
             recipientSeatId: joinBody.session.seatId,
             clout: 0,
+            bluff: 0,
             operations: { organise: 0, rally: 0, smear: 0, court: 0 },
             points: 2
           }
@@ -439,6 +440,7 @@ describe("game server", () => {
     expect(active.seatState.privateGame).toMatchObject({
       reserve: {
         clout: 20,
+        bluff: 8,
         operations: { organise: 4, rally: 4, smear: 4, court: 2 },
         points: 10
       }
@@ -470,12 +472,14 @@ describe("game server", () => {
                   firmId: firms[0],
                   partyId: active.publicState.publicGame.partyOrder[0],
                   clout: 1,
+                  bluff: 0,
                   operations: emptyOperations
                 },
                 {
                   firmId: firms[1],
                   partyId: active.publicState.publicGame.partyOrder[1],
                   clout: 1,
+                  bluff: 0,
                   operations: emptyOperations
                 }
               ]
@@ -626,6 +630,7 @@ describe("game server", () => {
               firmId: firms[index],
               partyId,
               clout: 1,
+              bluff: 0,
               operations: { organise: 0, rally: 0, smear: 0, court: 0 }
             }))
           }

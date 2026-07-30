@@ -251,16 +251,17 @@ function publicBid(bid: BidState, reveal: boolean): Record<string, unknown> {
     transferredToSeatId: bid.transferredToSeatId
   };
   if (reveal) {
-    return { ...base, clout: bid.clout, operations: bid.operations };
+    return {
+      ...base,
+      clout: bid.clout,
+      bluff: bid.bluff,
+      operations: bid.operations
+    };
   }
   if (bid.kind === "opening") {
     return {
       ...base,
-      clout: bid.clout,
-      operationCount: Object.values(bid.operations).reduce(
-        (total, count) => total + count,
-        0
-      )
+      clout: bid.clout
     };
   }
   return base;

@@ -78,6 +78,7 @@ describe("browser play surface", () => {
             slotIndex: 2,
             status: "active",
             clout: 3,
+            bluff: 1,
             operations: { organise: 1, rally: 0, smear: 1, court: 0 }
           }
         ]}
@@ -87,6 +88,6 @@ describe("browser play surface", () => {
     expect(screen.getByText(/3 Clout/i)).toBeTruthy();
     expect(screen.getByText(/1 organise.*1 smear/i)).toBeTruthy();
     expect(screen.getByText(/One Fell Swoop Public Affairs/i)).toBeTruthy();
-    expect(screen.getByText(/counterbid · cover 1 · active/i)).toBeTruthy();
+    expect(screen.getByText(/counterbid · cover A · active/i)).toBeTruthy();
   });
 });

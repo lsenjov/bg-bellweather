@@ -133,6 +133,7 @@ async function takeTurn(
       type: "give_resources",
       recipientSeatId: stringValue(opponent["id"]) as never,
       clout: 1,
+      bluff: 0,
       operations: emptyOperations(),
       points: 0
     });
@@ -161,6 +162,7 @@ async function takeTurn(
           firmId,
           partyId: available[index] ?? available[0] ?? "honeycomb",
           clout: 1,
+          bluff: 0,
           operations:
             index === 0 &&
             Number(objectValue(reserve["operations"])["organise"] ?? 0) > 0
@@ -192,6 +194,7 @@ async function takeTurn(
             contestId: "pecking-order",
             firmId,
             clout: 0,
+            bluff: 0,
             operations: emptyOperations()
           }
         }

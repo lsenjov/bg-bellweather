@@ -22,6 +22,7 @@ export interface ProjectedSeat {
   reserve:
     | {
         clout: number;
+        bluff: number;
         operations: OperationInventory;
       }
     | null;
@@ -36,6 +37,7 @@ export interface ProjectedBid {
   kind: "opening" | "counterbid";
   status: BidState["status"];
   clout: number | null;
+  bluff: number | null;
   operationCount: number | null;
   operations: OperationInventory | null;
 }
@@ -107,6 +109,7 @@ export function projectGameState(
           own || fullInformation
             ? {
                 clout: seat.reserve.clout,
+                bluff: seat.reserve.bluff,
                 operations: { ...seat.reserve.operations }
               }
             : null,
@@ -142,7 +145,6 @@ function projectBid(
   allRevealed: boolean
 ): ProjectedBid {
   const own = bid.ownerSeatId === viewerSeatId;
-  const opening = bid.kind === "opening";
   return {
     id: bid.id,
     contestId: bid.contestId,
@@ -150,8 +152,9 @@ function projectBid(
     firmId: bid.firmId,
     kind: bid.kind,
     status: bid.status,
-    clout: own || opening || allRevealed ? bid.clout : null,
-    operationCount: own || opening || allRevealed ? operationCount(bid.operations) : null,
+    clout: own || bid.kind === "opening" || allRevealed ? bid.clout : null,
+    bluff: own || allRevealed ? bid.bluff : null,
+    operationCount: own || allRevealed ? operationCount(bid.operations) : null,
     operations: own || allRevealed ? { ...bid.operations } : null
   };
 }

@@ -81,6 +81,7 @@ describe("commands", () => {
       type: "give_resources",
       recipientSeatId: seatId,
       clout: 0,
+      bluff: 0,
       operations: { organise: 0, rally: 0, smear: 0, court: 0 },
       points: 0
     };
@@ -88,6 +89,9 @@ describe("commands", () => {
     expect(GiveResourcesCommandSchema.safeParse(emptyGift).success).toBe(false);
     expect(
       GiveResourcesCommandSchema.safeParse({ ...emptyGift, points: 1 }).success
+    ).toBe(true);
+    expect(
+      GiveResourcesCommandSchema.safeParse({ ...emptyGift, bluff: 1 }).success
     ).toBe(true);
   });
 
@@ -106,6 +110,7 @@ describe("commands", () => {
               contestId: "pecking-order",
               firmId: "one-fell-swoop",
               clout: 2,
+              bluff: 1,
               operations: { organise: 1, rally: 0, smear: 0, court: 0 }
             }
           }

@@ -268,13 +268,15 @@ export const GiveResourcesCommandSchema = z
     type: z.literal("give_resources"),
     recipientSeatId: SeatIdSchema,
     clout: z.number().int().nonnegative(),
+    bluff: z.number().int().nonnegative(),
     operations: OperationInventorySchema,
     points: z.number().int().nonnegative()
   })
   .strict()
   .refine(
-    ({ clout, operations, points }) =>
+    ({ clout, bluff, operations, points }) =>
       clout +
+        bluff +
         points +
         operations.organise +
         operations.rally +
@@ -363,6 +365,7 @@ export type OperationResolutionChoice = z.infer<
 const BidPackageSchema = z
   .object({
     clout: z.number().int().nonnegative(),
+    bluff: z.number().int().nonnegative(),
     operations: OperationInventorySchema
   })
   .strict();

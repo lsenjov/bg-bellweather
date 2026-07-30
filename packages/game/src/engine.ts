@@ -314,6 +314,7 @@ function submitOpenings(
       kind: "opening",
       slotIndex: null,
       clout: opening.clout,
+      bluff: opening.bluff,
       operations: opening.operations
     });
     state.contests[opening.partyId] = {
@@ -1184,11 +1185,14 @@ function validateFirm(seat: SeatState, firmId: FirmId): void {
 }
 
 function validatePackage(
-  value: Pick<BidPackage, "clout" | "operations">,
+  value: Pick<BidPackage, "clout" | "bluff" | "operations">,
   allowEmpty: boolean
 ): void {
   if (!Number.isSafeInteger(value.clout) || value.clout < (allowEmpty ? 0 : 1)) {
     throw new GameRuleError("invalid_clout", allowEmpty ? "Clout must be non-negative" : "Opening bids require Clout");
+  }
+  if (!Number.isSafeInteger(value.bluff) || value.bluff < 0) {
+    throw new GameRuleError("invalid_bluff", "Bluff counts must be non-negative integers");
   }
   for (const operation of OPERATION_IDS) {
     const count = value.operations[operation];
@@ -1204,21 +1208,24 @@ function validateCombinedResources(
 ): void {
   const combined = emptyOperations();
   let clout = 0;
+  let bluff = 0;
   for (const opening of openings) {
     clout += opening.clout;
+    bluff += opening.bluff;
     for (const operation of OPERATION_IDS) {
       combined[operation] += opening.operations[operation];
     }
   }
-  ensureAvailable(reserve, { clout, operations: combined });
+  ensureAvailable(reserve, { clout, bluff, operations: combined });
 }
 
 function ensureAvailable(
   reserve: ResourcePool,
-  value: Pick<BidPackage, "clout" | "operations">
+  value: Pick<BidPackage, "clout" | "bluff" | "operations">
 ): void {
   if (
     reserve.clout < value.clout ||
+    reserve.bluff < value.bluff ||
     OPERATION_IDS.some(
       (operation) => reserve.operations[operation] < value.operations[operation]
     )
@@ -1229,9 +1236,10 @@ function ensureAvailable(
 
 function subtractPackage(
   reserve: ResourcePool,
-  value: Pick<BidPackage, "clout" | "operations">
+  value: Pick<BidPackage, "clout" | "bluff" | "operations">
 ): void {
   reserve.clout -= value.clout;
+  reserve.bluff -= value.bluff;
   for (const operation of OPERATION_IDS) {
     reserve.operations[operation] -= value.operations[operation];
   }
@@ -1239,9 +1247,10 @@ function subtractPackage(
 
 function addPackage(
   reserve: ResourcePool,
-  value: Pick<BidPackage, "clout" | "operations">
+  value: Pick<BidPackage, "clout" | "bluff" | "operations">
 ): void {
   reserve.clout += value.clout;
+  reserve.bluff += value.bluff;
   for (const operation of OPERATION_IDS) {
     reserve.operations[operation] += value.operations[operation];
   }
@@ -1260,6 +1269,7 @@ function addResources(reserve: ResourcePool, value: ResourcePool): void {
 function resourceCount(resources: ResourcePool): number {
   return (
     resources.clout +
+    resources.bluff +
     resources.points +
     OPERATION_IDS.reduce(
       (total, operation) => total + resources.operations[operation],
@@ -1287,6 +1297,7 @@ function takeFirstOperation(operations: OperationInventory): OperationId {
 function resourcesFromSetup(setup: PlayerSetup): ResourcePool {
   return {
     clout: setup.clout,
+    bluff: setup.bluff,
     operations: cloneOperations(setup.operations),
     points: setup.points
   };

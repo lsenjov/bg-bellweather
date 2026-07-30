@@ -12,6 +12,7 @@ import {
   JoinLobbyResponseSchema,
   ReplayResponseSchema
 } from "@bellwether/protocol";
+import { engineVersion } from "@bellwether/game";
 import { WebSocketServer } from "ws";
 import { ZodError } from "zod";
 import { createSeatToken } from "./auth.js";
@@ -131,7 +132,7 @@ async function route(
   const url = new URL(request.url ?? "/", "http://localhost");
 
   if (request.method === "GET" && url.pathname === "/api/v1/health") {
-    writeJson(response, 200, { status: "ok", rulesetVersion: "1" });
+    writeJson(response, 200, { status: "ok", rulesetVersion: engineVersion });
     return;
   }
 
@@ -145,7 +146,7 @@ async function route(
     const mutation = store.createLobby({
       id: gameId,
       code: inviteCode,
-      rulesetVersion: "1",
+      rulesetVersion: engineVersion,
       settings: {
         seatCount: input.configuration.playerCount,
         counterbidTimerSeconds:

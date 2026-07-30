@@ -5,6 +5,7 @@ import type { OperationId } from "./parties.js";
 export interface PlayerSetup {
   readonly firms: 1 | 2;
   readonly clout: number;
+  readonly bluff: number;
   readonly operations: Readonly<Record<OperationId, number>>;
   readonly points: number;
   readonly openingBidMarkers: 1 | 2;
@@ -14,6 +15,7 @@ export interface PlayerSetup {
 export const STANDARD_PLAYER_SETUP = deepFreeze({
   firms: 1,
   clout: 10,
+  bluff: 4,
   operations: {
     organise: 2,
     rally: 2,
@@ -28,6 +30,7 @@ export const STANDARD_PLAYER_SETUP = deepFreeze({
 export const DOUBLED_PLAYER_SETUP = deepFreeze({
   firms: 2,
   clout: 20,
+  bluff: 8,
   operations: {
     organise: 4,
     rally: 4,
@@ -47,5 +50,5 @@ export const INITIAL_SUPPORT_DISTRICTS = deepFreeze([
 
 export const SUPPORT_SUPPLY = "unlimited" as const;
 export const ELECTION_ROUNDS = deepFreeze([4, 8, 12] as const);
-export const RULESET_VERSION = "1" as const;
+export const RULESET_VERSION = "2" as const;
 export const rulesetVersion = RULESET_VERSION;

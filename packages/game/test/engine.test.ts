@@ -16,14 +16,14 @@ import {
 
 describe("game setup and private projections", () => {
   it.each([
-    [2, 2, 20, 10, 4],
-    [3, 2, 20, 10, 4],
-    [4, 1, 10, 5, 2],
-    [5, 1, 10, 5, 2],
-    [6, 1, 10, 5, 2]
+    [2, 2, 20, 8, 10, 4],
+    [3, 2, 20, 8, 10, 4],
+    [4, 1, 10, 4, 5, 2],
+    [5, 1, 10, 4, 5, 2],
+    [6, 1, 10, 4, 5, 2]
   ])(
     "creates the committed economy for %i players",
-    (playerCount, firms, clout, points, slots) => {
+    (playerCount, firms, clout, bluff, points, slots) => {
       const state = initializeGame(
         configuration(playerCount, null),
         zeroRandom
@@ -33,6 +33,9 @@ describe("game setup and private projections", () => {
         true
       );
       expect(state.seats.every((seat) => seat.reserve.clout === clout)).toBe(
+        true
+      );
+      expect(state.seats.every((seat) => seat.reserve.bluff === bluff)).toBe(
         true
       );
       expect(state.seats.every((seat) => seat.reserve.points === points)).toBe(
@@ -53,6 +56,7 @@ describe("game setup and private projections", () => {
     expect(state.seats.map((seat) => seat.firmIds.length)).toEqual([2, 2]);
     expect(state.seats[0]?.reserve).toEqual({
       clout: 20,
+      bluff: 8,
       operations: { organise: 4, rally: 4, smear: 4, court: 2 },
       points: 10
     });
@@ -76,6 +80,7 @@ describe("game setup and private projections", () => {
         contestId: PARTY_IDS[0],
         firmId: state.seats[0]!.firmIds[0]!,
         clout: 3,
+        bluff: 1,
         operations: operations({ court: 1 })
       }
     });
@@ -83,6 +88,9 @@ describe("game setup and private projections", () => {
     const owner = projectGameState(state, "seat-1");
     const opponent = projectGameState(state, "seat-2");
     const counterId = state.counterbidSlots["seat-1"]![0]!;
+    const openingId = Object.values(state.bids).find(
+      (bid) => bid.kind === "opening" && bid.ownerSeatId === "seat-1"
+    )!.id;
     expect(owner.seats[0]?.reserve).not.toBeNull();
     expect(owner.seats[1]?.reserve).toBeNull();
     expect(opponent.seats[0]?.scoringCardId).toBeNull();
@@ -90,6 +98,13 @@ describe("game setup and private projections", () => {
     expect(opponent.bids.find((bid) => bid.id === counterId)).toMatchObject({
       contestId: PARTY_IDS[0],
       clout: null,
+      bluff: null,
+      operationCount: null,
+      operations: null
+    });
+    expect(opponent.bids.find((bid) => bid.id === openingId)).toMatchObject({
+      clout: 1,
+      bluff: null,
       operationCount: null,
       operations: null
     });
@@ -202,9 +217,10 @@ describe("opening and counterbid phases", () => {
       initializeGame(configuration(2, null), zeroRandom).state,
       0
     );
-    revolved = setBid(revolved, "seat-2", 0, contestId, 2);
+    revolved = setBid(revolved, "seat-2", 0, contestId, 2, 1);
     revolved = readyAll(revolved);
     expect(revolved.seats.map((seat) => seat.reserve.clout)).toEqual([21, 19]);
+    expect(revolved.seats.map((seat) => seat.reserve.bluff)).toEqual([9, 7]);
   });
 });
 
@@ -225,6 +241,7 @@ describe("contest resolution", () => {
         contestId: "pecking-order",
         firmId: seatTwo.firmIds[0]!,
         clout: 0,
+        bluff: 1,
         operations: operations({ organise: 1 })
       }
     });
@@ -397,6 +414,7 @@ describe("social actions, elections, and replay", () => {
       recipientSeatId: "seat-2",
       resources: {
         clout: 2,
+        bluff: 1,
         operations: operations({ court: 1 }),
         points: 3
       }
@@ -404,6 +422,7 @@ describe("social actions, elections, and replay", () => {
     expect(state.chat[0]).toMatchObject({ text: "Your move.", sentAt: 42 });
     expect(state.seats.map((seat) => seat.reserve.points)).toEqual([7, 13]);
     expect(state.seats.map((seat) => seat.reserve.clout)).toEqual([18, 22]);
+    expect(state.seats.map((seat) => seat.reserve.bluff)).toEqual([7, 9]);
     expect(() =>
       act(state, {
         type: "give_resources",
@@ -411,6 +430,7 @@ describe("social actions, elections, and replay", () => {
         recipientSeatId: "seat-2",
         resources: {
           clout: 0,
+          bluff: 0,
           operations: operations(),
           points: 8
         }
@@ -464,6 +484,7 @@ describe("social actions, elections, and replay", () => {
                   recipientSeatId: recipient.id,
                   resources: {
                     clout: 0,
+                    bluff: 0,
                     operations: operations(),
                     points
                   }
@@ -542,7 +563,7 @@ function opening(
   clout: number,
   operationInventory = operations()
 ) {
-  return { firmId, partyId, clout, operations: operationInventory };
+  return { firmId, partyId, clout, bluff: 0, operations: operationInventory };
 }
 
 function act(state: GameState, action: GameAction): GameState {
@@ -604,7 +625,8 @@ function setBid(
   seatId: string,
   slotIndex: number,
   contestId: PartyId,
-  clout: number
+  clout: number,
+  bluff = 0
 ): GameState {
   const seat = state.seats.find((candidate) => candidate.id === seatId)!;
   return act(state, {
@@ -616,6 +638,7 @@ function setBid(
       contestId,
       firmId: seat.firmIds[0]!,
       clout,
+      bluff,
       operations: operations()
     }
   });

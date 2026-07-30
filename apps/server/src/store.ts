@@ -910,6 +910,7 @@ function commandToAction(
       recipientSeatId: stringValue(payload.recipientSeatId, "recipientSeatId"),
       resources: {
         clout: numberValue(payload.clout, "clout"),
+        bluff: numberValue(payload.bluff, "bluff"),
         operations: objectValue(payload.operations) as unknown as OperationInventory,
         points: numberValue(payload.points, "points")
       }

@@ -57,7 +57,11 @@ interface ViewSeat {
   position: number;
   firmIds: FirmId[];
   points: number;
-  reserve: { clout: number; operations: Record<OperationId, number> } | null;
+  reserve: {
+    clout: number;
+    bluff: number;
+    operations: Record<OperationId, number>;
+  } | null;
   scoringCardId: string | null;
 }
 
@@ -420,7 +424,7 @@ function GameDesk(props: {
 }) {
   const [chat, setChat] = useState("");
   const [giftTo, setGiftTo] = useState("");
-  const [gift, setGift] = useState({ clout: 0, points: 0, organise: 0, rally: 0, smear: 0, court: 0 });
+  const [gift, setGift] = useState({ clout: 0, bluff: 0, points: 0, organise: 0, rally: 0, smear: 0, court: 0 });
   const ownReady = props.ownSeatId ? props.view.readySeatIds.includes(props.ownSeatId) : false;
   const scoringCard = props.ownSeat?.scoringCardId ? SCORING_CARDS_BY_ID[props.ownSeat.scoringCardId as keyof typeof SCORING_CARDS_BY_ID] : undefined;
   const latestElection = props.view.electionHistory.at(-1);
@@ -441,6 +445,7 @@ function GameDesk(props: {
           <>
             <div className="folio-score"><span>Points</span><strong>{props.ownSeat.points}</strong></div>
             <div className="reserve-line"><strong>{props.ownSeat.reserve.clout}</strong><span>Clout</span></div>
+            <div className="reserve-line"><strong>{props.ownSeat.reserve.bluff}</strong><span>Bluff</span></div>
             <p className="firm-line">{props.ownSeat.firmIds.map((id) => FIRMS_BY_ID[id as keyof typeof FIRMS_BY_ID]?.name ?? id).join(" · ")}</p>
             <div className="operation-grid">{OPERATION_IDS.map((operation) => <div key={operation}><b>{props.ownSeat!.reserve!.operations[operation]}</b><span>{operation}</span></div>)}</div>
             <div className="agenda">
@@ -490,10 +495,10 @@ function GameDesk(props: {
         {!props.spectator && props.ownSeatId ? (
           <form onSubmit={(event) => {
             event.preventDefault();
-            void props.onCommand({ type: "give_resources", recipientSeatId: giftTo as never, clout: gift.clout, points: gift.points, operations: { organise: gift.organise, rally: gift.rally, smear: gift.smear, court: gift.court } });
+            void props.onCommand({ type: "give_resources", recipientSeatId: giftTo as never, clout: gift.clout, bluff: gift.bluff, points: gift.points, operations: { organise: gift.organise, rally: gift.rally, smear: gift.smear, court: gift.court } });
           }}>
             <label>Recipient<select required value={giftTo} onChange={(event) => setGiftTo(event.target.value)}><option value="">Choose a player</option>{props.view.seats.filter((seat) => seat.id !== props.ownSeatId).map((seat) => <option key={seat.id} value={seat.id}>{seat.displayName}</option>)}</select></label>
-            <div className="gift-grid">{(["clout","points","organise","rally","smear","court"] as const).map((key) => <label key={key}>{key}<input type="number" min="0" value={gift[key]} onChange={(event) => setGift({ ...gift, [key]: Number(event.target.value) })} /></label>)}</div>
+            <div className="gift-grid">{(["clout","bluff","points","organise","rally","smear","court"] as const).map((key) => <label key={key}>{key}<input type="number" min="0" value={gift[key]} onChange={(event) => setGift({ ...gift, [key]: Number(event.target.value) })} /></label>)}</div>
             <button className="ink-button">Record one-way gift</button>
           </form>
         ) : <p>Observers cannot move table resources.</p>}
@@ -562,16 +567,15 @@ export function ContestCard(props: {
                     String(bid.firmId) as keyof typeof FIRMS_BY_ID
                   ]?.name ?? String(bid.firmId)} · {String(bid.kind)}
                   {typeof bid.slotIndex === "number"
-                    ? ` · cover ${(bid.slotIndex % 2) + 1}`
+                    ? ` · cover ${bid.slotIndex % 2 === 0 ? "A" : "B"}`
                     : ""} · {String(bid.status ?? "covered")}
                 </small>
               </div>
               <strong>{revealed ? `${String(bid.clout)} Clout` : "Covered"}</strong>
               <span>
-                {operations ??
-                  (typeof bid.operationCount === "number"
-                    ? `${String(bid.operationCount)} hidden operation cards`
-                    : "Contents concealed")}
+                {operations
+                  ? `${operations} · ${String(bid.bluff ?? 0)} bluff`
+                  : "Contents concealed"}
               </span>
               {recipient && <em>Transferred to {recipient.displayName}</em>}
             </li>
@@ -677,12 +681,14 @@ function OpeningForm(props: {
     firmId: FirmId;
     partyId: PartyId;
     clout: number;
+    bluff: number;
     operations: TokenDraft;
   }>>(() =>
     props.seat.firmIds.slice(0, required).map((firmId, index) => ({
       firmId,
       partyId: availableParties[index] ?? availableParties[0] ?? "honeycomb",
       clout: 1,
+      bluff: 0,
       operations: { ...EMPTY_TOKENS }
     }))
   );
@@ -746,6 +752,17 @@ function OpeningForm(props: {
               }
             />
           </label>
+          <label>
+            Face-down Bluff
+            <input
+              type="number"
+              min="0"
+              value={row.bluff}
+              onChange={(event) =>
+                updateRow(index, { bluff: Number(event.target.value) })
+              }
+            />
+          </label>
           <TokenFields
             value={row.operations}
             onChange={(operations) => updateRow(index, { operations })}
@@ -770,6 +787,7 @@ function CounterbidForm(props: {
     Object.keys(props.view.contests)[0] ?? "pecking-order"
   );
   const [clout, setClout] = useState(0);
+  const [bluff, setBluff] = useState(0);
   const [operations, setOperations] = useState<TokenDraft>({
     ...EMPTY_TOKENS
   });
@@ -786,6 +804,7 @@ function CounterbidForm(props: {
   useEffect(() => {
     if (selectedBidId === null || selectedBidId === undefined) {
       setClout(0);
+      setBluff(0);
       setOperations({ ...EMPTY_TOKENS });
       return;
     }
@@ -798,6 +817,9 @@ function CounterbidForm(props: {
     }
     if (typeof bid.clout === "number") {
       setClout(bid.clout);
+    }
+    if (typeof bid.bluff === "number") {
+      setBluff(bid.bluff);
     }
     if (isObject(bid.operations)) {
       setOperations({
@@ -820,7 +842,7 @@ function CounterbidForm(props: {
       className="phase-form"
       onSubmit={(event) => {
         event.preventDefault();
-        void send({ contestId, firmId, clout, operations });
+        void send({ contestId, firmId, clout, bluff, operations });
       }}
     >
       <h3>Covered counterbids</h3>
@@ -861,6 +883,15 @@ function CounterbidForm(props: {
           min="0"
           value={clout}
           onChange={(event) => setClout(Number(event.target.value))}
+        />
+      </label>
+      <label>
+        Hidden Bluff
+        <input
+          type="number"
+          min="0"
+          value={bluff}
+          onChange={(event) => setBluff(Number(event.target.value))}
         />
       </label>
       <TokenFields value={operations} onChange={setOperations} />
@@ -1301,6 +1332,7 @@ function ReplayState({ state }: { state: GameState }) {
     points: seat.reserve.points,
     reserve: {
       clout: seat.reserve.clout,
+      bluff: seat.reserve.bluff,
       operations: { ...seat.reserve.operations }
     },
     scoringCardId: seat.scoringCardId
@@ -1317,7 +1349,7 @@ function ReplayState({ state }: { state: GameState }) {
           <article key={seat.id}>
             <strong>{seat.displayName}</strong>
             <b>{seat.reserve.points} points</b>
-            <span>{seat.reserve.clout} Clout · {OPERATION_IDS.map(
+            <span>{seat.reserve.clout} Clout · {seat.reserve.bluff} Bluff · {OPERATION_IDS.map(
               (operation) => `${seat.reserve.operations[operation]} ${operation}`
             ).join(" · ")}</span>
             <small>Agenda {seat.scoringCardId}</small>

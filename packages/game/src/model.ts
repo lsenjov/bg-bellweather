@@ -14,6 +14,7 @@ export type OperationInventory = Record<OperationId, number>;
 
 export interface ResourcePool {
   clout: number;
+  bluff: number;
   operations: OperationInventory;
   points: number;
 }
@@ -38,6 +39,7 @@ export interface SeatState extends SeatConfiguration {
 
 export interface BidPackage {
   clout: number;
+  bluff: number;
   operations: OperationInventory;
 }
 
@@ -227,6 +229,7 @@ export interface OpeningBidInput {
   firmId: FirmId;
   partyId: PartyId;
   clout: number;
+  bluff: number;
   operations: OperationInventory;
 }
 
@@ -234,6 +237,7 @@ export interface CounterbidInput {
   contestId: ContestId;
   firmId: FirmId;
   clout: number;
+  bluff: number;
   operations: OperationInventory;
 }
 
