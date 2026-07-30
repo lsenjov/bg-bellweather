@@ -1,4 +1,10 @@
-import { PARTY_IDS, type OperationId, type PartyId } from "@bellwether/content";
+import {
+  DISTRICTS_BY_ID,
+  PARTY_IDS,
+  SCORING_CARDS_BY_ID,
+  type OperationId,
+  type PartyId
+} from "@bellwether/content";
 import { describe, expect, it } from "vitest";
 import {
   GameRuleError,
@@ -69,6 +75,46 @@ describe("game setup and private projections", () => {
       Object.fromEntries(PARTY_IDS.map((party) => [party, 1]))
     );
     expect(replay([initialized])).toEqual(state);
+  });
+
+  it("applies Election retention to named districts but not Bellwether Centre", () => {
+    const state = initializeGame(configuration(2, null), zeroRandom).state;
+    const namedDistrictId =
+      SCORING_CARDS_BY_ID[state.seats[0]!.scoringCardId].objectives[0]!.districtId;
+    const capacity = DISTRICTS_BY_ID[namedDistrictId].capacity;
+    state.support[namedDistrictId] = Object.fromEntries(
+      PARTY_IDS.slice(0, capacity).map((partyId) => [partyId, 1])
+    );
+    state.support["bellwether-centre"] = {
+      honeycomb: 1,
+      "old-shell": 1,
+      foxglove: 1
+    };
+    state.round = 4;
+    state.phase = {
+      type: "election",
+      electionNumber: 1,
+      afterRound: 4,
+      resultsRecorded: false,
+      readySeatIds: []
+    };
+
+    const result = executeAction(
+      state,
+      createElectionAction(state, zeroRandom)
+    ).state;
+
+    expect(
+      Object.values(result.support[namedDistrictId]).reduce(
+        (total, count) => total + (count ?? 0),
+        0
+      )
+    ).toBe(capacity / 2);
+    expect(result.support["bellwether-centre"]).toEqual({
+      honeycomb: 1,
+      "old-shell": 1,
+      foxglove: 1
+    });
   });
 
   it("shows only seat-visible reserves, agendas, and bid contents before reveal", () => {

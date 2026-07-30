@@ -3,6 +3,7 @@ import { SCORING_CARDS_BY_ID } from "@bellwether/content";
 import {
   determineWinners,
   recordElectionDraws,
+  retainElectionSupport,
   relativeSeatIndex,
   scoreCard,
   scoreElectionDay,
@@ -74,6 +75,30 @@ describe("Election Day draws and coalition scoring", () => {
     expect(
       scoreCard(card("r", [["six", "riverworks"]]), draws, overtures)
     ).toBe(1);
+  });
+
+  it("keeps drawn Support, removes the undrawn remainder, and leaves unnamed districts unchanged", () => {
+    const districts = {
+      six: district("six", 6, {
+        honeycomb: 2,
+        foxglove: 2,
+        riverworks: 1
+      }),
+      "bellwether-centre": district("bellwether-centre", 3, {
+        "old-shell": 2,
+        "many-wings": 1
+      })
+    };
+    const draws = recordElectionDraws(
+      districts,
+      [card("a", [["six", "honeycomb"]])],
+      () => 0
+    );
+
+    expect(retainElectionSupport(districts, draws)).toEqual({
+      six: { honeycomb: 2, foxglove: 1 },
+      "bellwether-centre": { "old-shell": 2, "many-wings": 1 }
+    });
   });
 });
 

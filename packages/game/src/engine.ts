@@ -41,6 +41,7 @@ import type {
 } from "./model.js";
 import { GameRuleError } from "./model.js";
 import {
+  retainElectionSupport,
   scoreElectionDay,
   type ElectionPlayer,
   type ScoringCard
@@ -813,6 +814,10 @@ function completeElection(state: GameState, randomValues: number[]): void {
   for (const score of result.scores) {
     getSeat(state, score.playerId).reserve.points = score.resultingPoints;
   }
+  state.support = retainElectionSupport(
+    toOperationState(state).districts,
+    result.draws
+  ) as GameState["support"];
   state.electionHistory.push({
     electionNumber: phase.electionNumber,
     afterRound: phase.afterRound,

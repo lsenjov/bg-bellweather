@@ -85,6 +85,31 @@ export function recordElectionDraws(
   return draws;
 }
 
+export function retainElectionSupport(
+  districts: Readonly<Record<string, DistrictState>>,
+  draws: Readonly<Record<string, RecordedDistrictDraw>>
+): Record<string, Partial<Record<Party, number>>> {
+  const retained = Object.fromEntries(
+    Object.entries(districts).map(([districtId, district]) => [
+      districtId,
+      { ...district.support }
+    ])
+  ) as Record<string, Partial<Record<Party, number>>>;
+
+  for (const draw of Object.values(draws)) {
+    if (districts[draw.districtId] === undefined) {
+      throw new Error(`Unknown retained election district: ${draw.districtId}`);
+    }
+    const support: Partial<Record<Party, number>> = {};
+    for (const party of draw.parties) {
+      support[party] = (support[party] ?? 0) + 1;
+    }
+    retained[draw.districtId] = support;
+  }
+
+  return retained;
+}
+
 export function scoreElectionDay(input: {
   state: Pick<OperationState, "districts" | "overtures">;
   players: readonly ElectionPlayer[];
