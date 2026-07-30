@@ -858,7 +858,7 @@ function CounterbidForm(props: {
               <option key={index} value={index}>
                 {FIRMS_BY_ID[slotFirm as keyof typeof FIRMS_BY_ID]?.numeral ??
                   "Firm"}{" "}
-                · cover {(index % 2) + 1}
+                · cover {index % 2 === 0 ? "A" : "B"}
                 {bidId ? " · placed" : ""}
               </option>
             );
