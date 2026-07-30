@@ -570,7 +570,7 @@ export function ContestCard(props: {
               <span>
                 {operations ??
                   (typeof bid.operationCount === "number"
-                    ? `${String(bid.operationCount)} hidden operation tokens`
+                    ? `${String(bid.operationCount)} hidden operation cards`
                     : "Contents concealed")}
               </span>
               {recipient && <em>Transferred to {recipient.displayName}</em>}
@@ -922,7 +922,7 @@ function DecisionForm(props: {
     return (
       <div className="phase-form">
         <h3>Move the Pecking Order</h3>
-        <p>Choose the adjacent pair this operation token swaps.</p>
+        <p>Choose the adjacent pair this operation card swaps.</p>
         <div className="swap-grid">
           {adjacent.map((index) => (
             <button
@@ -1053,7 +1053,7 @@ function OperationForm(props: {
     >
       <h3>{delayed ? "Resolve delayed operation" : `Act for ${party?.shortName ?? partyId}`}</h3>
       <label>
-        Operation token
+        Operation card
         <select
           value={operation}
           disabled={legal.length === 1}

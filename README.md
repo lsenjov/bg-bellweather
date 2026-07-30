@@ -2,7 +2,7 @@
 
 Working repository for the board game currently titled **Ladder Bidding**.
 
-Rival lobbying firms use Clout and operation tokens to influence six animal
+Rival lobbying firms use Clout, Bluff, and operation cards to influence six animal
 political parties in the fictional Republic of Bellwether. The repository now
 contains both the printable design archive and a local, server-authoritative
 web application for two to six human or API-controlled players. It implements
@@ -94,7 +94,7 @@ physical-size checks pass.
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
 | `assets/print/lobbying-firm-boards-a4.pdf` | Three A4 portrait player-board sheets |
 | `assets/print/lobbying-firm-tokens-a4.pdf` | Three A4 landscape firm-token sheets |
-| `assets/print/operation-tokens-a4.pdf` | One A4 portrait operation-token sheet |
+| `assets/print/bid-cards-a4.pdf` | Printable A4 portrait Clout, Bluff, and operation-card supply |
 | `assets/print/scoring-cards-a4.pdf` | Two A4 portrait scoring-card sheets |
 | `assets/print/pecking-order-a4.pdf` | Two A4 landscape Pecking Order sheets |
 

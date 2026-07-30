@@ -33,7 +33,7 @@
           <li>Provide one public location for each opening influence contest and its ranked bids.</li>
           <li>List every party in a persistent Pecking Order that determines party-contest resolution.</li>
           <li>Provide one automatic Pecking Order auction every Campaign Round, with no opener or opening bid.</li>
-          <li>Resolve Pecking Order operation tokens from the lowest active bid to the highest, swapping one adjacent pair per token.</li>
+          <li>Resolve Pecking Order operation cards from the lowest active bid to the highest, swapping one adjacent pair per card.</li>
           <li>Show that the Pecking Order Revolving Door retains the normal high-to-low bid ranking.</li>
           <li>Randomize the six party tokens to form the starting order.</li>
         </ul>
@@ -98,16 +98,16 @@
       <section>
         <span class="status decided">Prototype component and starting state decided</span>
         <h2>Party state</h2>
-        <p>Each party has an unlimited Support supply, public Support on the district map, and one directional overture that may point toward another party. Every party begins with one Support in Harbormouth, Grand Market, and Ironwood, and all six overtures begin unpointed. Reciprocal overtures form a coalition; on Election Day, drawn Support belonging to either partner scores for objectives naming either party. Old Shell’s Court bonus may reinforce its overture with a Shell marker. Night Parliament may hold delayed Rally and Court bonuses until ordinary operation token resolution ends.</p>
-        <p>Each party has one long horizontal tracking board. Three A4 landscape sheets hold two boards each. A board shows the party identity and favored operations, one opening-bid area, two full-text bonus panels with coverable Ready circles, and an overture track containing the five other parties plus an explicitly setup-only unpointed state. Reciprocal overtures show a coalition without a separate coalition marker. Old Shell’s board holds the Shell marker when its overture is reinforced; Night Parliament reminds players to mark each bid that claimed a delayed bonus. Unlimited Support does not require a tracked reserve on these boards.</p>
+        <p>Each party has an unlimited Support supply, public Support on the district map, and one directional overture that may point toward another party. Every party begins with one Support in Harbormouth, Grand Market, and Ironwood, and all six overtures begin unpointed. Reciprocal overtures form a coalition; on Election Day, drawn Support belonging to either partner scores for objectives naming either party. Old Shell’s Court bonus may reinforce its overture with a Shell marker. Night Parliament may hold delayed Rally and Court bonuses until ordinary operation-card resolution ends.</p>
+        <p>Each party has one long horizontal tracking board and one source-coloured overture token. Three A4 landscape sheets hold two boards each and include the matching tokens. A board shows the party identity and favored operations, one opening-bid area, two full-text bonus panels with coverable Ready circles, and an overture track containing a neutral setup position plus five target positions. Every target position uses the target party’s colour, name, and emblem, making the current target legible at a glance without relying on colour alone. Reciprocal targets show a coalition without a separate coalition marker. Old Shell’s board holds the Shell marker when its overture is reinforced; Night Parliament reminds players to mark each bid that claimed a delayed bonus. Unlimited Support does not require a tracked reserve on these boards.</p>
         <p><a href="party-boards.html">Open the printable party tracking boards →</a></p>
       </section>
 
       <section id="pecking-order">
         <span class="status decided">Prototype component and random setup decided</span>
         <h2>Pecking Order</h2>
-        <p>The Pecking Order is one A4 landscape board with six numbered positions and six movable 44 mm party tokens. The positions run from the first party contest to the last. Each token repeats its party’s prototype colour, emblem, and short name so the order remains readable without relying on colour. Party numbers do not appear on the tokens because numbers identify resolution positions on this component.</p>
-        <p>The board also identifies the automatic auction and its exceptional operative sequence. There is no opening-bid position. Covered counterbids sit beside the board’s long yellow edge because a fixed set of 70 mm spaces could not hold the maximum counterbid supply. Bids rank normally from most Clout to least, operatives execute from the lowest active bid to the highest, and the Revolving Door then uses the normal high-to-low ranking. Every operative swaps one adjacent pair of party tokens.</p>
+        <p>The Pecking Order is one A4 landscape sheet. Its upper board has six numbered positions, while its cut-away lower panel supplies six movable 44 mm party tokens, one Early Bird marker, and one round marker. The positions run from the first party contest to the last. Each party token repeats its party’s prototype colour, emblem, and short name so the order remains readable without relying on colour. Party numbers do not appear on the tokens because numbers identify resolution positions on this component.</p>
+        <p>The board identifies the automatic auction and its exceptional operation-card sequence without retaining the former three-panel procedure block. There is no opening-bid position. Counterbid stacks sit beside the board’s long yellow edge. Bids rank normally from most Clout to least, operation cards execute from the lowest active bid to the highest, and the Revolving Door then uses the normal high-to-low ranking. Every operation card swaps one adjacent pair of party tokens; Bluff cards do nothing.</p>
         <p>Shuffle all six party tokens during setup to create a random starting order.</p>
         <p><a href="pecking-order.html">Open the printable Pecking Order board and tokens →</a></p>
         <div class="note">
@@ -118,7 +118,7 @@
       <section>
         <span class="status decided">Prototype map decided / setup open</span>
         <h2 id="district-map">District map</h2>
-        <p>The first prototype uses sixteen named districts in a ring-and-cross layout. Twelve districts form the outer land ring. Bellwether Centre connects through Crown Road, Canal Ward, and Old Quarter to Northreach, Reedwater, and Westgate. Districts are neighboring when they share a black border segment; meeting only at a point or across Crownwater does not make them neighbors.</p>
+        <p>The first prototype uses sixteen named districts in a ring-and-cross layout. Twelve districts form the outer land ring. Bellwether Centre connects through Crown Road, Canal Ward, and Old Quarter to Northreach, Reedwater, and Westgate. Districts are neighboring when they share a black border segment; meeting only at a point or across Crownwater does not make them neighbors. The map also carries the twelve-round/three-election tracker and a public score track from 0 through 20.</p>
         <figure class="board-map">
           <div class="board-map-frame">
             <img src="../assets/ring-and-cross-district-map.svg" alt="Territorial map of sixteen named districts surrounding Crownwater. Twelve districts form the outer land ring, and three causeway districts connect Bellwether Centre to the ring.">
@@ -131,7 +131,7 @@
         <h3>A3 print export</h3>
         <p>The print-ready PDF is one 420 × 297 mm A3 landscape page. It keeps the 396 × 297 mm artwork at 100% scale and centers it with 12 mm white margins on the left and right. Print at “Actual size” or 100% with “Fit to page” disabled.</p>
         <p>Run <code>./scripts/export-print-assets.sh</code> from the repository root to regenerate this PDF and every other print-ready component. The command verifies the fonts and the 396 × 297 mm source size before converting map text to paths, so the printed result does not depend on fonts installed at the printer. The repository README lists all tool and font prerequisites.</p>
-        <p>The grey districts—Harbormouth, Grand Market, and Ironwood—hold six Support each. Their six ring neighbors hold four each. Bellwether Centre holds three. Northreach, Reedwater, Westgate, and the three causeway districts hold two each. The complete map has fifty-seven Support spots and eighteen shared borders.</p>
+        <p>The grey districts—Harbormouth, Grand Market, and Ironwood—hold six Support each. Their six ring neighbors hold four each. Bellwether Centre holds three. Northreach, Reedwater, Westgate, and the three causeway districts hold two each. The complete map has fifty-seven Support spots and eighteen shared borders. Capacity remains visible through the number of printed Support circles; redundant “2 spots,” “4 spots,” and “6 spots” labels are omitted.</p>
         <h3>District reference</h3>
         <div class="table-wrap" role="region" aria-label="District capacities and neighboring districts" tabindex="0">
           <table>

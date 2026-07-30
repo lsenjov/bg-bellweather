@@ -28,7 +28,16 @@ Apply the 2026-07-30 physical-prototype feedback across the live rules, componen
 - Update navigation and print-export descriptions where page counts or component families change.
 - Run document validation and commit.
 
-## Step 2 — Bid-card print asset
+## Step 2 — Authoritative game and browser compatibility
+
+- Add Bluff holdings to player reserves, bids, gifts, events, projections, persistence, and replay-safe public state.
+- Accept Bluff counts when players place or revise opening bids and counterbids.
+- Hide opening operation/Bluff composition from opponents while keeping opening Clout public.
+- Transfer Bluff cards with complete bids through the Revolving Door and allow eligible Bluff gifts.
+- Update the HTTP/WebSocket protocol, example agent, browser controls, and automated tests.
+- Run typechecks and the complete test suite, then commit.
+
+## Step 3 — Bid-card print asset
 
 - Replace the operation-token printable with a combined bid-card document and stylesheet.
 - Supply the maximum six-standard-player economy: 60 Clout, 24 Bluff, 12 Organise, 12 Rally, 12 Smear, and 6 Court cards.
@@ -37,14 +46,14 @@ Apply the 2026-07-30 physical-prototype feedback across the live rules, componen
 - Update the exporter and generated-output allowlist.
 - Export, inspect representative pages, validate, and commit.
 
-## Step 3 — Party boards
+## Step 4 — Party boards
 
 - Remove the opening-area container instruction.
 - Redesign overture tracks with one neutral setup position and five target-coloured positions using names and emblems as redundant identifiers.
 - Add six printable overture tokens without changing the three-sheet party-board count if layout permits; otherwise add the minimum required token sheet and update export validation.
 - Export, inspect all party variants, validate, and commit.
 
-## Step 4 — Firm boards
+## Step 5 — Firm boards
 
 - Make each Sealed Agenda well exactly 40 × 61 mm.
 - Remove Issued Pieces and the Campaign Round overview.
@@ -52,7 +61,7 @@ Apply the 2026-07-30 physical-prototype feedback across the live rules, componen
 - Add a compact six-party reference with two short power summaries per party.
 - Export, inspect all firm variants, validate, and commit.
 
-## Step 5 — Pecking Order and shared markers
+## Step 6 — Pecking Order and shared markers
 
 - Remove the A/B/C procedure panels.
 - Place the six existing party-order tokens in the former lower-board area.
@@ -61,7 +70,7 @@ Apply the 2026-07-30 physical-prototype feedback across the live rules, componen
 - Preserve essential exceptional-auction guidance in the masthead/footer or player aids.
 - Export, inspect, validate, and commit.
 
-## Step 6 — District map trackers
+## Step 7 — District map trackers
 
 - Remove all visible capacity text while retaining semantic district capacities and every Support circle.
 - Add the round sequence `1–4 / Election I / 5–8 / Election II / 9–12 / Election III`.
@@ -69,7 +78,7 @@ Apply the 2026-07-30 physical-prototype feedback across the live rules, componen
 - Preserve the 396 × 297 mm source-artwork size and A3 export.
 - Export, inspect the full map, validate, and commit.
 
-## Step 7 — Integrated verification
+## Step 8 — Integrated verification
 
 - Run the complete print exporter.
 - Run document checks and the repository test suite.
@@ -77,7 +86,7 @@ Apply the 2026-07-30 physical-prototype feedback across the live rules, componen
 - Render representative PDF pages to images and inspect card fronts/backs, all board families, cut lines, track readability, and clipping.
 - Commit any integration fixes.
 
-## Step 8 — Independent review
+## Step 9 — Independent review
 
 - Have a fresh agent review the complete implementation for rules consistency, component counts, print usability, accessibility, and export integrity.
 - Resolve every high- or medium-severity finding and repeat review until none remain.
