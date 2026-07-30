@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Local HTTP and WebSocket API contract for automated Ladder Bidding playtest agents.">
+    <title>Playtest Agent API — Ladder Bidding</title>
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../index.html">
+          <span class="brand-mark" aria-hidden="true">LB</span>
+          Design archive / agent API
+        </a>
+        <h1>Playtest agent API</h1>
+        <p class="meta">The authenticated local contract shared by browser players and automated seats.</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Playtest agent API</nav>
+      <p class="intro">Run the application locally at <code>http://127.0.0.1:4317</code>. Every seat receives an opaque bearer token. A command’s acting seat always comes from that token; any client-supplied seat or timestamp is ignored.</p>
+
+      <section>
+        <span class="status decided">Implemented</span>
+        <h2>Start and connect</h2>
+        <pre><code>npm install
+npm run build
+npm start
+
+# Development, with source packages and server reload
+npm run dev</code></pre>
+        <p>Create a table with <code>POST /api/v1/games</code>, or join one with <code>POST /api/v1/games/join</code>. Both responses contain a session with <code>gameId</code>, <code>seatId</code> or <code>spectatorId</code>, and <code>accessToken</code>. Keep the token private and send it as <code>Authorization: Bearer …</code>.</p>
+      </section>
+
+      <section>
+        <h2>HTTP routes</h2>
+        <div class="table-wrap" role="region" aria-label="Agent HTTP routes" tabindex="0">
+          <table>
+            <thead><tr><th>Method</th><th>Route</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td>GET</td><td><code>/api/v1/health</code></td><td>Server and ruleset health.</td></tr>
+              <tr><td>POST</td><td><code>/api/v1/games</code></td><td>Create a lobby and host seat.</td></tr>
+              <tr><td>POST</td><td><code>/api/v1/games/join</code></td><td>Join by invite code as a player or spectator.</td></tr>
+              <tr><td>GET</td><td><code>/api/v1/games/:id/state</code></td><td>Get the authenticated public plus seat-private projection.</td></tr>
+              <tr><td>POST</td><td><code>/api/v1/games/:id/commands</code></td><td>Submit an idempotent lobby or game command.</td></tr>
+              <tr><td>GET</td><td><code>/api/v1/games/:id/replay</code></td><td>Get canonical full-information events after completion.</td></tr>
+              <tr><td>WS</td><td><code>/api/v1/games/:id/events</code></td><td>Resume from a sequence and receive redacted live events.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Command envelope</h2>
+        <pre><code>{
+  "gameId": "uuid",
+  "idempotencyKey": "agent-turn-0042",
+  "expectedVersion": 17,
+  "command": {
+    "type": "game_action",
+    "action": { "type": "set_counterbid_ready", "ready": true }
+  }
+}</code></pre>
+        <p><code>expectedVersion</code> is optional. Supplying it rejects decisions made from stale state. Reusing the same idempotency key with the same request returns the first acceptance; reusing it for different content is an error.</p>
+        <p>Lobby commands are <code>set_lobby_ready</code> and host-only <code>start_game</code>. Social commands are <code>post_chat</code> and <code>give_resources</code>. Player game actions are <code>submit_openings</code>, <code>set_counterbid</code>, <code>set_counterbid_ready</code>, <code>resolve_pecking_swap</code>, <code>resolve_party_operation</code>, and <code>set_election_ready</code>. Election draws and timer expiry are server-only.</p>
+      </section>
+
+      <section>
+        <h2>Visibility</h2>
+        <p>Public state includes the phase, public points, map Support, overtures, Pecking Order, contest targets, readiness, chat, retained round reveals, and Election results. A seat projection additionally includes only that seat’s reserve, scoring card, covered bid contents, cover slots, and pending decision. Spectators receive public state only. Live canonical events never disclose hidden engine payloads or gift contents.</p>
+        <p>After the game ends, every authenticated participant may fetch the complete event history and canonical final state. Random setup and Election draws are recorded, so replay never rerolls.</p>
+      </section>
+
+      <section>
+        <h2>WebSocket resume</h2>
+        <pre><code>{
+  "type": "authenticate",
+  "gameId": "uuid",
+  "accessToken": "opaque token",
+  "afterSequence": 17
+}</code></pre>
+        <p>Omit <code>afterSequence</code> to receive a current snapshot. Include it to receive later projected events. Refetch the state after an event when the agent needs the newest legal-action context.</p>
+      </section>
+
+      <p class="footer-note">The reusable TypeScript client is in <code>packages/testkit</code>; a runnable conservative agent is in <code>examples/playtest-agent.ts</code>.</p>
+    </main>
+  </body>
+</html>

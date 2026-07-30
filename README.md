@@ -2,15 +2,12 @@
 
 Working repository for the board game currently titled **Ladder Bidding**.
 
-Rival lobbying firms use Clout and operatives to influence six animal political
-parties in the fictional Republic of Bellwether. The game is at pre-prototype
-stage; a printable map of sixteen named districts, Support actions, and all
-twelve party bonuses are committed. Coalition partners share Election Day
-scoring, players may trade Clout and operation tokens held behind their
-screens, and immediate deals are binding while future promises are not.
-Starting Support and tie-breakers remain open.
-The documents deliberately separate committed rules, working hypotheses, and
-open questions.
+Rival lobbying firms use Clout and operation tokens to influence six animal
+political parties in the fictional Republic of Bellwether. The repository now
+contains both the printable design archive and a local, server-authoritative
+web application for two to six human or API-controlled players. It implements
+the twelve-round campaign, three Election Days, unlimited Support, one-way
+resource gifts, hidden seat state, persistence, and completed-game replay.
 
 Start here:
 
@@ -22,6 +19,41 @@ Start here:
 
 Open `docs/index.html` directly in a browser. No build step or web server is
 required.
+
+## Run the web application
+
+Requires Node.js 22 or newer.
+
+```sh
+npm install
+npm run build
+npm start
+```
+
+Open `http://127.0.0.1:4317`. The SQLite database is stored at
+`data/ladder-bidding.sqlite` unless `BELLWETHER_DATABASE` overrides it.
+
+For source-reloading server and browser processes:
+
+```sh
+npm run dev
+npm run dev:web
+```
+
+The browser development server runs at `http://127.0.0.1:5173` and proxies the
+API to port 4317.
+
+Automated seats can use the contract in
+[`docs/playtesting/agent-api.html`](docs/playtesting/agent-api.html) and the
+reusable client in `packages/testkit`. To launch the conservative example
+agent:
+
+```sh
+BELLWETHER_INVITE=ABC234XY npm run agent:example
+```
+
+Omit `BELLWETHER_INVITE` to have the agent create a new table and print its
+invite code and session.
 
 ## Validate the archive
 

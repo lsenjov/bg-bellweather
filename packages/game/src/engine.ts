@@ -118,6 +118,8 @@ export function initializeGame(
     ),
     chat: [],
     resolvedOperations: [],
+    roundHistory: [],
+    electionHistory: [],
     phase: {
       type: "opening",
       activeSeatId: firstOpener.id,
@@ -172,6 +174,12 @@ export function createElectionAction(
   random: RandomSource
 ): Extract<GameAction, { type: "complete_election" }> {
   const phase = requirePhase(state, "election");
+  if (phase.resultsRecorded) {
+    throw new GameRuleError(
+      "election_already_scored",
+      "Election Day results are already recorded"
+    );
+  }
   const randomValues: number[] = [];
   scoreElectionDay({
     state: toOperationState(state),
@@ -201,6 +209,8 @@ export function replay(events: readonly GameEvent[]): GameState {
 
 export function applyAction(state: GameState, action: GameAction): GameState {
   const next = structuredClone(state);
+  next.roundHistory ??= [];
+  next.electionHistory ??= [];
   if (next.phase.type === "complete") {
     throw new GameRuleError("game_complete", "The game is complete");
   }
@@ -210,10 +220,10 @@ export function applyAction(state: GameState, action: GameAction): GameState {
       submitOpenings(next, action.seatId, action.openings, action.now);
       break;
     case "set_counterbid":
-      setCounterbid(next, action.seatId, action.slotIndex, action.bid);
+      setCounterbid(next, action.seatId, action.slotIndex, action.bid, action.now);
       break;
     case "set_counterbid_ready":
-      setCounterbidReady(next, action.seatId, action.ready);
+      setCounterbidReady(next, action.seatId, action.ready, action.now);
       break;
     case "expire_counterbids":
       expireCounterbids(next, action.now);
@@ -237,6 +247,9 @@ export function applyAction(state: GameState, action: GameAction): GameState {
       break;
     case "complete_election":
       completeElection(next, action.randomValues);
+      break;
+    case "set_election_ready":
+      setElectionReady(next, action.seatId, action.ready);
       break;
     case "post_chat":
       postChat(next, action.seatId, action.text, action.now);
@@ -277,6 +290,9 @@ function submitOpenings(
   const parties = new Set<PartyId>();
   for (const opening of openings) {
     validateFirm(seat, opening.firmId);
+    if (!(PARTY_IDS as readonly string[]).includes(opening.partyId)) {
+      throw new GameRuleError("unknown_party", "Opening target party does not exist");
+    }
     if (firms.has(opening.firmId)) {
       throw new GameRuleError("duplicate_firm", "A firm can open only one contest");
     }
@@ -327,9 +343,11 @@ function setCounterbid(
   state: GameState,
   seatId: SeatId,
   slotIndex: number,
-  input: CounterbidInput | null
+  input: CounterbidInput | null,
+  now: number
 ): void {
   const phase = requirePhase(state, "counterbidding");
+  requireCounterbidTime(phase, now);
   if (phase.readySeatIds.includes(seatId)) {
     throw new GameRuleError("seat_ready", "Unready before changing a counterbid");
   }
@@ -377,9 +395,11 @@ function setCounterbid(
 function setCounterbidReady(
   state: GameState,
   seatId: SeatId,
-  ready: boolean
+  ready: boolean,
+  now: number
 ): void {
   const phase = requirePhase(state, "counterbidding");
+  requireCounterbidTime(phase, now);
   getSeat(state, seatId);
   phase.readySeatIds = phase.readySeatIds.filter((id) => id !== seatId);
   if (ready) {
@@ -399,6 +419,21 @@ function expireCounterbids(state: GameState, now: number): void {
     throw new GameRuleError("timer_running", "The counterbid deadline has not passed");
   }
   beginResolution(state);
+}
+
+function requireCounterbidTime(
+  phase: Extract<GameState["phase"], { type: "counterbidding" }>,
+  now: number
+): void {
+  if (!Number.isFinite(now)) {
+    throw new GameRuleError("invalid_time", "Counterbid action time is invalid");
+  }
+  if (phase.deadlineAt !== null && now >= phase.deadlineAt) {
+    throw new GameRuleError(
+      "counterbid_deadline_passed",
+      "The counterbid deadline has passed"
+    );
+  }
 }
 
 function beginResolution(state: GameState): void {
@@ -715,12 +750,27 @@ function cancelTiedCounterbids(state: GameState): void {
 }
 
 function finishRound(state: GameState): void {
+  const firstResolvedIndex = state.resolvedOperations.findIndex(
+    (operation) => operation.round === state.round
+  );
+  state.roundHistory.push({
+    round: state.round,
+    partyOrder: [...state.partyOrder],
+    contests: structuredClone(state.contests),
+    bids: structuredClone(state.bids),
+    resolvedOperations:
+      firstResolvedIndex === -1
+        ? []
+        : structuredClone(state.resolvedOperations.slice(firstResolvedIndex))
+  });
   if ((ELECTION_ROUNDS as readonly number[]).includes(state.round)) {
     const electionNumber = (state.electionNumber + 1) as 1 | 2 | 3;
     state.phase = {
       type: "election",
       electionNumber,
-      afterRound: state.round as 4 | 8 | 12
+      afterRound: state.round as 4 | 8 | 12,
+      resultsRecorded: false,
+      readySeatIds: []
     };
     return;
   }
@@ -729,6 +779,16 @@ function finishRound(state: GameState): void {
 
 function completeElection(state: GameState, randomValues: number[]): void {
   const phase = requirePhase(state, "election");
+  if (phase.resultsRecorded) {
+    throw new GameRuleError(
+      "election_already_scored",
+      "Election Day results are already recorded"
+    );
+  }
+  const scoringCards = state.seats.map((seat) => ({
+    seatId: seat.id,
+    scoringCardId: seat.scoringCardId
+  }));
   let randomIndex = 0;
   const result = scoreElectionDay({
     state: toOperationState(state),
@@ -749,10 +809,45 @@ function completeElection(state: GameState, randomValues: number[]): void {
   for (const score of result.scores) {
     getSeat(state, score.playerId).reserve.points = score.resultingPoints;
   }
+  state.electionHistory.push({
+    electionNumber: phase.electionNumber,
+    afterRound: phase.afterRound,
+    scoringCards,
+    draws: structuredClone(result.draws),
+    scores: structuredClone(result.scores),
+    winnerSeatIds: [...result.winnerIds]
+  });
   state.electionNumber = phase.electionNumber;
+  phase.resultsRecorded = true;
+}
 
+function setElectionReady(
+  state: GameState,
+  seatId: SeatId,
+  ready: boolean
+): void {
+  const phase = requirePhase(state, "election");
+  if (!phase.resultsRecorded) {
+    throw new GameRuleError(
+      "election_results_pending",
+      "Election Day results are not ready"
+    );
+  }
+  getSeat(state, seatId);
+  phase.readySeatIds = phase.readySeatIds.filter((id) => id !== seatId);
+  if (ready) {
+    phase.readySeatIds.push(seatId);
+  }
+  if (phase.readySeatIds.length !== state.seats.length) {
+    return;
+  }
   if (phase.afterRound === 12) {
-    state.phase = completePhase(state);
+    const complete = completePhase(state);
+    const finalElection = state.electionHistory.at(-1);
+    if (finalElection?.afterRound === 12) {
+      finalElection.winnerSeatIds = [...complete.winnerSeatIds];
+    }
+    state.phase = complete;
     return;
   }
   for (const seat of state.seats) {
@@ -953,7 +1048,41 @@ function parseOperationChoice(
       "Operation choice must match the selected operation"
     );
   }
+  if (operation === "organise") {
+    requireDistrictId(value["destinationDistrictId"], "destinationDistrictId");
+    if (value["sourceDistrictId"] !== undefined) {
+      requireDistrictId(value["sourceDistrictId"], "sourceDistrictId");
+    }
+  } else if (operation === "rally") {
+    requireDistrictId(value["districtId"], "districtId");
+  } else if (operation === "smear") {
+    requireDistrictId(value["districtId"], "districtId");
+    requirePartyId(value["rivalParty"], "rivalParty");
+  } else {
+    requirePartyId(value["targetParty"], "targetParty");
+  }
+  if (value["bonusDistrictId"] !== undefined) {
+    requireDistrictId(value["bonusDistrictId"], "bonusDistrictId");
+  }
   return value as unknown as OperationChoice;
+}
+
+function requireDistrictId(value: unknown, field: string): void {
+  if (
+    typeof value !== "string" ||
+    !(DISTRICT_IDS as readonly string[]).includes(value)
+  ) {
+    throw new GameRuleError("invalid_operation", `${field} must be a district`);
+  }
+}
+
+function requirePartyId(value: unknown, field: string): void {
+  if (
+    typeof value !== "string" ||
+    !(PARTY_IDS as readonly string[]).includes(value)
+  ) {
+    throw new GameRuleError("invalid_operation", `${field} must be a party`);
+  }
 }
 
 function toNightClaim(claim: {

@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -14,6 +14,29 @@ afterEach(() => {
 });
 
 describe("game server", () => {
+  it("serves a built browser app with SPA fallback", async () => {
+    const directory = mkdtempSync(resolve(tmpdir(), "bellwether-server-"));
+    temporaryDirectories.push(directory);
+    const webRoot = resolve(directory, "web");
+    mkdirSync(webRoot);
+    writeFileSync(resolve(webRoot, "index.html"), "<main>Bellwether</main>");
+    writeFileSync(resolve(webRoot, "app.js"), "globalThis.BELLWETHER = true");
+    const app = createAppServer({
+      databasePath: resolve(directory, "game.sqlite"),
+      webRoot,
+      port: 0
+    });
+    const address = await app.listen();
+    const baseUrl = `http://${address.host}:${address.port}`;
+    const home = await fetch(new URL("/", baseUrl));
+    const route = await fetch(new URL("/games/example", baseUrl));
+    const asset = await fetch(new URL("/app.js", baseUrl));
+    expect(await home.text()).toContain("Bellwether");
+    expect(await route.text()).toContain("Bellwether");
+    expect(asset.headers.get("content-type")).toContain("text/javascript");
+    await app.close();
+  });
+
   it("persists an authenticated lobby and processes idempotent commands", async () => {
     const directory = mkdtempSync(resolve(tmpdir(), "bellwether-server-"));
     temporaryDirectories.push(directory);
@@ -52,6 +75,9 @@ describe("game server", () => {
       }
     });
     expect(joined.status).toBe(201);
+    const joinBody = joined.body as {
+      session: { seatId: string; accessToken: string };
+    };
 
     const unauthorized = await jsonRequest(
       baseUrl,
@@ -158,6 +184,41 @@ describe("game server", () => {
     expect(conflictingRetry.body).toMatchObject({
       error: { code: "idempotency_conflict" }
     });
+    const gift = await jsonRequest(
+      baseUrl,
+      `/api/v1/games/${createBody.session.gameId}/commands`,
+      {
+        method: "POST",
+        token: createBody.session.accessToken,
+        body: {
+          gameId: createBody.session.gameId,
+          idempotencyKey: "gift-once",
+          expectedVersion: 5,
+          command: {
+            type: "give_resources",
+            recipientSeatId: joinBody.session.seatId,
+            clout: 0,
+            operations: { organise: 0, rally: 0, smear: 0, court: 0 },
+            points: 2
+          }
+        }
+      }
+    );
+    expect(gift.status).toBe(200);
+    const afterGift = await jsonRequest(
+      baseUrl,
+      `/api/v1/games/${createBody.session.gameId}/state`,
+      { token: joinBody.session.accessToken }
+    );
+    expect(
+      (
+        afterGift.body as {
+          publicState: {
+            publicGame: { seats: Array<{ id: string; points: number }> };
+          };
+        }
+      ).publicState.publicGame.seats.map(({ points }) => points)
+    ).toEqual([8, 12]);
 
     await app.close();
 
@@ -176,7 +237,7 @@ describe("game server", () => {
         }
       ).publicState
     ).toMatchObject({
-      latestSequence: 5,
+      latestSequence: 6,
       seats: [{ ready: true }, { ready: false }]
     });
     await reopened.close();
@@ -242,7 +303,7 @@ describe("game server", () => {
     await app.close();
   });
 
-  it("redacts private command events from opponents and spectators", async () => {
+  it("redacts canonical engine events from opponents and spectators", async () => {
     const directory = mkdtempSync(resolve(tmpdir(), "bellwether-server-"));
     temporaryDirectories.push(directory);
     const app = createAppServer({
@@ -276,7 +337,9 @@ describe("game server", () => {
         role: "player"
       }
     });
-    const opponent = joined.body as { session: { accessToken: string } };
+    const opponent = joined.body as {
+      session: { seatId: string; accessToken: string };
+    };
     const watched = await jsonRequest(baseUrl, "/api/v1/games/join", {
       method: "POST",
       body: {
@@ -316,19 +379,75 @@ describe("game server", () => {
     );
     const opponentEvent = nextSocketFrame(opponentSocket);
     const observerEvent = nextSocketFrame(observerSocket);
+    const activeState = await jsonRequest(
+      baseUrl,
+      `/api/v1/games/${host.session.gameId}/state`,
+      { token: host.session.accessToken }
+    );
+    const active = activeState.body as {
+      seatState: {
+        privateGame: {
+          reserve: unknown;
+          scoringCardId: string;
+        };
+      };
+      publicState: {
+        publicGame: {
+          phase: { activeSeatId: string };
+          partyOrder: string[];
+          seats: Array<{ id: string; firmIds: string[] }>;
+        };
+      };
+    };
+    const publicGameJson = JSON.stringify(active.publicState.publicGame);
+    expect(publicGameJson).not.toContain("scoringCardId");
+    expect(publicGameJson).not.toContain('"reserve"');
+    expect(active.seatState.privateGame).toMatchObject({
+      reserve: {
+        clout: 20,
+        operations: { organise: 4, rally: 4, smear: 4, court: 2 },
+        points: 10
+      }
+    });
+    const actor =
+      active.publicState.publicGame.phase.activeSeatId === host.session.seatId
+        ? host.session
+        : { ...opponent.session, gameId: host.session.gameId };
+    const firms = active.publicState.publicGame.seats.find(
+      (seat) => seat.id === actor.seatId
+    )!.firmIds;
+    const emptyOperations = { organise: 0, rally: 0, smear: 0, court: 0 };
     await jsonRequest(
       baseUrl,
       `/api/v1/games/${host.session.gameId}/commands`,
       {
         method: "POST",
-        token: host.session.accessToken,
+        token: actor.accessToken,
         body: {
           gameId: host.session.gameId,
           idempotencyKey: "private-action",
           expectedVersion: 4,
           command: {
             type: "game_action",
-            action: { type: "compose_counterbid", clout: 4 }
+            action: {
+              type: "submit_openings",
+              seatId: "untrusted-client-seat",
+              openings: [
+                {
+                  firmId: firms[0],
+                  partyId: active.publicState.publicGame.partyOrder[0],
+                  clout: 1,
+                  operations: emptyOperations
+                },
+                {
+                  firmId: firms[1],
+                  partyId: active.publicState.publicGame.partyOrder[1],
+                  clout: 1,
+                  operations: emptyOperations
+                }
+              ],
+              now: 0
+            }
           }
         }
       }
@@ -336,17 +455,21 @@ describe("game server", () => {
     await expect(opponentEvent).resolves.toMatchObject({
       type: "event",
       event: {
-        eventType: "private_event",
+        eventType: "game.action_applied",
         scope: "public",
-        publicData: {}
+        publicData: {
+          actions: [{ type: "submit_openings", seatId: actor.seatId }]
+        }
       }
     });
     await expect(observerEvent).resolves.toMatchObject({
       type: "event",
       event: {
-        eventType: "private_event",
+        eventType: "game.action_applied",
         scope: "public",
-        publicData: {}
+        publicData: {
+          actions: [{ type: "submit_openings", seatId: actor.seatId }]
+        }
       }
     });
     opponentSocket.close();
@@ -376,13 +499,172 @@ describe("game server", () => {
       }
     ).events;
     expect(replayEvents.at(-1)?.fullData.event).toMatchObject({
-      actorSeatId: host.session.seatId,
-      visibility: "seat",
-      privateSeatId: host.session.seatId
+      actorSeatId: actor.seatId,
+      visibility: "public",
+      privateSeatId: null
     });
     await app.close();
   });
+
+  it("recovers and expires a counterbid deadline after restart", async () => {
+    const directory = mkdtempSync(resolve(tmpdir(), "bellwether-server-"));
+    temporaryDirectories.push(directory);
+    const databasePath = resolve(directory, "game.sqlite");
+    let clock = new Date("2026-07-30T12:00:00.000Z");
+    const serverOptions = {
+      databasePath,
+      port: 0,
+      now: () => clock,
+      randomInteger: () => 0
+    };
+    const app = createAppServer(serverOptions);
+    const address = await app.listen();
+    const baseUrl = `http://${address.host}:${address.port}`;
+    const created = await jsonRequest(baseUrl, "/api/v1/games", {
+      method: "POST",
+      body: {
+        displayName: "Host",
+        controller: "human",
+        configuration: {
+          playerCount: 2,
+          counterbidTimer: { mode: "countdown", durationSeconds: 5 },
+          allowSpectators: false
+        }
+      }
+    });
+    const host = created.body as {
+      inviteCode: string;
+      session: { gameId: string; seatId: string; accessToken: string };
+    };
+    const joined = await jsonRequest(baseUrl, "/api/v1/games/join", {
+      method: "POST",
+      body: {
+        inviteCode: host.inviteCode,
+        displayName: "Opponent",
+        controller: "agent",
+        role: "player"
+      }
+    });
+    const opponent = (joined.body as {
+      session: { seatId: string; accessToken: string };
+    }).session;
+    await sendCommand(baseUrl, host.session, 2, "start-timer", {
+      type: "start_game"
+    });
+
+    let version = 3;
+    for (const session of [host.session, opponent]) {
+      const state = await jsonRequest(
+        baseUrl,
+        `/api/v1/games/${host.session.gameId}/state`,
+        { token: session.accessToken }
+      );
+      const view = state.body as {
+        publicState: {
+          publicGame: {
+            phase: { activeSeatId: string };
+            partyOrder: string[];
+            seats: Array<{ id: string; firmIds: string[] }>;
+            contests: Record<string, unknown>;
+          };
+        };
+      };
+      expect(view.publicState.publicGame.phase.activeSeatId).toBe(session.seatId);
+      const firms = view.publicState.publicGame.seats.find(
+        (seat) => seat.id === session.seatId
+      )!.firmIds;
+      const openParties = new Set(
+        Object.keys(view.publicState.publicGame.contests).filter(
+          (contestId) => contestId !== "pecking-order"
+        )
+      );
+      const parties = view.publicState.publicGame.partyOrder
+        .filter((partyId) => !openParties.has(partyId))
+        .slice(0, 2);
+      await sendCommand(
+        baseUrl,
+        { ...session, gameId: host.session.gameId },
+        version,
+        `open-${session.seatId}`,
+        {
+          type: "game_action",
+          action: {
+            type: "submit_openings",
+            openings: parties.map((partyId, index) => ({
+              firmId: firms[index],
+              partyId,
+              clout: 1,
+              operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+            }))
+          }
+        }
+      );
+      version += 1;
+    }
+
+    const waiting = app.store.loadEngineState(host.session.gameId);
+    expect(waiting?.phase).toMatchObject({
+      type: "counterbidding",
+      deadlineAt: clock.getTime() + 5_000
+    });
+    await app.close();
+
+    clock = new Date(clock.getTime() + 6_000);
+    const reopened = createAppServer(serverOptions);
+    const reopenedAddress = await reopened.listen();
+    const reopenedBase = `http://${reopenedAddress.host}:${reopenedAddress.port}`;
+    let recovered:
+      | {
+          publicState: {
+            latestSequence: number;
+            publicGame: { phase: { type: string }; round: number };
+          };
+        }
+      | undefined;
+    for (let attempt = 0; attempt < 30; attempt += 1) {
+      const state = await jsonRequest(
+        reopenedBase,
+        `/api/v1/games/${host.session.gameId}/state`,
+        { token: host.session.accessToken }
+      );
+      recovered = state.body as typeof recovered;
+      if (recovered?.publicState.publicGame.phase.type !== "counterbidding") {
+        break;
+      }
+      await new Promise((resolveWait) => setTimeout(resolveWait, 10));
+    }
+    expect(recovered?.publicState.latestSequence).toBe(6);
+    expect(recovered?.publicState.publicGame).toMatchObject({
+      round: 2,
+      phase: { type: "opening" }
+    });
+    await reopened.close();
+  });
 });
+
+async function sendCommand(
+  baseUrl: string,
+  session: { gameId: string; accessToken: string },
+  expectedVersion: number,
+  idempotencyKey: string,
+  command: unknown
+): Promise<void> {
+  const response = await jsonRequest(
+    baseUrl,
+    `/api/v1/games/${session.gameId}/commands`,
+    {
+      method: "POST",
+      token: session.accessToken,
+      body: {
+        gameId: session.gameId,
+        idempotencyKey,
+        expectedVersion,
+        command
+      }
+    }
+  );
+  expect(response.status).toBe(200);
+}
 
 async function jsonRequest(
   baseUrl: string,

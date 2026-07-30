@@ -15,6 +15,37 @@ import {
 } from "../src/index.js";
 
 describe("game setup and private projections", () => {
+  it.each([
+    [2, 2, 20, 10, 4],
+    [3, 2, 20, 10, 4],
+    [4, 1, 10, 5, 2],
+    [5, 1, 10, 5, 2],
+    [6, 1, 10, 5, 2]
+  ])(
+    "creates the committed economy for %i players",
+    (playerCount, firms, clout, points, slots) => {
+      const state = initializeGame(
+        configuration(playerCount, null),
+        zeroRandom
+      ).state;
+      expect(state.seats).toHaveLength(playerCount);
+      expect(state.seats.every((seat) => seat.firmIds.length === firms)).toBe(
+        true
+      );
+      expect(state.seats.every((seat) => seat.reserve.clout === clout)).toBe(
+        true
+      );
+      expect(state.seats.every((seat) => seat.reserve.points === points)).toBe(
+        true
+      );
+      expect(
+        Object.values(state.counterbidSlots).every(
+          (counterbids) => counterbids.length === slots
+        )
+      ).toBe(true);
+    }
+  );
+
   it("creates doubled low-player economies and records all random setup outcomes", () => {
     const initialized = initializeGame(configuration(2, null), zeroRandom);
     const state = initialized.state;
@@ -40,6 +71,7 @@ describe("game setup and private projections", () => {
       type: "set_counterbid",
       seatId: "seat-1",
       slotIndex: 0,
+      now: 100,
       bid: {
         contestId: PARTY_IDS[0],
         firmId: state.seats[0]!.firmIds[0]!,
@@ -84,6 +116,17 @@ describe("opening and counterbid phases", () => {
     ).toThrow("firm can open only one");
     expect(state.phase.type).toBe("opening");
     expect(state.seats[0]?.reserve.clout).toBe(20);
+    expect(() =>
+      act(state, {
+        type: "submit_openings",
+        seatId: seat.id,
+        now: 0,
+        openings: [
+          opening(seat.firmIds[0]!, "invented-party" as PartyId, 1),
+          opening(seat.firmIds[1]!, PARTY_IDS[1], 1)
+        ]
+      })
+    ).toThrow("does not exist");
   });
 
   it("allows ready/unready, closes early when all ready, and enforces optional deadline", () => {
@@ -94,7 +137,8 @@ describe("opening and counterbid phases", () => {
     untimed = act(untimed, {
       type: "set_counterbid_ready",
       seatId: "seat-1",
-      ready: true
+      ready: true,
+      now: 1_001
     });
     expect(untimed.phase).toMatchObject({
       type: "counterbidding",
@@ -103,7 +147,8 @@ describe("opening and counterbid phases", () => {
     untimed = act(untimed, {
       type: "set_counterbid_ready",
       seatId: "seat-1",
-      ready: false
+      ready: false,
+      now: 1_002
     });
     expect(untimed.phase).toMatchObject({ readySeatIds: [] });
     expect(() =>
@@ -121,8 +166,17 @@ describe("opening and counterbid phases", () => {
     expect(() =>
       act(timed, { type: "expire_counterbids", now: 10_999 })
     ).toThrow("has not passed");
+    expect(() =>
+      act(timed, {
+        type: "set_counterbid_ready",
+        seatId: "seat-1",
+        ready: true,
+        now: 11_000
+      })
+    ).toThrow("deadline has passed");
     timed = act(timed, { type: "expire_counterbids", now: 11_000 });
     expect(timed).toMatchObject({ round: 2, phase: { type: "opening" } });
+    expect(timed.roundHistory[0]?.bids).not.toEqual({});
   });
 
   it("cancels equal counterbids and performs the circular Revolving Door", () => {
@@ -158,6 +212,7 @@ describe("contest resolution", () => {
       type: "set_counterbid",
       seatId: seatTwo.id,
       slotIndex: 0,
+      now: 1,
       bid: {
         contestId: "pecking-order",
         firmId: seatTwo.firmIds[0]!,
@@ -294,6 +349,29 @@ describe("contest resolution", () => {
     expect(state.overtures["night-parliament"]).toBe("foxglove");
     expect(state.phase.type).toBe("opening");
   });
+
+  it("rejects malformed party identifiers in operation choices", () => {
+    let state = submitAllOpenings(
+      initializeGame(configuration(4, null), zeroRandom).state,
+      0,
+      { "seat-1": operations({ court: 1 }) },
+      "honeycomb"
+    );
+    state = readyAll(state);
+    const decision = pending(state);
+    expect(() =>
+      act(state, {
+        type: "resolve_party_operation",
+        seatId: decision.seatId,
+        decisionId: decision.id,
+        operation: "court",
+        choice: {
+          operation: "court",
+          targetParty: "invented-party"
+        }
+      })
+    ).toThrow("must be a party");
+  });
 });
 
 describe("social actions, elections, and replay", () => {
@@ -336,6 +414,7 @@ describe("social actions, elections, and replay", () => {
     const events: GameEvent[] = [initializeGame(configuration(2, null), zeroRandom)];
     let state = replay(events);
     let now = 0;
+    let finalGiftMade = false;
 
     while (state.phase.type !== "complete") {
       if (state.phase.type === "opening") {
@@ -351,16 +430,54 @@ describe("social actions, elections, and replay", () => {
           {
             type: "set_counterbid_ready",
             seatId: unready.id,
-            ready: true
+            ready: true,
+            now
           },
           events
         ));
       } else if (state.phase.type === "election") {
-        ({ state } = executeAndRecord(
-          state,
-          createElectionAction(state, zeroRandom),
-          events
-        ));
+        if (!state.phase.resultsRecorded) {
+          ({ state } = executeAndRecord(
+            state,
+            createElectionAction(state, zeroRandom),
+            events
+          ));
+        } else {
+          if (state.phase.afterRound === 12 && !finalGiftMade) {
+            const donor = state.seats[0]!;
+            const recipient = state.seats[1]!;
+            const points = Math.max(0, donor.reserve.points);
+            if (points > 0) {
+              ({ state } = executeAndRecord(
+                state,
+                {
+                  type: "give_resources",
+                  seatId: donor.id,
+                  recipientSeatId: recipient.id,
+                  resources: {
+                    clout: 0,
+                    operations: operations(),
+                    points
+                  }
+                },
+                events
+              ));
+            }
+            finalGiftMade = true;
+          }
+          const unready = state.seats.find(
+            (seat) => !state.phase.readySeatIds.includes(seat.id)
+          )!;
+          ({ state } = executeAndRecord(
+            state,
+            {
+              type: "set_election_ready",
+              seatId: unready.id,
+              ready: true
+            },
+            events
+          ));
+        }
       } else {
         throw new Error(`Unexpected pending phase: ${state.phase.type}`);
       }
@@ -368,7 +485,16 @@ describe("social actions, elections, and replay", () => {
 
     expect(state.round).toBe(12);
     expect(state.electionNumber).toBe(3);
+    expect(state.electionHistory).toHaveLength(3);
+    expect(state.electionHistory.map((election) => election.afterRound)).toEqual([
+      4, 8, 12
+    ]);
+    expect(state.electionHistory[0]?.scoringCards).toHaveLength(2);
+    expect(Object.keys(state.electionHistory[0]?.draws ?? {}).length).toBeGreaterThan(0);
     expect(state.phase.winnerSeatIds.length).toBeGreaterThan(0);
+    expect(state.electionHistory.at(-1)?.winnerSeatIds).toEqual(
+      state.phase.winnerSeatIds
+    );
     expect(replay(events)).toEqual(state);
     expect(projectGameState(state, "seat-1", true).seats.every(
       (seat) => seat.reserve !== null && seat.scoringCardId !== null
@@ -477,6 +603,7 @@ function setBid(
     type: "set_counterbid",
     seatId,
     slotIndex,
+    now: 1,
     bid: {
       contestId,
       firmId: seat.firmIds[0]!,
@@ -495,7 +622,8 @@ function readyAll(initial: GameState): GameState {
     state = act(state, {
       type: "set_counterbid_ready",
       seatId: seat.id,
-      ready: true
+      ready: true,
+      now: 1
     });
   }
   return state;

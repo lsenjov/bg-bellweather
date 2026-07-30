@@ -150,11 +150,45 @@ export interface ElectionPhase {
   type: "election";
   electionNumber: 1 | 2 | 3;
   afterRound: 4 | 8 | 12;
+  resultsRecorded: boolean;
+  readySeatIds: SeatId[];
 }
 
 export interface CompletePhase {
   type: "complete";
   winnerSeatIds: SeatId[];
+}
+
+export interface ElectionRecord {
+  electionNumber: 1 | 2 | 3;
+  afterRound: 4 | 8 | 12;
+  scoringCards: Array<{
+    seatId: SeatId;
+    scoringCardId: ScoringCardId;
+  }>;
+  draws: Record<
+    string,
+    {
+      districtId: string;
+      parties: PartyId[];
+    }
+  >;
+  scores: Array<{
+    playerId: SeatId;
+    baseDistrictScore: number;
+    seatModifier: number;
+    pointsChange: number;
+    resultingPoints: number;
+  }>;
+  winnerSeatIds: SeatId[];
+}
+
+export interface RoundRecord {
+  round: number;
+  partyOrder: PartyId[];
+  contests: Partial<Record<ContestId, ContestState>>;
+  bids: Record<BidId, BidState>;
+  resolvedOperations: ResolvedOperation[];
 }
 
 export type GamePhase =
@@ -180,6 +214,8 @@ export interface GameState {
   counterbidSlots: Record<SeatId, Array<BidId | null>>;
   chat: ChatMessage[];
   resolvedOperations: ResolvedOperation[];
+  roundHistory: RoundRecord[];
+  electionHistory: ElectionRecord[];
   phase: GamePhase;
   nextEntitySequence: number;
   configuration: {
@@ -213,11 +249,13 @@ export type GameAction =
       seatId: SeatId;
       slotIndex: number;
       bid: CounterbidInput | null;
+      now: number;
     }
   | {
       type: "set_counterbid_ready";
       seatId: SeatId;
       ready: boolean;
+      now: number;
     }
   | {
       type: "expire_counterbids";
@@ -239,6 +277,11 @@ export type GameAction =
   | {
       type: "complete_election";
       randomValues: number[];
+    }
+  | {
+      type: "set_election_ready";
+      seatId: SeatId;
+      ready: boolean;
     }
   | {
       type: "post_chat";

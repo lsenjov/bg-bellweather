@@ -57,6 +57,8 @@ export interface GameView {
   readySeatIds: SeatId[];
   pendingDecision: PendingDecision | null;
   chat: GameState["chat"];
+  roundHistory: GameState["roundHistory"];
+  electionHistory: GameState["electionHistory"];
 }
 
 export function projectGameState(
@@ -128,7 +130,9 @@ export function projectGameState(
       phase.type === "resolution"
         ? structuredClone(phase.pendingDecision)
         : null,
-    chat: structuredClone(state.chat)
+    chat: structuredClone(state.chat),
+    roundHistory: structuredClone(state.roundHistory),
+    electionHistory: structuredClone(state.electionHistory)
   };
 }
 

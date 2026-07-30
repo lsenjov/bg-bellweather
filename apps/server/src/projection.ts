@@ -4,6 +4,12 @@ import {
   type ProjectedEventEnvelope,
   type ViewerStateEnvelope
 } from "@bellwether/protocol";
+import type {
+  BidState,
+  GameAction,
+  GameEvent,
+  GameState
+} from "@bellwether/game";
 import type { EventStore } from "./store.js";
 import type { GameRecord, StoredEvent } from "./types.js";
 
@@ -14,6 +20,7 @@ export function projectState(
 ): ViewerStateEnvelope {
   const lifecycle =
     game.status === "finished" ? "completed" : game.status;
+  const engineState = store.loadEngineState(game.id);
   const publicState = {
     gameId: game.id,
     version: game.currentVersion,
@@ -43,10 +50,13 @@ export function projectState(
       displayName: spectator.displayName,
       controller: spectator.controller
     })),
-    publicGame: {
-      phase: game.status,
-      rulesetVersion: game.rulesetVersion
-    }
+    publicGame:
+      engineState === null
+        ? {
+            phase: game.status,
+            rulesetVersion: game.rulesetVersion
+          }
+        : publicEngineState(engineState)
   };
 
   if (game.status === "finished") {
@@ -55,6 +65,7 @@ export function projectState(
       publicState,
       fullState: {
         fullGame: {
+          state: engineState,
           events: store.listEvents(game.id).map(canonicalEvent)
         }
       }
@@ -74,7 +85,8 @@ export function projectState(
     publicState,
     seatState: {
       seatId: viewerSeatId,
-      privateGame: null
+      privateGame:
+        engineState === null ? null : seatEngineState(engineState, viewerSeatId)
     }
   });
 }
@@ -103,6 +115,14 @@ export function projectEvent(
     });
   }
 
+  if (isEngineEventPayload(event.payload)) {
+    return ProjectedEventEnvelopeSchema.parse({
+      ...base,
+      scope: "public",
+      publicData: publicEngineEvent(event.payload)
+    });
+  }
+
   if (event.visibility === "seat") {
     if (viewerSeatId !== undefined && event.privateSeatId === viewerSeatId) {
       return ProjectedEventEnvelopeSchema.parse({
@@ -126,6 +146,211 @@ export function projectEvent(
     scope: "public",
     publicData: objectPayload(event.payload)
   });
+}
+
+function publicEngineState(state: GameState): Record<string, unknown> {
+  const revealBids =
+    state.phase.type === "resolution" ||
+    state.phase.type === "election" ||
+    state.phase.type === "complete";
+  return {
+    rulesetVersion: state.rulesetVersion,
+    round: state.round,
+    electionNumber: state.electionNumber,
+    nextFirstOpenerSeatId: state.nextFirstOpenerSeatId,
+    partyOrder: state.partyOrder,
+    support: state.support,
+    overtures: state.overtures,
+    reinforcedOverturePartyId: state.reinforcedOverturePartyId,
+    phase: publicPhase(state),
+    seats: state.seats.map((seat) => ({
+      id: seat.id,
+      position: seat.position,
+      displayName: seat.displayName,
+      controller: seat.controller,
+      firmIds: seat.firmIds,
+      points: seat.reserve.points
+    })),
+    contests: Object.fromEntries(
+      Object.entries(state.contests).map(([contestId, contest]) => [
+        contestId,
+        contest === undefined
+          ? null
+          : {
+              id: contest.id,
+              targetPartyId: contest.targetPartyId,
+              openingBidId: contest.openingBidId,
+              bids: contest.bidIds.map((bidId) =>
+                publicBid(state.bids[bidId]!, revealBids)
+              )
+            }
+      ])
+    ),
+    resolvedOperations: state.resolvedOperations,
+    chat: state.chat,
+    roundHistory: state.roundHistory,
+    electionHistory: state.electionHistory,
+    lastElection: state.electionHistory.at(-1) ?? null
+  };
+}
+
+function publicPhase(state: GameState): Record<string, unknown> {
+  const phase = state.phase;
+  if (phase.type === "opening") {
+    return {
+      type: phase.type,
+      activeSeatId: phase.activeSeatId,
+      submittedSeatIds: phase.submittedSeatIds
+    };
+  }
+  if (phase.type === "counterbidding") {
+    return {
+      type: phase.type,
+      deadlineAt: phase.deadlineAt,
+      readySeatIds: phase.readySeatIds
+    };
+  }
+  if (phase.type === "resolution") {
+    return {
+      type: phase.type,
+      contestOrder: phase.contestOrder,
+      contestIndex: phase.contestIndex,
+      pendingDecision:
+        phase.pendingDecision === null
+          ? null
+          : {
+              id: phase.pendingDecision.id,
+              kind: phase.pendingDecision.kind,
+              seatId: phase.pendingDecision.seatId,
+              contestId: phase.pendingDecision.contestId,
+              bidId: phase.pendingDecision.bidId,
+              ...("legalOperations" in phase.pendingDecision
+                ? { legalOperations: phase.pendingDecision.legalOperations }
+                : {}),
+              ...("adjacentIndexes" in phase.pendingDecision
+                ? { adjacentIndexes: phase.pendingDecision.adjacentIndexes }
+                : {}),
+              ...("operation" in phase.pendingDecision
+                ? { operation: phase.pendingDecision.operation }
+                : {})
+            }
+    };
+  }
+  return phase as unknown as Record<string, unknown>;
+}
+
+function publicBid(bid: BidState, reveal: boolean): Record<string, unknown> {
+  const base = {
+    id: bid.id,
+    contestId: bid.contestId,
+    ownerSeatId: bid.ownerSeatId,
+    firmId: bid.firmId,
+    kind: bid.kind,
+    slotIndex: bid.slotIndex,
+    status: bid.status,
+    transferredToSeatId: bid.transferredToSeatId
+  };
+  if (reveal) {
+    return { ...base, clout: bid.clout, operations: bid.operations };
+  }
+  if (bid.kind === "opening") {
+    return {
+      ...base,
+      clout: bid.clout,
+      operationCount: Object.values(bid.operations).reduce(
+        (total, count) => total + count,
+        0
+      )
+    };
+  }
+  return base;
+}
+
+function seatEngineState(
+  state: GameState,
+  viewerSeatId: string
+): Record<string, unknown> {
+  const seat = state.seats.find((candidate) => candidate.id === viewerSeatId);
+  if (seat === undefined) {
+    return {};
+  }
+  const ownBids = Object.values(state.bids).filter(
+    (bid) => bid.ownerSeatId === viewerSeatId
+  );
+  return {
+    reserve: seat.reserve,
+    scoringCardId: seat.scoringCardId,
+    ownBids,
+    counterbidSlots: state.counterbidSlots[viewerSeatId] ?? [],
+    pendingDecision:
+      state.phase.type === "resolution" &&
+      state.phase.pendingDecision?.seatId === viewerSeatId
+        ? state.phase.pendingDecision
+        : null
+  };
+}
+
+function isEngineEventPayload(
+  payload: unknown
+): payload is {
+  engineEvents: GameEvent[];
+  electionResults?: Array<Record<string, unknown>>;
+} {
+  return (
+    typeof payload === "object" &&
+    payload !== null &&
+    "engineEvents" in payload &&
+    Array.isArray(payload.engineEvents)
+  );
+}
+
+function publicEngineEvent(payload: {
+  engineEvents: GameEvent[];
+  electionResults?: Array<Record<string, unknown>>;
+}): Record<string, unknown> {
+  const actions = payload.engineEvents
+    .filter(
+      (event): event is Extract<GameEvent, { type: "action_applied" }> =>
+        event.type === "action_applied"
+    )
+    .map((event) => publicAction(event.action));
+  const initialized = payload.engineEvents.find(
+    (event) => event.type === "game_initialized"
+  );
+  return {
+    ...(initialized === undefined
+      ? {}
+      : { gameStarted: true, round: initialized.state.round }),
+    actions,
+    ...(payload.electionResults === undefined
+      ? {}
+      : { electionResults: payload.electionResults })
+  };
+}
+
+function publicAction(action: GameAction): Record<string, unknown> {
+  if (action.type === "post_chat") {
+    return {
+      type: action.type,
+      seatId: action.seatId,
+      text: action.text,
+      now: action.now
+    };
+  }
+  if (action.type === "give_resources") {
+    return {
+      type: action.type,
+      fromSeatId: action.seatId,
+      recipientSeatId: action.recipientSeatId
+    };
+  }
+  if (action.type === "complete_election") {
+    return { type: action.type };
+  }
+  if (action.type === "expire_counterbids") {
+    return { type: action.type, now: action.now };
+  }
+  return { type: action.type, seatId: action.seatId };
 }
 
 function canonicalEvent(event: StoredEvent): Record<string, unknown> {

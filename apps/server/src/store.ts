@@ -4,6 +4,16 @@ import { dirname, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
 import {
+  GameRuleError,
+  createElectionAction,
+  executeAction,
+  initializeGame,
+  type GameAction,
+  type GameEvent,
+  type GameState,
+  type OperationInventory
+} from "@bellwether/game";
+import {
   tokenLookup,
   verifySeatToken,
   type TokenDigest
@@ -136,6 +146,10 @@ export interface ProcessedCommand {
   replayed: boolean;
 }
 
+export interface EngineRandomSource {
+  integer(maxExclusive: number): number;
+}
+
 export class EventStore {
   readonly database: DatabaseSync;
 
@@ -265,7 +279,8 @@ export class EventStore {
     gameId: string,
     seatId: string,
     command: ProcessCommandInput,
-    now: string
+    now: string,
+    random: EngineRandomSource
   ): ProcessedCommand {
     return this.transaction(() => {
       const prior = this.database
@@ -315,14 +330,32 @@ export class EventStore {
         if (this.listSeats(game.id).length !== game.settings.seatCount) {
           throw new AppError(409, "illegal_action", "Every seat must be filled");
         }
-        this.database
-          .prepare("UPDATE games SET status = 'active', started_at = ? WHERE id = ?")
-          .run(now, game.id);
+        const initialized = initializeGame(
+          {
+            seats: this.listSeats(game.id).map((seat) => ({
+              id: seat.id,
+              displayName: seat.displayName,
+              controller: seat.controller
+            })),
+            counterbidTimerSeconds: game.settings.counterbidTimerSeconds
+          },
+          random
+        );
         event = this.appendEventUnsafe(game.id, now, {
           type: "game.started",
           actorSeatId: seatId,
-          payload: { startedAt: now }
+          payload: { engineEvents: [initialized] }
         });
+        this.saveSnapshot(
+          game.id,
+          event.version,
+          game.rulesetVersion,
+          initialized.state,
+          now
+        );
+        this.database
+          .prepare("UPDATE games SET status = 'active', started_at = ? WHERE id = ?")
+          .run(now, game.id);
       } else if (command.type === "set_lobby_ready") {
         if (game.status !== "lobby") {
           throw new AppError(409, "phase_closed", "Lobby readiness is closed");
@@ -344,17 +377,39 @@ export class EventStore {
         if (game.status !== "active") {
           throw new AppError(409, "phase_closed", "Game commands require active play");
         }
+        const current = this.requireEngineState(gameId);
+        const action = commandToAction(command, seatId, Date.parse(now));
+        const applied = executeEngine(current, action);
+        const stabilized = stabilizeElection(applied.state, applied.events, random);
         event = this.appendEventUnsafe(gameId, now, {
-          type: command.type === "post_chat" ? "chat.posted" : "command.recorded",
+          type:
+            command.type === "post_chat"
+              ? "chat.posted"
+              : command.type === "give_resources"
+                ? "resources.given"
+                : "game.action_applied",
           actorSeatId: seatId,
-          ...(command.type === "post_chat"
-            ? {}
-            : {
-                visibility: "seat" as const,
-                privateSeatId: seatId
-              }),
-          payload: command.payload
+          payload: {
+            engineEvents: stabilized.events,
+            ...(stabilized.electionResults.length === 0
+              ? {}
+              : { electionResults: stabilized.electionResults })
+          }
         });
+        this.saveSnapshot(
+          gameId,
+          event.version,
+          game.rulesetVersion,
+          stabilized.state,
+          now
+        );
+        if (stabilized.state.phase.type === "complete") {
+          this.database
+            .prepare(
+              "UPDATE games SET status = 'finished', finished_at = ? WHERE id = ?"
+            )
+            .run(now, gameId);
+        }
       }
 
       const accepted: ProcessedCommand["accepted"] = {
@@ -380,6 +435,68 @@ export class EventStore {
         );
       return { accepted, event, replayed: false };
     });
+  }
+
+  expireCounterbids(
+    gameId: string,
+    now: string,
+    random: EngineRandomSource
+  ): StoredEvent | null {
+    return this.transaction(() => {
+      const game = this.getGameById(gameId);
+      if (game.status !== "active") {
+        return null;
+      }
+      const current = this.requireEngineState(gameId);
+      if (
+        current.phase.type !== "counterbidding" ||
+        current.phase.deadlineAt === null ||
+        Date.parse(now) < current.phase.deadlineAt
+      ) {
+        return null;
+      }
+      const applied = executeEngine(current, {
+        type: "expire_counterbids",
+        now: Date.parse(now)
+      });
+      const stabilized = stabilizeElection(applied.state, applied.events, random);
+      const event = this.appendEventUnsafe(gameId, now, {
+        type: "counterbids.expired",
+        payload: {
+          engineEvents: stabilized.events,
+          ...(stabilized.electionResults.length === 0
+            ? {}
+            : { electionResults: stabilized.electionResults })
+        }
+      });
+      this.saveSnapshot(
+        gameId,
+        event.version,
+        game.rulesetVersion,
+        stabilized.state,
+        now
+      );
+      if (stabilized.state.phase.type === "complete") {
+        this.database
+          .prepare(
+            "UPDATE games SET status = 'finished', finished_at = ? WHERE id = ?"
+          )
+          .run(now, gameId);
+      }
+      return event;
+    });
+  }
+
+  listActiveGameIds(): string[] {
+    const rows = this.database
+      .prepare("SELECT id FROM games WHERE status = 'active' ORDER BY id")
+      .all() as unknown as Array<{ id: string }>;
+    return rows.map((row) => row.id);
+  }
+
+  loadEngineState(gameId: string): GameState | null {
+    const snapshot = this.loadLatestSnapshot(gameId);
+    return snapshot === null ? null : (snapshot.state as GameState);
   }
 
   authenticate(gameReference: string, token: string): AuthenticatedSeat {
@@ -552,6 +669,18 @@ export class EventStore {
           rulesetVersion: row.ruleset_version,
           state: JSON.parse(row.state_json) as unknown
         };
+  }
+
+  private requireEngineState(gameId: string): GameState {
+    const state = this.loadEngineState(gameId);
+    if (state === null) {
+      throw new AppError(
+        500,
+        "engine_state_missing",
+        "The active game has no canonical state"
+      );
+    }
+    return state;
   }
 
   private insertSeat(
@@ -758,4 +887,142 @@ function mapSpectator(row: SpectatorRow): SpectatorRecord {
 function publicSeat(seat: SeatRecord): Omit<SeatRecord, "gameId"> {
   const { gameId: _, ...visible } = seat;
   return visible;
+}
+
+function commandToAction(
+  command: ProcessCommandInput,
+  seatId: string,
+  now: number
+): GameAction {
+  const payload = objectValue(command.payload);
+  if (command.type === "post_chat") {
+    return {
+      type: "post_chat",
+      seatId,
+      text: stringValue(payload.message, "message"),
+      now
+    };
+  }
+  if (command.type === "give_resources") {
+    return {
+      type: "give_resources",
+      seatId,
+      recipientSeatId: stringValue(payload.recipientSeatId, "recipientSeatId"),
+      resources: {
+        clout: numberValue(payload.clout, "clout"),
+        operations: objectValue(payload.operations) as unknown as OperationInventory,
+        points: numberValue(payload.points, "points")
+      }
+    };
+  }
+  if (command.type !== "game_action") {
+    throw new AppError(400, "invalid_request", "Unsupported game command");
+  }
+  const action = objectValue(payload.action);
+  const actionType = stringValue(action.type, "action.type");
+  if (
+    actionType === "complete_election" ||
+    actionType === "expire_counterbids" ||
+    actionType === "post_chat" ||
+    actionType === "give_resources"
+  ) {
+    throw new AppError(
+      403,
+      "forbidden",
+      `${actionType} is controlled by the server`
+    );
+  }
+  const playerActionTypes = new Set([
+    "submit_openings",
+    "set_counterbid",
+    "set_counterbid_ready",
+    "set_election_ready",
+    "resolve_pecking_swap",
+    "resolve_party_operation"
+  ]);
+  if (!playerActionTypes.has(actionType)) {
+    throw new AppError(400, "invalid_request", "Unknown game action");
+  }
+  return {
+    ...action,
+    type: actionType,
+    seatId,
+    ...(
+      actionType === "submit_openings" ||
+      actionType === "set_counterbid" ||
+      actionType === "set_counterbid_ready"
+        ? { now }
+        : {}
+    )
+  } as GameAction;
+}
+
+function executeEngine(
+  state: GameState,
+  action: GameAction
+): { state: GameState; events: GameEvent[] } {
+  try {
+    return executeAction(state, action);
+  } catch (error) {
+    if (error instanceof GameRuleError) {
+      throw new AppError(409, error.code, error.message);
+    }
+    if (
+      error instanceof TypeError ||
+      error instanceof RangeError ||
+      error instanceof SyntaxError
+    ) {
+      throw new AppError(400, "invalid_request", "Malformed game action");
+    }
+    throw error;
+  }
+}
+
+function stabilizeElection(
+  state: GameState,
+  events: GameEvent[],
+  random: EngineRandomSource
+): {
+  state: GameState;
+  events: GameEvent[];
+  electionResults: Array<Record<string, unknown>>;
+} {
+  let current = state;
+  const accumulated = [...events];
+  const electionResults: Array<Record<string, unknown>> = [];
+  while (
+    current.phase.type === "election" &&
+    !current.phase.resultsRecorded
+  ) {
+    const electionAction = createElectionAction(current, random);
+    const applied = executeEngine(current, electionAction);
+    current = applied.state;
+    accumulated.push(...applied.events);
+    const recorded = current.electionHistory.at(-1);
+    if (recorded !== undefined) {
+      electionResults.push(recorded as unknown as Record<string, unknown>);
+    }
+  }
+  return { state: current, events: accumulated, electionResults };
+}
+
+function objectValue(value: unknown): Record<string, unknown> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new AppError(400, "invalid_request", "Expected an object");
+  }
+  return value as Record<string, unknown>;
+}
+
+function stringValue(value: unknown, field: string): string {
+  if (typeof value !== "string") {
+    throw new AppError(400, "invalid_request", `${field} must be a string`);
+  }
+  return value;
+}
+
+function numberValue(value: unknown, field: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new AppError(400, "invalid_request", `${field} must be a number`);
+  }
+  return value;
 }

@@ -1,7 +1,8 @@
-import { createHash, randomUUID } from "node:crypto";
-import { mkdirSync } from "node:fs";
+import { createHash, randomInt, randomUUID } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, statSync } from "node:fs";
 import { createServer as createHttpServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { dirname } from "node:path";
+import { dirname, extname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   CommandAcceptedSchema,
   CommandEnvelopeSchema,
@@ -24,6 +25,8 @@ export interface AppServerOptions {
   host?: string;
   port?: number;
   now?: () => Date;
+  randomInteger?: (maxExclusive: number) => number;
+  webRoot?: string;
 }
 
 export function createAppServer(options: AppServerOptions) {
@@ -33,9 +36,25 @@ export function createAppServer(options: AppServerOptions) {
   const store = new EventStore(options.databasePath);
   const subscriptions = new Subscriptions(store);
   const now = options.now ?? (() => new Date());
+  const random = {
+    integer: options.randomInteger ?? ((maxExclusive: number) => randomInt(maxExclusive))
+  };
+  const webRoot =
+    options.webRoot ??
+    resolve(dirname(fileURLToPath(import.meta.url)), "../../web/dist");
+  const deadlines = new CounterbidDeadlines(store, subscriptions, now, random);
   const server = createHttpServer(async (request, response) => {
     try {
-      await route(request, response, store, subscriptions, now);
+      await route(
+        request,
+        response,
+        store,
+        subscriptions,
+        deadlines,
+        now,
+        random,
+        webRoot
+      );
     } catch (error) {
       writeError(response, error);
     }
@@ -66,6 +85,7 @@ export function createAppServer(options: AppServerOptions) {
         });
       });
       const address = server.address();
+      deadlines.recover();
       return {
         host,
         port:
@@ -75,6 +95,7 @@ export function createAppServer(options: AppServerOptions) {
       };
     },
     async close(): Promise<void> {
+      deadlines.close();
       for (const client of webSockets.clients) {
         client.close(1001, "Server shutting down");
       }
@@ -92,7 +113,10 @@ async function route(
   response: ServerResponse,
   store: EventStore,
   subscriptions: Subscriptions,
-  now: () => Date
+  deadlines: CounterbidDeadlines,
+  now: () => Date,
+  random: { integer(maxExclusive: number): number },
+  webRoot: string
 ): Promise<void> {
   const url = new URL(request.url ?? "/", "http://localhost");
 
@@ -249,11 +273,13 @@ async function route(
         type: command.command.type,
         payload: command.command
       },
-      timestamp
+      timestamp,
+      random
     );
     const accepted = CommandAcceptedSchema.parse(processed.accepted);
     if (processed.event !== null) {
       subscriptions.broadcast(processed.event);
+      deadlines.schedule(authenticated.game.id);
     }
     writeJson(response, 200, accepted);
     return;
@@ -287,7 +313,130 @@ async function route(
     return;
   }
 
+  if (
+    request.method === "GET" &&
+    !url.pathname.startsWith("/api/") &&
+    serveWebApp(response, webRoot, url.pathname)
+  ) {
+    return;
+  }
   throw new AppError(404, "not_found", "Route not found");
+}
+
+class CounterbidDeadlines {
+  private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
+  private stopped = false;
+
+  constructor(
+    private readonly store: EventStore,
+    private readonly subscriptions: Subscriptions,
+    private readonly now: () => Date,
+    private readonly random: { integer(maxExclusive: number): number }
+  ) {}
+
+  recover(): void {
+    for (const gameId of this.store.listActiveGameIds()) {
+      this.schedule(gameId);
+    }
+  }
+
+  schedule(gameId: string): void {
+    const existing = this.timers.get(gameId);
+    if (existing !== undefined) {
+      clearTimeout(existing);
+      this.timers.delete(gameId);
+    }
+    if (this.stopped) {
+      return;
+    }
+    const state = this.store.loadEngineState(gameId);
+    if (
+      state?.phase.type !== "counterbidding" ||
+      state.phase.deadlineAt === null
+    ) {
+      return;
+    }
+    const delay = Math.max(0, state.phase.deadlineAt - this.now().getTime());
+    const timer = setTimeout(
+      () => this.expire(gameId),
+      Math.min(delay, 2_147_483_647)
+    );
+    this.timers.set(gameId, timer);
+  }
+
+  close(): void {
+    this.stopped = true;
+    for (const timer of this.timers.values()) {
+      clearTimeout(timer);
+    }
+    this.timers.clear();
+  }
+
+  private expire(gameId: string): void {
+    this.timers.delete(gameId);
+    if (this.stopped) {
+      return;
+    }
+    const event = this.store.expireCounterbids(
+      gameId,
+      this.now().toISOString(),
+      this.random
+    );
+    if (event !== null) {
+      this.subscriptions.broadcast(event);
+    }
+    this.schedule(gameId);
+  }
+}
+
+function serveWebApp(
+  response: ServerResponse,
+  webRoot: string,
+  pathname: string
+): boolean {
+  if (!existsSync(webRoot)) {
+    return false;
+  }
+  const decoded = decodeURIComponent(pathname);
+  const requested = resolve(webRoot, `.${decoded}`);
+  if (requested !== webRoot && !requested.startsWith(`${webRoot}/`)) {
+    throw new AppError(403, "forbidden", "Invalid web path");
+  }
+  const asset =
+    existsSync(requested) && statSync(requested).isFile()
+      ? requested
+      : resolve(webRoot, "index.html");
+  if (!existsSync(asset) || !statSync(asset).isFile()) {
+    return false;
+  }
+  response.writeHead(200, {
+    "content-type": contentType(asset),
+    "cache-control":
+      asset.endsWith("index.html")
+        ? "no-cache"
+        : "public, max-age=31536000, immutable"
+  });
+  response.end(readFileSync(asset));
+  return true;
+}
+
+function contentType(path: string): string {
+  switch (extname(path)) {
+    case ".css":
+      return "text/css; charset=utf-8";
+    case ".js":
+      return "text/javascript; charset=utf-8";
+    case ".json":
+      return "application/json; charset=utf-8";
+    case ".svg":
+      return "image/svg+xml";
+    case ".png":
+      return "image/png";
+    case ".woff2":
+      return "font/woff2";
+    default:
+      return "text/html; charset=utf-8";
+  }
 }
 
 function bearerToken(request: IncomingMessage): string {
