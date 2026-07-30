@@ -91,7 +91,7 @@ describe("commands", () => {
     ).toBe(true);
   });
 
-  it("accepts an idempotent extensible game action", () => {
+  it("accepts documented game actions and rejects unknown shapes", () => {
     expect(
       CommandEnvelopeSchema.parse({
         gameId,
@@ -100,13 +100,28 @@ describe("commands", () => {
         command: {
           type: "game_action",
           action: {
-            type: "place_counterbid",
-            slot: 1,
-            target: "pecking_order"
+            type: "set_counterbid",
+            slotIndex: 1,
+            bid: {
+              contestId: "pecking-order",
+              firmId: "one-fell-swoop",
+              clout: 2,
+              operations: { organise: 1, rally: 0, smear: 0, court: 0 }
+            }
           }
         }
       }).command
     ).toMatchObject({ type: "game_action" });
+    expect(
+      CommandEnvelopeSchema.safeParse({
+        gameId,
+        idempotencyKey: "unknown-action",
+        command: {
+          type: "game_action",
+          action: { type: "place_counterbid", slot: 1 }
+        }
+      }).success
+    ).toBe(false);
   });
 });
 

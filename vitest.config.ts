@@ -5,6 +5,14 @@ export default defineConfig({
     coverage: {
       enabled: false
     },
-    include: ["apps/*/test/**/*.test.ts", "packages/*/test/**/*.test.ts"]
+    environmentOptions: {
+      jsdom: {
+        url: "http://localhost/"
+      }
+    },
+    include: [
+      "apps/*/test/**/*.test.{ts,tsx}",
+      "packages/*/test/**/*.test.{ts,tsx}"
+    ]
   }
 });

@@ -34,6 +34,22 @@ describe("game server", () => {
     expect(await home.text()).toContain("Bellwether");
     expect(await route.text()).toContain("Bellwether");
     expect(asset.headers.get("content-type")).toContain("text/javascript");
+    expect(asset.headers.get("content-security-policy")).toContain(
+      "frame-ancestors 'none'"
+    );
+    expect(asset.headers.get("x-content-type-options")).toBe("nosniff");
+    const malformedSocket = new WebSocket(
+      `ws://${address.host}:${address.port}/api/v1/games/%/events`
+    );
+    await new Promise<void>((resolveRejected) => {
+      malformedSocket.once("error", () => resolveRejected());
+      malformedSocket.once("close", () => resolveRejected());
+    });
+    expect(
+      await (
+        await fetch(new URL("/", baseUrl))
+      ).text()
+    ).toContain("Bellwether");
     await app.close();
   });
 
@@ -365,6 +381,24 @@ describe("game server", () => {
       }
     );
 
+    const wrongRouteSocket = await openSocket(
+      address.port,
+      "00000000-0000-4000-8000-000000000000"
+    );
+    const wrongRouteFrame = nextSocketFrame(wrongRouteSocket);
+    wrongRouteSocket.send(
+      JSON.stringify({
+        type: "authenticate",
+        gameId: host.session.gameId,
+        accessToken: host.session.accessToken,
+        afterSequence: 4
+      })
+    );
+    await expect(wrongRouteFrame).resolves.toMatchObject({
+      type: "error",
+      error: { code: "invalid_request" }
+    });
+
     const opponentSocket = await authenticatedSocket(
       address.port,
       host.session.gameId,
@@ -431,7 +465,6 @@ describe("game server", () => {
             type: "game_action",
             action: {
               type: "submit_openings",
-              seatId: "untrusted-client-seat",
               openings: [
                 {
                   firmId: firms[0],
@@ -445,8 +478,7 @@ describe("game server", () => {
                   clout: 1,
                   operations: emptyOperations
                 }
-              ],
-              now: 0
+              ]
             }
           }
         }
@@ -701,13 +733,7 @@ async function authenticatedSocket(
   accessToken: string,
   afterSequence: number
 ): Promise<WebSocket> {
-  const socket = new WebSocket(
-    `ws://127.0.0.1:${port}/api/v1/games/${gameId}/events`
-  );
-  await new Promise<void>((resolveOpen, reject) => {
-    socket.once("open", resolveOpen);
-    socket.once("error", reject);
-  });
+  const socket = await openSocket(port, gameId);
   socket.send(
     JSON.stringify({
       type: "authenticate",
@@ -718,6 +744,17 @@ async function authenticatedSocket(
   );
   const authenticated = await nextSocketFrame(socket);
   expect(authenticated).toMatchObject({ type: "authenticated", gameId });
+  return socket;
+}
+
+async function openSocket(port: number, gameId: string): Promise<WebSocket> {
+  const socket = new WebSocket(
+    `ws://127.0.0.1:${port}/api/v1/games/${gameId}/events`
+  );
+  await new Promise<void>((resolveOpen, reject) => {
+    socket.once("open", resolveOpen);
+    socket.once("error", reject);
+  });
   return socket;
 }
 

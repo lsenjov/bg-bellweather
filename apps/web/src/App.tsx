@@ -5,19 +5,29 @@ import {
   PARTIES,
   PARTIES_BY_ID,
   SCORING_CARDS_BY_ID,
+  type FirmId,
   type OperationId,
   type PartyId
 } from "@bellwether/content";
 import type {
   GameCommand,
+  OperationChoice,
+  OperationResolutionChoice,
   ParticipantSession,
+  ReplayResponse,
   ViewerStateEnvelope
 } from "@bellwether/protocol";
+import {
+  replay as replayGame,
+  type GameEvent,
+  type GameState
+} from "@bellwether/game";
 import {
   FormEvent,
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState
 } from "react";
 import {
@@ -45,7 +55,7 @@ interface ViewSeat {
   displayName: string;
   controller: "human" | "agent";
   position: number;
-  firmIds: string[];
+  firmIds: FirmId[];
   points: number;
   reserve: { clout: number; operations: Record<OperationId, number> } | null;
   scoringCardId: string | null;
@@ -82,24 +92,50 @@ export function App() {
   );
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [replayCount, setReplayCount] = useState<number | null>(null);
+  const [replayArchive, setReplayArchive] = useState<ReplayResponse | null>(
+    null
+  );
+  const refreshSequence = useRef(0);
 
   const refresh = useCallback(async () => {
     if (session === null) return;
+    const sequence = ++refreshSequence.current;
     try {
-      setState(await getState(session));
-      setError(null);
+      const nextState = await getState(session);
+      if (sequence === refreshSequence.current) {
+        setState(nextState);
+        setError(null);
+      }
     } catch (caught) {
-      setError(messageOf(caught));
+      if (sequence === refreshSequence.current) {
+        setError(messageOf(caught));
+      }
     }
   }, [session]);
 
   useEffect(() => {
     if (session === null) return;
-    void refresh();
-    const timer = window.setInterval(() => void refresh(), 1_500);
-    return () => window.clearInterval(timer);
+    let cancelled = false;
+    let timer: number | undefined;
+    const poll = async () => {
+      await refresh();
+      if (!cancelled) {
+        timer = window.setTimeout(() => void poll(), 1_500);
+      }
+    };
+    void poll();
+    return () => {
+      cancelled = true;
+      refreshSequence.current += 1;
+      if (timer !== undefined) {
+        window.clearTimeout(timer);
+      }
+    };
   }, [refresh, session]);
+
+  useEffect(() => {
+    setReplayArchive(null);
+  }, [session?.gameId]);
 
   const adoptSession = (
     nextSession: ParticipantSession,
@@ -213,15 +249,19 @@ export function App() {
             className="ink-button"
             onClick={() =>
               void getReplay(session)
-                .then((replay) => setReplayCount(replay.events.length))
+                .then(setReplayArchive)
                 .catch((caught) => setError(messageOf(caught)))
             }
           >
             Open replay archive
           </button>
-          {replayCount !== null && <strong>{replayCount} recorded events</strong>}
+          {replayArchive !== null && (
+            <strong>{replayArchive.events.length} recorded events</strong>
+          )}
         </section>
       )}
+
+      {replayArchive !== null && <ReplayArchiveView replay={replayArchive} />}
 
       <footer>
         <span>Ruleset {String(view?.round ? "1" : "awaiting game")}</span>
@@ -243,7 +283,8 @@ function EntryDesk(props: {
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [players, setPlayers] = useState(4);
-  const [timer, setTimer] = useState("90");
+  const [timerEnabled, setTimerEnabled] = useState(true);
+  const [timerSeconds, setTimerSeconds] = useState(90);
   const [spectators, setSpectators] = useState(true);
   const [role, setRole] = useState<"player" | "spectator">("player");
 
@@ -260,9 +301,9 @@ function EntryDesk(props: {
             configuration: {
               playerCount: players,
               counterbidTimer:
-                timer === "off"
+                !timerEnabled
                   ? { mode: "off" }
-                  : { mode: "countdown", durationSeconds: Number(timer) },
+                  : { mode: "countdown", durationSeconds: timerSeconds },
               allowSpectators: spectators
             }
           })
@@ -302,7 +343,8 @@ function EntryDesk(props: {
           {mode === "create" ? (
             <>
               <label>Seats<select value={players} onChange={(event) => setPlayers(Number(event.target.value))}>{[2,3,4,5,6].map((count) => <option key={count}>{count}</option>)}</select></label>
-              <label>Counterbid clock<select value={timer} onChange={(event) => setTimer(event.target.value)}><option value="off">Off — unanimous ready</option><option value="30">30 seconds</option><option value="60">60 seconds</option><option value="90">90 seconds</option><option value="180">3 minutes</option></select></label>
+              <label>Counterbid seconds<input type="number" min="5" max="3600" disabled={!timerEnabled} value={timerSeconds} onChange={(event) => setTimerSeconds(Number(event.target.value))} /></label>
+              <label className="check-line"><input type="checkbox" checked={!timerEnabled} onChange={(event) => setTimerEnabled(!event.target.checked)} /> Disable timer — unanimous ready only</label>
               <label className="check-line"><input type="checkbox" checked={spectators} onChange={(event) => setSpectators(event.target.checked)} /> Admit observers</label>
             </>
           ) : (
@@ -389,6 +431,7 @@ function GameDesk(props: {
         <div className="section-heading"><div><p className="section-label">District returns</p><h2>The Crownwater map</h2></div><div className="phase-slug">{props.view.phase}</div></div>
         <DistrictMap support={props.view.support} />
         <PartyRail view={props.view} />
+        <PlayerLedger seats={props.view.seats} />
       </section>
 
       <aside className="private-folio paper-panel">
@@ -412,7 +455,18 @@ function GameDesk(props: {
       <section className="contest-desk paper-panel">
         <div className="section-heading"><div><p className="section-label">Influence book</p><h2>Contests & filings</h2></div><b>Phase: {props.view.phase}</b></div>
         <div className="contest-list">
-          {Object.keys(props.view.contests).length === 0 ? <p className="empty-copy">No party contest has been opened.</p> : Object.keys(props.view.contests).map((id) => <article key={id}><strong>{partyName(id)}</strong><span>{props.view.bids.filter((bid) => bid.contestId === id).length} bids</span></article>)}
+          {Object.keys(props.view.contests).length === 0 ? (
+            <p className="empty-copy">No party contest has been opened.</p>
+          ) : (
+            Object.keys(props.view.contests).map((id) => (
+              <ContestCard
+                key={id}
+                contestId={id}
+                bids={props.view.bids.filter((bid) => bid.contestId === id)}
+                seats={props.view.seats}
+              />
+            ))
+          )}
         </div>
         {!props.spectator && props.ownSeat && props.ownSeatId && (
           <ActionDesk
@@ -463,6 +517,70 @@ const EMPTY_TOKENS: TokenDraft = {
   smear: 0,
   court: 0
 };
+
+export function ContestCard(props: {
+  contestId: string;
+  bids: Array<Record<string, unknown>>;
+  seats: ViewSeat[];
+}) {
+  const ranked = [...props.bids].sort((left, right) => {
+    const leftClout = typeof left.clout === "number" ? left.clout : -1;
+    const rightClout = typeof right.clout === "number" ? right.clout : -1;
+    return rightClout - leftClout;
+  });
+  return (
+    <article className="contest-card">
+      <header>
+        <strong>{partyName(props.contestId)}</strong>
+        <span>{ranked.length} {ranked.length === 1 ? "bid" : "bids"}</span>
+      </header>
+      <ol>
+        {ranked.map((bid, index) => {
+          const operationInventory = isObject(bid.operations)
+            ? bid.operations
+            : null;
+          const operations = operationInventory
+            ? OPERATION_IDS.map(
+                (operation) =>
+                  `${String(operationInventory[operation] ?? 0)} ${operation}`
+              ).join(" · ")
+            : null;
+          const owner = props.seats.find((seat) => seat.id === bid.ownerSeatId);
+          const recipient = props.seats.find(
+            (seat) => seat.id === bid.transferredToSeatId
+          );
+          const revealed = typeof bid.clout === "number";
+          return (
+            <li
+              key={String(bid.id)}
+              className={`bid-line bid-${String(bid.status ?? "active")}`}
+            >
+              <div>
+                <b>{revealed ? `#${index + 1} · ` : ""}{owner?.displayName ?? "Unknown firm"}</b>
+                <small>
+                  {FIRMS_BY_ID[
+                    String(bid.firmId) as keyof typeof FIRMS_BY_ID
+                  ]?.name ?? String(bid.firmId)} · {String(bid.kind)}
+                  {typeof bid.slotIndex === "number"
+                    ? ` · cover ${(bid.slotIndex % 2) + 1}`
+                    : ""} · {String(bid.status ?? "covered")}
+                </small>
+              </div>
+              <strong>{revealed ? `${String(bid.clout)} Clout` : "Covered"}</strong>
+              <span>
+                {operations ??
+                  (typeof bid.operationCount === "number"
+                    ? `${String(bid.operationCount)} hidden operation tokens`
+                    : "Contents concealed")}
+              </span>
+              {recipient && <em>Transferred to {recipient.displayName}</em>}
+            </li>
+          );
+        })}
+      </ol>
+    </article>
+  );
+}
 
 function ActionDesk(props: {
   view: GameView;
@@ -555,7 +673,12 @@ function OpeningForm(props: {
     props.seat.reserve?.clout ?? 0,
     availableParties.length
   );
-  const [rows, setRows] = useState(() =>
+  const [rows, setRows] = useState<Array<{
+    firmId: FirmId;
+    partyId: PartyId;
+    clout: number;
+    operations: TokenDraft;
+  }>>(() =>
     props.seat.firmIds.slice(0, required).map((firmId, index) => ({
       firmId,
       partyId: availableParties[index] ?? availableParties[0] ?? "honeycomb",
@@ -658,6 +781,33 @@ function CounterbidForm(props: {
     props.seat.firmIds[Math.floor(slotIndex / 2)] ??
     props.seat.firmIds[0] ??
     "";
+  const selectedBidId = slots[slotIndex];
+
+  useEffect(() => {
+    if (selectedBidId === null || selectedBidId === undefined) {
+      setClout(0);
+      setOperations({ ...EMPTY_TOKENS });
+      return;
+    }
+    const bid = props.view.bids.find((candidate) => candidate.id === selectedBidId);
+    if (bid === undefined) {
+      return;
+    }
+    if (typeof bid.contestId === "string") {
+      setContestId(bid.contestId);
+    }
+    if (typeof bid.clout === "number") {
+      setClout(bid.clout);
+    }
+    if (isObject(bid.operations)) {
+      setOperations({
+        organise: numberOr(bid.operations.organise, 0),
+        rally: numberOr(bid.operations.rally, 0),
+        smear: numberOr(bid.operations.smear, 0),
+        court: numberOr(bid.operations.court, 0)
+      });
+    }
+  }, [selectedBidId, slotIndex]);
 
   const send = (bid: Record<string, unknown> | null) =>
     props.onCommand({
@@ -798,7 +948,7 @@ function DecisionForm(props: {
       </div>
     );
   }
-  return <OperationForm {...props} decisionId={decisionId} />;
+  return <OperationForm key={decisionId} {...props} decisionId={decisionId} />;
 }
 
 function OperationForm(props: {
@@ -813,13 +963,26 @@ function OperationForm(props: {
     : props.decision.operation
       ? [props.decision.operation as OperationId]
       : [];
+  const partyId = String(
+    props.decision.partyId ?? props.decision.contestId ?? ""
+  ) as PartyId;
+  const defaultOtherParty =
+    PARTIES.find((party) => party.id !== partyId)?.id ?? "honeycomb";
+  const defaultCourtTarget =
+    PARTIES.find(
+      (party) =>
+        party.id !== partyId &&
+        party.id !== props.view.overtures[partyId]
+    )?.id ?? defaultOtherParty;
   const [operation, setOperation] = useState<OperationId>(
     legal[0] ?? "organise"
   );
   const [districtId, setDistrictId] = useState<string>(DISTRICTS[0].id);
   const [sourceDistrictId, setSourceDistrictId] = useState("");
-  const [rivalParty, setRivalParty] = useState<PartyId>("honeycomb");
-  const [targetParty, setTargetParty] = useState<PartyId>("honeycomb");
+  const [rivalParty, setRivalParty] =
+    useState<PartyId>(defaultOtherParty);
+  const [targetParty, setTargetParty] =
+    useState<PartyId>(defaultCourtTarget);
   const [bonusDistrictId, setBonusDistrictId] = useState<string>(
     DISTRICTS[0].id
   );
@@ -828,16 +991,13 @@ function OperationForm(props: {
   const [repeatDestination, setRepeatDestination] = useState<string>(
     DISTRICTS[0].id
   );
-  const partyId = String(
-    props.decision.partyId ?? props.decision.contestId ?? ""
-  ) as PartyId;
   const party = PARTIES_BY_ID[partyId];
   const delayed = props.decision.kind === "night_delayed_operation";
   const matchingBonus = party?.bonuses.find(
     (bonus) => bonus.operation === operation
   );
 
-  const choice =
+  const choice: OperationChoice =
     operation === "organise"
       ? {
           operation,
@@ -858,7 +1018,7 @@ function OperationForm(props: {
               targetParty,
               ...(claimBonus ? { bonusDistrictId } : {})
             };
-  const submittedChoice =
+  const submittedChoice: OperationResolutionChoice =
     claimBonus && !delayed
       ? {
           choice,
@@ -919,10 +1079,20 @@ function OperationForm(props: {
         <DistrictSelect label="District" value={districtId} onChange={setDistrictId} />
       )}
       {operation === "smear" && (
-        <PartySelect label="Rival party" value={rivalParty} onChange={setRivalParty} />
+        <PartySelect label="Rival party" value={rivalParty} excludes={[partyId]} onChange={setRivalParty} />
       )}
       {operation === "court" && (
-        <PartySelect label="New overture target" value={targetParty} onChange={setTargetParty} />
+        <PartySelect
+          label="New overture target"
+          value={targetParty}
+          excludes={[
+            partyId,
+            ...(props.view.overtures[partyId]
+              ? [props.view.overtures[partyId]!]
+              : [])
+          ]}
+          onChange={setTargetParty}
+        />
       )}
       {!delayed && matchingBonus && (
         <label className="check-line bonus-check">
@@ -993,6 +1163,7 @@ function DistrictSelect(props: {
 function PartySelect(props: {
   label: string;
   value: PartyId;
+  excludes?: PartyId[];
   onChange(value: PartyId): void;
 }) {
   return (
@@ -1002,7 +1173,9 @@ function PartySelect(props: {
         value={props.value}
         onChange={(event) => props.onChange(event.target.value as PartyId)}
       >
-        {PARTIES.map((party) => (
+        {PARTIES.filter(
+          (party) => !(props.excludes ?? []).includes(party.id)
+        ).map((party) => (
           <option key={party.id} value={party.id}>{party.name}</option>
         ))}
       </select>
@@ -1037,15 +1210,272 @@ function ElectionDesk(props: {
   );
 }
 
-function DistrictMap({ support }: { support: GameView["support"] }) {
+function ReplayArchiveView({ replay }: { replay: ReplayResponse }) {
+  const [index, setIndex] = useState(replay.events.length - 1);
+  const state = useMemo(() => {
+    const engineEvents = replay.events
+      .slice(0, index + 1)
+      .flatMap((event) => {
+        if (event.scope !== "completed_replay") {
+          return [];
+        }
+        const canonical = objectValue(event.fullData["event"]);
+        const payload = objectValue(canonical["payload"]);
+        return Array.isArray(payload["engineEvents"])
+          ? (payload["engineEvents"] as unknown as GameEvent[])
+          : [];
+      });
+    if (engineEvents.length === 0) {
+      return null;
+    }
+    try {
+      return replayGame(engineEvents);
+    } catch {
+      return null;
+    }
+  }, [index, replay.events]);
+  const selected = replay.events[index];
+
+  return (
+    <section className="replay-archive paper-panel">
+      <div className="section-heading">
+        <div>
+          <p className="section-label">Unsealed archive</p>
+          <h2>Deterministic replay desk</h2>
+        </div>
+        <b>{index + 1} / {replay.events.length}</b>
+      </div>
+      <label>
+        Seek event
+        <input
+          type="range"
+          min="0"
+          max={Math.max(0, replay.events.length - 1)}
+          value={index}
+          onChange={(event) => setIndex(Number(event.target.value))}
+        />
+      </label>
+      <div className="replay-controls">
+        <button
+          className="ink-button"
+          disabled={index === 0}
+          onClick={() => setIndex((current) => Math.max(0, current - 1))}
+        >
+          Previous
+        </button>
+        <button
+          className="ink-button"
+          disabled={index >= replay.events.length - 1}
+          onClick={() =>
+            setIndex((current) =>
+              Math.min(replay.events.length - 1, current + 1)
+            )
+          }
+        >
+          Next
+        </button>
+        <span>{selected?.eventType ?? "Event"} · sequence {selected?.sequence ?? 0}</span>
+      </div>
+      {state === null ? (
+        <p className="empty-copy">This lobby event predates the canonical game state.</p>
+      ) : (
+        <ReplayState state={state} />
+      )}
+      {selected?.scope === "completed_replay" && (
+        <details className="event-payload">
+          <summary>Inspect selected canonical event</summary>
+          <pre>{JSON.stringify(selected.fullData, null, 2)}</pre>
+        </details>
+      )}
+    </section>
+  );
+}
+
+function ReplayState({ state }: { state: GameState }) {
+  const replaySeats: ViewSeat[] = state.seats.map((seat) => ({
+    id: seat.id,
+    displayName: seat.displayName,
+    controller: seat.controller,
+    position: seat.position,
+    firmIds: [...seat.firmIds],
+    points: seat.reserve.points,
+    reserve: {
+      clout: seat.reserve.clout,
+      operations: { ...seat.reserve.operations }
+    },
+    scoringCardId: seat.scoringCardId
+  }));
+  return (
+    <div className="replay-state">
+      <div className="replay-headline">
+        <strong>Round {state.round} / 12</strong>
+        <span>{state.phase.type}</span>
+        <span>{state.electionNumber} Elections recorded</span>
+      </div>
+      <div className="replay-seats">
+        {state.seats.map((seat) => (
+          <article key={seat.id}>
+            <strong>{seat.displayName}</strong>
+            <b>{seat.reserve.points} points</b>
+            <span>{seat.reserve.clout} Clout · {OPERATION_IDS.map(
+              (operation) => `${seat.reserve.operations[operation]} ${operation}`
+            ).join(" · ")}</span>
+            <small>Agenda {seat.scoringCardId}</small>
+          </article>
+        ))}
+      </div>
+      <DistrictMap support={state.support} />
+      <div className="replay-columns">
+        <section>
+          <h3>Pecking Order & overtures</h3>
+          <ol className="replay-order">
+            {state.partyOrder.map((partyId) => (
+              <li key={partyId}>
+                <strong>{PARTIES_BY_ID[partyId].name}</strong>
+                <span>
+                  Courts{" "}
+                  {state.overtures[partyId]
+                    ? PARTIES_BY_ID[state.overtures[partyId]!].shortName
+                    : "no party"}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+        <section>
+          <h3>Table chat</h3>
+          <div className="replay-chat">
+            {state.chat.map((message) => (
+              <p key={message.id}>
+                <b>
+                  {state.seats.find((seat) => seat.id === message.seatId)
+                    ?.displayName ?? "Player"}:
+                </b>{" "}
+                {message.text}
+              </p>
+            ))}
+            {state.chat.length === 0 && <p>No statements yet.</p>}
+          </div>
+        </section>
+      </div>
+      <section>
+        <h3>Contests & complete bid contents</h3>
+        <div className="contest-list">
+          {Object.keys(state.contests).map((contestId) => (
+            <ContestCard
+              key={contestId}
+              contestId={contestId}
+              seats={replaySeats}
+              bids={Object.values(state.bids).filter(
+                (bid) => bid.contestId === contestId
+              ) as unknown as Array<Record<string, unknown>>}
+            />
+          ))}
+        </div>
+      </section>
+      <div className="replay-columns">
+        <section>
+          <h3>Resolved operations</h3>
+          <ol className="operation-history">
+            {state.resolvedOperations.map((operation, index) => (
+              <li key={`${operation.bidId}-${index}`}>
+                Round {operation.round} · {partyName(operation.contestId)} ·{" "}
+                {operation.operation} · {operation.failure ?? "resolved"}
+              </li>
+            ))}
+          </ol>
+        </section>
+        <section>
+          <h3>Election bulletins</h3>
+          {state.electionHistory.map((election) => (
+            <article key={election.electionNumber}>
+              <strong>
+                Election {election.electionNumber} · round {election.afterRound}
+              </strong>
+              <p>
+                {election.scores
+                  .map((score) => {
+                    const player = state.seats.find(
+                      (seat) => seat.id === score.playerId
+                    );
+                    return `${player?.displayName ?? "Player"} ${score.resultingPoints}`;
+                  })
+                  .join(" · ")}
+              </p>
+            </article>
+          ))}
+        </section>
+      </div>
+      {state.phase.type === "complete" && (
+        <p className="winner-banner">
+          Winner{state.phase.winnerSeatIds.length === 1 ? "" : "s"}:{" "}
+          {state.phase.winnerSeatIds
+            .map(
+              (seatId) =>
+                state.seats.find((seat) => seat.id === seatId)?.displayName ??
+                seatId
+            )
+            .join(", ")}
+        </p>
+      )}
+    </div>
+  );
+}
+
+export function DistrictMap({ support }: { support: GameView["support"] }) {
   return <div className="district-map" aria-label="Bellwether district map">{DISTRICTS.map((district) => {
-    const pieces = Object.entries(support[district.id] ?? {}).flatMap(([party, count]) => Array.from({ length: count ?? 0 }, (_, index) => <i key={`${party}-${index}`} style={{ "--party": PARTIES_BY_ID[party as PartyId].color } as React.CSSProperties} title={PARTIES_BY_ID[party as PartyId].name} />));
-    return <article key={district.id} className={`district district-${district.id}`}><strong>{district.name}</strong><small>{district.capacity} seats</small><div className="support-dots">{pieces}{Array.from({ length: Math.max(0, district.capacity - pieces.length) }, (_, index) => <i className="empty" key={`empty-${index}`} />)}</div></article>;
+    const districtSupport = support[district.id] ?? {};
+    const summary = Object.entries(districtSupport)
+      .filter(([, count]) => (count ?? 0) > 0)
+      .map(([party, count]) => `${PARTIES_BY_ID[party as PartyId].shortName} ${count}`)
+      .join(", ");
+    const pieces = Object.entries(districtSupport).flatMap(([party, count]) =>
+      Array.from({ length: count ?? 0 }, (_, index) => (
+        <i
+          aria-hidden="true"
+          key={`${party}-${index}`}
+          style={{ "--party": PARTIES_BY_ID[party as PartyId].color } as React.CSSProperties}
+          title={PARTIES_BY_ID[party as PartyId].name}
+        />
+      ))
+    );
+    const free = Math.max(0, district.capacity - pieces.length);
+    return (
+      <article
+        key={district.id}
+        className={`district district-${district.id}`}
+        aria-label={`${district.name}: ${summary || "no Support"}; ${free} free spots`}
+      >
+        <strong>{district.name}</strong>
+        <small>{district.capacity} seats</small>
+        <span className="sr-only">{summary || "No party Support"}. {free} free spots.</span>
+        <div className="support-dots" aria-hidden="true">
+          {pieces}
+          {Array.from({ length: free }, (_, index) => (
+            <i className="empty" key={`empty-${index}`} />
+          ))}
+        </div>
+      </article>
+    );
   })}</div>;
 }
 
 function PartyRail({ view }: { view: GameView }) {
   return <div className="party-rail">{(view.partyOrder.length ? view.partyOrder : PARTIES.map((party) => party.id)).map((id, index) => <article key={id} style={{ "--party": PARTIES_BY_ID[id].color } as React.CSSProperties}><b>{index + 1}</b><span className="party-glyph">{PARTY_GLYPHS[id]}</span><div><strong>{PARTIES_BY_ID[id].shortName}</strong><small>Courts {view.overtures[id] ? PARTIES_BY_ID[view.overtures[id]!].shortName : "no party"}{view.reinforcedOverturePartyId === id ? " · reinforced" : ""}</small></div></article>)}</div>;
+}
+
+function PlayerLedger({ seats }: { seats: ViewSeat[] }) {
+  return (
+    <div className="player-ledger" aria-label="Live public point totals">
+      {seats.map((seat) => (
+        <article key={seat.id}>
+          <span>{seat.displayName}</span>
+          <strong>{seat.points}</strong>
+          <small>points</small>
+        </article>
+      ))}
+    </div>
+  );
 }
 
 function LoadingDesk({ error, onLeave }: { error: string | null; onLeave(): void }) {
@@ -1160,6 +1590,10 @@ function partyName(id: string): string {
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function objectValue(value: unknown): Record<string, unknown> {
+  return isObject(value) ? value : {};
 }
 
 function messageOf(error: unknown): string {

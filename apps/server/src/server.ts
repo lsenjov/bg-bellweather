@@ -62,12 +62,22 @@ export function createAppServer(options: AppServerOptions) {
   const webSockets = new WebSocketServer({ noServer: true });
 
   server.on("upgrade", (request, socket, head) => {
-    if (!request.url?.match(/^\/api\/v1\/games\/[^/]+\/events(?:\?.*)?$/)) {
+    const eventRoute = request.url?.match(
+      /^\/api\/v1\/games\/([^/]+)\/events(?:\?.*)?$/
+    );
+    if (eventRoute?.[1] === undefined) {
+      socket.destroy();
+      return;
+    }
+    let gameReference: string;
+    try {
+      gameReference = decodeURIComponent(eventRoute[1]);
+    } catch {
       socket.destroy();
       return;
     }
     webSockets.handleUpgrade(request, socket, head, (webSocket) => {
-      subscriptions.attach(webSocket);
+      subscriptions.attach(webSocket, gameReference);
     });
   });
 
@@ -411,6 +421,11 @@ function serveWebApp(
   }
   response.writeHead(200, {
     "content-type": contentType(asset),
+    "content-security-policy":
+      "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "referrer-policy": "no-referrer",
     "cache-control":
       asset.endsWith("index.html")
         ? "no-cache"
@@ -471,6 +486,9 @@ async function readJson(request: IncomingMessage): Promise<unknown> {
 function writeJson(response: ServerResponse, status: number, body: unknown): void {
   response.writeHead(status, {
     "content-type": "application/json; charset=utf-8",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "referrer-policy": "no-referrer",
     "cache-control": "no-store"
   });
   response.end(JSON.stringify(body));

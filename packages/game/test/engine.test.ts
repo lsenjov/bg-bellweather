@@ -152,6 +152,14 @@ describe("opening and counterbid phases", () => {
     });
     expect(untimed.phase).toMatchObject({ readySeatIds: [] });
     expect(() =>
+      act(untimed, {
+        type: "set_counterbid_ready",
+        seatId: "seat-1",
+        ready: "yes" as unknown as boolean,
+        now: 1_003
+      })
+    ).toThrow("must be boolean");
+    expect(() =>
       act(untimed, { type: "expire_counterbids", now: 99_999 })
     ).toThrow("no counterbid timer");
 

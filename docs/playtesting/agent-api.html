@@ -21,7 +21,7 @@
 
     <main>
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Playtest agent API</nav>
-      <p class="intro">Run the application locally at <code>http://127.0.0.1:4317</code>. Every seat receives an opaque bearer token. A command’s acting seat always comes from that token; any client-supplied seat or timestamp is ignored.</p>
+      <p class="intro">Run the application locally at <code>http://127.0.0.1:4317</code>. Every seat receives an opaque bearer token. A command’s acting seat and timestamp always come from the server. Do not supply either field: strict command validation rejects unknown fields.</p>
 
       <section>
         <span class="status decided">Implemented</span>
@@ -65,7 +65,34 @@ npm run dev</code></pre>
   }
 }</code></pre>
         <p><code>expectedVersion</code> is optional. Supplying it rejects decisions made from stale state. Reusing the same idempotency key with the same request returns the first acceptance; reusing it for different content is an error.</p>
-        <p>Lobby commands are <code>set_lobby_ready</code> and host-only <code>start_game</code>. Social commands are <code>post_chat</code> and <code>give_resources</code>. Player game actions are <code>submit_openings</code>, <code>set_counterbid</code>, <code>set_counterbid_ready</code>, <code>resolve_pecking_swap</code>, <code>resolve_party_operation</code>, and <code>set_election_ready</code>. Election draws and timer expiry are server-only.</p>
+        <p>Lobby commands are <code>{"type":"set_lobby_ready","ready":true}</code> and host-only <code>{"type":"start_game"}</code>. Public chat uses <code>{"type":"post_chat","message":"…"}</code>. A gift uses <code>type</code> <code>give_resources</code>, <code>recipientSeatId</code>, nonnegative integer <code>clout</code> and <code>points</code>, plus an <code>operations</code> object containing nonnegative integer <code>organise</code>, <code>rally</code>, <code>smear</code>, and <code>court</code> counts; at least one transferred value must be positive. Player game actions are <code>submit_openings</code>, <code>set_counterbid</code>, <code>set_counterbid_ready</code>, <code>resolve_pecking_swap</code>, <code>resolve_party_operation</code>, and <code>set_election_ready</code>. Election draws and timer expiry are server-only.</p>
+        <div class="table-wrap" role="region" aria-label="Game action payloads" tabindex="0">
+          <table>
+            <thead><tr><th>Action</th><th>Required payload</th></tr></thead>
+            <tbody>
+              <tr><td><code>submit_openings</code></td><td><code>openings[]</code>, each containing <code>firmId</code>, <code>partyId</code>, integer <code>clout</code>, and all four integer operation counts.</td></tr>
+              <tr><td><code>set_counterbid</code></td><td><code>slotIndex</code> from 0–3 and <code>bid</code>, either null to withdraw or an object containing <code>contestId</code>, <code>firmId</code>, <code>clout</code>, and operation counts.</td></tr>
+              <tr><td><code>set_counterbid_ready</code></td><td>Boolean <code>ready</code>.</td></tr>
+              <tr><td><code>resolve_pecking_swap</code></td><td><code>decisionId</code> from private state and <code>adjacentIndex</code> from the projected legal indexes.</td></tr>
+              <tr><td><code>resolve_party_operation</code></td><td><code>decisionId</code>, <code>operation</code>, and a matching choice. Organise uses destination and optional source district IDs; Rally uses a district; Smear uses a district and rival party; Court uses a target party. To claim a bonus, wrap the baseline under <code>choice</code> with <code>claimBonus: true</code>; Murmuration also supplies <code>repeatChoice</code>.</td></tr>
+              <tr><td><code>set_election_ready</code></td><td>Boolean <code>ready</code>, after <code>phase.resultsRecorded</code> becomes true.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <pre><code>{
+  "type": "resolve_party_operation",
+  "decisionId": "decision-19",
+  "operation": "smear",
+  "choice": {
+    "choice": {
+      "operation": "smear",
+      "districtId": "harbormouth",
+      "rivalParty": "old-shell"
+    },
+    "claimBonus": true
+  }
+}</code></pre>
+        <p>An accepted command returns <code>gameId</code>, the same <code>idempotencyKey</code>, and the new <code>version</code>/<code>latestSequence</code>. Illegal choices return a structured protocol error; refetch state after a version conflict or another seat’s action.</p>
       </section>
 
       <section>

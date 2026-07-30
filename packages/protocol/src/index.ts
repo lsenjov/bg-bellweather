@@ -283,14 +283,153 @@ export const GiveResourcesCommandSchema = z
       0,
     { message: "A gift must contain at least one resource" }
   );
+
+export const PartyIdSchema = z.enum([
+  "honeycomb",
+  "old-shell",
+  "foxglove",
+  "riverworks",
+  "many-wings",
+  "night-parliament"
+]);
+export const FirmIdSchema = z.enum([
+  "one-fell-swoop",
+  "pairliament",
+  "triumvirat",
+  "ivy-league",
+  "vested-interests",
+  "vip-access"
+]);
+export const ContestIdSchema = z.union([
+  PartyIdSchema,
+  z.literal("pecking-order")
+]);
+export const OperationIdSchema = z.enum([
+  "organise",
+  "rally",
+  "smear",
+  "court"
+]);
+const DecisionIdSchema = z.string().trim().min(1).max(100);
+const OrganiseChoiceSchema = z
+  .object({
+    operation: z.literal("organise"),
+    destinationDistrictId: z.string().trim().min(1).max(100),
+    sourceDistrictId: z.string().trim().min(1).max(100).optional()
+  })
+  .strict();
+const RallyChoiceSchema = z
+  .object({
+    operation: z.literal("rally"),
+    districtId: z.string().trim().min(1).max(100),
+    bonusDistrictId: z.string().trim().min(1).max(100).optional()
+  })
+  .strict();
+const SmearChoiceSchema = z
+  .object({
+    operation: z.literal("smear"),
+    districtId: z.string().trim().min(1).max(100),
+    rivalParty: PartyIdSchema,
+    bonusDistrictId: z.string().trim().min(1).max(100).optional()
+  })
+  .strict();
+const CourtChoiceSchema = z
+  .object({
+    operation: z.literal("court"),
+    targetParty: PartyIdSchema,
+    bonusDistrictId: z.string().trim().min(1).max(100).optional()
+  })
+  .strict();
+export const OperationChoiceSchema = z.discriminatedUnion("operation", [
+  OrganiseChoiceSchema,
+  RallyChoiceSchema,
+  SmearChoiceSchema,
+  CourtChoiceSchema
+]);
+const OperationResolutionChoiceSchema = z.union([
+  OperationChoiceSchema,
+  z
+    .object({
+      choice: OperationChoiceSchema,
+      claimBonus: z.boolean().optional(),
+      repeatChoice: OrganiseChoiceSchema.optional()
+    })
+    .strict()
+]);
+export type OperationChoice = z.infer<typeof OperationChoiceSchema>;
+export type OperationResolutionChoice = z.infer<
+  typeof OperationResolutionChoiceSchema
+>;
+const BidPackageSchema = z
+  .object({
+    clout: z.number().int().nonnegative(),
+    operations: OperationInventorySchema
+  })
+  .strict();
+const SubmitOpeningsActionSchema = z
+  .object({
+    type: z.literal("submit_openings"),
+    openings: z
+      .array(
+        BidPackageSchema.extend({
+          firmId: FirmIdSchema,
+          partyId: PartyIdSchema
+        }).strict()
+      )
+      .max(2)
+  })
+  .strict();
+const SetCounterbidActionSchema = z
+  .object({
+    type: z.literal("set_counterbid"),
+    slotIndex: z.number().int().min(0).max(3),
+    bid: BidPackageSchema.extend({
+      contestId: ContestIdSchema,
+      firmId: FirmIdSchema
+    })
+      .strict()
+      .nullable()
+  })
+  .strict();
+const SetCounterbidReadyActionSchema = z
+  .object({
+    type: z.literal("set_counterbid_ready"),
+    ready: z.boolean()
+  })
+  .strict();
+const ResolvePeckingSwapActionSchema = z
+  .object({
+    type: z.literal("resolve_pecking_swap"),
+    decisionId: DecisionIdSchema,
+    adjacentIndex: z.number().int().min(0).max(4)
+  })
+  .strict();
+const ResolvePartyOperationActionSchema = z
+  .object({
+    type: z.literal("resolve_party_operation"),
+    decisionId: DecisionIdSchema,
+    operation: OperationIdSchema,
+    choice: OperationResolutionChoiceSchema
+  })
+  .strict();
+const SetElectionReadyActionSchema = z
+  .object({
+    type: z.literal("set_election_ready"),
+    ready: z.boolean()
+  })
+  .strict();
+export const PlayerGameActionSchema = z.discriminatedUnion("type", [
+  SubmitOpeningsActionSchema,
+  SetCounterbidActionSchema,
+  SetCounterbidReadyActionSchema,
+  ResolvePeckingSwapActionSchema,
+  ResolvePartyOperationActionSchema,
+  SetElectionReadyActionSchema
+]);
 export const GameActionCommandSchema = z
   .object({
     type: z.literal("game_action"),
-    action: z
-      .object({
-        type: z.string().trim().min(1).max(100)
-      })
-      .catchall(JsonValueSchema)
+    action: PlayerGameActionSchema
   })
   .strict();
 
@@ -306,6 +445,7 @@ export type StartGameCommand = z.infer<typeof StartGameCommandSchema>;
 export type StartLobbyCommand = StartGameCommand;
 export type PostChatCommand = z.infer<typeof PostChatCommandSchema>;
 export type GiveResourcesCommand = z.infer<typeof GiveResourcesCommandSchema>;
+export type PlayerGameAction = z.infer<typeof PlayerGameActionSchema>;
 export type GameActionCommand = z.infer<typeof GameActionCommandSchema>;
 export type GameCommand = z.infer<typeof GameCommandSchema>;
 

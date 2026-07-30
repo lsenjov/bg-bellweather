@@ -19,7 +19,7 @@ export class Subscriptions {
 
   constructor(private readonly store: EventStore) {}
 
-  attach(socket: WebSocket): void {
+  attach(socket: WebSocket, gameReference: string): void {
     let subscription: Subscription | undefined;
 
     socket.once("message", (data) => {
@@ -31,9 +31,16 @@ export class Subscriptions {
           throw new AppError(401, "unauthorized", "Authenticate before subscribing");
         }
         const authenticated = this.store.authenticateParticipant(
-          frame.gameId,
+          gameReference,
           frame.accessToken
         );
+        if (frame.gameId !== authenticated.game.id) {
+          throw new AppError(
+            403,
+            "wrong_game",
+            "WebSocket frame gameId does not match the route"
+          );
+        }
         subscription = {
           socket,
           gameId: authenticated.game.id,

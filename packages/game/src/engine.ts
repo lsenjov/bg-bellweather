@@ -400,6 +400,9 @@ function setCounterbidReady(
 ): void {
   const phase = requirePhase(state, "counterbidding");
   requireCounterbidTime(phase, now);
+  if (typeof ready !== "boolean") {
+    throw new GameRuleError("invalid_ready", "Ready state must be boolean");
+  }
   getSeat(state, seatId);
   phase.readySeatIds = phase.readySeatIds.filter((id) => id !== seatId);
   if (ready) {
@@ -827,6 +830,9 @@ function setElectionReady(
   ready: boolean
 ): void {
   const phase = requirePhase(state, "election");
+  if (typeof ready !== "boolean") {
+    throw new GameRuleError("invalid_ready", "Ready state must be boolean");
+  }
   if (!phase.resultsRecorded) {
     throw new GameRuleError(
       "election_results_pending",
