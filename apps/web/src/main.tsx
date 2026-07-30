@@ -1,9 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-
-function App() {
-  return <main>Ladder Bidding web application foundation</main>;
-}
+import { App } from "./App.js";
+import "./styles.css";
 
 const root = document.querySelector("#root");
 if (root === null) {
