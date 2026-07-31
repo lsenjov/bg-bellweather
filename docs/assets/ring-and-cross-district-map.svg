@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="396mm" height="297mm" viewBox="0 0 1600 1200" role="img" aria-labelledby="title description">
-  <title id="title">Territorial district map of Bellwether</title>
-  <desc id="description">Sixteen named districts form an irregular land ring and three causeways across Crownwater to Bellwether Centre. Shared black borders define adjacency. Clockwise from north, the outer ring is Northreach with 2 Support spots, Cloverfield with 4, Harbormouth with 6, Millbank with 4, Reedwater with 2, Sunmeadow with 4, Grand Market with 6, Red Orchard with 4, Westgate with 2, Mossfield with 4, Ironwood with 6, and High Pastures with 4. Crown Road has 2 spots and borders Northreach and Bellwether Centre. Canal Ward has 2 spots and borders Reedwater and Bellwether Centre. Old Quarter has 2 spots and borders Westgate and Bellwether Centre. Bellwether Centre has 3 spots and borders the three causeways.</desc>
+  <title id="title">Territorial district map of Bellweather</title>
+  <desc id="description">Sixteen named districts form an irregular land ring and three causeways across Crownwater to Bellweather Centre. Shared black borders define adjacency. Clockwise from north, the outer ring is Northreach with 2 Support spots, Cloverfield with 4, Harbormouth with 6, Millbank with 4, Reedwater with 2, Sunmeadow with 4, Grand Market with 6, Red Orchard with 4, Westgate with 2, Mossfield with 4, Ironwood with 6, and High Pastures with 4. Crown Road has 2 spots and borders Northreach and Bellweather Centre. Canal Ward has 2 spots and borders Reedwater and Bellweather Centre. Old Quarter has 2 spots and borders Westgate and Bellweather Centre. Bellweather Centre has 3 spots and borders the three causeways.</desc>
   <defs>
     <pattern id="water" width="52" height="28" patternUnits="userSpaceOnUse">
       <rect width="52" height="28" fill="#c9d9da"/>
@@ -28,7 +28,7 @@
 
   <rect class="paper" width="1600" height="1200"/>
   <path class="registration" d="M28 52V28h24 M1548 28h24v24 M28 1172v18h24 M1548 1190h24v-18"/>
-  <text class="eyebrow" x="60" y="62">REPUBLIC OF BELLWETHER / DISTRICT ATLAS 01</text>
+  <text class="eyebrow" x="60" y="62">REPUBLIC OF BELLWEATHER / DISTRICT ATLAS 01</text>
   <text class="heading" x="60" y="103">The sixteen districts</text>
   <text class="map-note" x="1540" y="62" text-anchor="end">16 DISTRICTS / 57 SUPPORT SPOTS</text>
 
@@ -54,7 +54,7 @@
     <path class="district district-two" aria-label="Crown Road district, capacity 2" d="M707 330Q800 290 893 330L950 510H650Z"/>
     <path class="district district-two" aria-label="Canal Ward district, capacity 2" d="M1148 685Q1080 770 1055 815L800 770L950 510Z"/>
     <path class="district district-two" aria-label="Old Quarter district, capacity 2" d="M545 815Q460 750 452 685L650 510L800 770Z"/>
-    <path class="district district-center" aria-label="Bellwether Centre district, capacity 3" d="M650 510H950L800 770Z"/>
+    <path class="district district-center" aria-label="Bellweather Centre district, capacity 3" d="M650 510H950L800 770Z"/>
   </g>
 
   <g aria-hidden="true">
@@ -178,8 +178,8 @@
       <use href="#support-spot" x="622" y="735"/>
     </g>
 
-    <g aria-label="Bellwether Centre, 3 Support spots">
-      <text class="region-name region-name-small" x="800" y="555">Bellwether</text>
+    <g aria-label="Bellweather Centre, 3 Support spots">
+      <text class="region-name region-name-small" x="800" y="555">Bellweather</text>
       <text class="region-name region-name-small" x="800" y="580">Centre</text>
       <use href="#support-spot" x="755" y="642"/>
       <use href="#support-spot" x="800" y="642"/>

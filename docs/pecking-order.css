@@ -445,13 +445,13 @@ main {
   font: 800 5pt/1 var(--mono);
 }
 
-.overture-tokens {
+.coalition-target-tokens {
   display: grid;
   grid-template-columns: repeat(6, 14mm);
   gap: 2mm;
 }
 
-.overture-token {
+.coalition-target-token {
   display: grid;
   width: 14mm;
   height: 14mm;

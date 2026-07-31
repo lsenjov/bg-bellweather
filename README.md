@@ -2,8 +2,8 @@
 
 Working repository for the board game currently titled **Ladder Bidding**.
 
-Rival lobbying firms use Clout, Bluff, and operation cards to influence six animal
-political parties in the fictional Republic of Bellwether. The repository now
+Rival lobbying firms use Leverage, Bluff, and operation cards to influence six animal
+political parties in the fictional Republic of Bellweather. The repository now
 contains both the printable design archive and a local, server-authoritative
 web application for two to six human or API-controlled players. It implements
 the twelve-round campaign, three Election Days, unlimited Support, one-way
@@ -31,7 +31,7 @@ npm start
 ```
 
 Open `http://127.0.0.1:4317`. The SQLite database is stored at
-`data/ladder-bidding.sqlite` unless `BELLWETHER_DATABASE` overrides it.
+`data/ladder-bidding.sqlite` unless `BELLWEATHER_DATABASE` overrides it.
 
 For source-reloading server and browser processes:
 
@@ -49,10 +49,10 @@ reusable client in `packages/testkit`. To launch the conservative example
 agent:
 
 ```sh
-BELLWETHER_INVITE=ABC234XY npm run agent:example
+BELLWEATHER_INVITE=ABC234XY npm run agent:example
 ```
 
-Omit `BELLWETHER_INVITE` to have the agent create a new table and print its
+Omit `BELLWEATHER_INVITE` to have the agent create a new table and print its
 invite code and session.
 
 ## Validate the archive
@@ -95,7 +95,7 @@ physical-size checks pass.
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
 | `assets/print/lobbying-firm-boards-a4.pdf` | Three A4 portrait player-board sheets |
 | `assets/print/lobbying-firm-tokens-a4.pdf` | Three A4 landscape firm-token sheets |
-| `assets/print/bid-cards-a4.pdf` | Printable A4 portrait Clout, Bluff, and operation-card supply |
+| `assets/print/bid-cards-a4.pdf` | Printable A4 portrait Leverage, Bluff, and operation-card supply |
 | `assets/print/scoring-cards-a4.pdf` | Two A4 portrait scoring-card sheets |
 | `assets/print/pecking-order-a4.pdf` | One A4 landscape Pecking Order sheet |
 

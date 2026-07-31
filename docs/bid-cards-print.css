@@ -131,11 +131,11 @@ main {
   pointer-events: none;
 }
 
-.clout::before {
+.leverage::before {
   background: none;
 }
 
-.clout {
+.leverage {
   --tint: #fbf1d4;
   background: var(--tint);
 }
@@ -177,12 +177,12 @@ main {
   background: none;
 }
 
-.court {
+.coalition {
   --accent: #557889;
   --tint: #d4e1eb;
 }
 
-.court::before {
+.coalition::before {
   background: repeating-radial-gradient(circle at center, transparent 0 6mm, currentColor 6.1mm 6.5mm);
 }
 
@@ -206,7 +206,7 @@ main {
   place-items: center;
 }
 
-.clout .card-glyph {
+.leverage .card-glyph {
   font-size: 46pt;
 }
 

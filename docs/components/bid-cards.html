@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Six-player printable supply of Bellwether Clout, Bluff, and operation cards with shared backs.">
+    <meta name="description" content="Six-player printable supply of Bellweather Leverage, Bluff, and operation cards with shared backs.">
     <title>Printable Bid Cards — Ladder Bidding</title>
     <link rel="stylesheet" href="../bid-cards-print.css">
   </head>
@@ -11,7 +11,7 @@
     <header class="screen-header">
       <a href="cards.html">← Card specification</a>
       <h1>Bid cards</h1>
-      <p>Print at actual size, duplex on the long edge. Every card is exactly 40 × 61 mm for a 41 × 63 mm opaque sleeve. The eighteen A4 portrait pages alternate fronts and shared backs for sixty one-Clout, twenty-four Bluff, twelve Organise, twenty-four Rally, twelve Smear, and six Court cards.</p>
+      <p>Print at actual size, duplex on the long edge. Every card is exactly 40 × 61 mm for a 41 × 63 mm opaque sleeve. The eighteen A4 portrait pages alternate fronts and shared backs for sixty one-Leverage, twenty-four Bluff, twelve Organise, twenty-four Rally, twelve Smear, and six Coalition cards.</p>
       <p><a href="../../assets/print/bid-cards-a4.pdf">Open print-ready PDF →</a></p>
     </header>
 
@@ -20,12 +20,12 @@
     <script>
       const definitions = [
         {
-          kind: "clout",
+          kind: "leverage",
           count: 60,
           kicker: "Registered leverage",
           glyph: "1",
-          title: "Clout",
-          rule: "Each card contributes one Clout.",
+          title: "Leverage",
+          rule: "Each card contributes one Leverage.",
           footer: "Reveal to rank the bid"
         },
         {
@@ -65,12 +65,12 @@
           footer: "Party bonus may apply"
         },
         {
-          kind: "court",
+          kind: "coalition",
           count: 6,
           kicker: "Operation / redirect",
           glyph: "↻",
-          title: "Court",
-          rule: "Point this party’s overture at a different party.",
+          title: "Coalition",
+          rule: "Point this party’s coalition target at a different party.",
           footer: "Party bonus may apply"
         }
       ];
@@ -100,7 +100,7 @@
         card.className = "bid-card back";
         card.setAttribute("aria-label", "Shared bid-card back");
         card.innerHTML = `
-          <span class="back-register">Republic of Bellwether</span>
+          <span class="back-register">Republic of Bellweather</span>
           <div class="back-seal"><b>LB</b><span>Influence filing</span></div>
           <strong>Classified</strong>
           <small>Revolving Door registry</small>
