@@ -10,7 +10,7 @@ Complete a breaking terminology migration from Bellwether, Clout, Court, and Ove
 - [x] Rename all live player-facing rules, component specifications, application labels, and printable content while preserving superseded terminology in archives and historical entries.
 - [x] Redesign all six transferable bid-card fronts with unique L/B/O/R/S/C corner indices, including a lower-right index rotated 180 degrees, while retaining full names, effects, colour families, central glyphs, and the shared back.
 - [x] Record the breaking terminology decision and archive the replaced nomenclature.
-- [ ] Regenerate all print assets, inspect every revised card family and affected board, and run full repository validation.
+- [x] Regenerate all print assets, inspect every revised card family and affected board, and run full repository validation.
 - [ ] Obtain an independent review and resolve every high or medium finding before handoff.
 
 ## Migration map
