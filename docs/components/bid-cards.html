@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Six-player printable supply of Bellweather Leverage, Bluff, and operation cards with shared backs.">
+    <meta name="description" content="Six-player printable supply of front-only Bellweather Leverage, Bluff, and operation cards.">
     <title>Printable Bid Cards — Ladder Bidding</title>
     <link rel="stylesheet" href="../bid-cards-print.css">
   </head>
@@ -11,7 +11,7 @@
     <header class="screen-header">
       <a href="cards.html">← Card specification</a>
       <h1>Bid cards</h1>
-      <p>Print at actual size, duplex on the long edge. Every card is exactly 40 × 61 mm for a 41 × 63 mm opaque sleeve. The eighteen A4 portrait pages alternate fronts and shared backs for sixty one-Leverage, twenty-four Bluff, twelve Organise, twenty-four Rally, twelve Smear, and six Court cards. The unique L, B, O, R, S, and C corner indices remain visible in a fanned hand.</p>
+      <p>Print the nine front-only A4 portrait pages at actual size. Every card is exactly 40 × 61 mm for a 41 × 63 mm opaque sleeve. Cards share cut lines in a zero-gutter 4 × 4 grid. The supply contains sixty one-Leverage, twenty-four Bluff, twelve Organise, twenty-four Rally, twelve Smear, and six Court cards. The unique L, B, O, R, S, and C corner indices remain visible in a fanned hand.</p>
       <p><a href="../../assets/print/bid-cards-a4.pdf">Open print-ready PDF →</a></p>
     </header>
 
@@ -103,39 +103,22 @@
         return card;
       }
 
-      function cardBack() {
-        const card = document.createElement("article");
-        card.className = "bid-card back";
-        card.setAttribute("aria-label", "Shared bid-card back");
-        card.innerHTML = `
-          <span class="back-register">Republic of Bellweather</span>
-          <div class="back-seal"><b>LB</b><span>Influence filing</span></div>
-          <small>Revolving Door registry</small>
-        `;
-        return card;
-      }
-
-      function sheet(side, index, count) {
+      function sheet(index, count) {
         const section = document.createElement("section");
-        section.className = `print-sheet ${side}-sheet`;
+        section.className = "print-sheet";
         section.setAttribute(
           "aria-label",
-          `Bid-card ${side} sheet ${index + 1} of ${sheetCount}`
+          `Bid-card sheet ${index + 1} of ${sheetCount}`
         );
         const label = document.createElement("p");
         label.className = "sheet-label";
-        label.textContent = `Bid cards / ${side} / ${index + 1} of ${sheetCount}`;
+        label.textContent = `Bid cards / fronts / ${index + 1} of ${sheetCount}`;
         const grid = document.createElement("div");
         grid.className = "card-grid";
         for (let position = 0; position < cardsPerSheet; position += 1) {
-          const sourcePosition = side === "back"
-            ? Math.floor(position / 4) * 4 + (3 - position % 4)
-            : position;
-          const cardIndex = index * cardsPerSheet + sourcePosition;
+          const cardIndex = index * cardsPerSheet + position;
           if (cardIndex < count) {
-            grid.append(
-              side === "front" ? cardFront(cards[cardIndex]) : cardBack()
-            );
+            grid.append(cardFront(cards[cardIndex]));
           } else {
             const blank = document.createElement("span");
             blank.className = "blank-card";
@@ -149,7 +132,7 @@
 
       for (let index = 0; index < sheetCount; index += 1) {
         const count = Math.min(cards.length, (index + 1) * cardsPerSheet);
-        root.append(sheet("front", index, count), sheet("back", index, count));
+        root.append(sheet(index, count));
       }
     </script>
   </body>
