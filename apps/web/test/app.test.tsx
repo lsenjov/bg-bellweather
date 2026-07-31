@@ -79,7 +79,7 @@ describe("browser play surface", () => {
             status: "active",
             leverage: 3,
             bluff: 1,
-            operations: { organise: 1, rally: 0, smear: 1, coalition: 0 }
+            operations: { organise: 1, rally: 0, smear: 1, court: 0 }
           }
         ]}
       />

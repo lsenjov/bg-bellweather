@@ -252,8 +252,7 @@ async function takeTurn(
     const choice = chooseOperation(
       operation,
       partyId,
-      objectValue(game["support"]),
-      objectValue(game["coalitionTargets"])
+      objectValue(game["support"])
     );
     if (choice !== null) {
       await command(client, session.gameId, publicState.version, {
@@ -272,8 +271,7 @@ async function takeTurn(
 function chooseOperation(
   operation: OperationId,
   partyId: PartyId,
-  rawSupport: Record<string, unknown>,
-  coalitionTargets: Record<string, unknown>
+  rawSupport: Record<string, unknown>
 ): OperationChoice | null {
   const support = Object.fromEntries(
     DISTRICTS.map((district) => [
@@ -353,11 +351,8 @@ function chooseOperation(
     }
     return null;
   }
-  if (operation === "coalition") {
-    const target = PARTIES.find(
-      (party) =>
-        party.id !== partyId && party.id !== coalitionTargets[partyId]
-    );
+  if (operation === "court") {
+    const target = PARTIES.find((party) => party.id !== partyId);
     return target === undefined
       ? null
       : { operation, targetParty: target.id };
@@ -380,7 +375,7 @@ async function command(
 }
 
 function emptyOperations() {
-  return { organise: 0, rally: 0, smear: 0, coalition: 0 };
+  return { organise: 0, rally: 0, smear: 0, court: 0 };
 }
 
 function objectValue(value: unknown): Record<string, unknown> {
@@ -402,6 +397,6 @@ function isOperationId(value: string): value is OperationId {
     value === "organise" ||
     value === "rally" ||
     value === "smear" ||
-    value === "coalition"
+    value === "court"
   );
 }

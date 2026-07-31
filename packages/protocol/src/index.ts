@@ -240,7 +240,7 @@ export const OperationInventorySchema = z
     organise: z.number().int().nonnegative(),
     rally: z.number().int().nonnegative(),
     smear: z.number().int().nonnegative(),
-    coalition: z.number().int().nonnegative()
+    court: z.number().int().nonnegative()
   })
   .strict();
 export type OperationInventory = z.infer<typeof OperationInventorySchema>;
@@ -281,7 +281,7 @@ export const GiveResourcesCommandSchema = z
         operations.organise +
         operations.rally +
         operations.smear +
-        operations.coalition >
+        operations.court >
       0,
     { message: "A gift must contain at least one resource" }
   );
@@ -310,7 +310,7 @@ export const OperationIdSchema = z.enum([
   "organise",
   "rally",
   "smear",
-  "coalition"
+  "court"
 ]);
 const DecisionIdSchema = z.string().trim().min(1).max(100);
 const OrganiseChoiceSchema = z
@@ -335,9 +335,9 @@ const SmearChoiceSchema = z
     bonusDistrictId: z.string().trim().min(1).max(100).optional()
   })
   .strict();
-const CoalitionChoiceSchema = z
+const CourtChoiceSchema = z
   .object({
-    operation: z.literal("coalition"),
+    operation: z.literal("court"),
     targetParty: PartyIdSchema,
     bonusDistrictId: z.string().trim().min(1).max(100).optional()
   })
@@ -346,7 +346,7 @@ export const OperationChoiceSchema = z.discriminatedUnion("operation", [
   OrganiseChoiceSchema,
   RallyChoiceSchema,
   SmearChoiceSchema,
-  CoalitionChoiceSchema
+  CourtChoiceSchema
 ]);
 const OperationResolutionChoiceSchema = z.union([
   OperationChoiceSchema,

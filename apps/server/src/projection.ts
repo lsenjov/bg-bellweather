@@ -160,8 +160,8 @@ function publicEngineState(state: GameState): Record<string, unknown> {
     nextFirstOpenerSeatId: state.nextFirstOpenerSeatId,
     partyOrder: state.partyOrder,
     support: state.support,
+    courtSupport: state.courtSupport,
     coalitionTargets: state.coalitionTargets,
-    reinforcedCoalitionPartyId: state.reinforcedCoalitionPartyId,
     phase: publicPhase(state),
     seats: state.seats.map((seat) => ({
       id: seat.id,

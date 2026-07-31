@@ -82,7 +82,7 @@ describe("commands", () => {
       recipientSeatId: seatId,
       leverage: 0,
       bluff: 0,
-      operations: { organise: 0, rally: 0, smear: 0, coalition: 0 },
+      operations: { organise: 0, rally: 0, smear: 0, court: 0 },
       points: 0
     };
 
@@ -111,7 +111,7 @@ describe("commands", () => {
               firmId: "one-fell-swoop",
               leverage: 2,
               bluff: 1,
-              operations: { organise: 1, rally: 0, smear: 0, coalition: 0 }
+              operations: { organise: 1, rally: 0, smear: 0, court: 0 }
             }
           }
         }

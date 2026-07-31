@@ -215,7 +215,7 @@ describe("game server", () => {
             recipientSeatId: joinBody.session.seatId,
             leverage: 0,
             bluff: 0,
-            operations: { organise: 0, rally: 0, smear: 0, coalition: 0 },
+            operations: { organise: 0, rally: 0, smear: 0, court: 0 },
             points: 2
           }
         }
@@ -441,7 +441,7 @@ describe("game server", () => {
       reserve: {
         leverage: 20,
         bluff: 8,
-        operations: { organise: 4, rally: 8, smear: 4, coalition: 2 },
+        operations: { organise: 4, rally: 8, smear: 4, court: 2 },
         points: 10
       }
     });
@@ -452,7 +452,7 @@ describe("game server", () => {
     const firms = active.publicState.publicGame.seats.find(
       (seat) => seat.id === actor.seatId
     )!.firmIds;
-    const emptyOperations = { organise: 0, rally: 0, smear: 0, coalition: 0 };
+    const emptyOperations = { organise: 0, rally: 0, smear: 0, court: 0 };
     await jsonRequest(
       baseUrl,
       `/api/v1/games/${host.session.gameId}/commands`,
@@ -631,7 +631,7 @@ describe("game server", () => {
               partyId,
               leverage: 1,
               bluff: 0,
-              operations: { organise: 0, rally: 0, smear: 0, coalition: 0 }
+              operations: { organise: 0, rally: 0, smear: 0, court: 0 }
             }))
           }
         }

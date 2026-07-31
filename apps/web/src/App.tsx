@@ -75,8 +75,8 @@ interface GameView {
   seats: ViewSeat[];
   partyOrder: PartyId[];
   support: Record<string, Partial<Record<PartyId, number>>>;
+  courtSupport: Record<PartyId, Partial<Record<PartyId, number>>>;
   coalitionTargets: Partial<Record<PartyId, PartyId | null>>;
-  reinforcedCoalitionPartyId: PartyId | null;
   contests: Record<string, unknown>;
   bids: Array<Record<string, unknown>>;
   readySeatIds: string[];
@@ -424,7 +424,7 @@ function GameDesk(props: {
 }) {
   const [chat, setChat] = useState("");
   const [giftTo, setGiftTo] = useState("");
-  const [gift, setGift] = useState({ leverage: 0, bluff: 0, points: 0, organise: 0, rally: 0, smear: 0, coalition: 0 });
+  const [gift, setGift] = useState({ leverage: 0, bluff: 0, points: 0, organise: 0, rally: 0, smear: 0, court: 0 });
   const ownReady = props.ownSeatId ? props.view.readySeatIds.includes(props.ownSeatId) : false;
   const scoringCard = props.ownSeat?.scoringCardId ? SCORING_CARDS_BY_ID[props.ownSeat.scoringCardId as keyof typeof SCORING_CARDS_BY_ID] : undefined;
   const latestElection = props.view.electionHistory.at(-1);
@@ -495,10 +495,10 @@ function GameDesk(props: {
         {!props.spectator && props.ownSeatId ? (
           <form onSubmit={(event) => {
             event.preventDefault();
-            void props.onCommand({ type: "give_resources", recipientSeatId: giftTo as never, leverage: gift.leverage, bluff: gift.bluff, points: gift.points, operations: { organise: gift.organise, rally: gift.rally, smear: gift.smear, coalition: gift.coalition } });
+            void props.onCommand({ type: "give_resources", recipientSeatId: giftTo as never, leverage: gift.leverage, bluff: gift.bluff, points: gift.points, operations: { organise: gift.organise, rally: gift.rally, smear: gift.smear, court: gift.court } });
           }}>
             <label>Recipient<select required value={giftTo} onChange={(event) => setGiftTo(event.target.value)}><option value="">Choose a player</option>{props.view.seats.filter((seat) => seat.id !== props.ownSeatId).map((seat) => <option key={seat.id} value={seat.id}>{seat.displayName}</option>)}</select></label>
-            <div className="gift-grid">{(["leverage","bluff","points","organise","rally","smear","coalition"] as const).map((key) => <label key={key}>{key}<input type="number" min="0" value={gift[key]} onChange={(event) => setGift({ ...gift, [key]: Number(event.target.value) })} /></label>)}</div>
+            <div className="gift-grid">{(["leverage","bluff","points","organise","rally","smear","court"] as const).map((key) => <label key={key}>{key}<input type="number" min="0" value={gift[key]} onChange={(event) => setGift({ ...gift, [key]: Number(event.target.value) })} /></label>)}</div>
             <button className="ink-button">Record one-way gift</button>
           </form>
         ) : <p>Observers cannot move table resources.</p>}
@@ -520,7 +520,7 @@ const EMPTY_TOKENS: TokenDraft = {
   organise: 0,
   rally: 0,
   smear: 0,
-  coalition: 0
+  court: 0
 };
 
 export function ContestCard(props: {
@@ -826,7 +826,7 @@ function CounterbidForm(props: {
         organise: numberOr(bid.operations.organise, 0),
         rally: numberOr(bid.operations.rally, 0),
         smear: numberOr(bid.operations.smear, 0),
-        coalition: numberOr(bid.operations.coalition, 0)
+        court: numberOr(bid.operations.court, 0)
       });
     }
   }, [selectedBidId, slotIndex]);
@@ -999,12 +999,6 @@ function OperationForm(props: {
   ) as PartyId;
   const defaultOtherParty =
     PARTIES.find((party) => party.id !== partyId)?.id ?? "honeycomb";
-  const defaultCoalitionTarget =
-    PARTIES.find(
-      (party) =>
-        party.id !== partyId &&
-        party.id !== props.view.coalitionTargets[partyId]
-    )?.id ?? defaultOtherParty;
   const [operation, setOperation] = useState<OperationId>(
     legal[0] ?? "organise"
   );
@@ -1013,7 +1007,7 @@ function OperationForm(props: {
   const [rivalParty, setRivalParty] =
     useState<PartyId>(defaultOtherParty);
   const [targetParty, setTargetParty] =
-    useState<PartyId>(defaultCoalitionTarget);
+    useState<PartyId>(defaultOtherParty);
   const [bonusDistrictId, setBonusDistrictId] = useState<string>(
     DISTRICTS[0].id
   );
@@ -1112,16 +1106,11 @@ function OperationForm(props: {
       {operation === "smear" && (
         <PartySelect label="Rival party" value={rivalParty} excludes={[partyId]} onChange={setRivalParty} />
       )}
-      {operation === "coalition" && (
+      {operation === "court" && (
         <PartySelect
-          label="New coalition target"
+          label="Court space"
           value={targetParty}
-          excludes={[
-            partyId,
-            ...(props.view.coalitionTargets[partyId]
-              ? [props.view.coalitionTargets[partyId]!]
-              : [])
-          ]}
+          excludes={[partyId]}
           onChange={setTargetParty}
         />
       )}
@@ -1137,7 +1126,7 @@ function OperationForm(props: {
       )}
       {claimBonus &&
         (partyId === "riverworks" ||
-          (partyId === "many-wings" && operation === "coalition")) && (
+          (partyId === "many-wings" && operation === "court")) && (
           <DistrictSelect
             label="Bonus district"
             value={bonusDistrictId}
@@ -1370,6 +1359,7 @@ function ReplayState({ state }: { state: GameState }) {
                     ? PARTIES_BY_ID[state.coalitionTargets[partyId]!].shortName
                     : "no party"}
                 </span>
+                <small>{courtSupportSummary(state.courtSupport[partyId])}</small>
               </li>
             ))}
           </ol>
@@ -1493,7 +1483,17 @@ export function DistrictMap({ support }: { support: GameView["support"] }) {
 }
 
 function PartyRail({ view }: { view: GameView }) {
-  return <div className="party-rail">{(view.partyOrder.length ? view.partyOrder : PARTIES.map((party) => party.id)).map((id, index) => <article key={id} style={{ "--party": PARTIES_BY_ID[id].color } as React.CSSProperties}><b>{index + 1}</b><span className="party-glyph">{PARTY_GLYPHS[id]}</span><div><strong>{PARTIES_BY_ID[id].shortName}</strong><small>Targets {view.coalitionTargets[id] ? PARTIES_BY_ID[view.coalitionTargets[id]!].shortName : "no party"}{view.reinforcedCoalitionPartyId === id ? " · reinforced" : ""}</small></div></article>)}</div>;
+  return <div className="party-rail">{(view.partyOrder.length ? view.partyOrder : PARTIES.map((party) => party.id)).map((id, index) => <article key={id} style={{ "--party": PARTIES_BY_ID[id].color } as React.CSSProperties}><b>{index + 1}</b><span className="party-glyph">{PARTY_GLYPHS[id]}</span><div><strong>{PARTIES_BY_ID[id].shortName}</strong><small>Targets {view.coalitionTargets[id] ? PARTIES_BY_ID[view.coalitionTargets[id]!].shortName : "no party"} · {courtSupportSummary(view.courtSupport[id])}</small></div></article>)}</div>;
+}
+
+function courtSupportSummary(
+  support: Partial<Record<PartyId, number>> | undefined
+): string {
+  const placements = PARTIES.flatMap((party) => {
+    const count = support?.[party.id] ?? 0;
+    return count > 0 ? [`${party.shortName} ${count}`] : [];
+  });
+  return placements.length > 0 ? `Court ${placements.join(", ")}` : "Court empty";
 }
 
 function PlayerLedger({ seats }: { seats: ViewSeat[] }) {
@@ -1561,13 +1561,12 @@ function extractView(state: ViewerStateEnvelope): GameView | null {
     support: isObject(publicGame.support)
       ? (publicGame.support as GameView["support"])
       : {},
+    courtSupport: isObject(publicGame.courtSupport)
+      ? (publicGame.courtSupport as GameView["courtSupport"])
+      : Object.fromEntries(PARTIES.map((party) => [party.id, {}])) as GameView["courtSupport"],
     coalitionTargets: isObject(publicGame.coalitionTargets)
       ? (publicGame.coalitionTargets as GameView["coalitionTargets"])
       : {},
-    reinforcedCoalitionPartyId:
-      typeof publicGame.reinforcedCoalitionPartyId === "string"
-        ? (publicGame.reinforcedCoalitionPartyId as PartyId)
-        : null,
     contests,
     bids: [...bidsById.values()],
     readySeatIds: Array.isArray(phase.readySeatIds)
