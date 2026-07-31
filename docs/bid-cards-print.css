@@ -330,14 +330,6 @@ main {
   text-transform: uppercase;
 }
 
-.back > strong {
-  margin-top: 3.5mm;
-  color: var(--yellow);
-  font: 800 15pt/0.9 var(--display);
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-
 .back > small {
   position: absolute;
   bottom: 7mm;
