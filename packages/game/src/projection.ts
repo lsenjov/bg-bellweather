@@ -52,8 +52,8 @@ export interface GameView {
   seats: ProjectedSeat[];
   partyOrder: GameState["partyOrder"];
   support: GameState["support"];
+  courtSupport: GameState["courtSupport"];
   coalitionTargets: GameState["coalitionTargets"];
-  reinforcedCoalitionPartyId: GameState["reinforcedCoalitionPartyId"];
   contests: GameState["contests"];
   bids: ProjectedBid[];
   readySeatIds: SeatId[];
@@ -121,8 +121,8 @@ export function projectGameState(
     }),
     partyOrder: [...state.partyOrder],
     support: structuredClone(state.support),
+    courtSupport: structuredClone(state.courtSupport),
     coalitionTargets: { ...state.coalitionTargets },
-    reinforcedCoalitionPartyId: state.reinforcedCoalitionPartyId,
     contests: structuredClone(state.contests),
     bids: Object.values(state.bids).map((bid) =>
       projectBid(bid, viewerSeatId, allRevealed || fullInformation)

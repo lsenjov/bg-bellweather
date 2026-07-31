@@ -117,7 +117,7 @@ export interface PendingNightDelayedDecision {
   contestId: "night-parliament";
   bidId: BidId;
   claimId: string;
-  operation: "rally" | "coalition";
+  operation: "rally" | "court";
 }
 
 export type PendingDecision =
@@ -131,7 +131,7 @@ export interface DelayedBonusClaim {
   bidId: BidId;
   bidRank: number;
   order: number;
-  operation: "rally" | "coalition";
+  operation: "rally" | "court";
 }
 
 export interface ResolutionPhase {
@@ -208,8 +208,8 @@ export interface GameState {
   seats: SeatState[];
   partyOrder: PartyId[];
   support: Record<DistrictId, Partial<Record<PartyId, number>>>;
+  courtSupport: Record<PartyId, Partial<Record<PartyId, number>>>;
   coalitionTargets: Record<PartyId, PartyId | null>;
-  reinforcedCoalitionPartyId: PartyId | null;
   scoringDeck: ScoringCardId[];
   contests: Partial<Record<ContestId, ContestState>>;
   bids: Record<BidId, BidState>;

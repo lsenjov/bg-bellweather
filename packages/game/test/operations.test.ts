@@ -72,25 +72,32 @@ describe("operation baselines", () => {
     ).toBe(false);
   });
 
-  it("redirects Coalition and rejects Binding Pact atomically when protection blocks it", () => {
-    const redirected = resolveOperation(state(), {
+  it("moves the Coalition Target only when Court Support has a unique leader", () => {
+    let result = resolveOperation(state(), {
       party: "honeycomb",
-      choice: { operation: "coalition", targetParty: "night-parliament" }
+      choice: { operation: "court", targetParty: "night-parliament" }
     });
-    expect(redirected.state.coalitionTargets.honeycomb).toBe("night-parliament");
+    expect(result.state.courtSupport.honeycomb["night-parliament"]).toBe(1);
+    expect(result.state.coalitionTargets.honeycomb).toBe("night-parliament");
 
-    const protectedState = state();
-    protectedState.coalitionTargets["old-shell"] = "night-parliament";
-    protectedState.oldShellReinforced = true;
-    const protectedResult = resolveOperation(protectedState, {
-      party: "old-shell",
-      choice: { operation: "coalition", targetParty: "foxglove" },
-      claimBonus: true
+    result = resolveOperation(result.state, {
+      party: "honeycomb",
+      choice: { operation: "court", targetParty: "foxglove" }
     });
-    expect(protectedResult.state.coalitionTargets["old-shell"]).toBe("night-parliament");
-    expect(protectedResult.state.oldShellReinforced).toBe(true);
-    expect(protectedResult.baselineApplied).toBe(false);
-    expect(protectedResult.bonusApplied).toBe(false);
+    expect(result.state.coalitionTargets.honeycomb).toBe("night-parliament");
+
+    result = resolveOperation(result.state, {
+      party: "honeycomb",
+      choice: { operation: "court", targetParty: "foxglove" }
+    });
+    expect(result.state.coalitionTargets.honeycomb).toBe("foxglove");
+
+    expect(
+      resolveOperation(result.state, {
+        party: "honeycomb",
+        choice: { operation: "court", targetParty: "honeycomb" }
+      }).baselineApplied
+    ).toBe(false);
   });
 });
 
@@ -158,11 +165,11 @@ describe("all twelve party bonuses", () => {
 
     const pact = resolveOperation(state(), {
       party: "old-shell",
-      choice: { operation: "coalition", targetParty: "night-parliament" },
+      choice: { operation: "court", targetParty: "night-parliament" },
       claimBonus: true
     });
     expect(pact.state.coalitionTargets["old-shell"]).toBe("night-parliament");
-    expect(pact.state.oldShellReinforced).toBe(true);
+    expect(pact.state.courtSupport["old-shell"]["night-parliament"]).toBe(2);
   });
 
   it("applies Foxglove Slip Away and Spin", () => {
@@ -245,7 +252,7 @@ describe("all twelve party bonuses", () => {
       {
         party: "many-wings",
         choice: {
-          operation: "coalition",
+          operation: "court",
           targetParty: "foxglove",
           bonusDistrictId: "c"
         },
@@ -253,6 +260,28 @@ describe("all twelve party bonuses", () => {
       }
     );
     expect(chapters.state.districts.c?.support["many-wings"]).toBe(1);
+
+    const tied = state({ c: { riverworks: 1 } });
+    tied.coalitionTargets["many-wings"] = "foxglove";
+    tied.courtSupport["many-wings"] = {
+      foxglove: 1,
+      riverworks: 1
+    };
+    const chaptersForCurrentTarget = resolveOperation(tied, {
+      party: "many-wings",
+      choice: {
+        operation: "court",
+        targetParty: "riverworks",
+        bonusDistrictId: "c"
+      },
+      claimBonus: true
+    });
+    expect(chaptersForCurrentTarget.state.coalitionTargets["many-wings"]).toBe(
+      "riverworks"
+    );
+    expect(chaptersForCurrentTarget.state.districts.c?.support["many-wings"]).toBe(
+      1
+    );
   });
 
   it("claims and resolves Night bonuses later in bid-rank order with current choices", () => {
@@ -262,9 +291,9 @@ describe("all twelve party bonuses", () => {
       claimBonus: true,
       nightClaim: { id: "low", ownerId: "p2", bidRank: 2, order: 0 }
     }).delayedClaim!;
-    const coalitionClaim = resolveOperation(state(), {
+    const courtClaim = resolveOperation(state(), {
       party: "night-parliament",
-      choice: { operation: "coalition", targetParty: "foxglove" },
+      choice: { operation: "court", targetParty: "foxglove" },
       claimBonus: true,
       nightClaim: { id: "high", ownerId: "p1", bidRank: 0, order: 0 }
     }).delayedClaim!;
@@ -274,9 +303,9 @@ describe("all twelve party bonuses", () => {
     });
     const delayed = resolveNightDelayedOperations(
       beforeDelay,
-      [rallyClaim, coalitionClaim],
+      [rallyClaim, courtClaim],
       {
-        high: { operation: "coalition", targetParty: "riverworks" },
+        high: { operation: "court", targetParty: "riverworks" },
         low: { operation: "rally", districtId: "b" }
       }
     );
@@ -319,6 +348,14 @@ function state(
         ...support.d
       })
     },
+    courtSupport: {
+      honeycomb: {},
+      "old-shell": {},
+      foxglove: {},
+      riverworks: {},
+      "many-wings": {},
+      "night-parliament": {}
+    },
     coalitionTargets: {
       honeycomb: null,
       "old-shell": null,
@@ -326,8 +363,7 @@ function state(
       riverworks: null,
       "many-wings": null,
       "night-parliament": null
-    },
-    oldShellReinforced: false
+    }
   };
 }
 

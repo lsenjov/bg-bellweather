@@ -66,7 +66,7 @@ describe("game setup and private projections", () => {
     expect(state.seats[0]?.reserve).toEqual({
       leverage: 20,
       bluff: 8,
-      operations: { organise: 4, rally: 8, smear: 4, coalition: 2 },
+      operations: { organise: 4, rally: 8, smear: 4, court: 2 },
       points: 10
     });
     expect(state.partyOrder).toHaveLength(6);
@@ -78,7 +78,7 @@ describe("game setup and private projections", () => {
   });
 
   it("applies Election retention to named districts but not Bellweather Centre", () => {
-    const state = initializeGame(configuration(2, null), zeroRandom).state;
+    let state = initializeGame(configuration(2, null), zeroRandom).state;
     const namedDistrictId =
       SCORING_CARDS_BY_ID[state.seats[0]!.scoringCardId].objectives[0]!.districtId;
     const capacity = DISTRICTS_BY_ID[namedDistrictId].capacity;
@@ -90,6 +90,8 @@ describe("game setup and private projections", () => {
       "old-shell": 1,
       foxglove: 1
     };
+    state.courtSupport.honeycomb.foxglove = 2;
+    state.coalitionTargets.honeycomb = "foxglove";
     state.round = 4;
     state.phase = {
       type: "election",
@@ -99,7 +101,7 @@ describe("game setup and private projections", () => {
       readySeatIds: []
     };
 
-    const result = executeAction(
+    let result = executeAction(
       state,
       createElectionAction(state, zeroRandom)
     ).state;
@@ -115,6 +117,16 @@ describe("game setup and private projections", () => {
       "old-shell": 1,
       foxglove: 1
     });
+    expect(result.courtSupport.honeycomb.foxglove).toBe(2);
+    for (const seat of result.seats) {
+      result = act(result, {
+        type: "set_election_ready",
+        seatId: seat.id,
+        ready: true
+      });
+    }
+    expect(result.courtSupport.honeycomb).toEqual({});
+    expect(result.coalitionTargets.honeycomb).toBe("foxglove");
   });
 
   it("shows only seat-visible reserves, agendas, and bid contents before reveal", () => {
@@ -130,7 +142,7 @@ describe("game setup and private projections", () => {
         firmId: state.seats[0]!.firmIds[0]!,
         leverage: 3,
         bluff: 1,
-        operations: operations({ coalition: 1 })
+        operations: operations({ court: 1 })
       }
     });
 
@@ -383,11 +395,11 @@ describe("contest resolution", () => {
     ).toThrow("already claimed");
   });
 
-  it("queues and resolves Night Parliament's delayed Coalition before transfer", () => {
+  it("queues and resolves Night Parliament's delayed Court before transfer", () => {
     let state = submitAllOpenings(
       initializeGame(configuration(4, null), zeroRandom).state,
       0,
-      { "seat-1": operations({ coalition: 1 }) },
+      { "seat-1": operations({ court: 1 }) },
       "night-parliament"
     );
     state = readyAll(state);
@@ -396,10 +408,10 @@ describe("contest resolution", () => {
       type: "resolve_party_operation",
       seatId: decision.seatId,
       decisionId: decision.id,
-      operation: "coalition",
+      operation: "court",
       choice: {
         choice: {
-          operation: "coalition",
+          operation: "court",
           targetParty: "honeycomb"
         },
         claimBonus: true
@@ -408,19 +420,23 @@ describe("contest resolution", () => {
     decision = pending(state);
     expect(decision).toMatchObject({
       kind: "night_delayed_operation",
-      operation: "coalition"
+      operation: "court"
     });
     state = act(state, {
       type: "resolve_party_operation",
       seatId: decision.seatId,
       decisionId: decision.id,
-      operation: "coalition",
+      operation: "court",
       choice: {
-        operation: "coalition",
+        operation: "court",
         targetParty: "foxglove"
       }
     });
-    expect(state.coalitionTargets["night-parliament"]).toBe("foxglove");
+    expect(state.courtSupport["night-parliament"]).toEqual({
+      honeycomb: 1,
+      foxglove: 1
+    });
+    expect(state.coalitionTargets["night-parliament"]).toBe("honeycomb");
     expect(state.phase.type).toBe("opening");
   });
 
@@ -428,7 +444,7 @@ describe("contest resolution", () => {
     let state = submitAllOpenings(
       initializeGame(configuration(4, null), zeroRandom).state,
       0,
-      { "seat-1": operations({ coalition: 1 }) },
+      { "seat-1": operations({ court: 1 }) },
       "honeycomb"
     );
     state = readyAll(state);
@@ -438,9 +454,9 @@ describe("contest resolution", () => {
         type: "resolve_party_operation",
         seatId: decision.seatId,
         decisionId: decision.id,
-        operation: "coalition",
+        operation: "court",
         choice: {
-          operation: "coalition",
+          operation: "court",
           targetParty: "invented-party"
         }
       })
@@ -464,7 +480,7 @@ describe("social actions, elections, and replay", () => {
       resources: {
         leverage: 2,
         bluff: 1,
-        operations: operations({ coalition: 1 }),
+        operations: operations({ court: 1 }),
         points: 3
       }
     });
@@ -602,7 +618,7 @@ function operations(
     organise: overrides.organise ?? 0,
     rally: overrides.rally ?? 0,
     smear: overrides.smear ?? 0,
-    coalition: overrides.coalition ?? 0
+    court: overrides.court ?? 0
   };
 }
 

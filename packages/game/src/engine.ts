@@ -97,6 +97,9 @@ export function initializeGame(
   const coalitionTargets = Object.fromEntries(
     PARTY_IDS.map((partyId) => [partyId, null])
   ) as GameState["coalitionTargets"];
+  const courtSupport = Object.fromEntries(
+    PARTY_IDS.map((partyId) => [partyId, {}])
+  ) as GameState["courtSupport"];
   const firstOpener = seats[firstOpenerIndex]!;
   const state: GameState = {
     rulesetVersion: RULESET_VERSION,
@@ -106,8 +109,8 @@ export function initializeGame(
     seats,
     partyOrder,
     support,
+    courtSupport,
     coalitionTargets,
-    reinforcedCoalitionPartyId: null,
     scoringDeck: scoringCards.slice(seats.length),
     contests: {},
     bids: {},
@@ -562,7 +565,7 @@ function resolvePartyOperation(
   if (
     request.claimBonus === true &&
     decision.partyId === "night-parliament" &&
-    (operation === "rally" || operation === "coalition")
+    (operation === "rally" || operation === "court")
   ) {
     const ranked = rankedActiveBids(state, getContest(state, decision.contestId));
     request.nightClaim = {
@@ -853,6 +856,7 @@ function setElectionReady(
   if (phase.readySeatIds.length !== state.seats.length) {
     return;
   }
+  clearCourtSupport(state);
   if (phase.afterRound === 12) {
     const complete = completePhase(state);
     const finalElection = state.electionHistory.at(-1);
@@ -987,8 +991,8 @@ function toOperationState(state: GameState): OperationState {
         }
       ])
     ),
+    courtSupport: structuredClone(state.courtSupport),
     coalitionTargets: { ...state.coalitionTargets },
-    oldShellReinforced: state.reinforcedCoalitionPartyId === "old-shell"
   };
 }
 
@@ -998,10 +1002,14 @@ function applyOperationState(state: GameState, operationState: OperationState): 
       ...(operationState.districts[districtId]?.support ?? {})
     };
   }
+  state.courtSupport = structuredClone(operationState.courtSupport);
   state.coalitionTargets = { ...operationState.coalitionTargets };
-  state.reinforcedCoalitionPartyId = operationState.oldShellReinforced
-    ? "old-shell"
-    : null;
+}
+
+function clearCourtSupport(state: GameState): void {
+  state.courtSupport = Object.fromEntries(
+    PARTY_IDS.map((partyId) => [partyId, {}])
+  ) as GameState["courtSupport"];
 }
 
 function electionPlayers(state: GameState): ElectionPlayer[] {
@@ -1102,7 +1110,7 @@ function toNightClaim(claim: {
   ownerId: string;
   bidRank: number;
   order: number;
-  operation: "rally" | "coalition";
+  operation: "rally" | "court";
 }): NightDelayedClaim {
   return {
     id: claim.id,
@@ -1315,12 +1323,12 @@ function cloneOperations(
     organise: operations.organise,
     rally: operations.rally,
     smear: operations.smear,
-    coalition: operations.coalition
+    court: operations.court
   };
 }
 
 function emptyOperations(): OperationInventory {
-  return { organise: 0, rally: 0, smear: 0, coalition: 0 };
+  return { organise: 0, rally: 0, smear: 0, court: 0 };
 }
 
 function nextSeatId(state: GameState, seatId: SeatId): SeatId {

@@ -8,7 +8,7 @@ export const PARTIES = [
 ] as const;
 
 export type Party = (typeof PARTIES)[number];
-export type Operation = "organise" | "rally" | "smear" | "coalition";
+export type Operation = "organise" | "rally" | "smear" | "court";
 
 export interface DistrictState {
   id: string;
@@ -19,8 +19,8 @@ export interface DistrictState {
 
 export interface OperationState {
   districts: Record<string, DistrictState>;
+  courtSupport: Record<Party, Partial<Record<Party, number>>>;
   coalitionTargets: Record<Party, Party | null>;
-  oldShellReinforced: boolean;
 }
 
 export type OperationChoice =
@@ -37,7 +37,7 @@ export type OperationChoice =
       bonusDistrictId?: string;
     }
   | {
-      operation: "coalition";
+      operation: "court";
       targetParty: Party;
       bonusDistrictId?: string;
     };
@@ -47,7 +47,7 @@ export interface NightDelayedClaim {
   ownerId: string;
   bidRank: number;
   order: number;
-  operation: "rally" | "coalition";
+  operation: "rally" | "court";
 }
 
 export interface OperationRequest {
@@ -84,7 +84,7 @@ export const PARTY_BONUSES: Record<
   },
   "old-shell": {
     smear: "Stonewall",
-    coalition: "Binding Pact"
+    court: "Binding Pact"
   },
   foxglove: {
     organise: "Slip Away",
@@ -96,11 +96,11 @@ export const PARTY_BONUSES: Record<
   },
   "many-wings": {
     organise: "Murmuration",
-    coalition: "Local Chapters"
+    court: "Local Chapters"
   },
   "night-parliament": {
     rally: "Closing Argument",
-    coalition: "After-Hours Deal"
+    court: "After-Hours Deal"
   }
 };
 
@@ -200,8 +200,7 @@ interface BaselineResult {
   destinationDistrictId?: string;
   affectedDistrictId?: string;
   rivalParty?: Party;
-  coalitionTarget?: Party;
-  redirected?: boolean;
+  courtTarget?: Party;
 }
 
 function applyBaseline(
@@ -305,32 +304,15 @@ function applyBaseline(
     };
   }
 
-  if (
-    choice.targetParty === party ||
-    state.coalitionTargets[party] === choice.targetParty
-  ) {
-    return failed(
-      wasAbsent,
-      "Coalition must choose a party other than itself or its current target"
-    );
+  if (choice.targetParty === party) {
+    return failed(wasAbsent, "Court must choose another party");
   }
-  if (party === "old-shell" && state.oldShellReinforced) {
-    state.oldShellReinforced = false;
-    return {
-      applied: true,
-      failure: null,
-      wasAbsent,
-      coalitionTarget: choice.targetParty,
-      redirected: false
-    };
-  }
-  state.coalitionTargets[party] = choice.targetParty;
+  placeCourtSupport(state, party, choice.targetParty);
   return {
     applied: true,
     failure: null,
     wasAbsent,
-    coalitionTarget: choice.targetParty,
-    redirected: true
+    courtTarget: choice.targetParty
   };
 }
 
@@ -365,11 +347,8 @@ function applyBonus(
       baseline.rivalParty
     );
   }
-  if (party === "old-shell" && choice.operation === "coalition") {
-    if (baseline.redirected !== true) {
-      return bonusFailed("Binding Pact requires a successful redirect");
-    }
-    state.oldShellReinforced = true;
+  if (party === "old-shell" && choice.operation === "court") {
+    placeCourtSupport(state, party, baseline.courtTarget!);
     return bonusApplied();
   }
   if (party === "foxglove" && choice.operation === "organise") {
@@ -421,18 +400,17 @@ function applyBonus(
     );
     return repeat.applied ? bonusApplied() : bonusFailed(repeat.failure);
   }
-  if (party === "many-wings" && choice.operation === "coalition") {
-    if (baseline.redirected !== true) {
-      return bonusFailed("Local Chapters requires a successful redirect");
-    }
+  if (party === "many-wings" && choice.operation === "court") {
+    const coalitionTarget = state.coalitionTargets[party];
     const district = state.districts[choice.bonusDistrictId ?? ""];
     if (
+      coalitionTarget === null ||
       district === undefined ||
       !hasFreeSpot(district) ||
-      (district.support[baseline.coalitionTarget ?? "night-parliament"] ?? 0) < 1
+      (district.support[coalitionTarget] ?? 0) < 1
     ) {
       return bonusFailed(
-        "Local Chapters requires a free district containing the Coalition target's Support"
+        "Local Chapters requires a current Coalition Target with Support in a free district"
       );
     }
     addSupport(district, party);
@@ -440,7 +418,7 @@ function applyBonus(
   }
   if (
     party === "night-parliament" &&
-    (choice.operation === "rally" || choice.operation === "coalition")
+    (choice.operation === "rally" || choice.operation === "court")
   ) {
     if (request.nightClaim === undefined) {
       return bonusFailed("A Night Parliament delayed claim identity is required");
@@ -536,9 +514,29 @@ function cloneState(state: OperationState): OperationState {
         }
       ])
     ),
+    courtSupport: Object.fromEntries(
+      PARTIES.map((party) => [party, { ...state.courtSupport[party] }])
+    ) as OperationState["courtSupport"],
     coalitionTargets: { ...state.coalitionTargets },
-    oldShellReinforced: state.oldShellReinforced
   };
+}
+
+function placeCourtSupport(
+  state: OperationState,
+  party: Party,
+  targetParty: Party
+): void {
+  const support = state.courtSupport[party];
+  support[targetParty] = (support[targetParty] ?? 0) + 1;
+  const ranked = PARTIES.filter((candidate) => candidate !== party)
+    .map((candidate) => ({
+      party: candidate,
+      support: support[candidate] ?? 0
+    }))
+    .sort((left, right) => right.support - left.support);
+  if (ranked[0]!.support > ranked[1]!.support) {
+    state.coalitionTargets[party] = ranked[0]!.party;
+  }
 }
 
 function hasFreeSpot(district: DistrictState): boolean {
