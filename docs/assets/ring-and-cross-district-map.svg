@@ -24,12 +24,6 @@
     .map-note { fill: #625f57; font: 900 14px "Noto Sans Mono", monospace; letter-spacing: 2px; }
     .water-label { fill: #314e54; font: italic 900 15px "Noto Serif", serif; letter-spacing: 4px; text-anchor: middle; }
     .registration { fill: none; stroke: #d9432f; stroke-width: 3; }
-    .tracker-rail { fill: #fffaf0; stroke: #171612; stroke-width: 3; }
-    .tracker-election { fill: #e9b72b; }
-    .tracker-label { fill: #171612; font: 900 17px "Noto Sans Mono", monospace; letter-spacing: 2px; }
-    .tracker-note { fill: #625f57; font: 900 11px "Noto Sans Mono", monospace; letter-spacing: 1px; }
-    .tracker-value { fill: #171612; font: 900 24px "Noto Sans Mono", monospace; text-anchor: middle; dominant-baseline: middle; }
-    .tracker-cycle { fill: #9f2c1e; font: 900 12px "Noto Sans Mono", monospace; letter-spacing: 1px; text-anchor: middle; }
   </style>
 
   <rect class="paper" width="1600" height="1200"/>
@@ -38,7 +32,7 @@
   <text class="heading" x="60" y="103">The sixteen districts</text>
   <text class="map-note" x="1540" y="62" text-anchor="end">16 DISTRICTS / 57 SUPPORT SPOTS</text>
 
-  <g class="map-art" transform="translate(50 70) scale(.76)">
+  <g class="map-art" transform="translate(96 70) scale(.88)">
   <ellipse cx="800" cy="610" rx="375" ry="305" fill="url(#water)" stroke="#171612" stroke-width="5"/>
 
   <g aria-label="Outer ring districts">
@@ -195,59 +189,4 @@
 
   </g>
 
-  <g aria-label="Campaign tracker in three columns: four rounds then Election Day in each column">
-    <text class="tracker-label" x="1230" y="228">CAMPAIGN</text>
-    <text class="tracker-note" x="1230" y="250">4 ROUNDS / ELECTION</text>
-    <g transform="translate(1230 278)">
-      <text class="tracker-cycle" x="52" y="-8">ELECTION 1</text>
-      <text class="tracker-cycle" x="163" y="-8">ELECTION 2</text>
-      <text class="tracker-cycle" x="274" y="-8">ELECTION 3</text>
-      <g><rect class="tracker-rail" width="104" height="104"/><text class="tracker-value" x="52" y="52">R1</text></g>
-      <g transform="translate(0 111)"><rect class="tracker-rail" width="104" height="104"/><text class="tracker-value" x="52" y="52">R2</text></g>
-      <g transform="translate(0 222)"><rect class="tracker-rail" width="104" height="104"/><text class="tracker-value" x="52" y="52">R3</text></g>
-      <g transform="translate(0 333)"><rect class="tracker-rail" width="104" height="104"/><text class="tracker-value" x="52" y="52">R4</text></g>
-      <g transform="translate(0 444)"><rect class="tracker-rail tracker-election" width="104" height="104"/><text class="tracker-value" x="52" y="52">E1</text></g>
-      <g transform="translate(111)"><rect class="tracker-rail" width="104" height="104"/><text class="tracker-value" x="52" y="52">R5</text></g>
-      <g transform="translate(111 111)"><rect class="tracker-rail" width="104" height="104"/><text class="tracker-value" x="52" y="52">R6</text></g>
-      <g transform="translate(111 222)"><rect class="tracker-rail" width="104" height="104"/><text class="tracker-value" x="52" y="52">R7</text></g>
-      <g transform="translate(111 333)"><rect class="tracker-rail" width="104" height="104"/><text class="tracker-value" x="52" y="52">R8</text></g>
-      <g transform="translate(111 444)"><rect class="tracker-rail tracker-election" width="104" height="104"/><text class="tracker-value" x="52" y="52">E2</text></g>
-      <g transform="translate(222)"><rect class="tracker-rail" width="104" height="104"/><text class="tracker-value" x="52" y="52">R9</text></g>
-      <g transform="translate(222 111)"><rect class="tracker-rail" width="104" height="104"/><text class="tracker-value" x="52" y="52">R10</text></g>
-      <g transform="translate(222 222)"><rect class="tracker-rail" width="104" height="104"/><text class="tracker-value" x="52" y="52">R11</text></g>
-      <g transform="translate(222 333)"><rect class="tracker-rail" width="104" height="104"/><text class="tracker-value" x="52" y="52">R12</text></g>
-      <g transform="translate(222 444)"><rect class="tracker-rail tracker-election" width="104" height="104"/><text class="tracker-value" x="52" y="52">E3</text></g>
-    </g>
-  </g>
-
-  <g aria-label="Score tracker from 0 through 20 in a two-row snake">
-    <text class="tracker-label" x="60" y="988">SCORE 0–20</text>
-    <text class="tracker-note" x="60" y="1012">25 MM MARKERS</text>
-    <text class="tracker-note" x="60" y="1098">0 → 10</text>
-    <text class="tracker-note" x="60" y="1120">20 ← 11</text>
-    <text class="tracker-note" x="60" y="1154">OUTSIDE = NOTE TOTAL</text>
-    <g transform="translate(300 960)">
-      <g><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">0</text></g>
-      <g transform="translate(110)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">1</text></g>
-      <g transform="translate(220)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">2</text></g>
-      <g transform="translate(330)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">3</text></g>
-      <g transform="translate(440)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">4</text></g>
-      <g transform="translate(550)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">5</text></g>
-      <g transform="translate(660)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">6</text></g>
-      <g transform="translate(770)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">7</text></g>
-      <g transform="translate(880)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">8</text></g>
-      <g transform="translate(990)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">9</text></g>
-      <g transform="translate(1100)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">10</text></g>
-      <g transform="translate(110 110)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">20</text></g>
-      <g transform="translate(220 110)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">19</text></g>
-      <g transform="translate(330 110)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">18</text></g>
-      <g transform="translate(440 110)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">17</text></g>
-      <g transform="translate(550 110)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">16</text></g>
-      <g transform="translate(660 110)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">15</text></g>
-      <g transform="translate(770 110)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">14</text></g>
-      <g transform="translate(880 110)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">13</text></g>
-      <g transform="translate(990 110)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">12</text></g>
-      <g transform="translate(1100 110)"><rect class="tracker-rail" width="105" height="105"/><text class="tracker-value" x="52.5" y="52.5">11</text></g>
-    </g>
-  </g>
 </svg>

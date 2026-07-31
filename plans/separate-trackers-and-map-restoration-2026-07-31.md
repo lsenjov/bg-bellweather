@@ -7,7 +7,7 @@ Move the campaign and score trackers from the A3 district map to a dedicated A4 
 ## Steps
 
 - [x] Create a one-page A4 landscape tracker sheet with a 7 × 6 score snake from 0–40 and a 3 × 5 campaign grid, using approximately 27 mm spaces that fit the existing markers.
-- [ ] Remove both trackers from the map and enlarge and recenter the unchanged district diagram and Support spots.
+- [x] Remove both trackers from the map and enlarge and recenter the unchanged district diagram and Support spots.
 - [ ] Update component specifications, navigation, print exports, design history, and archive the replaced integrated tracker format.
 - [ ] Regenerate all print assets, inspect the A3 map and A4 tracker sheet, and run full repository validation.
 - [ ] Obtain an independent review and resolve every high or medium finding before handoff.
