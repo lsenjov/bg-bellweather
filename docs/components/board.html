@@ -29,7 +29,7 @@
         <ul>
           <li>Give every party a unique, readable identity and two favored-operation bonus icons.</li>
           <li>Show connected political districts, their limited Support spots, and every party’s public Support.</li>
-          <li>Show each party’s directional coalition target and any reciprocal coalition.</li>
+          <li>Show each party’s temporary Court Support, persistent directional Coalition Target, and any reciprocal coalition.</li>
           <li>Provide one public location for each opening influence contest and its ranked bids.</li>
           <li>List every party in a persistent Pecking Order that determines party-contest resolution.</li>
           <li>Provide one automatic Pecking Order auction every Campaign Round, with no opener or opening bid.</li>
@@ -62,7 +62,7 @@
               <tr>
                 <td>Old Shell Union</td>
                 <td>Tortoises</td>
-                <td>Smear and Coalition</td>
+                <td>Smear and Court</td>
                 <td>Durable opposition and alliances</td>
               </tr>
               <tr>
@@ -80,13 +80,13 @@
               <tr>
                 <td>Many Wings Coalition</td>
                 <td>Starlings</td>
-                <td>Organise and Coalition</td>
+                <td>Organise and Court</td>
                 <td>Numerous local groups and alliances</td>
               </tr>
               <tr>
                 <td>Night Parliament</td>
                 <td>Owls</td>
-                <td>Rally and Coalition</td>
+                <td>Rally and Court</td>
                 <td>Debates, endorsements, and timing</td>
               </tr>
             </tbody>
@@ -98,8 +98,8 @@
       <section>
         <span class="status decided">Prototype component and starting state decided</span>
         <h2>Party state</h2>
-        <p>Each party has an unlimited Support supply, public Support on the district map, and one directional coalition target that may point toward another party. Every party begins with one Support in Harbormouth, Grand Market, and Ironwood, and all six coalition targets begin unpointed. Reciprocal coalition targets form a coalition; on Election Day, drawn Support belonging to either partner scores for objectives naming either party. Old Shell’s Coalition bonus may reinforce its coalition target with a Shell marker. Night Parliament may hold delayed Rally and Coalition bonuses until ordinary operation-card resolution ends.</p>
-        <p>Each party has one long horizontal tracking board and one source-coloured coalition target token supplied on the shared Pecking Order sheet. Three A4 landscape sheets hold two boards each. A board shows the party identity and favored operations, one opening-bid area, two full-text bonus panels with coverable Ready circles, and a coalition target track containing a neutral setup position plus five target positions. Every target position uses the target party’s colour, short code, and name, making the current target legible at a glance without relying on colour alone. Reciprocal targets show a coalition without a separate coalition marker. Old Shell’s board holds the Shell marker when its coalition target is reinforced; Night Parliament reminds players to mark each bid that claimed a delayed bonus. Unlimited Support does not require a tracked reserve on these boards.</p>
+        <p>Each party has an unlimited Support supply, public Support on the district map, public Court Support on its party board, and one persistent directional Coalition Target. Every party begins with one district Support in Harbormouth, Grand Market, and Ironwood, empty Court spaces, and an unpointed Coalition Target. A unique Court Support leader moves the target; a tied lead leaves it in place. Reciprocal Coalition Targets form a coalition, and drawn district Support belonging to either partner scores for objectives naming either party. Court Support clears after Election Day without moving the targets. Night Parliament may hold delayed Rally and Court bonuses until ordinary operation-card resolution ends.</p>
+        <p>Each party has one long horizontal tracking board and one source-coloured Coalition Target token supplied on the shared Pecking Order sheet. Three A4 landscape sheets hold two boards each. A board shows the party identity and favored operations, one opening-bid area, two full-text bonus panels with coverable Ready circles, and a Court track containing a neutral target-token position plus five prospective-partner spaces. Every Court space uses the prospective partner’s colour, short code, and name. Stack acting-party Support on those spaces and place the Coalition Target token on the unique leader; reciprocal targets show a coalition without a separate coalition marker. Night Parliament reminds players to mark each bid that claimed a delayed bonus.</p>
         <p><a href="party-boards.html">Open the printable party tracking boards →</a></p>
       </section>
 
@@ -302,7 +302,7 @@
         <ul class="checklist">
           <li>Every party has a unique name, animal identity, and pair of favored-operation bonus icons.</li>
           <li>Every district has a unique name, readable shared borders, and a fixed number of Support spots.</li>
-          <li>Party Support, free spots, coalition targets, coalitions, Old Shell’s reinforcement, and claimed Night Parliament delays remain visible from every seat.</li>
+          <li>District Support, Court Support, free spots, Coalition Targets, coalitions, and claimed Night Parliament delays remain visible from every seat.</li>
           <li>Opening bids and counterbid locations remain readable around every party.</li>
           <li>The Pecking Order and direction of resolution read from every seat.</li>
           <li>The Pecking Order board is visibly distinct from the six parties while its movable tokens repeat party identities.</li>

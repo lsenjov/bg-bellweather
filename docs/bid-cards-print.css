@@ -177,12 +177,12 @@ main {
   background: none;
 }
 
-.coalition {
+.court {
   --accent: #557889;
   --tint: #d4e1eb;
 }
 
-.coalition::before {
+.court::before {
   background: repeating-radial-gradient(circle at center, transparent 0 6mm, currentColor 6.1mm 6.5mm);
 }
 
