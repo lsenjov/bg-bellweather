@@ -191,7 +191,30 @@ main {
   z-index: 1;
 }
 
+.card-index {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  width: 7mm;
+  height: 7mm;
+  border-bottom: 0.8mm solid var(--accent);
+  font: 900 18pt/0.8 var(--mono);
+  place-items: center;
+}
+
+.index-top {
+  top: 2.2mm;
+  left: 2.2mm;
+}
+
+.index-bottom {
+  right: 2.2mm;
+  bottom: 2.2mm;
+  transform: rotate(180deg);
+}
+
 .card-kicker {
+  padding-left: 8mm;
   padding-bottom: 2mm;
   border-bottom: 1.4mm solid var(--accent);
   font: 800 5pt/1.1 var(--mono);
@@ -234,6 +257,7 @@ main {
 
 .front small {
   display: flex;
+  padding-right: 8mm;
   padding-top: 1.5mm;
   border-top: 0.35mm solid rgb(23 23 19 / 45%);
   font: 800 4.6pt/1.15 var(--mono);

@@ -11,7 +11,7 @@
     <header class="screen-header">
       <a href="cards.html">← Card specification</a>
       <h1>Bid cards</h1>
-      <p>Print at actual size, duplex on the long edge. Every card is exactly 40 × 61 mm for a 41 × 63 mm opaque sleeve. The eighteen A4 portrait pages alternate fronts and shared backs for sixty one-Leverage, twenty-four Bluff, twelve Organise, twenty-four Rally, twelve Smear, and six Coalition cards.</p>
+      <p>Print at actual size, duplex on the long edge. Every card is exactly 40 × 61 mm for a 41 × 63 mm opaque sleeve. The eighteen A4 portrait pages alternate fronts and shared backs for sixty one-Leverage, twenty-four Bluff, twelve Organise, twenty-four Rally, twelve Smear, and six Coalition cards. The unique L, B, O, R, S, and C corner indices remain visible in a fanned hand.</p>
       <p><a href="../../assets/print/bid-cards-a4.pdf">Open print-ready PDF →</a></p>
     </header>
 
@@ -21,6 +21,7 @@
       const definitions = [
         {
           kind: "leverage",
+          index: "L",
           count: 60,
           kicker: "Registered leverage",
           glyph: "1",
@@ -30,6 +31,7 @@
         },
         {
           kind: "bluff",
+          index: "B",
           count: 24,
           kicker: "Classified enclosure",
           glyph: "—",
@@ -39,6 +41,7 @@
         },
         {
           kind: "organise",
+          index: "O",
           count: 12,
           kicker: "Operation / relocate",
           glyph: "→",
@@ -48,6 +51,7 @@
         },
         {
           kind: "rally",
+          index: "R",
           count: 24,
           kicker: "Operation / reinforce",
           glyph: "+",
@@ -57,6 +61,7 @@
         },
         {
           kind: "smear",
+          index: "S",
           count: 12,
           kicker: "Operation / remove",
           glyph: "−",
@@ -66,6 +71,7 @@
         },
         {
           kind: "coalition",
+          index: "C",
           count: 6,
           kicker: "Operation / redirect",
           glyph: "↻",
@@ -87,10 +93,12 @@
         card.className = `bid-card front ${definition.kind}`;
         card.setAttribute("aria-label", `${definition.title} card`);
         card.innerHTML = `
+          <span class="card-index index-top" aria-hidden="true">${definition.index}</span>
           <span class="card-kicker">${definition.kicker}</span>
           <strong class="card-glyph" aria-hidden="true">${definition.glyph}</strong>
           <div class="card-title"><b>${definition.title}</b><span>${definition.rule}</span></div>
           <small>${definition.footer}</small>
+          <span class="card-index index-bottom" aria-hidden="true">${definition.index}</span>
         `;
         return card;
       }
