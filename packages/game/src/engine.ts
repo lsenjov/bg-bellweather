@@ -17,7 +17,7 @@ import {
   type PartyId,
   type PlayerSetup,
   type ScoringCardId
-} from "@bellwether/content";
+} from "@bellweather/content";
 import type {
   BidPackage,
   BidState,
@@ -94,9 +94,9 @@ export function initializeGame(
     }
   }
 
-  const overtures = Object.fromEntries(
+  const coalitionTargets = Object.fromEntries(
     PARTY_IDS.map((partyId) => [partyId, null])
-  ) as GameState["overtures"];
+  ) as GameState["coalitionTargets"];
   const firstOpener = seats[firstOpenerIndex]!;
   const state: GameState = {
     rulesetVersion: RULESET_VERSION,
@@ -106,8 +106,8 @@ export function initializeGame(
     seats,
     partyOrder,
     support,
-    overtures,
-    reinforcedOverturePartyId: null,
+    coalitionTargets,
+    reinforcedCoalitionPartyId: null,
     scoringDeck: scoringCards.slice(seats.length),
     contests: {},
     bids: {},
@@ -279,7 +279,7 @@ function submitOpenings(
   }
   const seat = getSeat(state, seatId);
   const setup = setupFor(state);
-  const required = Math.min(setup.openingBids, seat.reserve.clout);
+  const required = Math.min(setup.openingBids, seat.reserve.leverage);
   if (openings.length !== required) {
     throw new GameRuleError(
       "wrong_opening_count",
@@ -314,7 +314,7 @@ function submitOpenings(
       firmId: opening.firmId,
       kind: "opening",
       slotIndex: null,
-      clout: opening.clout,
+      leverage: opening.leverage,
       bluff: opening.bluff,
       operations: opening.operations
     });
@@ -562,7 +562,7 @@ function resolvePartyOperation(
   if (
     request.claimBonus === true &&
     decision.partyId === "night-parliament" &&
-    (operation === "rally" || operation === "court")
+    (operation === "rally" || operation === "coalition")
   ) {
     const ranked = rankedActiveBids(state, getContest(state, decision.contestId));
     request.nightClaim = {
@@ -693,7 +693,7 @@ function prepareContest(
   const ranked = contest.bidIds
     .map((bidId) => state.bids[bidId]!)
     .filter((bid) => bid.status === "active")
-    .sort((left, right) => right.clout - left.clout);
+    .sort((left, right) => right.leverage - left.leverage);
   if (contest.id === "pecking-order" && ranked[0] !== undefined) {
     state.nextFirstOpenerSeatId = ranked[0].ownerSeatId;
   }
@@ -728,7 +728,7 @@ function rankedActiveBids(
   return contest.bidIds
     .map((bidId) => state.bids[bidId]!)
     .filter((bid) => bid.status === "active")
-    .sort((left, right) => right.clout - left.clout);
+    .sort((left, right) => right.leverage - left.leverage);
 }
 
 function cancelTiedCounterbids(state: GameState): void {
@@ -743,10 +743,10 @@ function cancelTiedCounterbids(state: GameState): void {
       .filter((bid) => bid.kind === "counterbid");
     const counts = new Map<number, number>();
     for (const bid of counters) {
-      counts.set(bid.clout, (counts.get(bid.clout) ?? 0) + 1);
+      counts.set(bid.leverage, (counts.get(bid.leverage) ?? 0) + 1);
     }
     for (const bid of counters) {
-      if ((counts.get(bid.clout) ?? 0) > 1 || opening?.clout === bid.clout) {
+      if ((counts.get(bid.leverage) ?? 0) > 1 || opening?.leverage === bid.leverage) {
         bid.status = "cancelled";
         addPackage(getSeat(state, bid.ownerSeatId).reserve, bid);
       }
@@ -987,8 +987,8 @@ function toOperationState(state: GameState): OperationState {
         }
       ])
     ),
-    overtures: { ...state.overtures },
-    oldShellReinforced: state.reinforcedOverturePartyId === "old-shell"
+    coalitionTargets: { ...state.coalitionTargets },
+    oldShellReinforced: state.reinforcedCoalitionPartyId === "old-shell"
   };
 }
 
@@ -998,8 +998,8 @@ function applyOperationState(state: GameState, operationState: OperationState): 
       ...(operationState.districts[districtId]?.support ?? {})
     };
   }
-  state.overtures = { ...operationState.overtures };
-  state.reinforcedOverturePartyId = operationState.oldShellReinforced
+  state.coalitionTargets = { ...operationState.coalitionTargets };
+  state.reinforcedCoalitionPartyId = operationState.oldShellReinforced
     ? "old-shell"
     : null;
 }
@@ -1102,7 +1102,7 @@ function toNightClaim(claim: {
   ownerId: string;
   bidRank: number;
   order: number;
-  operation: "rally" | "court";
+  operation: "rally" | "coalition";
 }): NightDelayedClaim {
   return {
     id: claim.id,
@@ -1190,11 +1190,11 @@ function validateFirm(seat: SeatState, firmId: FirmId): void {
 }
 
 function validatePackage(
-  value: Pick<BidPackage, "clout" | "bluff" | "operations">,
+  value: Pick<BidPackage, "leverage" | "bluff" | "operations">,
   allowEmpty: boolean
 ): void {
-  if (!Number.isSafeInteger(value.clout) || value.clout < (allowEmpty ? 0 : 1)) {
-    throw new GameRuleError("invalid_clout", allowEmpty ? "Clout must be non-negative" : "Opening bids require Clout");
+  if (!Number.isSafeInteger(value.leverage) || value.leverage < (allowEmpty ? 0 : 1)) {
+    throw new GameRuleError("invalid_leverage", allowEmpty ? "Leverage must be non-negative" : "Opening bids require Leverage");
   }
   if (!Number.isSafeInteger(value.bluff) || value.bluff < 0) {
     throw new GameRuleError("invalid_bluff", "Bluff counts must be non-negative integers");
@@ -1212,24 +1212,24 @@ function validateCombinedResources(
   openings: readonly OpeningBidInput[]
 ): void {
   const combined = emptyOperations();
-  let clout = 0;
+  let leverage = 0;
   let bluff = 0;
   for (const opening of openings) {
-    clout += opening.clout;
+    leverage += opening.leverage;
     bluff += opening.bluff;
     for (const operation of OPERATION_IDS) {
       combined[operation] += opening.operations[operation];
     }
   }
-  ensureAvailable(reserve, { clout, bluff, operations: combined });
+  ensureAvailable(reserve, { leverage, bluff, operations: combined });
 }
 
 function ensureAvailable(
   reserve: ResourcePool,
-  value: Pick<BidPackage, "clout" | "bluff" | "operations">
+  value: Pick<BidPackage, "leverage" | "bluff" | "operations">
 ): void {
   if (
-    reserve.clout < value.clout ||
+    reserve.leverage < value.leverage ||
     reserve.bluff < value.bluff ||
     OPERATION_IDS.some(
       (operation) => reserve.operations[operation] < value.operations[operation]
@@ -1241,9 +1241,9 @@ function ensureAvailable(
 
 function subtractPackage(
   reserve: ResourcePool,
-  value: Pick<BidPackage, "clout" | "bluff" | "operations">
+  value: Pick<BidPackage, "leverage" | "bluff" | "operations">
 ): void {
-  reserve.clout -= value.clout;
+  reserve.leverage -= value.leverage;
   reserve.bluff -= value.bluff;
   for (const operation of OPERATION_IDS) {
     reserve.operations[operation] -= value.operations[operation];
@@ -1252,9 +1252,9 @@ function subtractPackage(
 
 function addPackage(
   reserve: ResourcePool,
-  value: Pick<BidPackage, "clout" | "bluff" | "operations">
+  value: Pick<BidPackage, "leverage" | "bluff" | "operations">
 ): void {
-  reserve.clout += value.clout;
+  reserve.leverage += value.leverage;
   reserve.bluff += value.bluff;
   for (const operation of OPERATION_IDS) {
     reserve.operations[operation] += value.operations[operation];
@@ -1273,7 +1273,7 @@ function addResources(reserve: ResourcePool, value: ResourcePool): void {
 
 function resourceCount(resources: ResourcePool): number {
   return (
-    resources.clout +
+    resources.leverage +
     resources.bluff +
     resources.points +
     OPERATION_IDS.reduce(
@@ -1301,7 +1301,7 @@ function takeFirstOperation(operations: OperationInventory): OperationId {
 
 function resourcesFromSetup(setup: PlayerSetup): ResourcePool {
   return {
-    clout: setup.clout,
+    leverage: setup.leverage,
     bluff: setup.bluff,
     operations: cloneOperations(setup.operations),
     points: setup.points
@@ -1315,12 +1315,12 @@ function cloneOperations(
     organise: operations.organise,
     rally: operations.rally,
     smear: operations.smear,
-    court: operations.court
+    coalition: operations.coalition
   };
 }
 
 function emptyOperations(): OperationInventory {
-  return { organise: 0, rally: 0, smear: 0, court: 0 };
+  return { organise: 0, rally: 0, smear: 0, coalition: 0 };
 }
 
 function nextSeatId(state: GameState, seatId: SeatId): SeatId {

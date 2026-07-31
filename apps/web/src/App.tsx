@@ -8,7 +8,7 @@ import {
   type FirmId,
   type OperationId,
   type PartyId
-} from "@bellwether/content";
+} from "@bellweather/content";
 import type {
   GameCommand,
   OperationChoice,
@@ -16,12 +16,12 @@ import type {
   ParticipantSession,
   ReplayResponse,
   ViewerStateEnvelope
-} from "@bellwether/protocol";
+} from "@bellweather/protocol";
 import {
   replay as replayGame,
   type GameEvent,
   type GameState
-} from "@bellwether/game";
+} from "@bellweather/game";
 import {
   FormEvent,
   useCallback,
@@ -39,8 +39,8 @@ import {
   sendCommand
 } from "./api.js";
 
-const SESSION_KEY = "bellwether-register-session";
-const INVITE_KEY = "bellwether-register-invite";
+const SESSION_KEY = "bellweather-register-session";
+const INVITE_KEY = "bellweather-register-invite";
 const PARTY_GLYPHS: Record<PartyId, string> = {
   honeycomb: "⬡",
   "old-shell": "◉",
@@ -58,7 +58,7 @@ interface ViewSeat {
   firmIds: FirmId[];
   points: number;
   reserve: {
-    clout: number;
+    leverage: number;
     bluff: number;
     operations: Record<OperationId, number>;
   } | null;
@@ -75,8 +75,8 @@ interface GameView {
   seats: ViewSeat[];
   partyOrder: PartyId[];
   support: Record<string, Partial<Record<PartyId, number>>>;
-  overtures: Partial<Record<PartyId, PartyId | null>>;
-  reinforcedOverturePartyId: PartyId | null;
+  coalitionTargets: Partial<Record<PartyId, PartyId | null>>;
+  reinforcedCoalitionPartyId: PartyId | null;
   contests: Record<string, unknown>;
   bids: Array<Record<string, unknown>>;
   readySeatIds: string[];
@@ -198,7 +198,7 @@ export function App() {
     <div className="app-shell">
       <header className="masthead">
         <div>
-          <p className="kicker">The Bellwether Register · Election Desk</p>
+          <p className="kicker">The Bellweather Register · Election Desk</p>
           <h1>Influence moves<br />before the morning edition.</h1>
         </div>
         <div className="edition-stamp">
@@ -332,7 +332,7 @@ function EntryDesk(props: {
   return (
     <main className="entry-page">
       <section className="entry-editorial">
-        <p className="kicker">The Bellwether Register</p>
+        <p className="kicker">The Bellweather Register</p>
         <h1>Every whisper<br />leaves a mark.</h1>
         <p className="standfirst">A live election desk for rival lobbying houses, contested districts, and deals the record may never prove.</p>
         <div className="front-page-rule"><span>12 rounds</span><span>3 elections</span><span>Unlimited support</span></div>
@@ -424,7 +424,7 @@ function GameDesk(props: {
 }) {
   const [chat, setChat] = useState("");
   const [giftTo, setGiftTo] = useState("");
-  const [gift, setGift] = useState({ clout: 0, bluff: 0, points: 0, organise: 0, rally: 0, smear: 0, court: 0 });
+  const [gift, setGift] = useState({ leverage: 0, bluff: 0, points: 0, organise: 0, rally: 0, smear: 0, coalition: 0 });
   const ownReady = props.ownSeatId ? props.view.readySeatIds.includes(props.ownSeatId) : false;
   const scoringCard = props.ownSeat?.scoringCardId ? SCORING_CARDS_BY_ID[props.ownSeat.scoringCardId as keyof typeof SCORING_CARDS_BY_ID] : undefined;
   const latestElection = props.view.electionHistory.at(-1);
@@ -444,7 +444,7 @@ function GameDesk(props: {
         {props.ownSeat?.reserve ? (
           <>
             <div className="folio-score"><span>Points</span><strong>{props.ownSeat.points}</strong></div>
-            <div className="reserve-line"><strong>{props.ownSeat.reserve.clout}</strong><span>Clout</span></div>
+            <div className="reserve-line"><strong>{props.ownSeat.reserve.leverage}</strong><span>Leverage</span></div>
             <div className="reserve-line"><strong>{props.ownSeat.reserve.bluff}</strong><span>Bluff</span></div>
             <p className="firm-line">{props.ownSeat.firmIds.map((id) => FIRMS_BY_ID[id as keyof typeof FIRMS_BY_ID]?.name ?? id).join(" · ")}</p>
             <div className="operation-grid">{OPERATION_IDS.map((operation) => <div key={operation}><b>{props.ownSeat!.reserve!.operations[operation]}</b><span>{operation}</span></div>)}</div>
@@ -495,10 +495,10 @@ function GameDesk(props: {
         {!props.spectator && props.ownSeatId ? (
           <form onSubmit={(event) => {
             event.preventDefault();
-            void props.onCommand({ type: "give_resources", recipientSeatId: giftTo as never, clout: gift.clout, bluff: gift.bluff, points: gift.points, operations: { organise: gift.organise, rally: gift.rally, smear: gift.smear, court: gift.court } });
+            void props.onCommand({ type: "give_resources", recipientSeatId: giftTo as never, leverage: gift.leverage, bluff: gift.bluff, points: gift.points, operations: { organise: gift.organise, rally: gift.rally, smear: gift.smear, coalition: gift.coalition } });
           }}>
             <label>Recipient<select required value={giftTo} onChange={(event) => setGiftTo(event.target.value)}><option value="">Choose a player</option>{props.view.seats.filter((seat) => seat.id !== props.ownSeatId).map((seat) => <option key={seat.id} value={seat.id}>{seat.displayName}</option>)}</select></label>
-            <div className="gift-grid">{(["clout","bluff","points","organise","rally","smear","court"] as const).map((key) => <label key={key}>{key}<input type="number" min="0" value={gift[key]} onChange={(event) => setGift({ ...gift, [key]: Number(event.target.value) })} /></label>)}</div>
+            <div className="gift-grid">{(["leverage","bluff","points","organise","rally","smear","coalition"] as const).map((key) => <label key={key}>{key}<input type="number" min="0" value={gift[key]} onChange={(event) => setGift({ ...gift, [key]: Number(event.target.value) })} /></label>)}</div>
             <button className="ink-button">Record one-way gift</button>
           </form>
         ) : <p>Observers cannot move table resources.</p>}
@@ -520,7 +520,7 @@ const EMPTY_TOKENS: TokenDraft = {
   organise: 0,
   rally: 0,
   smear: 0,
-  court: 0
+  coalition: 0
 };
 
 export function ContestCard(props: {
@@ -529,9 +529,9 @@ export function ContestCard(props: {
   seats: ViewSeat[];
 }) {
   const ranked = [...props.bids].sort((left, right) => {
-    const leftClout = typeof left.clout === "number" ? left.clout : -1;
-    const rightClout = typeof right.clout === "number" ? right.clout : -1;
-    return rightClout - leftClout;
+    const leftLeverage = typeof left.leverage === "number" ? left.leverage : -1;
+    const rightLeverage = typeof right.leverage === "number" ? right.leverage : -1;
+    return rightLeverage - leftLeverage;
   });
   return (
     <article className="contest-card">
@@ -554,7 +554,7 @@ export function ContestCard(props: {
           const recipient = props.seats.find(
             (seat) => seat.id === bid.transferredToSeatId
           );
-          const revealed = typeof bid.clout === "number";
+          const revealed = typeof bid.leverage === "number";
           return (
             <li
               key={String(bid.id)}
@@ -571,7 +571,7 @@ export function ContestCard(props: {
                     : ""} · {String(bid.status ?? "covered")}
                 </small>
               </div>
-              <strong>{revealed ? `${String(bid.clout)} Clout` : "Covered"}</strong>
+              <strong>{revealed ? `${String(bid.leverage)} Leverage` : "Covered"}</strong>
               <span>
                 {operations
                   ? `${operations} · ${String(bid.bluff ?? 0)} bluff`
@@ -674,20 +674,20 @@ function OpeningForm(props: {
   );
   const required = Math.min(
     props.seat.firmIds.length,
-    props.seat.reserve?.clout ?? 0,
+    props.seat.reserve?.leverage ?? 0,
     availableParties.length
   );
   const [rows, setRows] = useState<Array<{
     firmId: FirmId;
     partyId: PartyId;
-    clout: number;
+    leverage: number;
     bluff: number;
     operations: TokenDraft;
   }>>(() =>
     props.seat.firmIds.slice(0, required).map((firmId, index) => ({
       firmId,
       partyId: availableParties[index] ?? availableParties[0] ?? "honeycomb",
-      clout: 1,
+      leverage: 1,
       bluff: 0,
       operations: { ...EMPTY_TOKENS }
     }))
@@ -742,13 +742,13 @@ function OpeningForm(props: {
             </select>
           </label>
           <label>
-            Clout
+            Leverage
             <input
               type="number"
               min="1"
-              value={row.clout}
+              value={row.leverage}
               onChange={(event) =>
-                updateRow(index, { clout: Number(event.target.value) })
+                updateRow(index, { leverage: Number(event.target.value) })
               }
             />
           </label>
@@ -786,7 +786,7 @@ function CounterbidForm(props: {
   const [contestId, setContestId] = useState(
     Object.keys(props.view.contests)[0] ?? "pecking-order"
   );
-  const [clout, setClout] = useState(0);
+  const [leverage, setLeverage] = useState(0);
   const [bluff, setBluff] = useState(0);
   const [operations, setOperations] = useState<TokenDraft>({
     ...EMPTY_TOKENS
@@ -803,7 +803,7 @@ function CounterbidForm(props: {
 
   useEffect(() => {
     if (selectedBidId === null || selectedBidId === undefined) {
-      setClout(0);
+      setLeverage(0);
       setBluff(0);
       setOperations({ ...EMPTY_TOKENS });
       return;
@@ -815,8 +815,8 @@ function CounterbidForm(props: {
     if (typeof bid.contestId === "string") {
       setContestId(bid.contestId);
     }
-    if (typeof bid.clout === "number") {
-      setClout(bid.clout);
+    if (typeof bid.leverage === "number") {
+      setLeverage(bid.leverage);
     }
     if (typeof bid.bluff === "number") {
       setBluff(bid.bluff);
@@ -826,7 +826,7 @@ function CounterbidForm(props: {
         organise: numberOr(bid.operations.organise, 0),
         rally: numberOr(bid.operations.rally, 0),
         smear: numberOr(bid.operations.smear, 0),
-        court: numberOr(bid.operations.court, 0)
+        coalition: numberOr(bid.operations.coalition, 0)
       });
     }
   }, [selectedBidId, slotIndex]);
@@ -842,7 +842,7 @@ function CounterbidForm(props: {
       className="phase-form"
       onSubmit={(event) => {
         event.preventDefault();
-        void send({ contestId, firmId, clout, bluff, operations });
+        void send({ contestId, firmId, leverage, bluff, operations });
       }}
     >
       <h3>Counterbids</h3>
@@ -877,12 +877,12 @@ function CounterbidForm(props: {
         </select>
       </label>
       <label>
-        Hidden Clout
+        Hidden Leverage
         <input
           type="number"
           min="0"
-          value={clout}
-          onChange={(event) => setClout(Number(event.target.value))}
+          value={leverage}
+          onChange={(event) => setLeverage(Number(event.target.value))}
         />
       </label>
       <label>
@@ -999,11 +999,11 @@ function OperationForm(props: {
   ) as PartyId;
   const defaultOtherParty =
     PARTIES.find((party) => party.id !== partyId)?.id ?? "honeycomb";
-  const defaultCourtTarget =
+  const defaultCoalitionTarget =
     PARTIES.find(
       (party) =>
         party.id !== partyId &&
-        party.id !== props.view.overtures[partyId]
+        party.id !== props.view.coalitionTargets[partyId]
     )?.id ?? defaultOtherParty;
   const [operation, setOperation] = useState<OperationId>(
     legal[0] ?? "organise"
@@ -1013,7 +1013,7 @@ function OperationForm(props: {
   const [rivalParty, setRivalParty] =
     useState<PartyId>(defaultOtherParty);
   const [targetParty, setTargetParty] =
-    useState<PartyId>(defaultCourtTarget);
+    useState<PartyId>(defaultCoalitionTarget);
   const [bonusDistrictId, setBonusDistrictId] = useState<string>(
     DISTRICTS[0].id
   );
@@ -1112,14 +1112,14 @@ function OperationForm(props: {
       {operation === "smear" && (
         <PartySelect label="Rival party" value={rivalParty} excludes={[partyId]} onChange={setRivalParty} />
       )}
-      {operation === "court" && (
+      {operation === "coalition" && (
         <PartySelect
-          label="New overture target"
+          label="New coalition target"
           value={targetParty}
           excludes={[
             partyId,
-            ...(props.view.overtures[partyId]
-              ? [props.view.overtures[partyId]!]
+            ...(props.view.coalitionTargets[partyId]
+              ? [props.view.coalitionTargets[partyId]!]
               : [])
           ]}
           onChange={setTargetParty}
@@ -1137,7 +1137,7 @@ function OperationForm(props: {
       )}
       {claimBonus &&
         (partyId === "riverworks" ||
-          (partyId === "many-wings" && operation === "court")) && (
+          (partyId === "many-wings" && operation === "coalition")) && (
           <DistrictSelect
             label="Bonus district"
             value={bonusDistrictId}
@@ -1331,7 +1331,7 @@ function ReplayState({ state }: { state: GameState }) {
     firmIds: [...seat.firmIds],
     points: seat.reserve.points,
     reserve: {
-      clout: seat.reserve.clout,
+      leverage: seat.reserve.leverage,
       bluff: seat.reserve.bluff,
       operations: { ...seat.reserve.operations }
     },
@@ -1349,7 +1349,7 @@ function ReplayState({ state }: { state: GameState }) {
           <article key={seat.id}>
             <strong>{seat.displayName}</strong>
             <b>{seat.reserve.points} points</b>
-            <span>{seat.reserve.clout} Clout · {seat.reserve.bluff} Bluff · {OPERATION_IDS.map(
+            <span>{seat.reserve.leverage} Leverage · {seat.reserve.bluff} Bluff · {OPERATION_IDS.map(
               (operation) => `${seat.reserve.operations[operation]} ${operation}`
             ).join(" · ")}</span>
             <small>Agenda {seat.scoringCardId}</small>
@@ -1359,15 +1359,15 @@ function ReplayState({ state }: { state: GameState }) {
       <DistrictMap support={state.support} />
       <div className="replay-columns">
         <section>
-          <h3>Pecking Order & overtures</h3>
+          <h3>Pecking Order & Coalition targets</h3>
           <ol className="replay-order">
             {state.partyOrder.map((partyId) => (
               <li key={partyId}>
                 <strong>{PARTIES_BY_ID[partyId].name}</strong>
                 <span>
-                  Courts{" "}
-                  {state.overtures[partyId]
-                    ? PARTIES_BY_ID[state.overtures[partyId]!].shortName
+                  Targets{" "}
+                  {state.coalitionTargets[partyId]
+                    ? PARTIES_BY_ID[state.coalitionTargets[partyId]!].shortName
                     : "no party"}
                 </span>
               </li>
@@ -1455,7 +1455,7 @@ function ReplayState({ state }: { state: GameState }) {
 }
 
 export function DistrictMap({ support }: { support: GameView["support"] }) {
-  return <div className="district-map" aria-label="Bellwether district map">{DISTRICTS.map((district) => {
+  return <div className="district-map" aria-label="Bellweather district map">{DISTRICTS.map((district) => {
     const districtSupport = support[district.id] ?? {};
     const summary = Object.entries(districtSupport)
       .filter(([, count]) => (count ?? 0) > 0)
@@ -1493,7 +1493,7 @@ export function DistrictMap({ support }: { support: GameView["support"] }) {
 }
 
 function PartyRail({ view }: { view: GameView }) {
-  return <div className="party-rail">{(view.partyOrder.length ? view.partyOrder : PARTIES.map((party) => party.id)).map((id, index) => <article key={id} style={{ "--party": PARTIES_BY_ID[id].color } as React.CSSProperties}><b>{index + 1}</b><span className="party-glyph">{PARTY_GLYPHS[id]}</span><div><strong>{PARTIES_BY_ID[id].shortName}</strong><small>Courts {view.overtures[id] ? PARTIES_BY_ID[view.overtures[id]!].shortName : "no party"}{view.reinforcedOverturePartyId === id ? " · reinforced" : ""}</small></div></article>)}</div>;
+  return <div className="party-rail">{(view.partyOrder.length ? view.partyOrder : PARTIES.map((party) => party.id)).map((id, index) => <article key={id} style={{ "--party": PARTIES_BY_ID[id].color } as React.CSSProperties}><b>{index + 1}</b><span className="party-glyph">{PARTY_GLYPHS[id]}</span><div><strong>{PARTIES_BY_ID[id].shortName}</strong><small>Targets {view.coalitionTargets[id] ? PARTIES_BY_ID[view.coalitionTargets[id]!].shortName : "no party"}{view.reinforcedCoalitionPartyId === id ? " · reinforced" : ""}</small></div></article>)}</div>;
 }
 
 function PlayerLedger({ seats }: { seats: ViewSeat[] }) {
@@ -1511,7 +1511,7 @@ function PlayerLedger({ seats }: { seats: ViewSeat[] }) {
 }
 
 function LoadingDesk({ error, onLeave }: { error: string | null; onLeave(): void }) {
-  return <main className="loading-page"><p className="kicker">The Bellwether Register</p><h1>Waiting on the wire…</h1>{error && <p role="alert">{error}</p>}<button className="text-button" onClick={onLeave}>Clear saved session</button></main>;
+  return <main className="loading-page"><p className="kicker">The Bellweather Register</p><h1>Waiting on the wire…</h1>{error && <p role="alert">{error}</p>}<button className="text-button" onClick={onLeave}>Clear saved session</button></main>;
 }
 
 function extractView(state: ViewerStateEnvelope): GameView | null {
@@ -1561,12 +1561,12 @@ function extractView(state: ViewerStateEnvelope): GameView | null {
     support: isObject(publicGame.support)
       ? (publicGame.support as GameView["support"])
       : {},
-    overtures: isObject(publicGame.overtures)
-      ? (publicGame.overtures as GameView["overtures"])
+    coalitionTargets: isObject(publicGame.coalitionTargets)
+      ? (publicGame.coalitionTargets as GameView["coalitionTargets"])
       : {},
-    reinforcedOverturePartyId:
-      typeof publicGame.reinforcedOverturePartyId === "string"
-        ? (publicGame.reinforcedOverturePartyId as PartyId)
+    reinforcedCoalitionPartyId:
+      typeof publicGame.reinforcedCoalitionPartyId === "string"
+        ? (publicGame.reinforcedCoalitionPartyId as PartyId)
         : null,
     contests,
     bids: [...bidsById.values()],

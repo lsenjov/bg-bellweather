@@ -38,9 +38,9 @@ describe("district map", () => {
     ).sort();
 
     expect(edges).toEqual([
-      "bellwether-centre:canal-ward",
-      "bellwether-centre:crown-road",
-      "bellwether-centre:old-quarter",
+      "bellweather-centre:canal-ward",
+      "bellweather-centre:crown-road",
+      "bellweather-centre:old-quarter",
       "canal-ward:reedwater",
       "cloverfield:harbormouth",
       "cloverfield:northreach",
@@ -254,8 +254,8 @@ describe("setup constants", () => {
     expect(DOUBLED_PLAYER_SETUP.firms).toBe(
       STANDARD_PLAYER_SETUP.firms * 2
     );
-    expect(DOUBLED_PLAYER_SETUP.clout).toBe(
-      STANDARD_PLAYER_SETUP.clout * 2
+    expect(DOUBLED_PLAYER_SETUP.leverage).toBe(
+      STANDARD_PLAYER_SETUP.leverage * 2
     );
     expect(DOUBLED_PLAYER_SETUP.points).toBe(
       STANDARD_PLAYER_SETUP.points * 2

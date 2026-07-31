@@ -15,12 +15,12 @@ afterEach(() => {
 
 describe("game server", () => {
   it("serves a built browser app with SPA fallback", async () => {
-    const directory = mkdtempSync(resolve(tmpdir(), "bellwether-server-"));
+    const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
     temporaryDirectories.push(directory);
     const webRoot = resolve(directory, "web");
     mkdirSync(webRoot);
-    writeFileSync(resolve(webRoot, "index.html"), "<main>Bellwether</main>");
-    writeFileSync(resolve(webRoot, "app.js"), "globalThis.BELLWETHER = true");
+    writeFileSync(resolve(webRoot, "index.html"), "<main>Bellweather</main>");
+    writeFileSync(resolve(webRoot, "app.js"), "globalThis.BELLWEATHER = true");
     const app = createAppServer({
       databasePath: resolve(directory, "game.sqlite"),
       webRoot,
@@ -31,8 +31,8 @@ describe("game server", () => {
     const home = await fetch(new URL("/", baseUrl));
     const route = await fetch(new URL("/games/example", baseUrl));
     const asset = await fetch(new URL("/app.js", baseUrl));
-    expect(await home.text()).toContain("Bellwether");
-    expect(await route.text()).toContain("Bellwether");
+    expect(await home.text()).toContain("Bellweather");
+    expect(await route.text()).toContain("Bellweather");
     expect(asset.headers.get("content-type")).toContain("text/javascript");
     expect(asset.headers.get("content-security-policy")).toContain(
       "frame-ancestors 'none'"
@@ -49,12 +49,12 @@ describe("game server", () => {
       await (
         await fetch(new URL("/", baseUrl))
       ).text()
-    ).toContain("Bellwether");
+    ).toContain("Bellweather");
     await app.close();
   });
 
   it("persists an authenticated lobby and processes idempotent commands", async () => {
-    const directory = mkdtempSync(resolve(tmpdir(), "bellwether-server-"));
+    const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
     temporaryDirectories.push(directory);
     const databasePath = resolve(directory, "game.sqlite");
     const app = createAppServer({ databasePath, port: 0 });
@@ -213,9 +213,9 @@ describe("game server", () => {
           command: {
             type: "give_resources",
             recipientSeatId: joinBody.session.seatId,
-            clout: 0,
+            leverage: 0,
             bluff: 0,
-            operations: { organise: 0, rally: 0, smear: 0, court: 0 },
+            operations: { organise: 0, rally: 0, smear: 0, coalition: 0 },
             points: 2
           }
         }
@@ -261,7 +261,7 @@ describe("game server", () => {
   });
 
   it("allows configured spectators without granting player commands", async () => {
-    const directory = mkdtempSync(resolve(tmpdir(), "bellwether-server-"));
+    const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
     temporaryDirectories.push(directory);
     const app = createAppServer({
       databasePath: resolve(directory, "game.sqlite"),
@@ -321,7 +321,7 @@ describe("game server", () => {
   });
 
   it("redacts canonical engine events from opponents and spectators", async () => {
-    const directory = mkdtempSync(resolve(tmpdir(), "bellwether-server-"));
+    const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
     temporaryDirectories.push(directory);
     const app = createAppServer({
       databasePath: resolve(directory, "game.sqlite"),
@@ -439,9 +439,9 @@ describe("game server", () => {
     expect(publicGameJson).not.toContain('"reserve"');
     expect(active.seatState.privateGame).toMatchObject({
       reserve: {
-        clout: 20,
+        leverage: 20,
         bluff: 8,
-        operations: { organise: 4, rally: 8, smear: 4, court: 2 },
+        operations: { organise: 4, rally: 8, smear: 4, coalition: 2 },
         points: 10
       }
     });
@@ -452,7 +452,7 @@ describe("game server", () => {
     const firms = active.publicState.publicGame.seats.find(
       (seat) => seat.id === actor.seatId
     )!.firmIds;
-    const emptyOperations = { organise: 0, rally: 0, smear: 0, court: 0 };
+    const emptyOperations = { organise: 0, rally: 0, smear: 0, coalition: 0 };
     await jsonRequest(
       baseUrl,
       `/api/v1/games/${host.session.gameId}/commands`,
@@ -471,14 +471,14 @@ describe("game server", () => {
                 {
                   firmId: firms[0],
                   partyId: active.publicState.publicGame.partyOrder[0],
-                  clout: 1,
+                  leverage: 1,
                   bluff: 0,
                   operations: emptyOperations
                 },
                 {
                   firmId: firms[1],
                   partyId: active.publicState.publicGame.partyOrder[1],
-                  clout: 1,
+                  leverage: 1,
                   bluff: 0,
                   operations: emptyOperations
                 }
@@ -543,7 +543,7 @@ describe("game server", () => {
   });
 
   it("recovers and expires a counterbid deadline after restart", async () => {
-    const directory = mkdtempSync(resolve(tmpdir(), "bellwether-server-"));
+    const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
     temporaryDirectories.push(directory);
     const databasePath = resolve(directory, "game.sqlite");
     let clock = new Date("2026-07-30T12:00:00.000Z");
@@ -629,9 +629,9 @@ describe("game server", () => {
             openings: parties.map((partyId, index) => ({
               firmId: firms[index],
               partyId,
-              clout: 1,
+              leverage: 1,
               bluff: 0,
-              operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+              operations: { organise: 0, rally: 0, smear: 0, coalition: 0 }
             }))
           }
         }

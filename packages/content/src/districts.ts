@@ -16,7 +16,7 @@ export const DISTRICT_IDS = deepFreeze([
   "crown-road",
   "canal-ward",
   "old-quarter",
-  "bellwether-centre"
+  "bellweather-centre"
 ] as const);
 
 export type DistrictId = (typeof DISTRICT_IDS)[number];
@@ -105,23 +105,23 @@ export const DISTRICTS = deepFreeze([
     id: "crown-road",
     name: "Crown Road",
     capacity: 2,
-    adjacentDistrictIds: ["northreach", "bellwether-centre"]
+    adjacentDistrictIds: ["northreach", "bellweather-centre"]
   },
   {
     id: "canal-ward",
     name: "Canal Ward",
     capacity: 2,
-    adjacentDistrictIds: ["reedwater", "bellwether-centre"]
+    adjacentDistrictIds: ["reedwater", "bellweather-centre"]
   },
   {
     id: "old-quarter",
     name: "Old Quarter",
     capacity: 2,
-    adjacentDistrictIds: ["westgate", "bellwether-centre"]
+    adjacentDistrictIds: ["westgate", "bellweather-centre"]
   },
   {
-    id: "bellwether-centre",
-    name: "Bellwether Centre",
+    id: "bellweather-centre",
+    name: "Bellweather Centre",
     capacity: 3,
     adjacentDistrictIds: ["crown-road", "canal-ward", "old-quarter"]
   }

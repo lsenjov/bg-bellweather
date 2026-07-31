@@ -3,13 +3,13 @@ import {
   ViewerStateEnvelopeSchema,
   type ProjectedEventEnvelope,
   type ViewerStateEnvelope
-} from "@bellwether/protocol";
+} from "@bellweather/protocol";
 import type {
   BidState,
   GameAction,
   GameEvent,
   GameState
-} from "@bellwether/game";
+} from "@bellweather/game";
 import type { EventStore } from "./store.js";
 import type { GameRecord, StoredEvent } from "./types.js";
 
@@ -160,8 +160,8 @@ function publicEngineState(state: GameState): Record<string, unknown> {
     nextFirstOpenerSeatId: state.nextFirstOpenerSeatId,
     partyOrder: state.partyOrder,
     support: state.support,
-    overtures: state.overtures,
-    reinforcedOverturePartyId: state.reinforcedOverturePartyId,
+    coalitionTargets: state.coalitionTargets,
+    reinforcedCoalitionPartyId: state.reinforcedCoalitionPartyId,
     phase: publicPhase(state),
     seats: state.seats.map((seat) => ({
       id: seat.id,
@@ -253,7 +253,7 @@ function publicBid(bid: BidState, reveal: boolean): Record<string, unknown> {
   if (reveal) {
     return {
       ...base,
-      clout: bid.clout,
+      leverage: bid.leverage,
       bluff: bid.bluff,
       operations: bid.operations
     };
@@ -261,7 +261,7 @@ function publicBid(bid: BidState, reveal: boolean): Record<string, unknown> {
   if (bid.kind === "opening") {
     return {
       ...base,
-      clout: bid.clout
+      leverage: bid.leverage
     };
   }
   return base;

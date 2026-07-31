@@ -240,7 +240,7 @@ export const OperationInventorySchema = z
     organise: z.number().int().nonnegative(),
     rally: z.number().int().nonnegative(),
     smear: z.number().int().nonnegative(),
-    court: z.number().int().nonnegative()
+    coalition: z.number().int().nonnegative()
   })
   .strict();
 export type OperationInventory = z.infer<typeof OperationInventorySchema>;
@@ -267,21 +267,21 @@ export const GiveResourcesCommandSchema = z
   .object({
     type: z.literal("give_resources"),
     recipientSeatId: SeatIdSchema,
-    clout: z.number().int().nonnegative(),
+    leverage: z.number().int().nonnegative(),
     bluff: z.number().int().nonnegative(),
     operations: OperationInventorySchema,
     points: z.number().int().nonnegative()
   })
   .strict()
   .refine(
-    ({ clout, bluff, operations, points }) =>
-      clout +
+    ({ leverage, bluff, operations, points }) =>
+      leverage +
         bluff +
         points +
         operations.organise +
         operations.rally +
         operations.smear +
-        operations.court >
+        operations.coalition >
       0,
     { message: "A gift must contain at least one resource" }
   );
@@ -310,7 +310,7 @@ export const OperationIdSchema = z.enum([
   "organise",
   "rally",
   "smear",
-  "court"
+  "coalition"
 ]);
 const DecisionIdSchema = z.string().trim().min(1).max(100);
 const OrganiseChoiceSchema = z
@@ -335,9 +335,9 @@ const SmearChoiceSchema = z
     bonusDistrictId: z.string().trim().min(1).max(100).optional()
   })
   .strict();
-const CourtChoiceSchema = z
+const CoalitionChoiceSchema = z
   .object({
-    operation: z.literal("court"),
+    operation: z.literal("coalition"),
     targetParty: PartyIdSchema,
     bonusDistrictId: z.string().trim().min(1).max(100).optional()
   })
@@ -346,7 +346,7 @@ export const OperationChoiceSchema = z.discriminatedUnion("operation", [
   OrganiseChoiceSchema,
   RallyChoiceSchema,
   SmearChoiceSchema,
-  CourtChoiceSchema
+  CoalitionChoiceSchema
 ]);
 const OperationResolutionChoiceSchema = z.union([
   OperationChoiceSchema,
@@ -364,7 +364,7 @@ export type OperationResolutionChoice = z.infer<
 >;
 const BidPackageSchema = z
   .object({
-    clout: z.number().int().nonnegative(),
+    leverage: z.number().int().nonnegative(),
     bluff: z.number().int().nonnegative(),
     operations: OperationInventorySchema
   })

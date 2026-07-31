@@ -8,7 +8,7 @@ import type {
   ParticipantSession,
   ReplayResponse,
   ViewerStateEnvelope
-} from "@bellwether/protocol";
+} from "@bellweather/protocol";
 
 export class ApiError extends Error {
   constructor(

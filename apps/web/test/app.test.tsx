@@ -77,15 +77,15 @@ describe("browser play surface", () => {
             kind: "counterbid",
             slotIndex: 2,
             status: "active",
-            clout: 3,
+            leverage: 3,
             bluff: 1,
-            operations: { organise: 1, rally: 0, smear: 1, court: 0 }
+            operations: { organise: 1, rally: 0, smear: 1, coalition: 0 }
           }
         ]}
       />
     );
 
-    expect(screen.getByText(/3 Clout/i)).toBeTruthy();
+    expect(screen.getByText(/3 Leverage/i)).toBeTruthy();
     expect(screen.getByText(/1 organise.*1 smear/i)).toBeTruthy();
     expect(screen.getByText(/One Fell Swoop Public Affairs/i)).toBeTruthy();
     expect(screen.getByText(/counterbid · identity card · active/i)).toBeTruthy();

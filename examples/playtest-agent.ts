@@ -1,23 +1,23 @@
-import { AgentClient, AgentClientError } from "@bellwether/testkit";
+import { AgentClient, AgentClientError } from "@bellweather/testkit";
 import {
   DISTRICTS,
   PARTIES,
   type FirmId,
   type OperationId,
   type PartyId
-} from "@bellwether/content";
+} from "@bellweather/content";
 import type {
   GameCommand,
   GameId,
   OperationChoice,
   ParticipantSession,
   ViewerStateEnvelope
-} from "@bellwether/protocol";
+} from "@bellweather/protocol";
 
-const baseUrl = process.env["BELLWETHER_URL"] ?? "http://127.0.0.1:4317";
-const inviteCode = process.env["BELLWETHER_INVITE"];
-const displayName = process.env["BELLWETHER_NAME"] ?? "Conservative Agent";
-const playerCount = Number(process.env["BELLWETHER_PLAYERS"] ?? "2");
+const baseUrl = process.env["BELLWEATHER_URL"] ?? "http://127.0.0.1:4317";
+const inviteCode = process.env["BELLWEATHER_INVITE"];
+const displayName = process.env["BELLWEATHER_NAME"] ?? "Conservative Agent";
+const playerCount = Number(process.env["BELLWEATHER_PLAYERS"] ?? "2");
 const anonymous = new AgentClient({ baseUrl });
 
 const joined =
@@ -128,11 +128,11 @@ async function takeTurn(
   }
   const opponent = seats.find((seat) => seat["id"] !== session.seatId);
   const reserve = objectValue(privateGame["reserve"]);
-  if (!gifted && opponent !== undefined && Number(reserve["clout"] ?? 0) > 0) {
+  if (!gifted && opponent !== undefined && Number(reserve["leverage"] ?? 0) > 0) {
     await command(client, session.gameId, publicState.version, {
       type: "give_resources",
       recipientSeatId: stringValue(opponent["id"]) as never,
-      clout: 1,
+      leverage: 1,
       bluff: 0,
       operations: emptyOperations(),
       points: 0
@@ -153,7 +153,7 @@ async function takeTurn(
     const available = arrayValue(game["partyOrder"])
       .map((partyId) => stringValue(partyId) as PartyId)
       .filter((partyId) => !(partyId in contests));
-    const count = Math.min(firms.length, Number(reserve["clout"] ?? 0));
+    const count = Math.min(firms.length, Number(reserve["leverage"] ?? 0));
     await command(client, session.gameId, publicState.version, {
       type: "game_action",
       action: {
@@ -161,7 +161,7 @@ async function takeTurn(
         openings: firms.slice(0, count).map((firmId, index) => ({
           firmId,
           partyId: available[index] ?? available[0] ?? "honeycomb",
-          clout: 1,
+          leverage: 1,
           bluff: 0,
           operations:
             index === 0 &&
@@ -193,7 +193,7 @@ async function takeTurn(
           bid: {
             contestId: "pecking-order",
             firmId,
-            clout: 0,
+            leverage: 0,
             bluff: 0,
             operations: emptyOperations()
           }
@@ -253,7 +253,7 @@ async function takeTurn(
       operation,
       partyId,
       objectValue(game["support"]),
-      objectValue(game["overtures"])
+      objectValue(game["coalitionTargets"])
     );
     if (choice !== null) {
       await command(client, session.gameId, publicState.version, {
@@ -273,7 +273,7 @@ function chooseOperation(
   operation: OperationId,
   partyId: PartyId,
   rawSupport: Record<string, unknown>,
-  overtures: Record<string, unknown>
+  coalitionTargets: Record<string, unknown>
 ): OperationChoice | null {
   const support = Object.fromEntries(
     DISTRICTS.map((district) => [
@@ -353,10 +353,10 @@ function chooseOperation(
     }
     return null;
   }
-  if (operation === "court") {
+  if (operation === "coalition") {
     const target = PARTIES.find(
       (party) =>
-        party.id !== partyId && party.id !== overtures[partyId]
+        party.id !== partyId && party.id !== coalitionTargets[partyId]
     );
     return target === undefined
       ? null
@@ -380,7 +380,7 @@ async function command(
 }
 
 function emptyOperations() {
-  return { organise: 0, rally: 0, smear: 0, court: 0 };
+  return { organise: 0, rally: 0, smear: 0, coalition: 0 };
 }
 
 function objectValue(value: unknown): Record<string, unknown> {
@@ -402,6 +402,6 @@ function isOperationId(value: string): value is OperationId {
     value === "organise" ||
     value === "rally" ||
     value === "smear" ||
-    value === "court"
+    value === "coalition"
   );
 }

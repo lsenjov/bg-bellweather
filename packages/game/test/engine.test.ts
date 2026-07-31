@@ -4,7 +4,7 @@ import {
   SCORING_CARDS_BY_ID,
   type OperationId,
   type PartyId
-} from "@bellwether/content";
+} from "@bellweather/content";
 import { describe, expect, it } from "vitest";
 import {
   GameRuleError,
@@ -29,7 +29,7 @@ describe("game setup and private projections", () => {
     [6, 1, 10, 4, 4, 5, 2]
   ])(
     "creates the committed economy for %i players",
-    (playerCount, firms, clout, bluff, rally, points, slots) => {
+    (playerCount, firms, leverage, bluff, rally, points, slots) => {
       const state = initializeGame(
         configuration(playerCount, null),
         zeroRandom
@@ -38,7 +38,7 @@ describe("game setup and private projections", () => {
       expect(state.seats.every((seat) => seat.firmIds.length === firms)).toBe(
         true
       );
-      expect(state.seats.every((seat) => seat.reserve.clout === clout)).toBe(
+      expect(state.seats.every((seat) => seat.reserve.leverage === leverage)).toBe(
         true
       );
       expect(state.seats.every((seat) => seat.reserve.bluff === bluff)).toBe(
@@ -64,9 +64,9 @@ describe("game setup and private projections", () => {
 
     expect(state.seats.map((seat) => seat.firmIds.length)).toEqual([2, 2]);
     expect(state.seats[0]?.reserve).toEqual({
-      clout: 20,
+      leverage: 20,
       bluff: 8,
-      operations: { organise: 4, rally: 8, smear: 4, court: 2 },
+      operations: { organise: 4, rally: 8, smear: 4, coalition: 2 },
       points: 10
     });
     expect(state.partyOrder).toHaveLength(6);
@@ -77,7 +77,7 @@ describe("game setup and private projections", () => {
     expect(replay([initialized])).toEqual(state);
   });
 
-  it("applies Election retention to named districts but not Bellwether Centre", () => {
+  it("applies Election retention to named districts but not Bellweather Centre", () => {
     const state = initializeGame(configuration(2, null), zeroRandom).state;
     const namedDistrictId =
       SCORING_CARDS_BY_ID[state.seats[0]!.scoringCardId].objectives[0]!.districtId;
@@ -85,7 +85,7 @@ describe("game setup and private projections", () => {
     state.support[namedDistrictId] = Object.fromEntries(
       PARTY_IDS.slice(0, capacity).map((partyId) => [partyId, 1])
     );
-    state.support["bellwether-centre"] = {
+    state.support["bellweather-centre"] = {
       honeycomb: 1,
       "old-shell": 1,
       foxglove: 1
@@ -110,7 +110,7 @@ describe("game setup and private projections", () => {
         0
       )
     ).toBe(capacity / 2);
-    expect(result.support["bellwether-centre"]).toEqual({
+    expect(result.support["bellweather-centre"]).toEqual({
       honeycomb: 1,
       "old-shell": 1,
       foxglove: 1
@@ -128,9 +128,9 @@ describe("game setup and private projections", () => {
       bid: {
         contestId: PARTY_IDS[0],
         firmId: state.seats[0]!.firmIds[0]!,
-        clout: 3,
+        leverage: 3,
         bluff: 1,
-        operations: operations({ court: 1 })
+        operations: operations({ coalition: 1 })
       }
     });
 
@@ -143,16 +143,16 @@ describe("game setup and private projections", () => {
     expect(owner.seats[0]?.reserve).not.toBeNull();
     expect(owner.seats[1]?.reserve).toBeNull();
     expect(opponent.seats[0]?.scoringCardId).toBeNull();
-    expect(owner.bids.find((bid) => bid.id === counterId)?.clout).toBe(3);
+    expect(owner.bids.find((bid) => bid.id === counterId)?.leverage).toBe(3);
     expect(opponent.bids.find((bid) => bid.id === counterId)).toMatchObject({
       contestId: PARTY_IDS[0],
-      clout: null,
+      leverage: null,
       bluff: null,
       operationCount: null,
       operations: null
     });
     expect(opponent.bids.find((bid) => bid.id === openingId)).toMatchObject({
-      clout: 1,
+      leverage: 1,
       bluff: null,
       operationCount: null,
       operations: null
@@ -179,7 +179,7 @@ describe("opening and counterbid phases", () => {
       })
     ).toThrow("firm can open only one");
     expect(state.phase.type).toBe("opening");
-    expect(state.seats[0]?.reserve.clout).toBe(20);
+    expect(state.seats[0]?.reserve.leverage).toBe(20);
     expect(() =>
       act(state, {
         type: "submit_openings",
@@ -260,7 +260,7 @@ describe("opening and counterbid phases", () => {
     tied = setBid(tied, "seat-1", 0, contestId, 2);
     tied = setBid(tied, "seat-2", 0, contestId, 2);
     tied = readyAll(tied);
-    expect(tied.seats.map((seat) => seat.reserve.clout)).toEqual([20, 20]);
+    expect(tied.seats.map((seat) => seat.reserve.leverage)).toEqual([20, 20]);
 
     let revolved = submitAllOpenings(
       initializeGame(configuration(2, null), zeroRandom).state,
@@ -268,7 +268,7 @@ describe("opening and counterbid phases", () => {
     );
     revolved = setBid(revolved, "seat-2", 0, contestId, 2, 1);
     revolved = readyAll(revolved);
-    expect(revolved.seats.map((seat) => seat.reserve.clout)).toEqual([21, 19]);
+    expect(revolved.seats.map((seat) => seat.reserve.leverage)).toEqual([21, 19]);
     expect(revolved.seats.map((seat) => seat.reserve.bluff)).toEqual([9, 7]);
   });
 });
@@ -289,7 +289,7 @@ describe("contest resolution", () => {
       bid: {
         contestId: "pecking-order",
         firmId: seatTwo.firmIds[0]!,
-        clout: 0,
+        leverage: 0,
         bluff: 1,
         operations: operations({ organise: 1 })
       }
@@ -376,18 +376,18 @@ describe("contest resolution", () => {
           repeatChoice: {
             operation: "organise",
             sourceDistrictId: "crown-road",
-            destinationDistrictId: "bellwether-centre"
+            destinationDistrictId: "bellweather-centre"
           }
         }
       })
     ).toThrow("already claimed");
   });
 
-  it("queues and resolves Night Parliament's delayed Court before transfer", () => {
+  it("queues and resolves Night Parliament's delayed Coalition before transfer", () => {
     let state = submitAllOpenings(
       initializeGame(configuration(4, null), zeroRandom).state,
       0,
-      { "seat-1": operations({ court: 1 }) },
+      { "seat-1": operations({ coalition: 1 }) },
       "night-parliament"
     );
     state = readyAll(state);
@@ -396,10 +396,10 @@ describe("contest resolution", () => {
       type: "resolve_party_operation",
       seatId: decision.seatId,
       decisionId: decision.id,
-      operation: "court",
+      operation: "coalition",
       choice: {
         choice: {
-          operation: "court",
+          operation: "coalition",
           targetParty: "honeycomb"
         },
         claimBonus: true
@@ -408,19 +408,19 @@ describe("contest resolution", () => {
     decision = pending(state);
     expect(decision).toMatchObject({
       kind: "night_delayed_operation",
-      operation: "court"
+      operation: "coalition"
     });
     state = act(state, {
       type: "resolve_party_operation",
       seatId: decision.seatId,
       decisionId: decision.id,
-      operation: "court",
+      operation: "coalition",
       choice: {
-        operation: "court",
+        operation: "coalition",
         targetParty: "foxglove"
       }
     });
-    expect(state.overtures["night-parliament"]).toBe("foxglove");
+    expect(state.coalitionTargets["night-parliament"]).toBe("foxglove");
     expect(state.phase.type).toBe("opening");
   });
 
@@ -428,7 +428,7 @@ describe("contest resolution", () => {
     let state = submitAllOpenings(
       initializeGame(configuration(4, null), zeroRandom).state,
       0,
-      { "seat-1": operations({ court: 1 }) },
+      { "seat-1": operations({ coalition: 1 }) },
       "honeycomb"
     );
     state = readyAll(state);
@@ -438,9 +438,9 @@ describe("contest resolution", () => {
         type: "resolve_party_operation",
         seatId: decision.seatId,
         decisionId: decision.id,
-        operation: "court",
+        operation: "coalition",
         choice: {
-          operation: "court",
+          operation: "coalition",
           targetParty: "invented-party"
         }
       })
@@ -462,15 +462,15 @@ describe("social actions, elections, and replay", () => {
       seatId: "seat-1",
       recipientSeatId: "seat-2",
       resources: {
-        clout: 2,
+        leverage: 2,
         bluff: 1,
-        operations: operations({ court: 1 }),
+        operations: operations({ coalition: 1 }),
         points: 3
       }
     });
     expect(state.chat[0]).toMatchObject({ text: "Your move.", sentAt: 42 });
     expect(state.seats.map((seat) => seat.reserve.points)).toEqual([7, 13]);
-    expect(state.seats.map((seat) => seat.reserve.clout)).toEqual([18, 22]);
+    expect(state.seats.map((seat) => seat.reserve.leverage)).toEqual([18, 22]);
     expect(state.seats.map((seat) => seat.reserve.bluff)).toEqual([7, 9]);
     expect(() =>
       act(state, {
@@ -478,7 +478,7 @@ describe("social actions, elections, and replay", () => {
         seatId: "seat-1",
         recipientSeatId: "seat-2",
         resources: {
-          clout: 0,
+          leverage: 0,
           bluff: 0,
           operations: operations(),
           points: 8
@@ -532,7 +532,7 @@ describe("social actions, elections, and replay", () => {
                   seatId: donor.id,
                   recipientSeatId: recipient.id,
                   resources: {
-                    clout: 0,
+                    leverage: 0,
                     bluff: 0,
                     operations: operations(),
                     points
@@ -602,17 +602,17 @@ function operations(
     organise: overrides.organise ?? 0,
     rally: overrides.rally ?? 0,
     smear: overrides.smear ?? 0,
-    court: overrides.court ?? 0
+    coalition: overrides.coalition ?? 0
   };
 }
 
 function opening(
   firmId: GameState["seats"][number]["firmIds"][number],
   partyId: PartyId,
-  clout: number,
+  leverage: number,
   operationInventory = operations()
 ) {
-  return { firmId, partyId, clout, bluff: 0, operations: operationInventory };
+  return { firmId, partyId, leverage, bluff: 0, operations: operationInventory };
 }
 
 function act(state: GameState, action: GameAction): GameState {
@@ -653,7 +653,7 @@ function openingsForActiveSeat(
     available.splice(available.indexOf(firstTarget), 1);
     available.unshift(firstTarget);
   }
-  const count = Math.min(seat.firmIds.length, seat.reserve.clout);
+  const count = Math.min(seat.firmIds.length, seat.reserve.leverage);
   return {
     type: "submit_openings",
     seatId: seat.id,
@@ -674,7 +674,7 @@ function setBid(
   seatId: string,
   slotIndex: number,
   contestId: PartyId,
-  clout: number,
+  leverage: number,
   bluff = 0
 ): GameState {
   const seat = state.seats.find((candidate) => candidate.id === seatId)!;
@@ -686,7 +686,7 @@ function setBid(
     bid: {
       contestId,
       firmId: seat.firmIds[0]!,
-      clout,
+      leverage,
       bluff,
       operations: operations()
     }

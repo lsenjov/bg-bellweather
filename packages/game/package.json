@@ -1,5 +1,5 @@
 {
-  "name": "@bellwether/game",
+  "name": "@bellweather/game",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -15,7 +15,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@bellwether/content": "0.1.0",
-    "@bellwether/protocol": "0.1.0"
+    "@bellweather/content": "0.1.0",
+    "@bellweather/protocol": "0.1.0"
   }
 }

@@ -2,7 +2,7 @@ import type { DistrictState, OperationState, Party } from "./operations.js";
 import type {
   ScoringCard as ContentScoringCard,
   SeatReference
-} from "@bellwether/content";
+} from "@bellweather/content";
 
 export type RelativeSeat =
   | "left"
@@ -111,7 +111,7 @@ export function retainElectionSupport(
 }
 
 export function scoreElectionDay(input: {
-  state: Pick<OperationState, "districts" | "overtures">;
+  state: Pick<OperationState, "districts" | "coalitionTargets">;
   players: readonly ElectionPlayer[];
   random: () => number;
   finalElection: boolean;
@@ -135,7 +135,7 @@ export function scoreElectionDay(input: {
   const baseScores = new Map(
     players.map((player) => [
       player.id,
-      scoreCard(player.card, draws, input.state.overtures)
+      scoreCard(player.card, draws, input.state.coalitionTargets)
     ])
   );
   const scores = players.map((player, seatIndex): ElectionScore => {
@@ -192,7 +192,7 @@ export function toElectionScoringCard(card: ContentScoringCard): ScoringCard {
 export function scoreCard(
   card: ScoringCard,
   draws: Readonly<Record<string, RecordedDistrictDraw>>,
-  overtures: Readonly<Record<Party, Party | null>>
+  coalitionTargets: Readonly<Record<Party, Party | null>>
 ): number {
   return card.objectives.reduce((score, objective) => {
     const draw = draws[objective.districtId];
@@ -200,8 +200,8 @@ export function scoreCard(
       throw new Error(`Missing recorded draw for ${objective.districtId}`);
     }
     const matchingParties = new Set<Party>([objective.party]);
-    const target = overtures[objective.party];
-    if (target !== null && overtures[target] === objective.party) {
+    const target = coalitionTargets[objective.party];
+    if (target !== null && coalitionTargets[target] === objective.party) {
       matchingParties.add(target);
     }
     return (

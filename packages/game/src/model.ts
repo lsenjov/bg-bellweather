@@ -4,7 +4,7 @@ import type {
   OperationId,
   PartyId,
   ScoringCardId
-} from "@bellwether/content";
+} from "@bellweather/content";
 
 export type SeatId = string;
 export type ContestId = PartyId | "pecking-order";
@@ -13,7 +13,7 @@ export type BidId = string;
 export type OperationInventory = Record<OperationId, number>;
 
 export interface ResourcePool {
-  clout: number;
+  leverage: number;
   bluff: number;
   operations: OperationInventory;
   points: number;
@@ -38,7 +38,7 @@ export interface SeatState extends SeatConfiguration {
 }
 
 export interface BidPackage {
-  clout: number;
+  leverage: number;
   bluff: number;
   operations: OperationInventory;
 }
@@ -117,7 +117,7 @@ export interface PendingNightDelayedDecision {
   contestId: "night-parliament";
   bidId: BidId;
   claimId: string;
-  operation: "rally" | "court";
+  operation: "rally" | "coalition";
 }
 
 export type PendingDecision =
@@ -131,7 +131,7 @@ export interface DelayedBonusClaim {
   bidId: BidId;
   bidRank: number;
   order: number;
-  operation: "rally" | "court";
+  operation: "rally" | "coalition";
 }
 
 export interface ResolutionPhase {
@@ -208,8 +208,8 @@ export interface GameState {
   seats: SeatState[];
   partyOrder: PartyId[];
   support: Record<DistrictId, Partial<Record<PartyId, number>>>;
-  overtures: Record<PartyId, PartyId | null>;
-  reinforcedOverturePartyId: PartyId | null;
+  coalitionTargets: Record<PartyId, PartyId | null>;
+  reinforcedCoalitionPartyId: PartyId | null;
   scoringDeck: ScoringCardId[];
   contests: Partial<Record<ContestId, ContestState>>;
   bids: Record<BidId, BidState>;
@@ -228,7 +228,7 @@ export interface GameState {
 export interface OpeningBidInput {
   firmId: FirmId;
   partyId: PartyId;
-  clout: number;
+  leverage: number;
   bluff: number;
   operations: OperationInventory;
 }
@@ -236,7 +236,7 @@ export interface OpeningBidInput {
 export interface CounterbidInput {
   contestId: ContestId;
   firmId: FirmId;
-  clout: number;
+  leverage: number;
   bluff: number;
   operations: OperationInventory;
 }

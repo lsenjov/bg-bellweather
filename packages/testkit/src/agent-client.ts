@@ -18,7 +18,7 @@ import {
   type ReplayResponse,
   type ServerWebSocketFrame,
   type ViewerStateEnvelope,
-} from "@bellwether/protocol";
+} from "@bellweather/protocol";
 
 export type FetchLike = typeof fetch;
 

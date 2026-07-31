@@ -2,7 +2,7 @@ import {
   OPERATION_IDS,
   type OperationId,
   type ScoringCardId
-} from "@bellwether/content";
+} from "@bellweather/content";
 import type {
   BidState,
   GameState,
@@ -21,7 +21,7 @@ export interface ProjectedSeat {
   points: number;
   reserve:
     | {
-        clout: number;
+        leverage: number;
         bluff: number;
         operations: OperationInventory;
       }
@@ -36,7 +36,7 @@ export interface ProjectedBid {
   firmId: string;
   kind: "opening" | "counterbid";
   status: BidState["status"];
-  clout: number | null;
+  leverage: number | null;
   bluff: number | null;
   operationCount: number | null;
   operations: OperationInventory | null;
@@ -52,8 +52,8 @@ export interface GameView {
   seats: ProjectedSeat[];
   partyOrder: GameState["partyOrder"];
   support: GameState["support"];
-  overtures: GameState["overtures"];
-  reinforcedOverturePartyId: GameState["reinforcedOverturePartyId"];
+  coalitionTargets: GameState["coalitionTargets"];
+  reinforcedCoalitionPartyId: GameState["reinforcedCoalitionPartyId"];
   contests: GameState["contests"];
   bids: ProjectedBid[];
   readySeatIds: SeatId[];
@@ -108,7 +108,7 @@ export function projectGameState(
         reserve:
           own || fullInformation
             ? {
-                clout: seat.reserve.clout,
+                leverage: seat.reserve.leverage,
                 bluff: seat.reserve.bluff,
                 operations: { ...seat.reserve.operations }
               }
@@ -121,8 +121,8 @@ export function projectGameState(
     }),
     partyOrder: [...state.partyOrder],
     support: structuredClone(state.support),
-    overtures: { ...state.overtures },
-    reinforcedOverturePartyId: state.reinforcedOverturePartyId,
+    coalitionTargets: { ...state.coalitionTargets },
+    reinforcedCoalitionPartyId: state.reinforcedCoalitionPartyId,
     contests: structuredClone(state.contests),
     bids: Object.values(state.bids).map((bid) =>
       projectBid(bid, viewerSeatId, allRevealed || fullInformation)
@@ -152,7 +152,7 @@ function projectBid(
     firmId: bid.firmId,
     kind: bid.kind,
     status: bid.status,
-    clout: own || bid.kind === "opening" || allRevealed ? bid.clout : null,
+    leverage: own || bid.kind === "opening" || allRevealed ? bid.leverage : null,
     bluff: own || allRevealed ? bid.bluff : null,
     operationCount: own || allRevealed ? operationCount(bid.operations) : null,
     operations: own || allRevealed ? { ...bid.operations } : null

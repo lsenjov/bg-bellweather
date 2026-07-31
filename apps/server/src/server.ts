@@ -11,8 +11,8 @@ import {
   JoinLobbyRequestSchema,
   JoinLobbyResponseSchema,
   ReplayResponseSchema
-} from "@bellwether/protocol";
-import { engineVersion } from "@bellwether/game";
+} from "@bellweather/protocol";
+import { engineVersion } from "@bellweather/game";
 import { WebSocketServer } from "ws";
 import { ZodError } from "zod";
 import { createSeatToken } from "./auth.js";

@@ -12,7 +12,7 @@ import {
   type GameEvent,
   type GameState,
   type OperationInventory
-} from "@bellwether/game";
+} from "@bellweather/game";
 import {
   tokenLookup,
   verifySeatToken,
@@ -909,7 +909,7 @@ function commandToAction(
       seatId,
       recipientSeatId: stringValue(payload.recipientSeatId, "recipientSeatId"),
       resources: {
-        clout: numberValue(payload.clout, "clout"),
+        leverage: numberValue(payload.leverage, "leverage"),
         bluff: numberValue(payload.bluff, "bluff"),
         operations: objectValue(payload.operations) as unknown as OperationInventory,
         points: numberValue(payload.points, "points")

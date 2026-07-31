@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { SCORING_CARDS_BY_ID } from "@bellwether/content";
+import { SCORING_CARDS_BY_ID } from "@bellweather/content";
 import {
   determineWinners,
   recordElectionDraws,
@@ -63,17 +63,17 @@ describe("Election Day draws and coalition scoring", () => {
         parties: ["honeycomb", "foxglove", "riverworks"]
       }
     };
-    const overtures = emptyOvertures();
-    overtures.honeycomb = "foxglove";
-    overtures.foxglove = "honeycomb";
+    const coalitionTargets = emptyCoalitionTargets();
+    coalitionTargets.honeycomb = "foxglove";
+    coalitionTargets.foxglove = "honeycomb";
     expect(
-      scoreCard(card("h", [["six", "honeycomb"]]), draws, overtures)
+      scoreCard(card("h", [["six", "honeycomb"]]), draws, coalitionTargets)
     ).toBe(2);
     expect(
-      scoreCard(card("f", [["six", "foxglove"]]), draws, overtures)
+      scoreCard(card("f", [["six", "foxglove"]]), draws, coalitionTargets)
     ).toBe(2);
     expect(
-      scoreCard(card("r", [["six", "riverworks"]]), draws, overtures)
+      scoreCard(card("r", [["six", "riverworks"]]), draws, coalitionTargets)
     ).toBe(1);
   });
 
@@ -84,7 +84,7 @@ describe("Election Day draws and coalition scoring", () => {
         foxglove: 2,
         riverworks: 1
       }),
-      "bellwether-centre": district("bellwether-centre", 3, {
+      "bellweather-centre": district("bellweather-centre", 3, {
         "old-shell": 2,
         "many-wings": 1
       })
@@ -97,7 +97,7 @@ describe("Election Day draws and coalition scoring", () => {
 
     expect(retainElectionSupport(districts, draws)).toEqual({
       six: { honeycomb: 2, foxglove: 1 },
-      "bellwether-centre": { "old-shell": 2, "many-wings": 1 }
+      "bellweather-centre": { "old-shell": 2, "many-wings": 1 }
     });
   });
 });
@@ -244,11 +244,11 @@ function district(
 
 function electionState(
   districts: Record<string, DistrictState>
-): Pick<OperationState, "districts" | "overtures"> {
-  return { districts, overtures: emptyOvertures() };
+): Pick<OperationState, "districts" | "coalitionTargets"> {
+  return { districts, coalitionTargets: emptyCoalitionTargets() };
 }
 
-function emptyOvertures(): Record<Party, Party | null> {
+function emptyCoalitionTargets(): Record<Party, Party | null> {
   return {
     honeycomb: null,
     "old-shell": null,

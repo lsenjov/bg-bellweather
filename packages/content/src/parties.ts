@@ -4,7 +4,7 @@ export const OPERATION_IDS = deepFreeze([
   "organise",
   "rally",
   "smear",
-  "court"
+  "coalition"
 ] as const);
 export type OperationId = (typeof OPERATION_IDS)[number];
 
@@ -65,7 +65,7 @@ export const PARTIES = deepFreeze([
     shortName: "Old Shell",
     animal: "Tortoises",
     color: "#3f7447",
-    favoredOperations: ["smear", "court"],
+    favoredOperations: ["smear", "coalition"],
     bonuses: [
       {
         operation: "smear",
@@ -75,10 +75,10 @@ export const PARTIES = deepFreeze([
         timing: "immediate"
       },
       {
-        operation: "court",
+        operation: "coalition",
         name: "Binding Pact",
         effect:
-          "Reinforce a successfully redirected overture. The next Court that would redirect it removes the reinforcement instead.",
+          "Reinforce a successfully redirected Coalition target. The next Coalition operation that would redirect it removes the reinforcement instead.",
         timing: "immediate"
       }
     ]
@@ -136,7 +136,7 @@ export const PARTIES = deepFreeze([
     shortName: "Many Wings",
     animal: "Starlings",
     color: "#d86f24",
-    favoredOperations: ["organise", "court"],
+    favoredOperations: ["organise", "coalition"],
     bonuses: [
       {
         operation: "organise",
@@ -146,10 +146,10 @@ export const PARTIES = deepFreeze([
         timing: "immediate"
       },
       {
-        operation: "court",
+        operation: "coalition",
         name: "Local Chapters",
         effect:
-          "Add one Many Wings Support in a free spot in a district containing the courted party.",
+          "Add one Many Wings Support in a free spot in a district containing the coalition target.",
         timing: "immediate"
       }
     ]
@@ -160,7 +160,7 @@ export const PARTIES = deepFreeze([
     shortName: "Night",
     animal: "Owls",
     color: "#252522",
-    favoredOperations: ["rally", "court"],
+    favoredOperations: ["rally", "coalition"],
     bonuses: [
       {
         operation: "rally",
@@ -170,10 +170,10 @@ export const PARTIES = deepFreeze([
         timing: "delayed"
       },
       {
-        operation: "court",
+        operation: "coalition",
         name: "After-Hours Deal",
         effect:
-          "After ordinary operation cards finish, the claiming bid resolves one additional Court baseline.",
+          "After ordinary operation cards finish, the claiming bid resolves one additional Coalition operation.",
         timing: "delayed"
       }
     ]

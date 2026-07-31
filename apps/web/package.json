@@ -1,5 +1,5 @@
 {
-  "name": "@bellwether/web",
+  "name": "@bellweather/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,9 +9,9 @@
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
-    "@bellwether/content": "0.1.0",
-    "@bellwether/game": "0.1.0",
-    "@bellwether/protocol": "0.1.0",
+    "@bellweather/content": "0.1.0",
+    "@bellweather/game": "0.1.0",
+    "@bellweather/protocol": "0.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
