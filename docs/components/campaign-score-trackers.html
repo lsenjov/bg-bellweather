@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A4 landscape campaign and public score trackers for Bellwether.">
+    <title>Printable Campaign and Score Trackers — Ladder Bidding</title>
+    <link rel="stylesheet" href="../campaign-score-trackers.css">
+  </head>
+  <body>
+    <header class="screen-header">
+      <a href="board.html#district-map">← Board specification</a>
+      <h1>Campaign and score trackers</h1>
+      <p>Print at actual size on one A4 landscape sheet. The 27 mm spaces fit the 25 mm firm score markers and 22 mm round marker.</p>
+      <p><a href="../../assets/print/campaign-score-trackers-a4.pdf">Open print-ready PDF →</a></p>
+    </header>
+
+    <main>
+      <section class="print-sheet" aria-label="Campaign and public score tracker sheet">
+        <header class="sheet-header">
+          <div>
+            <p>Republic of Bellwether / public ledger 01</p>
+            <h2>Campaign register</h2>
+          </div>
+          <p class="sheet-instruction">Place markers inside spaces<br>Print at 100%</p>
+        </header>
+
+        <div class="tracker-layout">
+          <section class="score-panel" aria-labelledby="score-heading">
+            <header class="panel-header">
+              <div>
+                <p class="eyebrow">Firm standings</p>
+                <h3 id="score-heading">Score 0–40</h3>
+              </div>
+              <p>Follow the snake<br>Outside = note total</p>
+            </header>
+            <div class="score-grid" aria-label="Score spaces from 0 through 40 in a six-row snake"></div>
+          </section>
+
+          <section class="campaign-panel" aria-labelledby="campaign-heading">
+            <header class="panel-header">
+              <div>
+                <p class="eyebrow">National calendar</p>
+                <h3 id="campaign-heading">Campaign</h3>
+              </div>
+              <p>Four rounds<br>then Election</p>
+            </header>
+            <div class="campaign-grid" aria-label="Three election cycles of four Campaign Rounds and one Election Day"></div>
+            <p class="campaign-note">Move the round marker down a column, then begin the next cycle.</p>
+          </section>
+        </div>
+
+      </section>
+    </main>
+
+    <script>
+      const scoreRows = [
+        [0, 1, 2, 3, 4, 5, 6],
+        [13, 12, 11, 10, 9, 8, 7],
+        [14, 15, 16, 17, 18, 19, 20],
+        [27, 26, 25, 24, 23, 22, 21],
+        [28, 29, 30, 31, 32, 33, 34],
+        [null, 40, 39, 38, 37, 36, 35]
+      ];
+      const turnValues = new Set([6, 7, 13, 14, 20, 21, 27, 28, 34, 35]);
+      const scoreGrid = document.querySelector(".score-grid");
+      for (const [rowIndex, row] of scoreRows.entries()) {
+        for (const value of row) {
+          if (value === null) {
+            const blank = document.createElement("span");
+            blank.className = "score-blank";
+            blank.setAttribute("aria-hidden", "true");
+            scoreGrid.append(blank);
+            continue;
+          }
+          const space = document.createElement("span");
+          space.className = `tracker-space score-space${turnValues.has(value) ? " turn-space" : ""}`;
+          space.dataset.row = String(rowIndex + 1);
+          space.textContent = String(value);
+          space.setAttribute("aria-label", `Score ${value}`);
+          scoreGrid.append(space);
+        }
+      }
+
+      const campaignColumns = [
+        ["R1", "R2", "R3", "R4", "E1"],
+        ["R5", "R6", "R7", "R8", "E2"],
+        ["R9", "R10", "R11", "R12", "E3"]
+      ];
+      const campaignGrid = document.querySelector(".campaign-grid");
+      for (const [columnIndex, column] of campaignColumns.entries()) {
+        const cycle = document.createElement("section");
+        cycle.className = "campaign-cycle";
+        cycle.setAttribute("aria-label", `Election cycle ${columnIndex + 1}`);
+        const heading = document.createElement("strong");
+        heading.textContent = `Election ${columnIndex + 1}`;
+        cycle.append(heading);
+        for (const value of column) {
+          const space = document.createElement("span");
+          space.className = `tracker-space campaign-space${value.startsWith("E") ? " election-space" : ""}`;
+          space.textContent = value;
+          cycle.append(space);
+        }
+        campaignGrid.append(cycle);
+      }
+    </script>
+  </body>
+</html>
