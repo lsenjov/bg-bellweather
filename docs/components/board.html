@@ -118,20 +118,23 @@
       <section>
         <span class="status decided">Prototype map decided / setup open</span>
         <h2 id="district-map">District map</h2>
-        <p>The first prototype uses sixteen named districts in a ring-and-cross layout. Twelve districts form the outer land ring. Bellwether Centre connects through Crown Road, Canal Ward, and Old Quarter to Northreach, Reedwater, and Westgate. Districts are neighboring when they share a black border segment; meeting only at a point or across Crownwater does not make them neighbors. The map also carries a right-side 3 × 5 campaign tracker—one column for each four-round cycle and its Election Day—and a two-row public score track from 0 through 20.</p>
+        <p>The first prototype uses sixteen named districts in a ring-and-cross layout. Twelve districts form the outer land ring. Bellwether Centre connects through Crown Road, Canal Ward, and Old Quarter to Northreach, Reedwater, and Westgate. Districts are neighboring when they share a black border segment; meeting only at a point or across Crownwater does not make them neighbors. The A3 map is dedicated to district play; campaign and score state use a separate A4 tracker sheet.</p>
         <figure class="board-map">
           <div class="board-map-frame">
             <img src="../assets/ring-and-cross-district-map.svg" alt="Territorial map of sixteen named districts surrounding Crownwater. Twelve districts form the outer land ring, and three causeway districts connect Bellwether Centre to the ring.">
           </div>
           <figcaption>
-            <span>Shared black borders define adjacency. Crownwater separates non-neighbors. Designed for A3 landscape when using standard cubes.</span>
+            <span>Shared black borders define adjacency. Crownwater separates non-neighbors. The enlarged district diagram is designed for A3 landscape with standard cubes.</span>
             <span><a href="../../assets/print/ring-and-cross-district-map-a3.pdf">Open A3 PDF →</a> · <a href="../assets/ring-and-cross-district-map.svg">Open SVG source →</a></span>
           </figcaption>
         </figure>
         <h3>A3 print export</h3>
         <p>The print-ready PDF is one 420 × 297 mm A3 landscape page. It keeps the 396 × 297 mm artwork at 100% scale and centers it with 12 mm white margins on the left and right. Print at “Actual size” or 100% with “Fit to page” disabled.</p>
         <p>Run <code>./scripts/export-print-assets.sh</code> from the repository root to regenerate this PDF and every other print-ready component. The command verifies the fonts and the 396 × 297 mm source size before converting map text to paths, so the printed result does not depend on fonts installed at the printer. The repository README lists all tool and font prerequisites.</p>
-        <p>The grey districts—Harbormouth, Grand Market, and Ironwood—hold six Support each. Their six ring neighbors hold four each. Bellwether Centre holds three. Northreach, Reedwater, Westgate, and the three causeway districts hold two each. The complete map has fifty-seven Support spots and eighteen shared borders. Capacity remains visible through the number of printed Support circles; redundant “2 spots,” “4 spots,” and “6 spots” labels are omitted. Each score-track space is approximately 26 mm square so the firms’ 25 mm score markers fit inside it.</p>
+        <p>The grey districts—Harbormouth, Grand Market, and Ironwood—hold six Support each. Their six ring neighbors hold four each. Bellwether Centre holds three. Northreach, Reedwater, Westgate, and the three causeway districts hold two each. The complete map has fifty-seven Support spots and eighteen shared borders. Capacity remains visible through the number of printed Support circles; redundant “2 spots,” “4 spots,” and “6 spots” labels are omitted.</p>
+        <h3>Shared tracker sheet</h3>
+        <p>The separate A4 landscape sheet places scores 0–40 in a 7 × 6 alternating-row snake and retains the three-column campaign sequence: R1–R4/E1, R5–R8/E2, and R9–R12/E3. Every track space is 27 mm square, fitting the existing 25 mm firm score markers and 22 mm round marker. Record a total beside the score track when it falls below 0 or rises above 40.</p>
+        <p><a href="campaign-score-trackers.html">Open the printable campaign and score trackers →</a></p>
         <h3>District reference</h3>
         <div class="table-wrap" role="region" aria-label="District capacities and neighboring districts" tabindex="0">
           <table>

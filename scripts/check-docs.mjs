@@ -11,6 +11,7 @@ const generatedPrintOutputs = new Set([
   "lobbying-firm-boards-a4.pdf",
   "lobbying-firm-tokens-a4.pdf",
   "bid-cards-a4.pdf",
+  "campaign-score-trackers-a4.pdf",
   "party-boards-a4.pdf",
   "pecking-order-a4.pdf",
   "ring-and-cross-district-map-a3.pdf",

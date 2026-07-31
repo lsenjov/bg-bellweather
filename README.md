@@ -91,12 +91,13 @@ physical-size checks pass.
 | PDF | Contents |
 | --- | --- |
 | `assets/print/ring-and-cross-district-map-a3.pdf` | One A3 landscape district map |
+| `assets/print/campaign-score-trackers-a4.pdf` | One A4 landscape campaign and 0–40 score tracker sheet |
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
 | `assets/print/lobbying-firm-boards-a4.pdf` | Three A4 portrait player-board sheets |
 | `assets/print/lobbying-firm-tokens-a4.pdf` | Three A4 landscape firm-token sheets |
 | `assets/print/bid-cards-a4.pdf` | Printable A4 portrait Clout, Bluff, and operation-card supply |
 | `assets/print/scoring-cards-a4.pdf` | Two A4 portrait scoring-card sheets |
-| `assets/print/pecking-order-a4.pdf` | Two A4 landscape Pecking Order sheets |
+| `assets/print/pecking-order-a4.pdf` | One A4 landscape Pecking Order sheet |
 
 The A3 export keeps the 396 × 297 mm map artwork at 100% scale and centers it
 with 12 mm side margins. The A4 exports preserve the millimetre dimensions in
