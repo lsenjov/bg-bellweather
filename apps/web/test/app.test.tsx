@@ -3,7 +3,7 @@
 import { render, screen } from "@testing-library/react";
 import React from "react";
 import { beforeEach, describe, expect, it } from "vitest";
-import { App, ContestCard, DistrictMap } from "../src/App.js";
+import { App, ContestCard, DistrictMap, PartyRail } from "../src/App.js";
 
 beforeEach(() => {
   const values = new Map<string, string>();
@@ -89,5 +89,23 @@ describe("browser play surface", () => {
     expect(screen.getByText(/1 organise.*1 smear/i)).toBeTruthy();
     expect(screen.getByText(/One Fell Swoop Public Affairs/i)).toBeTruthy();
     expect(screen.getByText(/counterbid · identity card · active/i)).toBeTruthy();
+  });
+
+  it("renders public Court Support beside the persistent Coalition Target", () => {
+    render(
+      <PartyRail
+        view={{
+          partyOrder: ["honeycomb"],
+          coalitionTargets: { honeycomb: "foxglove" },
+          courtSupport: {
+            honeycomb: { foxglove: 2, riverworks: 1 }
+          }
+        } as never}
+      />
+    );
+
+    expect(
+      screen.getByText(/Targets Foxglove · Court Foxglove 2, Riverworks 1/i)
+    ).toBeTruthy();
   });
 });

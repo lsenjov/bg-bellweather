@@ -1482,7 +1482,7 @@ export function DistrictMap({ support }: { support: GameView["support"] }) {
   })}</div>;
 }
 
-function PartyRail({ view }: { view: GameView }) {
+export function PartyRail({ view }: { view: GameView }) {
   return <div className="party-rail">{(view.partyOrder.length ? view.partyOrder : PARTIES.map((party) => party.id)).map((id, index) => <article key={id} style={{ "--party": PARTIES_BY_ID[id].color } as React.CSSProperties}><b>{index + 1}</b><span className="party-glyph">{PARTY_GLYPHS[id]}</span><div><strong>{PARTIES_BY_ID[id].shortName}</strong><small>Targets {view.coalitionTargets[id] ? PARTIES_BY_ID[view.coalitionTargets[id]!].shortName : "no party"} · {courtSupportSummary(view.courtSupport[id])}</small></div></article>)}</div>;
 }
 

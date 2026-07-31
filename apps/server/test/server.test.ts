@@ -430,6 +430,7 @@ describe("game server", () => {
         publicGame: {
           phase: { activeSeatId: string };
           partyOrder: string[];
+          courtSupport: Record<string, Record<string, number>>;
           seats: Array<{ id: string; firmIds: string[] }>;
         };
       };
@@ -437,6 +438,14 @@ describe("game server", () => {
     const publicGameJson = JSON.stringify(active.publicState.publicGame);
     expect(publicGameJson).not.toContain("scoringCardId");
     expect(publicGameJson).not.toContain('"reserve"');
+    expect(active.publicState.publicGame.courtSupport).toEqual({
+      honeycomb: {},
+      "old-shell": {},
+      foxglove: {},
+      riverworks: {},
+      "many-wings": {},
+      "night-parliament": {}
+    });
     expect(active.seatState.privateGame).toMatchObject({
       reserve: {
         leverage: 20,
