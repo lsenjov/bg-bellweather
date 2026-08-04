@@ -121,7 +121,7 @@ npm run dev</code></pre>
         <p>Omit <code>afterSequence</code> to receive a current snapshot. Include it to receive later projected events. Refetch the state after an event when the agent needs the newest legal-action context.</p>
       </section>
 
-      <p class="footer-note">The reusable TypeScript client is in <code>packages/testkit</code>; a runnable conservative agent is in <code>examples/playtest-agent.ts</code>.</p>
+      <p class="footer-note">The reusable TypeScript client is in <code>packages/testkit</code>; a runnable conservative agent is in <code>examples/playtest-agent.ts</code>. When that agent creates a lobby, <code>BELLWEATHER_PLAYERS</code> sets its host-only automatic-start target from 2–6 and defaults to 2. The target is local automation configuration and is not sent in the create-lobby request.</p>
     </main>
   </body>
 </html>

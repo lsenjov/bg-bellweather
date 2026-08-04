@@ -37,6 +37,12 @@
           <tbody>
             <tr>
               <td>2026-08-05</td>
+              <td>Open every web lobby without a chosen player count. Admit up to six players and let the host start with any occupied group of two through six; freeze the occupied seats as the game’s actual player count when play starts. Keep lobby readiness advisory.</td>
+              <td>The host no longer has to predict attendance or recreate a table when the group changes. The engine already derives setup from the actual seat list, while the six-seat ceiling preserves the supported component and scoring range.</td>
+              <td>Hosts start accidentally before intended players join, players need reservations or removal controls, or advisory readiness no longer communicates intent clearly enough.</td>
+            </tr>
+            <tr>
+              <td>2026-08-05</td>
               <td>Run the engine, server, persisted-game loader, replay path, protocol, and web application exclusively on ruleset version 7. Reject earlier prelaunch game records, snapshots, engine states, and incomplete browser projections instead of migrating them or reconstructing omitted fields. Keep the version identifier, schema migrations, malformed-current-input validation, and historical design archives; never delete a local database automatically.</td>
               <td>No public users or supported saves exist, so one executable rules path is safer and easier to change than speculative compatibility branches. Explicit rejection also makes an obsolete local database visible instead of allowing subtly mixed timing or fabricated card inventories.</td>
               <td>The game launches publicly and a future ruleset change must preserve supported games, replays, or external clients.</td>

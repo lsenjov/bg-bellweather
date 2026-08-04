@@ -11,6 +11,7 @@ export default defineConfig({
       }
     },
     include: [
+      "examples/test/**/*.test.ts",
       "apps/*/test/**/*.test.{ts,tsx}",
       "packages/*/test/**/*.test.{ts,tsx}"
     ]
