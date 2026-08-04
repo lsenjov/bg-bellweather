@@ -1578,7 +1578,7 @@ export function OperationForm(props: {
   const [activeMapTarget, setActiveMapTarget] =
     useState<DistrictMapTarget | null>(
       selectedOperation === "organise"
-        ? "destination"
+        ? "source"
         : selectedOperation === "rally" || selectedOperation === "smear"
           ? "district"
           : null
@@ -1669,6 +1669,13 @@ export function OperationForm(props: {
         districtSelections[current] === undefined
       ) {
         return current;
+      }
+      if (
+        selectedOperation === "organise" &&
+        sourceDistrictId === "" &&
+        districtId === ""
+      ) {
+        return "source";
       }
       return missingRequiredMapTarget ?? null;
     });
@@ -1815,6 +1822,14 @@ export function OperationForm(props: {
                 onChange={() => {
                   setOperation(candidate.operation);
                   setClaimBonus(false);
+                  setActiveMapTarget(
+                    candidate.operation === "organise"
+                      ? "source"
+                      : candidate.operation === "rally" ||
+                          candidate.operation === "smear"
+                        ? "district"
+                        : null
+                  );
                 }}
               />
               <strong>

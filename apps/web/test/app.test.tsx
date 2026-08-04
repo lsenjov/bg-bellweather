@@ -968,7 +968,20 @@ describe("browser play surface", () => {
     expect((form.getByRole("button", { name: /resolve operation/i }) as HTMLButtonElement).disabled).toBe(true);
     await waitFor(() =>
       expect(onResolutionMapStateChange).toHaveBeenLastCalledWith(
-        expect.objectContaining({ activeTarget: "destination" })
+        expect.objectContaining({ activeTarget: "source" })
+      )
+    );
+
+    fireEvent.click(rally);
+    await waitFor(() =>
+      expect(onResolutionMapStateChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({ activeTarget: "district" })
+      )
+    );
+    fireEvent.click(organise);
+    await waitFor(() =>
+      expect(onResolutionMapStateChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({ activeTarget: "source" })
       )
     );
 
@@ -983,9 +996,13 @@ describe("browser play surface", () => {
       />
     );
     await waitFor(() =>
-      expect((form.getByLabelText("Destination district") as HTMLSelectElement).value).toBe("harbormouth")
+      expect((form.getByLabelText("Source district (optional)") as HTMLSelectElement).value).toBe("harbormouth")
     );
-    fireEvent.click(form.getByRole("button", { name: /choose on map/i }));
+    await waitFor(() =>
+      expect(onResolutionMapStateChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({ activeTarget: "destination" })
+      )
+    );
     rerender(
       <OperationForm
         {...baseProps}
@@ -997,7 +1014,7 @@ describe("browser play surface", () => {
       />
     );
     await waitFor(() =>
-      expect((form.getByLabelText("Source district (optional)") as HTMLSelectElement).value).toBe("millbank")
+      expect((form.getByLabelText("Destination district") as HTMLSelectElement).value).toBe("millbank")
     );
     fireEvent.click(form.getByRole("button", { name: /resolve operation/i }));
     expect(onCommand).toHaveBeenCalledWith(expect.objectContaining({
@@ -1005,8 +1022,8 @@ describe("browser play surface", () => {
         operation: "organise",
         choice: expect.objectContaining({
           operation: "organise",
-          sourceDistrictId: "millbank",
-          destinationDistrictId: "harbormouth"
+          sourceDistrictId: "harbormouth",
+          destinationDistrictId: "millbank"
         })
       })
     }));
