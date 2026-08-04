@@ -49,6 +49,55 @@ describe("resolution filing projection", () => {
     ).toEqual([{ operation: "court", count: 1 }]);
   });
 
+  it("shows every contest complete while a final Night operation is pending", () => {
+    const state = resolutionState();
+    if (state.phase.type !== "resolution") {
+      throw new Error("Expected resolution phase");
+    }
+    const firmId = state.seats[0]!.firmIds[0]!;
+    state.bids["night-bid"] = bid(
+      "night-bid",
+      "night-parliament",
+      firmId,
+      "transferred"
+    );
+    state.contests["night-parliament"] = {
+      id: "night-parliament",
+      targetPartyId: "night-parliament",
+      openingBidId: "night-bid",
+      bidIds: ["night-bid"]
+    };
+    state.phase.contestOrder.push("night-parliament");
+    state.phase.contestIndex = state.phase.contestOrder.length;
+    state.phase.executionBidIds = [];
+    state.phase.bidIndex = 0;
+    state.phase.pendingDecision = {
+      id: "decision-delayed-final",
+      kind: "night_delayed_operation",
+      seatId: "seat-1",
+      contestId: "night-parliament",
+      bidId: "night-bid",
+      claimId: "claim-final",
+      operation: "court"
+    };
+
+    const progress = publicResolutionFilingProgress(state, state.phase);
+    expect(progress).toMatchObject({
+      currentContestId: null,
+      currentBidId: "night-bid"
+    });
+    expect(progress.completedBidIds).toEqual(
+      expect.arrayContaining([
+        "prior-bid",
+        "zero-operation-bid",
+        "current-bid",
+        "future-bid",
+        "unresolved-contest-bid"
+      ])
+    );
+    expect(progress.completedBidIds).not.toContain("night-bid");
+  });
+
   it("reveals completed and current contests while keeping future contests covered", () => {
     const projected = publicEngineState(resolutionState());
     const contests = projected.contests as Record<

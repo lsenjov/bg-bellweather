@@ -509,16 +509,36 @@ describe("contest resolution", () => {
     ).toThrow("already claimed");
   });
 
-  it("queues and resolves Night Parliament's delayed Court before transfer", () => {
+  it("resolves Night Parliament's delayed Court after every contest transfer", () => {
     let state = submitAllOpenings(
       initializeGame(configuration(4, null), zeroRandom).state,
       0,
-      { "seat-1": operations({ court: 1 }) },
+      {
+        "seat-1": operations({ court: 1 }),
+        "seat-2": operations({ rally: 1 })
+      },
       "night-parliament"
     );
+    const nightBid = Object.values(state.bids).find(
+      (bid) => bid.contestId === "night-parliament" && bid.kind === "opening"
+    )!;
+    const laterBid = Object.values(state.bids).find(
+      (bid) =>
+        bid.ownerSeatId === "seat-2" &&
+        bid.kind === "opening" &&
+        bid.operations.rally === 1
+    )!;
+    state.partyOrder = [
+      "night-parliament",
+      laterBid.contestId as PartyId,
+      ...state.partyOrder.filter(
+        (partyId) =>
+          partyId !== "night-parliament" && partyId !== laterBid.contestId
+      )
+    ];
     state = readyAll(state);
     let decision = pending(state);
-    state = act(state, {
+    const claimAction = {
       type: "resolve_party_operation",
       seatId: decision.seatId,
       decisionId: decision.id,
@@ -530,12 +550,42 @@ describe("contest resolution", () => {
         },
         claimBonus: true
       }
+    } as const satisfies GameAction;
+    const legacyState = structuredClone(state);
+    legacyState.rulesetVersion = "6";
+    const legacyReplay = replay([
+      { type: "game_initialized", state: legacyState },
+      { type: "action_applied", action: claimAction }
+    ]);
+    expect(pending(legacyReplay)).toMatchObject({
+      kind: "night_delayed_operation",
+      operation: "court"
+    });
+
+    state = act(state, claimAction);
+    decision = pending(state);
+    expect(decision).toMatchObject({
+      kind: "party_operation",
+      contestId: laterBid.contestId,
+      legalOperations: ["rally"]
+    });
+    expect(state.bids[nightBid.id]?.status).toBe("transferred");
+    state = act(state, {
+      type: "resolve_party_operation",
+      seatId: decision.seatId,
+      decisionId: decision.id,
+      operation: "rally",
+      choice: {
+        operation: "rally",
+        districtId: "cloverfield"
+      }
     });
     decision = pending(state);
     expect(decision).toMatchObject({
       kind: "night_delayed_operation",
       operation: "court"
     });
+    expect(state.bids[laterBid.id]?.status).toBe("transferred");
     state = act(state, {
       type: "resolve_party_operation",
       seatId: decision.seatId,
