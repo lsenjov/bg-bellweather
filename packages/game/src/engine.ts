@@ -630,7 +630,10 @@ function advanceResolution(state: GameState): void {
         continue;
       }
       transferContestBids(state, contest);
-      if (contestId === "pecking-order") {
+      if (
+        contestId === "pecking-order" &&
+        resolvesPartiesInResultingOrder(state)
+      ) {
         phase.contestOrder = currentResolutionContestOrder(state);
       }
       phase.contestIndex += 1;
@@ -683,6 +686,11 @@ function currentResolutionContestOrder(state: GameState): ContestId[] {
       (partyId) => state.contests[partyId] !== undefined
     )
   ];
+}
+
+function resolvesPartiesInResultingOrder(state: GameState): boolean {
+  const rulesetVersion = Number(state.rulesetVersion);
+  return Number.isSafeInteger(rulesetVersion) && rulesetVersion >= 6;
 }
 
 function prepareContest(

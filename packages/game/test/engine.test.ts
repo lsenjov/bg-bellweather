@@ -417,12 +417,26 @@ describe("contest resolution", () => {
     state = readyAll(state);
 
     const peckingDecision = pending(state);
-    state = act(state, {
+    const peckingAction = {
       type: "resolve_pecking_swap",
       seatId: peckingDecision.seatId,
       decisionId: peckingDecision.id,
       adjacentIndex
+    } as const satisfies GameAction;
+    const legacyState = structuredClone(state);
+    legacyState.rulesetVersion = "5";
+    const legacyReplay = replay([
+      { type: "game_initialized", state: legacyState },
+      { type: "action_applied", action: peckingAction }
+    ]);
+
+    expect(pending(legacyReplay)).toMatchObject({
+      kind: "party_operation",
+      contestId: originalLeft,
+      legalOperations: ["smear"]
     });
+
+    state = act(state, peckingAction);
 
     expect(state.partyOrder[adjacentIndex]).toBe(originalRight);
     expect(state.phase).toMatchObject({
