@@ -21,7 +21,7 @@ export const STANDARD_PLAYER_SETUP = deepFreeze({
     organise: 2,
     rally: 4,
     smear: 2,
-    court: 1
+    court: 2
   },
   points: 5,
   openingBids: 1,
@@ -37,7 +37,7 @@ export const DOUBLED_PLAYER_SETUP = deepFreeze({
     organise: 4,
     rally: 8,
     smear: 4,
-    court: 2
+    court: 4
   },
   points: 10,
   openingBids: 2,
@@ -53,4 +53,4 @@ export const INITIAL_SUPPORT_DISTRICTS = deepFreeze([
 
 export const SUPPORT_SUPPLY = "unlimited" as const;
 export const ELECTION_ROUNDS = deepFreeze([4, 8, 12] as const);
-export const RULESET_VERSION = "9" as const;
+export const RULESET_VERSION = "10" as const;

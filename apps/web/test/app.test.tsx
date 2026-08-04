@@ -93,7 +93,7 @@ describe("browser play surface", () => {
         seats: [],
         spectators: [],
         publicGame: {
-          rulesetVersion: "9",
+          rulesetVersion: "10",
           round: 1,
           electionNumber: 0,
           nextFirstOpenerSeatId: "seat-a",
@@ -201,7 +201,7 @@ describe("browser play surface", () => {
         },
         seats: [host],
         spectators: [],
-        publicGame: { phase: "lobby", rulesetVersion: "9" }
+        publicGame: { phase: "lobby", rulesetVersion: "10" }
       },
       seatState: { seatId: host.seatId, privateGame: null }
     };
@@ -374,7 +374,7 @@ describe("browser play surface", () => {
       reserve: {
         leverage: 20,
         bluff: 8,
-        operations: { organise: 4, rally: 8, smear: 4, court: 2 }
+        operations: { organise: 4, rally: 8, smear: 4, court: 4 }
       },
       scoringCardIds: ["SC-01", "SC-02"]
     };
@@ -1253,7 +1253,7 @@ describe("browser play surface", () => {
           reserve: {
             leverage: 20,
             bluff: 8,
-            operations: { organise: 4, rally: 8, smear: 4, court: 2 }
+            operations: { organise: 4, rally: 8, smear: 4, court: 4 }
           }
         } as never}
         busy={false}
@@ -1290,7 +1290,7 @@ describe("browser play surface", () => {
       reserve: {
         leverage: 20,
         bluff: 8,
-        operations: { organise: 4, rally: 8, smear: 4, court: 2 }
+        operations: { organise: 4, rally: 8, smear: 4, court: 4 }
       }
     };
     const { container, rerender } = render(

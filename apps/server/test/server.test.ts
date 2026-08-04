@@ -512,7 +512,7 @@ describe("game server", () => {
     });
 
     app.store.database
-      .prepare("UPDATE games SET ruleset_version = '9' WHERE id = ?")
+      .prepare("UPDATE games SET ruleset_version = '10' WHERE id = ?")
       .run(host.session.gameId);
     await sendCommand(baseUrl, host.session, 2, "start-current", {
       type: "start_game"
@@ -533,14 +533,14 @@ describe("game server", () => {
     });
 
     app.store.database
-      .prepare("UPDATE games SET ruleset_version = '9' WHERE id = ?")
+      .prepare("UPDATE games SET ruleset_version = '10' WHERE id = ?")
       .run(host.session.gameId);
     app.store.database
       .prepare("UPDATE snapshots SET ruleset_version = '6' WHERE game_id = ?")
       .run(host.session.gameId);
 
     expect(() => app.store.loadEngineState(host.session.gameId)).toThrow(
-      "Only ruleset 9 is supported"
+      "Only ruleset 10 is supported"
     );
     const retry = await jsonRequest(
       baseUrl,
@@ -794,7 +794,7 @@ describe("game server", () => {
       reserve: {
         leverage: 20,
         bluff: 8,
-        operations: { organise: 4, rally: 8, smear: 4, court: 2 },
+        operations: { organise: 4, rally: 8, smear: 4, court: 4 },
         points: 10
       }
     });

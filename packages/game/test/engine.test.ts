@@ -73,7 +73,7 @@ describe("game setup and private projections", () => {
     expect(state.seats[0]?.reserve).toEqual({
       leverage: 20,
       bluff: 8,
-      operations: { organise: 4, rally: 8, smear: 4, court: 2 },
+      operations: { organise: 4, rally: 8, smear: 4, court: 4 },
       points: 10
     });
     expect(state.partyOrder).toHaveLength(6);
@@ -94,9 +94,9 @@ describe("game setup and private projections", () => {
     const initialized = initializeGame(configuration(2, null), zeroRandom);
     initialized.state.rulesetVersion = "8";
 
-    expect(() => replay([initialized])).toThrow("Only ruleset 9 is supported");
+    expect(() => replay([initialized])).toThrow("Only ruleset 10 is supported");
     expect(() => projectGameState(initialized.state, null)).toThrow(
-      "Only ruleset 9 is supported"
+      "Only ruleset 10 is supported"
     );
   });
 

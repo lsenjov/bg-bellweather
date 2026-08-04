@@ -261,6 +261,7 @@ describe("setup constants", () => {
   });
 
   it("doubles every player resource and bid allowance at two or three players", () => {
+    expect(STANDARD_PLAYER_SETUP.operations.court).toBe(2);
     expect(DOUBLED_PLAYER_SETUP.firms).toBe(
       STANDARD_PLAYER_SETUP.firms * 2
     );
