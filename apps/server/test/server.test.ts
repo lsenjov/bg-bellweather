@@ -350,6 +350,35 @@ describe("game server", () => {
     expect(() => app.store.loadEngineState(host.session.gameId)).toThrow(
       "Only ruleset 7 is supported"
     );
+
+    const resumeSocket = await openSocket(address.port, host.session.gameId);
+    const resumeFrame = nextSocketFrame(resumeSocket);
+    resumeSocket.send(JSON.stringify({
+      type: "authenticate",
+      gameId: host.session.gameId,
+      accessToken: host.session.accessToken,
+      afterSequence: 3
+    }));
+    await expect(resumeFrame).resolves.toMatchObject({
+      type: "error",
+      error: { code: "unsupported_ruleset" }
+    });
+
+    app.store.database
+      .prepare("UPDATE games SET status = 'finished' WHERE id = ?")
+      .run(host.session.gameId);
+    const replay = await jsonRequest(
+      baseUrl,
+      `/api/v1/games/${host.session.gameId}/replay`,
+      { token: host.session.accessToken }
+    );
+    expect(replay).toMatchObject({
+      status: 409,
+      body: { error: { code: "unsupported_ruleset" } }
+    });
+    app.store.database
+      .prepare("UPDATE games SET status = 'active' WHERE id = ?")
+      .run(host.session.gameId);
     await app.close();
 
     const reopened = createAppServer({ databasePath, port: 0 });

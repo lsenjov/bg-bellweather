@@ -41,6 +41,7 @@ export class Subscriptions {
             "WebSocket frame gameId does not match the route"
           );
         }
+        this.store.requireEngineState(authenticated.game.id);
         subscription = {
           socket,
           gameId: authenticated.game.id,

@@ -305,6 +305,7 @@ async function route(
     if (authenticated.game.status !== "finished") {
       throw new AppError(409, "phase_closed", "Full replay unlocks after the game");
     }
+    store.requireEngineState(authenticated.game.id);
     const events = store.listEvents(authenticated.game.id).map((event) =>
       projectEvent(
         event,

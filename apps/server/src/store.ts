@@ -690,7 +690,7 @@ export class EventStore {
         };
   }
 
-  private requireEngineState(gameId: string): GameState {
+  requireEngineState(gameId: string): GameState {
     const state = this.loadEngineState(gameId);
     if (state === null) {
       throw new AppError(
