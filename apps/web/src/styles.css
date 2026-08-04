@@ -61,7 +61,6 @@ button:disabled { opacity: .45; cursor: not-allowed; transform: none !important;
 .seat-list { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--ink); margin: 26px 0; }
 .seat-list article { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 16px 8px; border-bottom: 1px solid var(--rule); }
 .seat-list small { display: block; font-family: var(--mono); font-size: .64rem; }
-.empty-seat { opacity: .5; }
 .status-dot { width: 12px; height: 12px; border: 1px solid var(--ink); border-radius: 50%; }
 .status-dot.ready { background: var(--red); }
 .briefing dl div { display: flex; justify-content: space-between; border-bottom: 1px solid var(--rule); padding: 14px 0; }

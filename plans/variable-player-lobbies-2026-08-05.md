@@ -10,7 +10,7 @@ Let hosts open a lobby without choosing a player count, admit up to six players,
 2. ✅ Change and test server behavior so one player cannot start, two through six players can start, a seventh player cannot join, and active projections report the actual initialized player count.
 3. ✅ Remove the browser player-count prompt, present live occupancy against the six-seat capacity, enable host start from the second player onward, and update the example agent and focused UI tests.
 4. ✅ Update the playtest agent API documentation for count-free lobby creation and variable-size start behavior.
-5. ⬜ Run the full project check and repeat independent review until no high- or medium-severity findings remain.
+5. ✅ Run the full project check and repeat independent review until no high- or medium-severity findings remain. The corrected review reported no high or medium findings; its only low finding was the removed lobby-placeholder selector. All 132 tests, typechecks, documentation checks, and production builds pass.
 
 ## Retained behavior
 
