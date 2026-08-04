@@ -272,6 +272,24 @@ describe("browser play surface", () => {
       within(container).getByRole("button", { name: /target old shell union/i })
     );
     expect(onSelect).toHaveBeenCalledWith("old-shell");
+    const contest = within(container).getByRole("article");
+    expect(contest.classList.contains("contest-card-party")).toBe(true);
+    expect(contest.style.getPropertyValue("--contest-party")).toBe("#3f7447");
+  });
+
+  it("keeps the Pecking Order contest visually neutral", () => {
+    const { container } = render(
+      <ContestCard
+        contestId="pecking-order"
+        seats={[]}
+        bids={[]}
+      />
+    );
+
+    const contest = within(container).getByRole("article");
+    expect(contest.classList.contains("contest-card-neutral")).toBe(true);
+    expect(contest.classList.contains("contest-card-party")).toBe(false);
+    expect(contest.style.getPropertyValue("--contest-party")).toBe("");
   });
 
   it("uses one digital firm for both low-player openings and shared card limits", () => {

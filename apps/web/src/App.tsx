@@ -654,6 +654,7 @@ export function ContestCard(props: {
   selected?: boolean;
   onSelect?(contestId: string): void;
 }) {
+  const contestParty = PARTIES.find((party) => party.id === props.contestId);
   const ranked = [...props.bids].sort((left, right) => {
     const leftLeverage = typeof left.leverage === "number" ? left.leverage : -1;
     const rightLeverage = typeof right.leverage === "number" ? right.leverage : -1;
@@ -666,7 +667,12 @@ export function ContestCard(props: {
     </>
   );
   return (
-    <article className={`contest-card ${props.selected ? "contest-card-selected" : ""}`}>
+    <article
+      className={`contest-card ${contestParty ? "contest-card-party" : "contest-card-neutral"} ${props.selected ? "contest-card-selected" : ""}`}
+      style={contestParty ? {
+        "--contest-party": contestParty.color
+      } as React.CSSProperties : undefined}
+    >
       {props.onSelect ? (
         <button
           type="button"
