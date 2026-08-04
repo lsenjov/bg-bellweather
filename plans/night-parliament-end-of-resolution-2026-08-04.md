@@ -6,7 +6,7 @@ Move Closing Argument and After-Hours Deal from the end of Night Parliament's co
 
 ## Steps
 
-1. ✅ Introduce ruleset version 7 and preserve ruleset-5/6 replay timing.
+1. ✅ Introduce ruleset version 7 for the new timing. The temporary prelaunch replay branches were removed on 2026-08-05 when version 7 became the only supported application behavior.
 2. ✅ Keep Night Parliament claims queued across contest boundaries and resolve them, highest claiming bid first, after every contest and Revolving Door completes.
 3. ✅ Add engine and projection regression coverage, including a later party contest resolving before the delayed Night operation.
 4. ✅ Archive the replaced contest-local timing and update current rules, components, design decisions, and changelog.
@@ -21,4 +21,4 @@ The second review found old timing in the glossary and lobbying-firm board short
 - Claim the bonuses during Night Parliament's ordinary operation resolution.
 - Retain the original claiming owner and high-to-low claiming-bid order.
 - Resolve delayed operations against the final state left by every contest.
-- Keep saved ruleset-5 and ruleset-6 games and event streams deterministic.
+- Support ruleset version 7 only; earlier prelaunch games and event streams must be recreated.
