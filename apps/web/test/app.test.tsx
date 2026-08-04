@@ -9,7 +9,9 @@ import {
   ContestCard,
   CounterbidForm,
   DistrictMap,
+  extractView,
   GameDesk,
+  mergePendingDecision,
   OpeningForm,
   OperationForm,
   orderedContestIds,
@@ -35,6 +37,87 @@ beforeEach(() => {
 });
 
 describe("browser play surface", () => {
+  it("keeps public operation counts when private decision details are merged", () => {
+    expect(
+      mergePendingDecision(
+        {
+          id: "decision-1",
+          seatId: "seat-a",
+          availableOperations: [
+            { operation: "organise", count: 1 },
+            { operation: "rally", count: 3 }
+          ]
+        },
+        {
+          id: "decision-1",
+          seatId: "seat-a",
+          partyId: "honeycomb",
+          legalOperations: ["organise", "rally"]
+        }
+      )
+    ).toEqual(expect.objectContaining({
+      partyId: "honeycomb",
+      availableOperations: [
+        { operation: "organise", count: 1 },
+        { operation: "rally", count: 3 }
+      ]
+    }));
+  });
+
+  it("retains public operation counts in the acting player's extracted view", () => {
+    const view = extractView({
+      scope: "seat",
+      viewerSeatId: "seat-a",
+      publicState: {
+        gameId: "game-1",
+        version: 1,
+        latestSequence: 1,
+        lifecycle: "active",
+        configuration: {
+          playerCount: 2,
+          counterbidTimer: { mode: "off" },
+          allowSpectators: false
+        },
+        seats: [],
+        spectators: [],
+        publicGame: {
+          phase: {
+            type: "resolution",
+            pendingDecision: {
+              id: "decision-1",
+              seatId: "seat-a",
+              availableOperations: [
+                { operation: "organise", count: 1 },
+                { operation: "rally", count: 3 }
+              ]
+            }
+          },
+          seats: [],
+          contests: {}
+        }
+      },
+      seatState: {
+        seatId: "seat-a",
+        privateGame: {
+          pendingDecision: {
+            id: "decision-1",
+            seatId: "seat-a",
+            partyId: "honeycomb",
+            legalOperations: ["organise", "rally"]
+          }
+        }
+      }
+    } as never);
+
+    expect(view?.pendingDecision).toEqual(expect.objectContaining({
+      partyId: "honeycomb",
+      availableOperations: [
+        { operation: "organise", count: 1 },
+        { operation: "rally", count: 3 }
+      ]
+    }));
+  });
+
   it("renders the human table creator with a configurable optional timer", () => {
     render(<App />);
 
@@ -145,7 +228,7 @@ describe("browser play surface", () => {
 
   it("uses an armed blank district field without overwriting map selections", () => {
     const onSelect = vi.fn();
-    render(
+    const { rerender } = render(
       <DistrictMap
         support={{}}
         interaction={{
@@ -164,6 +247,23 @@ describe("browser play surface", () => {
       screen.getByRole("button", { name: /Cloverfield.*choose as destination/i })
     );
     expect(onSelect).toHaveBeenCalledWith("cloverfield");
+
+    rerender(
+      <DistrictMap
+        support={{}}
+        interaction={{
+          activeTarget: null,
+          selections: { source: "harbormouth" },
+          onSelect
+        }}
+      />
+    );
+    expect(
+      screen.queryByRole("button", { name: /Harbormouth/i })
+    ).toBeNull();
+    expect(
+      screen.getByLabelText(/Harbormouth.*selected as source/i).tagName
+    ).toBe("ARTICLE");
   });
 
   it("shows covered, owned, and revealed bid information", () => {

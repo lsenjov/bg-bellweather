@@ -2272,7 +2272,8 @@ export function DistrictMap({
         >).filter(([, districtId]) => districtId === district.id)
           .map(([target]) => target)
       : [];
-    const DistrictElement: "button" | "article" = interaction
+    const mapTargetArmed = interaction?.activeTarget != null;
+    const DistrictElement: "button" | "article" = mapTargetArmed
       ? "button"
       : "article";
     const districtSummary = `${district.name}: ${summary || "no Support"}; ${free} free spots${scoringParties.length > 0 ? `; ${scoringLabel.toLowerCase()} scores ${scoringParties.map((party) => party.name).join(", ")}` : ""}`;
@@ -2282,19 +2283,18 @@ export function DistrictMap({
     return (
       <DistrictElement
         key={district.id}
-        className={`district district-${district.id}${scoringParties.length > 0 ? " district-scoring" : ""}${interaction ? " district-action" : ""}${selectedTargets.map((target) => ` district-selected-${target}`).join("")}`}
+        className={`district district-${district.id}${scoringParties.length > 0 ? " district-scoring" : ""}${mapTargetArmed ? " district-action" : ""}${selectedTargets.map((target) => ` district-selected-${target}`).join("")}`}
         style={scoringParties.length > 0 ? {
           "--scoring-accent": scoringParties.length === 1
             ? scoringParties[0]!.color
             : "var(--red)"
         } as React.CSSProperties : undefined}
         aria-label={`${districtSummary}${interactionSummary}`}
-        {...(interaction
+        {...(mapTargetArmed
           ? {
               type: "button" as const,
-              disabled: interaction.activeTarget === null,
               "aria-pressed": selectedTargets.length > 0,
-              onClick: () => interaction.onSelect(district.id)
+              onClick: () => interaction!.onSelect(district.id)
             }
           : {})}
       >
@@ -2470,7 +2470,7 @@ function LoadingDesk({ error, onLeave }: { error: string | null; onLeave(): void
   return <main className="loading-page"><p className="kicker">The Bellweather Register</p><h1>Waiting on the wire…</h1>{error && <p role="alert">{error}</p>}<button className="text-button" onClick={onLeave}>Clear saved session</button></main>;
 }
 
-function extractView(state: ViewerStateEnvelope): GameView | null {
+export function extractView(state: ViewerStateEnvelope): GameView | null {
   const publicGame = state.publicState.publicGame;
   const privateGame = state.scope === "seat" ? state.seatState.privateGame : null;
   if (!isObject(publicGame) || !Array.isArray(publicGame.seats)) {
@@ -2500,6 +2500,14 @@ function extractView(state: ViewerStateEnvelope): GameView | null {
       bidsById.set(bid.id, { ...(bidsById.get(bid.id) ?? {}), ...bid });
     }
   }
+  const publicPendingDecision =
+    isObject(phase.pendingDecision) &&
+    phase.pendingDecision.seatId === viewerSeatId
+      ? phase.pendingDecision
+      : null;
+  const privatePendingDecision = isObject(privateState.pendingDecision)
+    ? privateState.pendingDecision
+    : null;
   return {
     playerCount: state.publicState.configuration.playerCount,
     round: numberOr(publicGame.round, 1),
@@ -2529,12 +2537,10 @@ function extractView(state: ViewerStateEnvelope): GameView | null {
     readySeatIds: Array.isArray(phase.readySeatIds)
       ? (phase.readySeatIds as string[])
       : [],
-    pendingDecision: isObject(privateState.pendingDecision)
-      ? privateState.pendingDecision
-      : isObject(phase.pendingDecision) &&
-          phase.pendingDecision.seatId === viewerSeatId
-        ? phase.pendingDecision
-        : null,
+    pendingDecision: mergePendingDecision(
+      publicPendingDecision,
+      privatePendingDecision
+    ),
     counterbidSlots: Array.isArray(privateState.counterbidSlots)
       ? (privateState.counterbidSlots as Array<string | null>)
       : [],
@@ -2545,6 +2551,19 @@ function extractView(state: ViewerStateEnvelope): GameView | null {
       ? (publicGame.chat as GameView["chat"])
       : []
   };
+}
+
+export function mergePendingDecision(
+  publicDecision: Record<string, unknown> | null,
+  privateDecision: Record<string, unknown> | null
+): Record<string, unknown> | null {
+  if (publicDecision === null) {
+    return privateDecision;
+  }
+  if (privateDecision === null) {
+    return publicDecision;
+  }
+  return { ...publicDecision, ...privateDecision };
 }
 
 function numberOr(value: unknown, fallback: number): number {
