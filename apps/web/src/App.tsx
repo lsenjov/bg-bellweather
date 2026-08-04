@@ -419,6 +419,11 @@ function GameDesk(props: {
   const [chat, setChat] = useState("");
   const [giftTo, setGiftTo] = useState("");
   const [gift, setGift] = useState({ leverage: 0, bluff: 0, points: 0, organise: 0, rally: 0, smear: 0, court: 0 });
+  const [openingPartyIntent, setOpeningPartyIntent] = useState<SelectionIntent<PartyId> | null>(null);
+  const [openingDraftSummary, setOpeningDraftSummary] = useState<OpeningDraftSummary>({
+    activePartyId: null,
+    assignedPartyIds: []
+  });
   const ownReady = props.ownSeatId ? props.view.readySeatIds.includes(props.ownSeatId) : false;
   const scoringCard = props.ownSeat?.scoringCardId ? SCORING_CARDS_BY_ID[props.ownSeat.scoringCardId as keyof typeof SCORING_CARDS_BY_ID] : undefined;
   const latestElection = props.view.electionHistory.at(-1);
@@ -429,6 +434,16 @@ function GameDesk(props: {
   const scoringObjectives = revealedObjectives.length > 0
     ? revealedObjectives
     : scoringCard?.objectives;
+  const activeOpening =
+    props.ownSeatId !== undefined &&
+    props.view.phase === "opening" &&
+    props.view.phaseData.activeSeatId === props.ownSeatId;
+  const chooseOpeningParty = useCallback((partyId: PartyId) => {
+    setOpeningPartyIntent((current) => ({
+      value: partyId,
+      revision: (current?.revision ?? 0) + 1
+    }));
+  }, []);
 
   return (
     <main className="game-grid">
@@ -464,7 +479,16 @@ function GameDesk(props: {
 
       <section className="map-desk paper-panel">
         <div className="section-heading"><div><p className="section-label">District returns</p><h2>The Crownwater map</h2></div><div className="phase-slug">{props.view.phase}</div></div>
-        <PartyRail view={props.view} />
+        <PartyRail
+          view={props.view}
+          {...(activeOpening ? {
+            interaction: {
+              activePartyId: openingDraftSummary.activePartyId,
+              assignedPartyIds: openingDraftSummary.assignedPartyIds,
+              onSelect: chooseOpeningParty
+            }
+          } : {})}
+        />
         <DistrictMap
           support={props.view.support}
           scoringObjectives={scoringObjectives}
@@ -496,6 +520,8 @@ function GameDesk(props: {
             seatId={props.ownSeatId}
             busy={props.busy}
             ownReady={ownReady}
+            openingPartyIntent={openingPartyIntent}
+            onOpeningDraftChange={setOpeningDraftSummary}
             onCommand={props.onCommand}
           />
         )}
@@ -531,6 +557,16 @@ function GameDesk(props: {
 }
 
 type TokenDraft = Record<OperationId, number>;
+
+interface SelectionIntent<T> {
+  value: T;
+  revision: number;
+}
+
+interface OpeningDraftSummary {
+  activePartyId: PartyId | null;
+  assignedPartyIds: PartyId[];
+}
 
 const EMPTY_TOKENS: TokenDraft = {
   organise: 0,
@@ -609,6 +645,8 @@ function ActionDesk(props: {
   seatId: string;
   busy: boolean;
   ownReady: boolean;
+  openingPartyIntent: SelectionIntent<PartyId> | null;
+  onOpeningDraftChange(summary: OpeningDraftSummary): void;
   onCommand(command: GameCommand): Promise<void>;
 }) {
   const phase = props.view.phase;
@@ -622,7 +660,11 @@ function ActionDesk(props: {
       <p className="section-label">Your filing desk</p>
       {phase === "opening" && (
         activeOpening ? (
-          <OpeningForm {...props} />
+          <OpeningForm
+            {...props}
+            partySelection={props.openingPartyIntent}
+            onDraftStateChange={props.onOpeningDraftChange}
+          />
         ) : (
           <p className="empty-copy">Another firm is placing its opening bid.</p>
         )
@@ -684,10 +726,15 @@ export function OpeningForm(props: {
   view: GameView;
   seat: ViewSeat;
   busy: boolean;
+  partySelection?: SelectionIntent<PartyId> | null;
+  onDraftStateChange?(summary: OpeningDraftSummary): void;
   onCommand(command: GameCommand): Promise<void>;
 }) {
-  const availableParties = PARTIES.map((party) => party.id).filter(
-    (partyId) => !(partyId in props.view.contests)
+  const availableParties = useMemo(
+    () => PARTIES.map((party) => party.id).filter(
+      (partyId) => !(partyId in props.view.contests)
+    ),
+    [props.view.contests]
   );
   const required = Math.min(
     props.seat.firmIds.length,
@@ -709,6 +756,8 @@ export function OpeningForm(props: {
       operations: { ...EMPTY_TOKENS }
     }))
   );
+  const [activeRowIndex, setActiveRowIndex] = useState(0);
+  const lastPartySelectionRevision = useRef(0);
   const reserve = props.seat.reserve ?? {
     leverage: 0,
     bluff: 0,
@@ -725,6 +774,39 @@ export function OpeningForm(props: {
       )
     );
   };
+
+  useEffect(() => {
+    props.onDraftStateChange?.({
+      activePartyId: rows[activeRowIndex]?.partyId ?? null,
+      assignedPartyIds: rows.map((row) => row.partyId)
+    });
+  }, [activeRowIndex, props.onDraftStateChange, rows]);
+
+  useEffect(() => {
+    const selection = props.partySelection;
+    if (
+      selection === null ||
+      selection === undefined ||
+      selection.revision === lastPartySelectionRevision.current
+    ) {
+      return;
+    }
+    lastPartySelectionRevision.current = selection.revision;
+    if (!availableParties.includes(selection.value)) {
+      return;
+    }
+    setRows((current) => {
+      const assignedElsewhere = current.some(
+        (row, index) => index !== activeRowIndex && row.partyId === selection.value
+      );
+      if (assignedElsewhere || current[activeRowIndex]?.partyId === selection.value) {
+        return current;
+      }
+      return current.map((row, index) =>
+        index === activeRowIndex ? { ...row, partyId: selection.value } : row
+      );
+    });
+  }, [activeRowIndex, availableParties, props.partySelection]);
 
   return (
     <form
@@ -760,15 +842,29 @@ export function OpeningForm(props: {
           ])
         ) as TokenDraft;
 
-        return <fieldset key={row.firmId}>
-          <legend>{FIRMS_BY_ID[row.firmId as keyof typeof FIRMS_BY_ID]?.name}</legend>
+        return <fieldset
+          className={`opening-draft ${index === activeRowIndex ? "opening-draft-active" : ""}`}
+          key={row.firmId}
+          onFocus={() => setActiveRowIndex(index)}
+        >
+          <legend>
+            <button
+              type="button"
+              className="draft-selector"
+              aria-pressed={index === activeRowIndex}
+              onClick={() => setActiveRowIndex(index)}
+            >
+              Edit {FIRMS_BY_ID[row.firmId as keyof typeof FIRMS_BY_ID]?.name}
+            </button>
+          </legend>
           <label>
             Party
             <select
               value={row.partyId}
-              onChange={(event) =>
-                updateRow(index, { partyId: event.target.value as PartyId })
-              }
+              onChange={(event) => {
+                setActiveRowIndex(index);
+                updateRow(index, { partyId: event.target.value as PartyId });
+              }}
             >
               {availableParties.map((partyId) => (
                 <option
@@ -1610,8 +1706,56 @@ function revealedElectionObjectives(
   return [...objectives.values()];
 }
 
-export function PartyRail({ view }: { view: GameView }) {
-  return <div className="party-rail">{(view.partyOrder.length ? view.partyOrder : PARTIES.map((party) => party.id)).map((id, index) => <article key={id} style={{ "--party": PARTIES_BY_ID[id].color } as React.CSSProperties}><b>{index + 1}</b><PartyEmblem partyId={id} className="party-glyph" /><div><strong>{PARTIES_BY_ID[id].shortName}</strong><small>Targets {view.coalitionTargets[id] ? PARTIES_BY_ID[view.coalitionTargets[id]!].shortName : "no party"} · {courtSupportSummary(view.courtSupport[id])}</small></div></article>)}</div>;
+export function PartyRail({
+  view,
+  interaction
+}: {
+  view: GameView;
+  interaction?: {
+    activePartyId: PartyId | null;
+    assignedPartyIds: PartyId[];
+    onSelect(partyId: PartyId): void;
+  };
+}) {
+  return (
+    <div className="party-rail">
+      {(view.partyOrder.length ? view.partyOrder : PARTIES.map((party) => party.id)).map((id, index) => {
+        const party = PARTIES_BY_ID[id];
+        const selected = interaction?.activePartyId === id;
+        const assignedElsewhere =
+          interaction !== undefined &&
+          interaction.assignedPartyIds.includes(id) &&
+          !selected;
+        const content = (
+          <>
+            <b>{index + 1}</b>
+            <PartyEmblem partyId={id} className="party-glyph" />
+            <span>
+              <strong>{party.shortName}</strong>
+              <small>Targets {view.coalitionTargets[id] ? PARTIES_BY_ID[view.coalitionTargets[id]!].shortName : "no party"} · {courtSupportSummary(view.courtSupport[id])}</small>
+            </span>
+          </>
+        );
+        const style = { "--party": party.color } as React.CSSProperties;
+        return interaction ? (
+          <button
+            type="button"
+            className={`party-summary party-summary-action ${selected ? "party-summary-selected" : ""}`}
+            disabled={assignedElsewhere}
+            aria-label={assignedElsewhere ? `${party.name} is assigned to another opening bid` : `Choose ${party.name} for the active opening bid`}
+            aria-pressed={selected}
+            key={id}
+            style={style}
+            onClick={() => interaction.onSelect(id)}
+          >
+            {content}
+          </button>
+        ) : (
+          <article className="party-summary" key={id} style={style}>{content}</article>
+        );
+      })}
+    </div>
+  );
 }
 
 function courtSupportSummary(

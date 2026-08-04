@@ -2,7 +2,7 @@
 
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import React from "react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   App,
   ContestCard,
@@ -185,6 +185,67 @@ describe("browser play surface", () => {
     const bluff = form.getAllByLabelText("Face-down Bluff") as HTMLSelectElement[];
     fireEvent.change(bluff[0]!, { target: { value: "2" } });
     expect([...bluff[1]!.options].map((option) => option.value)).toEqual(["0"]);
+  });
+
+  it("applies party shortcuts only to the active opening draft", async () => {
+    const view = { contests: {} };
+    const seat = {
+      firmIds: ["one-fell-swoop", "pairliament"],
+      reserve: {
+        leverage: 3,
+        bluff: 0,
+        operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+      }
+    };
+    const { container, rerender } = render(
+      <OpeningForm
+        view={view as never}
+        seat={seat as never}
+        busy={false}
+        partySelection={{ value: "riverworks", revision: 1 }}
+        onCommand={async () => undefined}
+      />
+    );
+
+    const form = within(container);
+    const parties = form.getAllByLabelText("Party") as HTMLSelectElement[];
+    await waitFor(() => expect(parties[0]!.value).toBe("riverworks"));
+    fireEvent.click(form.getByRole("button", { name: /edit pairliament partners/i }));
+    rerender(
+      <OpeningForm
+        view={view as never}
+        seat={seat as never}
+        busy={false}
+        partySelection={{ value: "foxglove", revision: 2 }}
+        onCommand={async () => undefined}
+      />
+    );
+    await waitFor(() => expect(parties[1]!.value).toBe("foxglove"));
+    expect(parties[0]!.value).toBe("riverworks");
+  });
+
+  it("makes assigned opening parties unavailable from the party summaries", () => {
+    const onSelect = vi.fn();
+    render(
+      <PartyRail
+        view={{
+          partyOrder: ["honeycomb", "old-shell", "foxglove"],
+          coalitionTargets: {},
+          courtSupport: {}
+        } as never}
+        interaction={{
+          activePartyId: "honeycomb",
+          assignedPartyIds: ["honeycomb", "old-shell"],
+          onSelect
+        }}
+      />
+    );
+
+    expect(
+      (screen.getByRole("button", { name: /old shell union is assigned/i }) as HTMLButtonElement).disabled
+    ).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: /choose foxglove league/i }));
+    expect(onSelect).toHaveBeenCalledWith("foxglove");
   });
 
   it("returns the selected counterbid stack to its available select limits", async () => {
