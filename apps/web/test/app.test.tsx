@@ -1,8 +1,8 @@
 /** @vitest-environment jsdom */
 
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import React from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ActionDesk,
   App,
@@ -11,6 +11,7 @@ import {
   DistrictMap,
   extractView,
   GameDesk,
+  LobbyDesk,
   mergePendingDecision,
   OpeningForm,
   OperationForm,
@@ -44,6 +45,8 @@ beforeEach(() => {
     } satisfies Storage
   });
 });
+
+afterEach(cleanup);
 
 describe("browser play surface", () => {
   it("keeps public operation counts when private decision details are merged", () => {
@@ -169,7 +172,100 @@ describe("browser play surface", () => {
       screen.getByLabelText(/counterbid seconds/i).getAttribute("min")
     ).toBe("5");
     expect(screen.getByLabelText(/disable timer/i)).toBeTruthy();
+    expect(screen.queryByLabelText(/seats/i)).toBeNull();
     expect(screen.getByText(/unlimited support/i)).toBeTruthy();
+  });
+
+  it("lets the host start once a second player occupies the six-seat lobby", async () => {
+    const onCommand = vi.fn(async () => undefined);
+    const host = {
+      seatId: "018f47d2-7830-7b84-a854-1b741f285f5e",
+      seatIndex: 0,
+      displayName: "Ada",
+      role: "host",
+      controller: "human",
+      ready: false
+    };
+    const state = {
+      scope: "seat",
+      viewerSeatId: host.seatId,
+      publicState: {
+        gameId: "018f47d2-7830-7b84-a854-1b741f285f5d",
+        version: 1,
+        latestSequence: 1,
+        lifecycle: "lobby",
+        configuration: {
+          playerCount: 1,
+          counterbidTimer: { mode: "off" },
+          allowSpectators: false
+        },
+        seats: [host],
+        spectators: [],
+        publicGame: { phase: "lobby", rulesetVersion: "7" }
+      },
+      seatState: { seatId: host.seatId, privateGame: null }
+    };
+    const session = {
+      participantType: "seat",
+      gameId: state.publicState.gameId,
+      seatId: host.seatId,
+      accessToken: "x".repeat(43)
+    };
+    const { rerender } = render(
+      <LobbyDesk
+        state={state as never}
+        session={session as never}
+        hostSeatId={host.seatId}
+        inviteCode="PRESS42"
+        busy={false}
+        onCommand={onCommand}
+      />
+    );
+
+    expect(screen.getByText("1 / 6")).toBeTruthy();
+    expect(screen.getByText(/5 desks remain open/i)).toBeTruthy();
+    expect(
+      (screen.getByRole("button", {
+        name: /waiting for one more player/i
+      }) as HTMLButtonElement).disabled
+    ).toBe(true);
+    expect(screen.queryByText(/open desk/i)).toBeNull();
+
+    const twoPlayerState = {
+      ...state,
+      publicState: {
+        ...state.publicState,
+        version: 2,
+        latestSequence: 2,
+        configuration: { ...state.publicState.configuration, playerCount: 2 },
+        seats: [
+          host,
+          {
+            ...host,
+            seatId: "018f47d2-7830-7b84-a854-1b741f285f60",
+            seatIndex: 1,
+            displayName: "Turing",
+            role: "player"
+          }
+        ]
+      }
+    };
+    rerender(
+      <LobbyDesk
+        state={twoPlayerState as never}
+        session={session as never}
+        hostSeatId={host.seatId}
+        inviteCode="PRESS42"
+        busy={false}
+        onCommand={onCommand}
+      />
+    );
+
+    expect(screen.getByText("2 / 6")).toBeTruthy();
+    const start = screen.getByRole("button", { name: /start the presses/i });
+    expect((start as HTMLButtonElement).disabled).toBe(false);
+    fireEvent.click(start);
+    await waitFor(() => expect(onCommand).toHaveBeenCalledWith({ type: "start_game" }));
   });
 
   it("gives every district an accessible Support and capacity summary", () => {

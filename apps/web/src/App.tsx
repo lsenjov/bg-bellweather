@@ -12,13 +12,15 @@ import {
   type ScoringCardId,
   type ScoringObjective
 } from "@bellweather/content";
-import type {
-  GameCommand,
-  OperationChoice,
-  OperationResolutionChoice,
-  ParticipantSession,
-  ReplayResponse,
-  ViewerStateEnvelope
+import {
+  MAX_PLAYER_COUNT,
+  MIN_PLAYER_COUNT,
+  type GameCommand,
+  type OperationChoice,
+  type OperationResolutionChoice,
+  type ParticipantSession,
+  type ReplayResponse,
+  type ViewerStateEnvelope
 } from "@bellweather/protocol";
 import {
   replay as replayGame,
@@ -206,7 +208,10 @@ export function App() {
       </header>
 
       <nav className="ticker" aria-label="Game status">
-        <span>Players {state.publicState.seats.length}/{state.publicState.configuration.playerCount}</span>
+        <span>
+          Players {state.publicState.configuration.playerCount}
+          {state.publicState.lifecycle === "lobby" ? `/${MAX_PLAYER_COUNT}` : ""}
+        </span>
         <span>Election {view?.electionNumber ?? 0}/3</span>
         <span>{timerCopy(view?.deadlineAt ?? null)}</span>
         <span>{state.publicState.configuration.counterbidTimer.mode === "off" ? "Readiness clock" : "Timed counterbids"}</span>
@@ -283,7 +288,6 @@ function EntryDesk(props: {
   const [mode, setMode] = useState<"create" | "join">("create");
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
-  const [players, setPlayers] = useState(4);
   const [timerEnabled, setTimerEnabled] = useState(true);
   const [timerSeconds, setTimerSeconds] = useState(90);
   const [spectators, setSpectators] = useState(true);
@@ -300,7 +304,6 @@ function EntryDesk(props: {
             displayName: name,
             controller: "human",
             configuration: {
-              playerCount: players,
               counterbidTimer:
                 !timerEnabled
                   ? { mode: "off" }
@@ -343,7 +346,6 @@ function EntryDesk(props: {
           <label>Byline<input required maxLength={40} value={name} onChange={(event) => setName(event.target.value)} placeholder="Your display name" /></label>
           {mode === "create" ? (
             <>
-              <label>Seats<select value={players} onChange={(event) => setPlayers(Number(event.target.value))}>{[2,3,4,5,6].map((count) => <option key={count}>{count}</option>)}</select></label>
               <label>Counterbid seconds<input type="number" min="5" max="3600" disabled={!timerEnabled} value={timerSeconds} onChange={(event) => setTimerSeconds(Number(event.target.value))} /></label>
               <label className="check-line"><input type="checkbox" checked={!timerEnabled} onChange={(event) => setTimerEnabled(!event.target.checked)} /> Disable timer — unanimous ready only</label>
               <label className="check-line"><input type="checkbox" checked={spectators} onChange={(event) => setSpectators(event.target.checked)} /> Admit observers</label>
@@ -362,7 +364,7 @@ function EntryDesk(props: {
   );
 }
 
-function LobbyDesk(props: {
+export function LobbyDesk(props: {
   state: ViewerStateEnvelope;
   session: ParticipantSession;
   hostSeatId: string | undefined;
@@ -372,7 +374,9 @@ function LobbyDesk(props: {
 }) {
   const seatId = props.session.participantType === "seat" ? props.session.seatId : undefined;
   const self = props.state.publicState.seats.find((seat) => seat.seatId === seatId);
-  const full = props.state.publicState.seats.length === props.state.publicState.configuration.playerCount;
+  const playerCount = props.state.publicState.configuration.playerCount;
+  const canStart = playerCount >= MIN_PLAYER_COUNT;
+  const remainingSeats = MAX_PLAYER_COUNT - playerCount;
   return (
     <main className="lobby-layout">
       <section className="paper-panel lobby-call">
@@ -387,25 +391,25 @@ function LobbyDesk(props: {
               <b>{seat.ready ? "Filed" : "At desk"}</b>
             </article>
           ))}
-          {Array.from({ length: props.state.publicState.configuration.playerCount - props.state.publicState.seats.length }, (_, index) => (
-            <article className="empty-seat" key={index}><span className="status-dot" /><div><strong>Open desk</strong><small>Awaiting correspondent</small></div></article>
-          ))}
         </div>
+        {remainingSeats > 0 && (
+          <p className="empty-copy">{remainingSeats} {remainingSeats === 1 ? "desk remains" : "desks remain"} open.</p>
+        )}
         {seatId && (
           <button className="ink-button" disabled={props.busy} onClick={() => props.onCommand({ type: "set_lobby_ready", ready: !self?.ready })}>
             {self?.ready ? "Withdraw filing" : "Mark ready"}
           </button>
         )}
         {seatId === props.hostSeatId && (
-          <button className="red-button" disabled={props.busy || !full} onClick={() => props.onCommand({ type: "start_game" })}>
-            {full ? "Start the presses" : "Waiting for every seat"}
+          <button className="red-button" disabled={props.busy || !canStart} onClick={() => props.onCommand({ type: "start_game" })}>
+            {canStart ? "Start the presses" : "Waiting for one more player"}
           </button>
         )}
       </section>
       <aside className="briefing paper-panel">
         <p className="section-label">Editor’s briefing</p>
         <h3>Tonight’s conditions</h3>
-        <dl><div><dt>Players</dt><dd>{props.state.publicState.configuration.playerCount}</dd></div><div><dt>Counterbids</dt><dd>{props.state.publicState.configuration.counterbidTimer.mode === "off" ? "Readiness" : `${props.state.publicState.configuration.counterbidTimer.durationSeconds}s`}</dd></div><div><dt>Observers</dt><dd>{props.state.publicState.configuration.allowSpectators ? "Admitted" : "Closed"}</dd></div></dl>
+        <dl><div><dt>Players</dt><dd>{playerCount} / {MAX_PLAYER_COUNT}</dd></div><div><dt>Counterbids</dt><dd>{props.state.publicState.configuration.counterbidTimer.mode === "off" ? "Readiness" : `${props.state.publicState.configuration.counterbidTimer.durationSeconds}s`}</dd></div><div><dt>Observers</dt><dd>{props.state.publicState.configuration.allowSpectators ? "Admitted" : "Closed"}</dd></div></dl>
       </aside>
     </main>
   );

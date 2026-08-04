@@ -6,18 +6,18 @@ import {
   type OperationId,
   type PartyId
 } from "@bellweather/content";
-import type {
-  GameCommand,
-  GameId,
-  OperationChoice,
-  ParticipantSession,
-  ViewerStateEnvelope
+import {
+  MIN_PLAYER_COUNT,
+  type GameCommand,
+  type GameId,
+  type OperationChoice,
+  type ParticipantSession,
+  type ViewerStateEnvelope
 } from "@bellweather/protocol";
 
 const baseUrl = process.env["BELLWEATHER_URL"] ?? "http://127.0.0.1:4317";
 const inviteCode = process.env["BELLWEATHER_INVITE"];
 const displayName = process.env["BELLWEATHER_NAME"] ?? "Conservative Agent";
-const playerCount = Number(process.env["BELLWEATHER_PLAYERS"] ?? "2");
 const anonymous = new AgentClient({ baseUrl });
 
 const joined =
@@ -26,7 +26,6 @@ const joined =
         displayName,
         controller: "agent",
         configuration: {
-          playerCount,
           counterbidTimer: { mode: "off" },
           allowSpectators: true
         }
@@ -101,7 +100,7 @@ async function takeTurn(
     }
     if (
       ownLobbySeat.role === "host" &&
-      publicState.seats.length === publicState.configuration.playerCount
+      publicState.configuration.playerCount >= MIN_PLAYER_COUNT
     ) {
       await command(client, session.gameId, publicState.version, {
         type: "start_game"
