@@ -40,18 +40,10 @@ import {
   joinLobby,
   sendCommand
 } from "./api.js";
+import { PartyEmblem } from "./PartyEmblem.js";
 
 const SESSION_KEY = "bellweather-register-session";
 const INVITE_KEY = "bellweather-register-invite";
-const PARTY_GLYPHS: Record<PartyId, string> = {
-  honeycomb: "⬡",
-  "old-shell": "◉",
-  foxglove: "✦",
-  riverworks: "≋",
-  "many-wings": "⌁",
-  "night-parliament": "●"
-};
-
 interface ViewSeat {
   id: string;
   displayName: string;
@@ -1512,7 +1504,7 @@ export function DistrictMap({
                   key={objective.partyId}
                   style={{ "--scoring-party": party.color } as React.CSSProperties}
                 >
-                  <b>{PARTY_GLYPHS[objective.partyId]}</b>
+                  <b><PartyEmblem partyId={objective.partyId} /></b>
                   <span><em>{scoringLabel}</em>{party.shortName}</span>
                 </span>
               );
@@ -1558,7 +1550,7 @@ function revealedElectionObjectives(
 }
 
 export function PartyRail({ view }: { view: GameView }) {
-  return <div className="party-rail">{(view.partyOrder.length ? view.partyOrder : PARTIES.map((party) => party.id)).map((id, index) => <article key={id} style={{ "--party": PARTIES_BY_ID[id].color } as React.CSSProperties}><b>{index + 1}</b><span className="party-glyph">{PARTY_GLYPHS[id]}</span><div><strong>{PARTIES_BY_ID[id].shortName}</strong><small>Targets {view.coalitionTargets[id] ? PARTIES_BY_ID[view.coalitionTargets[id]!].shortName : "no party"} · {courtSupportSummary(view.courtSupport[id])}</small></div></article>)}</div>;
+  return <div className="party-rail">{(view.partyOrder.length ? view.partyOrder : PARTIES.map((party) => party.id)).map((id, index) => <article key={id} style={{ "--party": PARTIES_BY_ID[id].color } as React.CSSProperties}><b>{index + 1}</b><PartyEmblem partyId={id} className="party-glyph" /><div><strong>{PARTIES_BY_ID[id].shortName}</strong><small>Targets {view.coalitionTargets[id] ? PARTIES_BY_ID[view.coalitionTargets[id]!].shortName : "no party"} · {courtSupportSummary(view.courtSupport[id])}</small></div></article>)}</div>;
 }
 
 function courtSupportSummary(
