@@ -230,12 +230,48 @@ describe("browser play surface", () => {
           operations: { organise: 0, rally: 0, smear: 0, court: 0 },
           cardCount: 0
         }]}
+        resolutionProgress={{
+          currentBidId: null,
+          completedBidIds: ["bid-empty"]
+        }}
       />
     );
 
     const filing = within(container).getByRole("listitem");
     expect(filing.querySelector(".filing-cards")).toBeNull();
     expect(filing.querySelector(".filing-total")).toBeNull();
+    expect(filing.classList.contains("bid-resolved")).toBe(true);
+    expect(within(filing).getByText("✓ Resolved")).toBeTruthy();
+  });
+
+  it("distinguishes the current, resolved, waiting, and cancelled filings", () => {
+    const { container } = render(
+      <ContestCard
+        contestId="honeycomb"
+        seats={[]}
+        resolutionProgress={{
+          currentBidId: "bid-current",
+          completedBidIds: ["bid-done", "bid-cancelled"]
+        }}
+        bids={[
+          { id: "bid-current", firmId: "pairliament", status: "active", leverage: 4, cardCount: 4 },
+          { id: "bid-done", firmId: "triumvirat", status: "transferred", leverage: 3, cardCount: 3 },
+          { id: "bid-waiting", firmId: "one-fell-swoop", status: "active", leverage: 2, cardCount: 2 },
+          { id: "bid-cancelled", firmId: "blackletter", status: "cancelled", leverage: 1, cardCount: 1 }
+        ]}
+      />
+    );
+    const filings = within(container).getAllByRole("listitem");
+
+    expect(filings[0]!.classList.contains("bid-resolving")).toBe(true);
+    expect(within(filings[0]!).getByText("Resolving")).toBeTruthy();
+    expect(filings[1]!.classList.contains("bid-resolved")).toBe(true);
+    expect(within(filings[1]!).getByText("✓ Resolved")).toBeTruthy();
+    expect(filings[2]!.classList.contains("bid-resolving")).toBe(false);
+    expect(filings[2]!.classList.contains("bid-resolved")).toBe(false);
+    expect(filings[3]!.classList.contains("bid-cancelled")).toBe(true);
+    expect(filings[3]!.classList.contains("bid-resolved")).toBe(false);
+    expect(within(filings[3]!).queryByText("✓ Resolved")).toBeNull();
   });
 
   it("shows a covered stack total without exposing its card families", () => {

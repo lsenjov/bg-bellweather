@@ -473,6 +473,7 @@ function GameDesk(props: {
     props.view.contests,
     props.view.partyOrder
   );
+  const resolutionFilingProgress = readResolutionFilingProgress(props.view);
 
   return (
     <main className="game-grid">
@@ -552,6 +553,9 @@ function GameDesk(props: {
                 contestId={id}
                 bids={props.view.bids.filter((bid) => bid.contestId === id)}
                 seats={props.view.seats}
+                {...(resolutionFilingProgress
+                  ? { resolutionProgress: resolutionFilingProgress }
+                  : {})}
                 {...(canTargetCounterbid ? {
                   selected: counterbidDraftSummary.contestId === id,
                   onSelect: chooseCounterbidContest
@@ -632,6 +636,11 @@ interface CounterbidDraftSummary {
   dirty: boolean;
 }
 
+interface ResolutionFilingProgress {
+  currentBidId: string | null;
+  completedBidIds: string[];
+}
+
 const EMPTY_TOKENS: TokenDraft = {
   organise: 0,
   rally: 0,
@@ -655,6 +664,7 @@ export function ContestCard(props: {
   contestId: string;
   bids: Array<Record<string, unknown>>;
   seats: ViewSeat[];
+  resolutionProgress?: ResolutionFilingProgress;
   selected?: boolean;
   onSelect?(contestId: string): void;
 }) {
@@ -721,10 +731,23 @@ export function ContestCard(props: {
           const cardCount = numberOr(bid.cardCount, 0);
           const firmId = owner?.firmIds[0] ?? String(bid.firmId) as FirmId;
           const firm = FIRMS_BY_ID[firmId];
+          const bidId = String(bid.id);
+          const cancelled = bid.status === "cancelled";
+          const resolving =
+            !cancelled && props.resolutionProgress?.currentBidId === bidId;
+          const resolved =
+            !cancelled &&
+            !resolving &&
+            props.resolutionProgress?.completedBidIds.includes(bidId) === true;
+          const resolutionClass = resolving
+            ? "bid-resolving"
+            : resolved
+              ? "bid-resolved"
+              : "";
           return (
             <li
-              key={String(bid.id)}
-              className={`bid-line bid-${String(bid.status ?? "active")}`}
+              key={bidId}
+              className={`bid-line bid-${String(bid.status ?? "active")} ${resolutionClass}`}
               style={firm ? {
                 "--firm-accent": FIRM_ACCENTS[firmId]
               } as React.CSSProperties : undefined}
@@ -762,12 +785,43 @@ export function ContestCard(props: {
                 </span>
               )}
               {recipient && <em>Transferred to {recipient.displayName}</em>}
+              {resolving && (
+                <span className="filing-resolution filing-resolution-current" role="status">
+                  Resolving
+                </span>
+              )}
+              {resolved && (
+                <span className="filing-resolution filing-resolution-complete" aria-label="Resolved">
+                  ✓ Resolved
+                </span>
+              )}
             </li>
           );
         })}
       </ol>
     </article>
   );
+}
+
+function readResolutionFilingProgress(
+  view: GameView
+): ResolutionFilingProgress | undefined {
+  if (view.phase !== "resolution") {
+    return undefined;
+  }
+  const value = view.phaseData.filingProgress;
+  if (!isObject(value)) {
+    return { currentBidId: null, completedBidIds: [] };
+  }
+  return {
+    currentBidId:
+      typeof value.currentBidId === "string" ? value.currentBidId : null,
+    completedBidIds: Array.isArray(value.completedBidIds)
+      ? value.completedBidIds.filter(
+          (bidId): bidId is string => typeof bidId === "string"
+        )
+      : []
+  };
 }
 
 export function ActionDesk(props: {
