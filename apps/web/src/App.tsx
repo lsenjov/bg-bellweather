@@ -469,6 +469,10 @@ function GameDesk(props: {
         "--folio-firm": FIRM_ACCENTS[folioFirmId]
       } as React.CSSProperties
     : undefined;
+  const contestIds = orderedContestIds(
+    props.view.contests,
+    props.view.partyOrder
+  );
 
   return (
     <main className="game-grid">
@@ -539,10 +543,10 @@ function GameDesk(props: {
       <section className="contest-desk paper-panel">
         <div className="section-heading"><div><p className="section-label">Influence book</p><h2>Contests & filings</h2></div><b>Phase: {props.view.phase}</b></div>
         <div className="contest-list">
-          {Object.keys(props.view.contests).length === 0 ? (
+          {contestIds.length === 0 ? (
             <p className="empty-copy">No party contest has been opened.</p>
           ) : (
-            Object.keys(props.view.contests).map((id) => (
+            contestIds.map((id) => (
               <ContestCard
                 key={id}
                 contestId={id}
@@ -1064,8 +1068,11 @@ export function CounterbidForm(props: {
   onDraftStateChange?(summary: CounterbidDraftSummary): void;
   onCommand(command: GameCommand): Promise<void>;
 }) {
-  const defaultContestId =
-    Object.keys(props.view.contests)[0] ?? "pecking-order";
+  const contestIds = orderedContestIds(
+    props.view.contests,
+    props.view.partyOrder
+  );
+  const defaultContestId = contestIds[0] ?? "pecking-order";
   const [slotIndex, setSlotIndex] = useState(0);
   const [contestId, setContestId] = useState(defaultContestId);
   const [leverage, setLeverage] = useState(0);
@@ -1245,7 +1252,7 @@ export function CounterbidForm(props: {
             setSelectionFeedback(null);
           }}
         >
-          {Object.keys(props.view.contests).map((id) => (
+          {contestIds.map((id) => (
             <option key={id} value={id}>{partyName(id)}</option>
           ))}
         </select>
@@ -1789,7 +1796,7 @@ function ReplayState({ state }: { state: GameState }) {
       <section>
         <h3>Contests & complete bid contents</h3>
         <div className="contest-list">
-          {Object.keys(state.contests).map((contestId) => (
+          {orderedContestIds(state.contests, state.partyOrder).map((contestId) => (
             <ContestCard
               key={contestId}
               contestId={contestId}
@@ -2169,6 +2176,28 @@ function timerCopy(deadline: number | null): string {
 
 function partyName(id: string): string {
   return id in PARTIES_BY_ID ? PARTIES_BY_ID[id as PartyId].name : id === "pecking-order" ? "Pecking Order" : id;
+}
+
+export function orderedContestIds(
+  contests: Record<string, unknown>,
+  partyOrder: readonly PartyId[] | undefined
+): string[] {
+  const currentPartyOrder = partyOrder ?? [];
+  const partyRanks = new Map<string, number>(
+    currentPartyOrder.map((partyId, index) => [partyId, index])
+  );
+  return Object.keys(contests)
+    .map((id, insertionIndex) => ({ id, insertionIndex }))
+    .sort((left, right) => {
+      const leftRank = left.id === "pecking-order"
+        ? -1
+        : (partyRanks.get(left.id) ?? currentPartyOrder.length);
+      const rightRank = right.id === "pecking-order"
+        ? -1
+        : (partyRanks.get(right.id) ?? currentPartyOrder.length);
+      return leftRank - rightRank || left.insertionIndex - right.insertionIndex;
+    })
+    .map(({ id }) => id);
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {

@@ -10,6 +10,7 @@ import {
   CounterbidForm,
   DistrictMap,
   OpeningForm,
+  orderedContestIds,
   PartyRail,
   PlayerLedger
 } from "../src/App.js";
@@ -290,6 +291,37 @@ describe("browser play surface", () => {
     expect(contest.classList.contains("contest-card-neutral")).toBe(true);
     expect(contest.classList.contains("contest-card-party")).toBe(false);
     expect(contest.style.getPropertyValue("--contest-party")).toBe("");
+  });
+
+  it("orders every party contest by the live Pecking Order", () => {
+    const contests = {
+      foxglove: {},
+      "pecking-order": {},
+      honeycomb: {},
+      "old-shell": {},
+      "legacy-contest": {}
+    };
+
+    expect(orderedContestIds(
+      contests,
+      ["old-shell", "honeycomb", "foxglove"] as const
+    )).toEqual([
+      "pecking-order",
+      "old-shell",
+      "honeycomb",
+      "foxglove",
+      "legacy-contest"
+    ]);
+    expect(orderedContestIds(
+      contests,
+      ["foxglove", "old-shell", "honeycomb"] as const
+    )).toEqual([
+      "pecking-order",
+      "foxglove",
+      "old-shell",
+      "honeycomb",
+      "legacy-contest"
+    ]);
   });
 
   it("uses one digital firm for both low-player openings and shared card limits", () => {
