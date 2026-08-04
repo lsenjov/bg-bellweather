@@ -14,7 +14,6 @@ import {
   LobbyDesk,
   mergePendingDecision,
   OpeningForm,
-  OpeningOrder,
   OperationForm,
   orderedContestIds,
   PartyRail,
@@ -823,45 +822,104 @@ describe("browser play surface", () => {
     await waitFor(() => expect(party.value).toBe("foxglove"));
   });
 
-  it("shows the complete repeated opening order and public progress", () => {
+  it("rotates the points ledger to Early Bird and shows snake progress", () => {
     const seats = [
-      { id: "seat-a", displayName: "Ada" },
-      { id: "seat-b", displayName: "Bert" },
-      { id: "seat-c", displayName: "Cy" }
+      {
+        id: "seat-a",
+        displayName: "Ada",
+        controller: "human" as const,
+        position: 0,
+        firmIds: ["one-fell-swoop"],
+        points: 10,
+        reserve: null,
+        scoringCardIds: null
+      },
+      {
+        id: "seat-b",
+        displayName: "Bert",
+        controller: "human" as const,
+        position: 1,
+        firmIds: ["pairliament"],
+        points: 8,
+        reserve: null,
+        scoringCardIds: null
+      },
+      {
+        id: "seat-c",
+        displayName: "Cy",
+        controller: "human" as const,
+        position: 2,
+        firmIds: ["triumvirat"],
+        points: 6,
+        reserve: null,
+        scoringCardIds: null
+      }
     ];
-    render(
-      <OpeningOrder
-        view={{
-          playerCount: 3,
-          phase: "opening",
-          phaseData: {
-            activeSeatId: "seat-c",
-            turnSeatIds: [
-              "seat-a",
-              "seat-b",
-              "seat-c",
-              "seat-c",
-              "seat-b",
-              "seat-a"
-            ],
-            turnIndex: 2
-          },
-          seats
-        } as never}
+    const { rerender } = render(
+      <PlayerLedger
+        seats={seats as never}
+        readySeatIds={[]}
+        showReadiness={false}
+        firstSeatId="seat-c"
+        openingProgress={{
+          activeSeatId: "seat-b",
+          turnSeatIds: [
+            "seat-c",
+            "seat-a",
+            "seat-b",
+            "seat-b",
+            "seat-a",
+            "seat-c"
+          ],
+          turnIndex: 2
+        }}
       />
     );
 
-    expect(screen.getByText("Clockwise, then reverse")).toBeTruthy();
-    expect(screen.getByText("Turn 3 / 6")).toBeTruthy();
-    expect(
-      screen.getAllByRole("listitem").map((item) => item.textContent)
-    ).toEqual([
-      "1AdaComplete",
-      "2BertComplete",
-      "3CyNow",
-      "4CyWaiting",
-      "5BertWaiting",
-      "6AdaWaiting"
+    const cards = screen.getByLabelText(
+      "Opening order, player identities, points, and readiness"
+    ).querySelectorAll("article");
+    expect([...cards].map((card) => card.textContent)).toEqual([
+      expect.stringMatching(/Cy.*Opening 1 · turns 1 & 6.*Waiting · 1\/2 filed/i),
+      expect.stringMatching(/Ada.*Opening 2 · turns 2 & 5.*Waiting · 1\/2 filed/i),
+      expect.stringMatching(/Bert.*Opening 3 · turns 3 & 4.*Now filing · 0\/2 filed/i)
+    ]);
+    expect(screen.getByText("Opening order · snake")).toBeTruthy();
+    expect(screen.getByText("Early Bird first")).toBeTruthy();
+
+    rerender(
+      <PlayerLedger
+        seats={seats as never}
+        readySeatIds={[]}
+        showReadiness={false}
+        firstSeatId="seat-c"
+      />
+    );
+    const retainedCards = screen.getByLabelText(
+      "Opening order, player identities, points, and readiness"
+    ).querySelectorAll("article");
+    expect([...retainedCards].map((card) => card.textContent)).toEqual([
+      expect.stringMatching(/Cy.*Opening 1 · turns 1 & 6/i),
+      expect.stringMatching(/Ada.*Opening 2 · turns 2 & 5/i),
+      expect.stringMatching(/Bert.*Opening 3 · turns 3 & 4/i)
+    ]);
+    expect(screen.queryByText(/Now filing/i)).toBeNull();
+
+    rerender(
+      <PlayerLedger
+        seats={seats as never}
+        readySeatIds={[]}
+        showReadiness={false}
+        firstSeatId="missing-seat"
+      />
+    );
+    const fallbackCards = screen.getByLabelText(
+      "Opening order, player identities, points, and readiness"
+    ).querySelectorAll("article");
+    expect([...fallbackCards].map((card) => card.textContent)).toEqual([
+      expect.stringMatching(/Ada.*Opening 1 · turns 1 & 6/i),
+      expect.stringMatching(/Bert.*Opening 2 · turns 2 & 5/i),
+      expect.stringMatching(/Cy.*Opening 3 · turns 3 & 4/i)
     ]);
   });
 

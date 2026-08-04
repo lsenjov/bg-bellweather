@@ -23,6 +23,7 @@ import {
   type ViewerStateEnvelope
 } from "@bellweather/protocol";
 import {
+  openingTurnSeatIds,
   replay as replayGame,
   type GameEvent,
   type GameState
@@ -599,10 +600,11 @@ export function GameDesk(props: {
             : {})}
         />
         {props.view.phase === "resolution" && actionDesk}
-        {openingProgress && <OpeningOrder view={props.view} />}
         <PlayerLedger
           seats={props.view.seats}
           readySeatIds={props.view.readySeatIds}
+          firstSeatId={props.view.nextFirstOpenerSeatId}
+          {...(openingProgress ? { openingProgress } : {})}
           showReadiness={
             props.view.phase === "counterbidding" || props.view.phase === "election"
           }
@@ -2507,20 +2509,78 @@ function courtSupportSummary(
 export function PlayerLedger({
   seats,
   readySeatIds,
-  showReadiness
+  showReadiness,
+  firstSeatId,
+  openingProgress
 }: {
   seats: ViewSeat[];
   readySeatIds: string[];
   showReadiness: boolean;
+  firstSeatId?: string;
+  openingProgress?: OpeningProgress;
 }) {
+  const clockwiseSeats = [...seats].sort(
+    (left, right) => left.position - right.position
+  );
+  const orderFirstSeatId = clockwiseSeats.some((seat) => seat.id === firstSeatId)
+    ? firstSeatId
+    : clockwiseSeats[0]?.id;
+  const defaultTurnSeatIds = orderFirstSeatId === undefined
+    ? []
+    : openingTurnSeatIds(clockwiseSeats, orderFirstSeatId);
+  const outwardSeatIds = defaultTurnSeatIds.filter(
+    (seatId, index) => defaultTurnSeatIds.indexOf(seatId) === index
+  );
+  const seatsById = new Map(clockwiseSeats.map((seat) => [seat.id, seat]));
+  const orderedSeats = outwardSeatIds.map((seatId) => seatsById.get(seatId)!);
+  const turnSeatIds = openingProgress?.turnSeatIds ?? defaultTurnSeatIds;
+
   return (
-    <div className="player-ledger" aria-label="Player identities, points, and readiness">
-      {seats.map((seat) => {
+    <section className="player-ledger-block" aria-label="Opening order, player identities, points, and readiness">
+      <header className="player-ledger-heading">
+        <p className="section-label">
+          Opening order · {orderedSeats.length <= 3 ? "snake" : "clockwise"}
+        </p>
+        <span>Early Bird first</span>
+      </header>
+      <div className="player-ledger">
+        {orderedSeats.map((seat, orderIndex) => {
         const firmId = seat.firmIds[0];
         const ready = readySeatIds.includes(seat.id);
+        const turnNumbers = turnSeatIds.flatMap((seatId, turnIndex) =>
+          seatId === seat.id ? [turnIndex + 1] : []
+        );
+        const completedTurns = openingProgress === undefined
+          ? 0
+          : turnNumbers.filter(
+              (turnNumber) => turnNumber - 1 < openingProgress.turnIndex
+            ).length;
+        const nowFiling = openingProgress?.activeSeatId === seat.id;
+        const openingStatus = openingProgress === undefined
+          ? null
+          : nowFiling
+            ? `Now filing · ${completedTurns}/${turnNumbers.length} filed`
+            : completedTurns === turnNumbers.length
+              ? `Filed · ${completedTurns}/${turnNumbers.length}`
+              : completedTurns > 0
+                ? `Waiting · ${completedTurns}/${turnNumbers.length} filed`
+                : "Waiting";
+        const status = openingStatus ?? (
+          showReadiness ? (ready ? "Ready" : "Waiting") : null
+        );
+        const statusClass = nowFiling
+          ? "player-opening-current"
+          : openingStatus?.startsWith("Filed")
+            ? "player-opening-complete"
+            : showReadiness && ready
+              ? "player-ready"
+              : status === null
+                ? ""
+                : "player-waiting";
         return (
           <article
-            className={showReadiness ? (ready ? "player-ready" : "player-waiting") : ""}
+            aria-current={nowFiling ? "step" : undefined}
+            className={statusClass}
             key={seat.id}
             style={firmId ? {
               "--firm-accent": FIRM_ACCENTS[firmId]
@@ -2530,20 +2590,25 @@ export function PlayerLedger({
             <div className="player-ledger-identity">
               <span>{seat.displayName}</span>
               {firmId && <small>{FIRMS_BY_ID[firmId].name}</small>}
+              <small>
+                Opening {orderIndex + 1} · {turnNumbers.length === 1 ? "turn" : "turns"}{" "}
+                {turnNumbers.join(" & ")}
+              </small>
             </div>
             <div className="player-ledger-points">
               <strong>{seat.points}</strong>
               <small>points</small>
             </div>
-            {showReadiness && (
+            {status && (
               <b className="player-ledger-status">
-                {ready ? "Ready" : "Waiting"}
+                {status}
               </b>
             )}
           </article>
         );
-      })}
-    </div>
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -2568,45 +2633,6 @@ function readOpeningProgress(view: GameView): OpeningProgress | null {
   return activeSeatId === undefined
     ? null
     : { activeSeatId, turnSeatIds, turnIndex };
-}
-
-export function OpeningOrder({ view }: { view: GameView }) {
-  const progress = readOpeningProgress(view);
-  if (progress === null) {
-    return null;
-  }
-  const snake = view.playerCount <= 3;
-  return (
-    <section className="opening-order" aria-label="Opening bid order">
-      <header>
-        <div>
-          <p className="section-label">Opening order</p>
-          <h3>{snake ? "Clockwise, then reverse" : "Clockwise from Early Bird"}</h3>
-        </div>
-        <strong>Turn {progress.turnIndex + 1} / {progress.turnSeatIds.length}</strong>
-      </header>
-      <ol>
-        {progress.turnSeatIds.map((seatId, index) => {
-          const seat = view.seats.find((candidate) => candidate.id === seatId);
-          const status = index < progress.turnIndex
-            ? "Complete"
-            : index === progress.turnIndex
-              ? "Now"
-              : "Waiting";
-          return (
-            <li
-              className={index === progress.turnIndex ? "opening-turn-current" : ""}
-              key={`${seatId}-${index}`}
-            >
-              <span>{index + 1}</span>
-              <b>{seat?.displayName ?? "Unknown firm"}</b>
-              <small>{status}</small>
-            </li>
-          );
-        })}
-      </ol>
-    </section>
-  );
 }
 
 function LoadingDesk({ error, onLeave }: { error: string | null; onLeave(): void }) {
