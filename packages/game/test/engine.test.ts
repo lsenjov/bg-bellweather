@@ -158,12 +158,14 @@ describe("game setup and private projections", () => {
     expect(owner.bids.find((bid) => bid.id === counterId)?.leverage).toBe(3);
     expect(opponent.bids.find((bid) => bid.id === counterId)).toMatchObject({
       contestId: PARTY_IDS[0],
+      cardCount: 5,
       leverage: null,
       bluff: null,
       operationCount: null,
       operations: null
     });
     expect(opponent.bids.find((bid) => bid.id === openingId)).toMatchObject({
+      cardCount: 1,
       leverage: 1,
       bluff: null,
       operationCount: null,

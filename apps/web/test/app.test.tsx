@@ -140,6 +140,25 @@ describe("browser play surface", () => {
     expect(screen.getByText(/counterbid · identity card · active/i)).toBeTruthy();
   });
 
+  it("shows a covered stack total without exposing its card families", () => {
+    render(
+      <ContestCard
+        contestId="honeycomb"
+        seats={[]}
+        bids={[{
+          id: "bid-covered",
+          contestId: "honeycomb",
+          kind: "counterbid",
+          status: "active",
+          cardCount: 6
+        }]}
+      />
+    );
+
+    expect(screen.getByText("6 bid cards in stack")).toBeTruthy();
+    expect(screen.queryByText("Contents concealed")).toBeNull();
+  });
+
   it("limits simultaneous opening selects to cards not used in other drafts", () => {
     const { container } = render(
       <OpeningForm

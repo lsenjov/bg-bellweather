@@ -481,8 +481,8 @@ describe("game server", () => {
                   firmId: firms[0],
                   partyId: active.publicState.publicGame.partyOrder[0],
                   leverage: 1,
-                  bluff: 0,
-                  operations: emptyOperations
+                  bluff: 1,
+                  operations: { ...emptyOperations, organise: 1 }
                 },
                 {
                   firmId: firms[1],
@@ -497,6 +497,26 @@ describe("game server", () => {
         }
       }
     );
+    const coveredState = await jsonRequest(
+      baseUrl,
+      `/api/v1/games/${host.session.gameId}/state`,
+      { token: observer.session.accessToken }
+    );
+    const coveredContests = (
+      coveredState.body as {
+        publicState: {
+          publicGame: {
+            contests: Record<string, { bids: Array<Record<string, unknown>> }>;
+          };
+        };
+      }
+    ).publicState.publicGame.contests;
+    const coveredBid = Object.values(coveredContests)
+      .flatMap((contest) => contest.bids)
+      .find((bid) => bid.firmId === firms[0]);
+    expect(coveredBid).toMatchObject({ leverage: 1, cardCount: 3 });
+    expect(coveredBid).not.toHaveProperty("bluff");
+    expect(coveredBid).not.toHaveProperty("operations");
     await expect(opponentEvent).resolves.toMatchObject({
       type: "event",
       event: {

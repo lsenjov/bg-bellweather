@@ -560,6 +560,7 @@ export function ContestCard(props: {
             (seat) => seat.id === bid.transferredToSeatId
           );
           const revealed = typeof bid.leverage === "number";
+          const cardCount = numberOr(bid.cardCount, 0);
           return (
             <li
               key={String(bid.id)}
@@ -580,7 +581,7 @@ export function ContestCard(props: {
               <span>
                 {operations
                   ? `${operations} · ${String(bid.bluff ?? 0)} bluff`
-                  : "Contents concealed"}
+                  : `${cardCount} bid ${cardCount === 1 ? "card" : "cards"} in stack`}
               </span>
               {recipient && <em>Transferred to {recipient.displayName}</em>}
             </li>

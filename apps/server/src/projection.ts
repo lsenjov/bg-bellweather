@@ -4,11 +4,12 @@ import {
   type ProjectedEventEnvelope,
   type ViewerStateEnvelope
 } from "@bellweather/protocol";
-import type {
-  BidState,
-  GameAction,
-  GameEvent,
-  GameState
+import {
+  bidCardCount,
+  type BidState,
+  type GameAction,
+  type GameEvent,
+  type GameState
 } from "@bellweather/game";
 import type { EventStore } from "./store.js";
 import type { GameRecord, StoredEvent } from "./types.js";
@@ -248,6 +249,7 @@ function publicBid(bid: BidState, reveal: boolean): Record<string, unknown> {
     kind: bid.kind,
     slotIndex: bid.slotIndex,
     status: bid.status,
+    cardCount: bidCardCount(bid),
     transferredToSeatId: bid.transferredToSeatId
   };
   if (reveal) {

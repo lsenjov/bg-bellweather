@@ -36,6 +36,7 @@ export interface ProjectedBid {
   firmId: string;
   kind: "opening" | "counterbid";
   status: BidState["status"];
+  cardCount: number;
   leverage: number | null;
   bluff: number | null;
   operationCount: number | null;
@@ -152,11 +153,18 @@ function projectBid(
     firmId: bid.firmId,
     kind: bid.kind,
     status: bid.status,
+    cardCount: bidCardCount(bid),
     leverage: own || bid.kind === "opening" || allRevealed ? bid.leverage : null,
     bluff: own || allRevealed ? bid.bluff : null,
     operationCount: own || allRevealed ? operationCount(bid.operations) : null,
     operations: own || allRevealed ? { ...bid.operations } : null
   };
+}
+
+export function bidCardCount(
+  bid: Pick<BidState, "leverage" | "bluff" | "operations">
+): number {
+  return bid.leverage + bid.bluff + operationCount(bid.operations);
 }
 
 function operationCount(operations: Record<OperationId, number>): number {
