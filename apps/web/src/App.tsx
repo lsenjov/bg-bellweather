@@ -1544,6 +1544,14 @@ export function OperationForm(props: {
   const availableOperations = availableFromProjection.length > 0
     ? availableFromProjection
     : fallbackOperations.map((candidate) => ({ operation: candidate, count: 1 }));
+  const availableBonusOperations = Array.isArray(
+    props.decision.availableBonusOperations
+  )
+    ? props.decision.availableBonusOperations.filter(
+        (candidate): candidate is OperationId =>
+          OPERATION_IDS.includes(candidate as OperationId)
+      )
+    : [];
   const partyId = String(
     props.decision.partyId ?? props.decision.contestId ?? ""
   ) as PartyId;
@@ -1581,7 +1589,11 @@ export function OperationForm(props: {
   const matchingBonus = party?.bonuses.find(
     (bonus) => bonus.operation === selectedOperation
   );
-  const claimingBonus = claimBonus && !delayed && matchingBonus !== undefined;
+  const bonusAvailable =
+    !delayed &&
+    matchingBonus !== undefined &&
+    availableBonusOperations.includes(selectedOperation);
+  const claimingBonus = claimBonus && bonusAvailable;
   const bonusNeedsDistrict =
     claimingBonus &&
     (partyId === "riverworks" ||
@@ -1642,6 +1654,12 @@ export function OperationForm(props: {
       setOperation(selectedOperation);
     }
   }, [operation, selectedOperation]);
+
+  useEffect(() => {
+    if (claimBonus && !bonusAvailable) {
+      setClaimBonus(false);
+    }
+  }, [claimBonus, bonusAvailable]);
 
   useEffect(() => {
     setActiveMapTarget((current) => {
@@ -1794,7 +1812,10 @@ export function OperationForm(props: {
                 name={`operation-${props.decisionId}`}
                 value={candidate.operation}
                 checked={selectedOperation === candidate.operation}
-                onChange={() => setOperation(candidate.operation)}
+                onChange={() => {
+                  setOperation(candidate.operation);
+                  setClaimBonus(false);
+                }}
               />
               <strong>
                 {candidate.count} {CARD_FAMILY_LABELS[candidate.operation].initial}
@@ -1846,7 +1867,7 @@ export function OperationForm(props: {
           onChange={setTargetParty}
         />
       )}
-      {!delayed && matchingBonus && (
+      {bonusAvailable && matchingBonus && (
         <label className="check-line bonus-check">
           <input
             type="checkbox"
@@ -1855,6 +1876,11 @@ export function OperationForm(props: {
           />
           Claim {matchingBonus.name} · {matchingBonus.timing}
         </label>
+      )}
+      {!delayed && matchingBonus && !bonusAvailable && (
+        <p className="bonus-unavailable" role="status">
+          {matchingBonus.name} has already been claimed in this contest.
+        </p>
       )}
       {bonusNeedsDistrict && (
           <DistrictSelect

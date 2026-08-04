@@ -943,6 +943,7 @@ describe("browser play surface", () => {
       contestId: "honeycomb",
       partyId: "honeycomb",
       legalOperations: ["organise", "rally"],
+      availableBonusOperations: ["organise", "rally"],
       availableOperations: [
         { operation: "organise", count: 1 },
         { operation: "rally", count: 3 }
@@ -1025,6 +1026,60 @@ describe("browser play surface", () => {
         .checked
     ).toBe(true);
     expect(form.queryByRole("radio", { name: /Organise/i })).toBeNull();
+  });
+
+  it("clears and removes a bonus choice after an earlier bid claims it", async () => {
+    const onCommand = vi.fn(async () => undefined);
+    const decision = {
+      id: "decision-1",
+      kind: "party_operation",
+      contestId: "honeycomb",
+      partyId: "honeycomb",
+      legalOperations: ["organise"],
+      availableBonusOperations: ["organise"],
+      availableOperations: [{ operation: "organise", count: 1 }]
+    };
+    const baseProps = {
+      view: {} as never,
+      busy: false,
+      decision,
+      decisionId: "decision-1",
+      onCommand
+    };
+    const { container, rerender } = render(<OperationForm {...baseProps} />);
+    const form = within(container);
+    const bonus = form.getByRole("checkbox", { name: /claim leave a cell behind/i });
+
+    fireEvent.click(bonus);
+    expect((bonus as HTMLInputElement).checked).toBe(true);
+
+    rerender(
+      <OperationForm
+        {...baseProps}
+        decision={{ ...decision, availableBonusOperations: [] }}
+      />
+    );
+
+    expect(form.queryByRole("checkbox", { name: /claim leave a cell behind/i })).toBeNull();
+    expect(form.getByText(/leave a cell behind has already been claimed/i)).toBeTruthy();
+    fireEvent.change(form.getByLabelText("Destination district"), {
+      target: { value: "harbormouth" }
+    });
+    fireEvent.click(form.getByRole("button", { name: /resolve operation/i }));
+
+    await waitFor(() => expect(onCommand).toHaveBeenCalledTimes(1));
+    expect(onCommand).toHaveBeenCalledWith({
+      type: "game_action",
+      action: {
+        type: "resolve_party_operation",
+        decisionId: "decision-1",
+        operation: "organise",
+        choice: {
+          operation: "organise",
+          destinationDistrictId: "harbormouth"
+        }
+      }
+    });
   });
 
   it("places the resolution desk immediately beneath the map", () => {

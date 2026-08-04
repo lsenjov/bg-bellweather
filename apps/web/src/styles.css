@@ -199,6 +199,7 @@ button:disabled { opacity: .45; cursor: not-allowed; transform: none !important;
 .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .selection-feedback { margin: 0; padding: 9px 11px; border-left: 4px solid var(--blue); background: color-mix(in srgb, var(--blue) 10%, transparent); font: .62rem/1.45 var(--mono); }
 .bonus-check { padding: 11px; border: 1px solid var(--red); color: var(--red); }
+.bonus-unavailable { margin: 0; padding: 9px 11px; border-left: 4px solid var(--muted); color: var(--muted); background: color-mix(in srgb, var(--ink) 5%, transparent); font: .58rem/1.45 var(--mono); text-transform: uppercase; letter-spacing: .04em; }
 .swap-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .election-desk { grid-column: 1 / -1; padding: clamp(20px, 3vw, 40px); border-top: 8px solid var(--red); }
 .election-scores { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); border-top: 1px solid var(--ink); }

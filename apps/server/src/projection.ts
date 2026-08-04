@@ -230,6 +230,11 @@ function publicPhase(state: GameState): Record<string, unknown> {
               ...("legalOperations" in phase.pendingDecision
                 ? {
                     legalOperations: phase.pendingDecision.legalOperations,
+                    availableBonusOperations:
+                      phase.pendingDecision.legalOperations.filter(
+                        (operation) =>
+                          !phase.claimedBonuses.includes(operation)
+                      ),
                     availableOperations: phase.pendingDecision.legalOperations.map(
                       (operation) => ({
                         operation,

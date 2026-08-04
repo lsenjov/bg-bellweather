@@ -78,6 +78,22 @@ describe("resolution filing projection", () => {
       { operation: "organise", count: 1 },
       { operation: "rally", count: 3 }
     ]);
+    expect(
+      projectedPendingDecision(projected).availableBonusOperations
+    ).toEqual(["organise", "rally"]);
+  });
+
+  it("omits a bonus operation after an earlier bid claims it", () => {
+    const state = resolutionState();
+    if (state.phase.type !== "resolution") {
+      throw new Error("Expected resolution phase");
+    }
+    state.phase.claimedBonuses = ["rally"];
+
+    expect(
+      projectedPendingDecision(publicEngineState(state))
+        .availableBonusOperations
+    ).toEqual(["organise"]);
   });
 
   it("reveals every contest after resolution", () => {
