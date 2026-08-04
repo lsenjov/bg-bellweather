@@ -424,6 +424,13 @@ function GameDesk(props: {
     activePartyId: null,
     assignedPartyIds: []
   });
+  const [counterbidContestIntent, setCounterbidContestIntent] = useState<SelectionIntent<string> | null>(null);
+  const [counterbidDraftSummary, setCounterbidDraftSummary] = useState<CounterbidDraftSummary>({
+    contestId: null,
+    slotIndex: 0,
+    placed: false,
+    dirty: false
+  });
   const ownReady = props.ownSeatId ? props.view.readySeatIds.includes(props.ownSeatId) : false;
   const scoringCard = props.ownSeat?.scoringCardId ? SCORING_CARDS_BY_ID[props.ownSeat.scoringCardId as keyof typeof SCORING_CARDS_BY_ID] : undefined;
   const latestElection = props.view.electionHistory.at(-1);
@@ -444,6 +451,16 @@ function GameDesk(props: {
       revision: (current?.revision ?? 0) + 1
     }));
   }, []);
+  const chooseCounterbidContest = useCallback((contestId: string) => {
+    setCounterbidContestIntent((current) => ({
+      value: contestId,
+      revision: (current?.revision ?? 0) + 1
+    }));
+  }, []);
+  const canTargetCounterbid =
+    props.view.phase === "counterbidding" &&
+    !props.spectator &&
+    props.ownSeat !== undefined;
 
   return (
     <main className="game-grid">
@@ -509,6 +526,10 @@ function GameDesk(props: {
                 contestId={id}
                 bids={props.view.bids.filter((bid) => bid.contestId === id)}
                 seats={props.view.seats}
+                {...(canTargetCounterbid ? {
+                  selected: counterbidDraftSummary.contestId === id,
+                  onSelect: chooseCounterbidContest
+                } : {})}
               />
             ))
           )}
@@ -522,6 +543,8 @@ function GameDesk(props: {
             ownReady={ownReady}
             openingPartyIntent={openingPartyIntent}
             onOpeningDraftChange={setOpeningDraftSummary}
+            counterbidContestIntent={counterbidContestIntent}
+            onCounterbidDraftChange={setCounterbidDraftSummary}
             onCommand={props.onCommand}
           />
         )}
@@ -568,6 +591,13 @@ interface OpeningDraftSummary {
   assignedPartyIds: PartyId[];
 }
 
+interface CounterbidDraftSummary {
+  contestId: string | null;
+  slotIndex: number;
+  placed: boolean;
+  dirty: boolean;
+}
+
 const EMPTY_TOKENS: TokenDraft = {
   organise: 0,
   rally: 0,
@@ -579,18 +609,33 @@ export function ContestCard(props: {
   contestId: string;
   bids: Array<Record<string, unknown>>;
   seats: ViewSeat[];
+  selected?: boolean;
+  onSelect?(contestId: string): void;
 }) {
   const ranked = [...props.bids].sort((left, right) => {
     const leftLeverage = typeof left.leverage === "number" ? left.leverage : -1;
     const rightLeverage = typeof right.leverage === "number" ? right.leverage : -1;
     return rightLeverage - leftLeverage;
   });
+  const heading = (
+    <>
+      <strong>{partyName(props.contestId)}</strong>
+      <span>{ranked.length} {ranked.length === 1 ? "bid" : "bids"}</span>
+    </>
+  );
   return (
-    <article className="contest-card">
-      <header>
-        <strong>{partyName(props.contestId)}</strong>
-        <span>{ranked.length} {ranked.length === 1 ? "bid" : "bids"}</span>
-      </header>
+    <article className={`contest-card ${props.selected ? "contest-card-selected" : ""}`}>
+      {props.onSelect ? (
+        <button
+          type="button"
+          className="contest-target-button"
+          aria-label={`Target ${partyName(props.contestId)} with a counterbid`}
+          aria-pressed={props.selected ?? false}
+          onClick={() => props.onSelect?.(props.contestId)}
+        >
+          {heading}
+        </button>
+      ) : <header>{heading}</header>}
       <ol>
         {ranked.map((bid, index) => {
           const operationInventory = isObject(bid.operations)
@@ -647,6 +692,8 @@ function ActionDesk(props: {
   ownReady: boolean;
   openingPartyIntent: SelectionIntent<PartyId> | null;
   onOpeningDraftChange(summary: OpeningDraftSummary): void;
+  counterbidContestIntent: SelectionIntent<string> | null;
+  onCounterbidDraftChange(summary: CounterbidDraftSummary): void;
   onCommand(command: GameCommand): Promise<void>;
 }) {
   const phase = props.view.phase;
@@ -671,7 +718,11 @@ function ActionDesk(props: {
       )}
       {phase === "counterbidding" && (
         <>
-          <CounterbidForm {...props} />
+          <CounterbidForm
+            {...props}
+            contestSelection={props.counterbidContestIntent}
+            onDraftStateChange={props.onCounterbidDraftChange}
+          />
           <button
             className="red-button"
             disabled={props.busy}
@@ -911,6 +962,8 @@ export function CounterbidForm(props: {
   view: GameView;
   seat: ViewSeat;
   busy: boolean;
+  contestSelection?: SelectionIntent<string> | null;
+  onDraftStateChange?(summary: CounterbidDraftSummary): void;
   onCommand(command: GameCommand): Promise<void>;
 }) {
   const [slotIndex, setSlotIndex] = useState(0);
@@ -922,10 +975,14 @@ export function CounterbidForm(props: {
   const [operations, setOperations] = useState<TokenDraft>({
     ...EMPTY_TOKENS
   });
-  const slots =
-    props.view.counterbidSlots.length > 0
+  const [selectionFeedback, setSelectionFeedback] = useState<string | null>(null);
+  const lastContestSelectionRevision = useRef(0);
+  const slots = useMemo(
+    () => props.view.counterbidSlots.length > 0
       ? props.view.counterbidSlots
-      : Array.from({ length: props.seat.firmIds.length * 2 }, () => null);
+      : Array.from({ length: props.seat.firmIds.length * 2 }, () => null),
+    [props.seat.firmIds.length, props.view.counterbidSlots]
+  );
   const firmId =
     props.seat.firmIds[Math.floor(slotIndex / 2)] ??
     props.seat.firmIds[0] ??
@@ -948,8 +1005,17 @@ export function CounterbidForm(props: {
       ])
     ) as TokenDraft
   };
+  const persistedOperations = objectValue(selectedBid?.operations);
+  const dirty = selectedBid === undefined
+    ? leverage > 0 || bluff > 0 || OPERATION_IDS.some((operation) => operations[operation] > 0)
+    : contestId !== String(selectedBid.contestId) ||
+      leverage !== numberOr(selectedBid.leverage, 0) ||
+      bluff !== numberOr(selectedBid.bluff, 0) ||
+      OPERATION_IDS.some(
+        (operation) => operations[operation] !== numberOr(persistedOperations[operation], 0)
+      );
 
-  useEffect(() => {
+  const hydrateSelectedSlot = () => {
     if (selectedBidId === null || selectedBidId === undefined) {
       setLeverage(0);
       setBluff(0);
@@ -962,21 +1028,67 @@ export function CounterbidForm(props: {
     if (typeof selectedBid.contestId === "string") {
       setContestId(selectedBid.contestId);
     }
-    if (typeof selectedBid.leverage === "number") {
-      setLeverage(selectedBid.leverage);
-    }
-    if (typeof selectedBid.bluff === "number") {
-      setBluff(selectedBid.bluff);
-    }
-    if (isObject(selectedBid.operations)) {
-      setOperations({
-        organise: numberOr(selectedBid.operations.organise, 0),
-        rally: numberOr(selectedBid.operations.rally, 0),
-        smear: numberOr(selectedBid.operations.smear, 0),
-        court: numberOr(selectedBid.operations.court, 0)
-      });
-    }
+    setLeverage(numberOr(selectedBid.leverage, 0));
+    setBluff(numberOr(selectedBid.bluff, 0));
+    setOperations({
+      organise: numberOr(persistedOperations.organise, 0),
+      rally: numberOr(persistedOperations.rally, 0),
+      smear: numberOr(persistedOperations.smear, 0),
+      court: numberOr(persistedOperations.court, 0)
+    });
+  };
+
+  useEffect(() => {
+    hydrateSelectedSlot();
   }, [selectedBidId, slotIndex]);
+
+  useEffect(() => {
+    props.onDraftStateChange?.({
+      contestId,
+      slotIndex,
+      placed: selectedBidId !== null && selectedBidId !== undefined,
+      dirty
+    });
+  }, [contestId, dirty, props.onDraftStateChange, selectedBidId, slotIndex]);
+
+  useEffect(() => {
+    const selection = props.contestSelection;
+    if (
+      selection === null ||
+      selection === undefined ||
+      selection.revision === lastContestSelectionRevision.current
+    ) {
+      return;
+    }
+    lastContestSelectionRevision.current = selection.revision;
+    if (!(selection.value in props.view.contests)) {
+      setSelectionFeedback("That contest is no longer available.");
+      return;
+    }
+    if (selection.value === contestId) {
+      setSelectionFeedback(null);
+      return;
+    }
+    if (selectedBidId === null || selectedBidId === undefined) {
+      setContestId(selection.value);
+      setSelectionFeedback(`Unused counterbid retargeted to ${partyName(selection.value)}.`);
+      return;
+    }
+    if (dirty) {
+      setSelectionFeedback("Apply or reset the unsaved edits before choosing another contest.");
+      return;
+    }
+    const unusedSlotIndex = slots.findIndex((bidId) => bidId === null);
+    if (unusedSlotIndex === -1) {
+      setSelectionFeedback("No unused counterbid is available; the placed bid was not changed.");
+      return;
+    }
+    setSlotIndex(unusedSlotIndex);
+    setContestId(selection.value);
+    setSelectionFeedback(
+      `Unused counterbid ${(unusedSlotIndex % 2) + 1} selected for ${partyName(selection.value)}.`
+    );
+  }, [contestId, dirty, props.contestSelection, props.view.contests, selectedBidId, slots]);
 
   const send = (bid: Record<string, unknown> | null) =>
     props.onCommand({
@@ -997,7 +1109,18 @@ export function CounterbidForm(props: {
         Firm identity card
         <select
           value={slotIndex}
-          onChange={(event) => setSlotIndex(Number(event.target.value))}
+          onChange={(event) => {
+            const nextSlotIndex = Number(event.target.value);
+            if (nextSlotIndex === slotIndex) {
+              return;
+            }
+            if (dirty) {
+              setSelectionFeedback("Apply or reset the unsaved edits before changing identity cards.");
+              return;
+            }
+            setSelectionFeedback(null);
+            setSlotIndex(nextSlotIndex);
+          }}
         >
           {slots.map((bidId, index) => {
             const slotFirm = props.seat.firmIds[Math.floor(index / 2)];
@@ -1016,7 +1139,10 @@ export function CounterbidForm(props: {
         Contest
         <select
           value={contestId}
-          onChange={(event) => setContestId(event.target.value)}
+          onChange={(event) => {
+            setContestId(event.target.value);
+            setSelectionFeedback(null);
+          }}
         >
           {Object.keys(props.view.contests).map((id) => (
             <option key={id} value={id}>{partyName(id)}</option>
@@ -1040,6 +1166,7 @@ export function CounterbidForm(props: {
         maximums={maximums.operations}
         onChange={setOperations}
       />
+      {selectionFeedback && <p className="selection-feedback" role="status">{selectionFeedback}</p>}
       <div className="form-actions">
         <button className="ink-button" disabled={props.busy}>
           Place / replace counterbid
@@ -1052,6 +1179,19 @@ export function CounterbidForm(props: {
         >
           Withdraw this counterbid
         </button>
+        {dirty && (
+          <button
+            type="button"
+            className="text-button"
+            disabled={props.busy}
+            onClick={() => {
+              hydrateSelectedSlot();
+              setSelectionFeedback("Unsaved edits reset.");
+            }}
+          >
+            Reset unsaved edits
+          </button>
+        )}
       </div>
     </form>
   );
