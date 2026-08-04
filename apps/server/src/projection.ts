@@ -150,11 +150,7 @@ export function projectEvent(
   });
 }
 
-function publicEngineState(state: GameState): Record<string, unknown> {
-  const revealBids =
-    state.phase.type === "resolution" ||
-    state.phase.type === "election" ||
-    state.phase.type === "complete";
+export function publicEngineState(state: GameState): Record<string, unknown> {
   return {
     rulesetVersion: state.rulesetVersion,
     round: state.round,
@@ -183,7 +179,10 @@ function publicEngineState(state: GameState): Record<string, unknown> {
               targetPartyId: contest.targetPartyId,
               openingBidId: contest.openingBidId,
               bids: contest.bidIds.map((bidId) =>
-                publicBid(state.bids[bidId]!, revealBids)
+                publicBid(
+                  state.bids[bidId]!,
+                  shouldRevealContestBids(state, contestId)
+                )
               )
             }
       ])
@@ -229,18 +228,53 @@ function publicPhase(state: GameState): Record<string, unknown> {
               contestId: phase.pendingDecision.contestId,
               bidId: phase.pendingDecision.bidId,
               ...("legalOperations" in phase.pendingDecision
-                ? { legalOperations: phase.pendingDecision.legalOperations }
+                ? {
+                    legalOperations: phase.pendingDecision.legalOperations,
+                    availableOperations: phase.pendingDecision.legalOperations.map(
+                      (operation) => ({
+                        operation,
+                        count:
+                          phase.remainingOperations[
+                            phase.pendingDecision!.bidId
+                          ]?.[operation] ?? 0
+                      })
+                    )
+                  }
                 : {}),
               ...("adjacentIndexes" in phase.pendingDecision
                 ? { adjacentIndexes: phase.pendingDecision.adjacentIndexes }
                 : {}),
               ...("operation" in phase.pendingDecision
-                ? { operation: phase.pendingDecision.operation }
+                ? {
+                    operation: phase.pendingDecision.operation,
+                    availableOperations: [
+                      { operation: phase.pendingDecision.operation, count: 1 }
+                    ]
+                  }
                 : {})
             }
     };
   }
   return phase as unknown as Record<string, unknown>;
+}
+
+export function shouldRevealContestBids(
+  state: GameState,
+  contestId: string
+): boolean {
+  if (state.phase.type === "election" || state.phase.type === "complete") {
+    return true;
+  }
+  if (state.phase.type !== "resolution") {
+    return false;
+  }
+  const contestResolutionIndex = state.phase.contestOrder.findIndex(
+    (candidate) => candidate === contestId
+  );
+  return (
+    contestResolutionIndex >= 0 &&
+    contestResolutionIndex <= state.phase.contestIndex
+  );
 }
 
 export function publicResolutionFilingProgress(
