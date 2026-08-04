@@ -4,6 +4,7 @@ import {
   OPERATION_IDS,
   PARTIES,
   PARTIES_BY_ID,
+  RULESET_VERSION,
   SCORING_CARDS_BY_ID,
   type FirmId,
   type OperationId,
@@ -264,7 +265,7 @@ export function App() {
       {replayArchive !== null && <ReplayArchiveView replay={replayArchive} />}
 
       <footer>
-        <span>Ruleset {String(view?.round ? "1" : "awaiting game")}</span>
+        <span>Ruleset {RULESET_VERSION}</span>
         <button className="text-button" onClick={() => leave(setSession)}>Leave this desk</button>
       </footer>
     </div>
@@ -1523,9 +1524,7 @@ export function OperationForm(props: {
   resolutionDistrictIntent?: ResolutionDistrictIntent | null;
   onResolutionMapStateChange?(summary: ResolutionMapSummary): void;
 }) {
-  const availableFromProjection = Array.isArray(
-    props.decision.availableOperations
-  )
+  const availableOperations = Array.isArray(props.decision.availableOperations)
     ? props.decision.availableOperations.flatMap((candidate) =>
         isObject(candidate) &&
         OPERATION_IDS.includes(candidate.operation as OperationId) &&
@@ -1536,14 +1535,27 @@ export function OperationForm(props: {
           : []
       )
     : [];
-  const fallbackOperations = Array.isArray(props.decision.legalOperations)
-    ? (props.decision.legalOperations as OperationId[])
-    : props.decision.operation
-      ? [props.decision.operation as OperationId]
-      : [];
-  const availableOperations = availableFromProjection.length > 0
-    ? availableFromProjection
-    : fallbackOperations.map((candidate) => ({ operation: candidate, count: 1 }));
+  if (availableOperations.length === 0) {
+    return (
+      <div className="phase-form" role="alert">
+        Operation inventory is unavailable. Refresh the game state.
+      </div>
+    );
+  }
+  return <CurrentOperationForm {...props} availableOperations={availableOperations} />;
+}
+
+function CurrentOperationForm(props: {
+  view: GameView;
+  busy: boolean;
+  onCommand(command: GameCommand): Promise<void>;
+  decision: Record<string, unknown>;
+  decisionId: string;
+  availableOperations: Array<{ operation: OperationId; count: number }>;
+  resolutionDistrictIntent?: ResolutionDistrictIntent | null;
+  onResolutionMapStateChange?(summary: ResolutionMapSummary): void;
+}) {
+  const { availableOperations } = props;
   const availableBonusOperations = Array.isArray(
     props.decision.availableBonusOperations
   )
@@ -2514,10 +2526,36 @@ function LoadingDesk({ error, onLeave }: { error: string | null; onLeave(): void
 export function extractView(state: ViewerStateEnvelope): GameView | null {
   const publicGame = state.publicState.publicGame;
   const privateGame = state.scope === "seat" ? state.seatState.privateGame : null;
-  if (!isObject(publicGame) || !Array.isArray(publicGame.seats)) {
+  if (
+    !isObject(publicGame) ||
+    publicGame.rulesetVersion !== RULESET_VERSION ||
+    typeof publicGame.round !== "number" ||
+    typeof publicGame.electionNumber !== "number" ||
+    !isObject(publicGame.phase) ||
+    typeof publicGame.phase.type !== "string" ||
+    typeof publicGame.nextFirstOpenerSeatId !== "string" ||
+    !Array.isArray(publicGame.seats) ||
+    !Array.isArray(publicGame.partyOrder) ||
+    !isObject(publicGame.support) ||
+    !isObject(publicGame.courtSupport) ||
+    !isObject(publicGame.coalitionTargets) ||
+    !isObject(publicGame.contests) ||
+    !Array.isArray(publicGame.electionHistory) ||
+    !Array.isArray(publicGame.chat)
+  ) {
     return null;
   }
-  const phase = isObject(publicGame.phase) ? publicGame.phase : {};
+  if (
+    state.scope === "seat" &&
+    (!isObject(privateGame) ||
+      !isObject(privateGame.reserve) ||
+      typeof privateGame.scoringCardId !== "string" ||
+      !Array.isArray(privateGame.ownBids) ||
+      !Array.isArray(privateGame.counterbidSlots))
+  ) {
+    return null;
+  }
+  const phase = publicGame.phase;
   const privateState = isObject(privateGame) ? privateGame : {};
   const viewerSeatId = state.scope === "seat" ? state.viewerSeatId : null;
   const seats = (publicGame.seats as Array<Record<string, unknown>>).map(
@@ -2528,13 +2566,11 @@ export function extractView(state: ViewerStateEnvelope): GameView | null {
         seat.id === viewerSeatId ? privateState.scoringCardId ?? null : null
     })
   );
-  const contests = isObject(publicGame.contests) ? publicGame.contests : {};
+  const contests = publicGame.contests;
   const publicBids = Object.values(contests).flatMap((contest) =>
     isObject(contest) && Array.isArray(contest.bids) ? contest.bids : []
   );
-  const ownBids = Array.isArray(privateState.ownBids)
-    ? privateState.ownBids
-    : [];
+  const ownBids = state.scope === "seat" ? privateState.ownBids as unknown[] : [];
   const bidsById = new Map<string, Record<string, unknown>>();
   for (const bid of [...publicBids, ...ownBids]) {
     if (isObject(bid) && typeof bid.id === "string") {
@@ -2551,28 +2587,17 @@ export function extractView(state: ViewerStateEnvelope): GameView | null {
     : null;
   return {
     playerCount: state.publicState.configuration.playerCount,
-    round: numberOr(publicGame.round, 1),
-    electionNumber: numberOr(publicGame.electionNumber, 0),
-    phase: typeof phase.type === "string" ? phase.type : String(publicGame.phase),
+    round: publicGame.round,
+    electionNumber: publicGame.electionNumber,
+    phase: phase.type as string,
     phaseData: phase,
     deadlineAt: typeof phase.deadlineAt === "number" ? phase.deadlineAt : null,
-    nextFirstOpenerSeatId:
-      typeof publicGame.nextFirstOpenerSeatId === "string"
-        ? publicGame.nextFirstOpenerSeatId
-        : "",
+    nextFirstOpenerSeatId: publicGame.nextFirstOpenerSeatId as string,
     seats: seats as unknown as ViewSeat[],
-    partyOrder: Array.isArray(publicGame.partyOrder)
-      ? (publicGame.partyOrder as PartyId[])
-      : [],
-    support: isObject(publicGame.support)
-      ? (publicGame.support as GameView["support"])
-      : {},
-    courtSupport: isObject(publicGame.courtSupport)
-      ? (publicGame.courtSupport as GameView["courtSupport"])
-      : Object.fromEntries(PARTIES.map((party) => [party.id, {}])) as GameView["courtSupport"],
-    coalitionTargets: isObject(publicGame.coalitionTargets)
-      ? (publicGame.coalitionTargets as GameView["coalitionTargets"])
-      : {},
+    partyOrder: publicGame.partyOrder as PartyId[],
+    support: publicGame.support as GameView["support"],
+    courtSupport: publicGame.courtSupport as GameView["courtSupport"],
+    coalitionTargets: publicGame.coalitionTargets as GameView["coalitionTargets"],
     contests,
     bids: [...bidsById.values()],
     readySeatIds: Array.isArray(phase.readySeatIds)
@@ -2582,15 +2607,12 @@ export function extractView(state: ViewerStateEnvelope): GameView | null {
       publicPendingDecision,
       privatePendingDecision
     ),
-    counterbidSlots: Array.isArray(privateState.counterbidSlots)
-      ? (privateState.counterbidSlots as Array<string | null>)
-      : [],
-    electionHistory: Array.isArray(publicGame.electionHistory)
-      ? (publicGame.electionHistory as Array<Record<string, unknown>>)
-      : [],
-    chat: Array.isArray(publicGame.chat)
-      ? (publicGame.chat as GameView["chat"])
-      : []
+    counterbidSlots:
+      state.scope === "seat"
+        ? (privateState.counterbidSlots as Array<string | null>)
+        : [],
+    electionHistory: publicGame.electionHistory as Array<Record<string, unknown>>,
+    chat: publicGame.chat as GameView["chat"]
   };
 }
 
@@ -2638,24 +2660,16 @@ function partyName(id: string): string {
 
 export function orderedContestIds(
   contests: Record<string, unknown>,
-  partyOrder: readonly PartyId[] | undefined
+  partyOrder: readonly PartyId[]
 ): string[] {
-  const currentPartyOrder = partyOrder ?? [];
-  const partyRanks = new Map<string, number>(
-    currentPartyOrder.map((partyId, index) => [partyId, index])
-  );
-  return Object.keys(contests)
-    .map((id, insertionIndex) => ({ id, insertionIndex }))
-    .sort((left, right) => {
-      const leftRank = left.id === "pecking-order"
-        ? -1
-        : (partyRanks.get(left.id) ?? currentPartyOrder.length);
-      const rightRank = right.id === "pecking-order"
-        ? -1
-        : (partyRanks.get(right.id) ?? currentPartyOrder.length);
-      return leftRank - rightRank || left.insertionIndex - right.insertionIndex;
-    })
-    .map(({ id }) => id);
+  return [
+    ...(Object.prototype.hasOwnProperty.call(contests, "pecking-order")
+      ? ["pecking-order"]
+      : []),
+    ...partyOrder.filter((partyId) =>
+      Object.prototype.hasOwnProperty.call(contests, partyId)
+    )
+  ];
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {

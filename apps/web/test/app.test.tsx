@@ -19,6 +19,15 @@ import {
   PlayerLedger
 } from "../src/App.js";
 
+const TEST_PARTY_ORDER = [
+  "honeycomb",
+  "old-shell",
+  "foxglove",
+  "riverworks",
+  "many-wings",
+  "night-parliament"
+] as const;
+
 beforeEach(() => {
   const values = new Map<string, string>();
   Object.defineProperty(globalThis, "localStorage", {
@@ -81,6 +90,16 @@ describe("browser play surface", () => {
         seats: [],
         spectators: [],
         publicGame: {
+          rulesetVersion: "7",
+          round: 1,
+          electionNumber: 0,
+          nextFirstOpenerSeatId: "seat-a",
+          partyOrder: ["honeycomb", "old-shell"],
+          support: {},
+          courtSupport: {},
+          coalitionTargets: {},
+          electionHistory: [],
+          chat: [],
           phase: {
             type: "resolution",
             pendingDecision: {
@@ -99,6 +118,14 @@ describe("browser play surface", () => {
       seatState: {
         seatId: "seat-a",
         privateGame: {
+          reserve: {
+            leverage: 0,
+            bluff: 0,
+            operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+          },
+          scoringCardId: "kingmaker",
+          ownBids: [],
+          counterbidSlots: [null, null],
           pendingDecision: {
             id: "decision-1",
             seatId: "seat-a",
@@ -116,6 +143,42 @@ describe("browser play surface", () => {
         { operation: "rally", count: 3 }
       ]
     }));
+  });
+
+  it("rejects an active payload from an unsupported ruleset", () => {
+    const view = extractView({
+      scope: "public",
+      publicState: {
+        gameId: "game-1",
+        version: 1,
+        latestSequence: 1,
+        lifecycle: "active",
+        configuration: {
+          playerCount: 2,
+          counterbidTimer: { mode: "off" },
+          allowSpectators: false
+        },
+        seats: [],
+        spectators: [],
+        publicGame: {
+          rulesetVersion: "6",
+          round: 1,
+          electionNumber: 0,
+          nextFirstOpenerSeatId: "seat-a",
+          partyOrder: [],
+          support: {},
+          courtSupport: {},
+          coalitionTargets: {},
+          contests: {},
+          electionHistory: [],
+          chat: [],
+          phase: { type: "opening" },
+          seats: []
+        }
+      }
+    } as never);
+
+    expect(view).toBeNull();
   });
 
   it("renders the human table creator with a configurable optional timer", () => {
@@ -460,7 +523,7 @@ describe("browser play surface", () => {
       "pecking-order": {},
       honeycomb: {},
       "old-shell": {},
-      "legacy-contest": {}
+      "unknown-contest": {}
     };
 
     expect(orderedContestIds(
@@ -470,8 +533,7 @@ describe("browser play surface", () => {
       "pecking-order",
       "old-shell",
       "honeycomb",
-      "foxglove",
-      "legacy-contest"
+      "foxglove"
     ]);
     expect(orderedContestIds(
       contests,
@@ -480,9 +542,29 @@ describe("browser play surface", () => {
       "pecking-order",
       "foxglove",
       "old-shell",
-      "honeycomb",
-      "legacy-contest"
+      "honeycomb"
     ]);
+  });
+
+  it("does not fabricate operation inventory from obsolete decision fields", () => {
+    render(
+      <OperationForm
+        view={{} as never}
+        busy={false}
+        decision={{
+          id: "decision-1",
+          partyId: "honeycomb",
+          legalOperations: ["organise"]
+        }}
+        decisionId="decision-1"
+        onCommand={async () => undefined}
+      />
+    );
+
+    expect(screen.getByRole("alert").textContent).toMatch(
+      /operation inventory is unavailable/i
+    );
+    expect(screen.queryByRole("radio")).toBeNull();
   });
 
   it("uses one digital firm for both low-player openings and shared card limits", () => {
@@ -623,6 +705,7 @@ describe("browser play surface", () => {
 
   it("returns the selected counterbid stack to its available select limits", async () => {
     const view = {
+      partyOrder: TEST_PARTY_ORDER,
       contests: { honeycomb: {} },
       counterbidSlots: ["bid-1", null],
       bids: [{
@@ -674,6 +757,7 @@ describe("browser play surface", () => {
 
   it("targets a clicked contest with the first unused counterbid", async () => {
     const view = {
+      partyOrder: TEST_PARTY_ORDER,
       contests: { honeycomb: {}, "old-shell": {} },
       counterbidSlots: ["bid-1", null],
       bids: [{
@@ -722,6 +806,7 @@ describe("browser play surface", () => {
     const { container } = render(
       <CounterbidForm
         view={{
+          partyOrder: TEST_PARTY_ORDER,
           contests: { honeycomb: {} },
           counterbidSlots: [null, null, null, null],
           bids: []
@@ -752,6 +837,7 @@ describe("browser play surface", () => {
 
   it("announces the absolute number of a shortcut-selected low-player counterbid", async () => {
     const view = {
+      partyOrder: TEST_PARTY_ORDER,
       contests: { honeycomb: {}, "old-shell": {} },
       counterbidSlots: ["bid-1", "bid-2", null, null],
       bids: [{
@@ -803,6 +889,7 @@ describe("browser play surface", () => {
     const { container } = render(
       <CounterbidForm
         view={{
+          partyOrder: TEST_PARTY_ORDER,
           contests: { honeycomb: {}, "old-shell": {} },
           counterbidSlots: [null, null],
           bids: []
@@ -831,6 +918,7 @@ describe("browser play surface", () => {
     const { container } = render(
       <CounterbidForm
         view={{
+          partyOrder: TEST_PARTY_ORDER,
           contests: { honeycomb: {}, "old-shell": {} },
           counterbidSlots: [null, null],
           bids: []
@@ -875,6 +963,7 @@ describe("browser play surface", () => {
       view: {
         phase: "counterbidding",
         pendingDecision: null,
+        partyOrder: TEST_PARTY_ORDER,
         contests: { honeycomb: {} },
         counterbidSlots: [null, null],
         bids: []
@@ -1153,6 +1242,7 @@ describe("browser play surface", () => {
 
   it("blocks contest shortcuts until unsaved placed-bid edits are applied or reset", async () => {
     const view = {
+      partyOrder: TEST_PARTY_ORDER,
       contests: { honeycomb: {}, "old-shell": {} },
       counterbidSlots: ["bid-1", null],
       bids: [{
@@ -1202,6 +1292,7 @@ describe("browser play surface", () => {
 
   it("keeps placed counterbids unchanged when no unused slot exists", async () => {
     const view = {
+      partyOrder: TEST_PARTY_ORDER,
       contests: { honeycomb: {}, "old-shell": {} },
       counterbidSlots: ["bid-1", "bid-2"],
       bids: [
