@@ -14,6 +14,8 @@ Move Closing Argument and After-Hours Deal from the end of Night Parliament's co
 
 The first review found that future delayed-claim filings were marked complete too early and that canonical party content retained the old timing. Both are covered by regressions before re-review.
 
+The second review found old timing in the glossary and lobbying-firm board shorthand. Both player-facing references now use end-of-resolution timing and the printable bundle is regenerated before final review.
+
 ## Constraints
 
 - Claim the bonuses during Night Parliament's ordinary operation resolution.
