@@ -9,6 +9,7 @@ import { describe, expect, it } from "vitest";
 import {
   GameRuleError,
   createElectionAction,
+  dealScoringCards,
   executeAction,
   initializeGame,
   projectGameState,
@@ -51,6 +52,11 @@ describe("game setup and private projections", () => {
         true
       );
       expect(
+        state.seats.every(
+          (seat) => seat.scoringCardIds.length === (playerCount <= 3 ? 2 : 1)
+        )
+      ).toBe(true);
+      expect(
         Object.values(state.counterbidSlots).every(
           (counterbids) => counterbids.length === slots
         )
@@ -71,6 +77,12 @@ describe("game setup and private projections", () => {
     });
     expect(state.partyOrder).toHaveLength(6);
     expect(new Set(state.partyOrder).size).toBe(6);
+    expect(state.scoringDecks).toHaveLength(2);
+    expect(
+      state.scoringDecks.every(
+        (deck) => deck.length === 24 && new Set(deck).size === 24
+      )
+    ).toBe(true);
     expect(state.support["harbormouth"]).toEqual(
       Object.fromEntries(PARTY_IDS.map((party) => [party, 1]))
     );
@@ -79,18 +91,50 @@ describe("game setup and private projections", () => {
 
   it("rejects state from any non-current ruleset", () => {
     const initialized = initializeGame(configuration(2, null), zeroRandom);
-    initialized.state.rulesetVersion = "6";
+    initialized.state.rulesetVersion = "7";
 
-    expect(() => replay([initialized])).toThrow("Only ruleset 7 is supported");
+    expect(() => replay([initialized])).toThrow("Only ruleset 8 is supported");
     expect(() => projectGameState(initialized.state, null)).toThrow(
-      "Only ruleset 7 is supported"
+      "Only ruleset 8 is supported"
     );
   });
+
+  it("discards overlapping second draws and deals compatible low-player pairs", () => {
+    const hands = dealScoringCards(
+      ["SC-01", "SC-07", "SC-02", "SC-03", "SC-04"],
+      2
+    );
+
+    expect(hands).toEqual([
+      ["SC-01", "SC-02"],
+      ["SC-03", "SC-04"]
+    ]);
+    for (const hand of hands) {
+      const districts = hand.flatMap((cardId) =>
+        SCORING_CARDS_BY_ID[cardId].objectives.map(
+          (objective) => objective.districtId
+        )
+      );
+      expect(new Set(districts).size).toBe(6);
+    }
+  });
+
+  it.each([4, 5, 6])(
+    "retains one scoring card at %i players",
+    (playerCount) => {
+      const hands = dealScoringCards(
+        Object.keys(SCORING_CARDS_BY_ID) as Array<keyof typeof SCORING_CARDS_BY_ID>,
+        playerCount
+      );
+      expect(hands).toHaveLength(playerCount);
+      expect(hands.every((hand) => hand.length === 1)).toBe(true);
+    }
+  );
 
   it("applies Election retention to named districts but not Bellweather Centre", () => {
     let state = initializeGame(configuration(2, null), zeroRandom).state;
     const namedDistrictId =
-      SCORING_CARDS_BY_ID[state.seats[0]!.scoringCardId].objectives[0]!.districtId;
+      SCORING_CARDS_BY_ID[state.seats[0]!.scoringCardIds[0]!].objectives[0]!.districtId;
     const capacity = DISTRICTS_BY_ID[namedDistrictId].capacity;
     state.support[namedDistrictId] = Object.fromEntries(
       PARTY_IDS.slice(0, capacity).map((partyId) => [partyId, 1])
@@ -164,7 +208,8 @@ describe("game setup and private projections", () => {
     )!.id;
     expect(owner.seats[0]?.reserve).not.toBeNull();
     expect(owner.seats[1]?.reserve).toBeNull();
-    expect(opponent.seats[0]?.scoringCardId).toBeNull();
+    expect(opponent.seats[0]?.scoringCardIds).toBeNull();
+    expect(owner.seats[0]?.scoringCardIds).toHaveLength(2);
     expect(owner.bids.find((bid) => bid.id === counterId)?.leverage).toBe(3);
     expect(opponent.bids.find((bid) => bid.id === counterId)).toMatchObject({
       contestId: PARTY_IDS[0],
@@ -734,6 +779,11 @@ describe("social actions, elections, and replay", () => {
       4, 8, 12
     ]);
     expect(state.electionHistory[0]?.scoringCards).toHaveLength(2);
+    expect(
+      state.electionHistory[0]?.scoringCards.every(
+        (entry) => entry.scoringCardIds.length === 2
+      )
+    ).toBe(true);
     expect(Object.keys(state.electionHistory[0]?.draws ?? {}).length).toBeGreaterThan(0);
     expect(state.phase.winnerSeatIds.length).toBeGreaterThan(0);
     expect(state.electionHistory.at(-1)?.winnerSeatIds).toEqual(
@@ -741,7 +791,7 @@ describe("social actions, elections, and replay", () => {
     );
     expect(replay(events)).toEqual(state);
     expect(projectGameState(state, "seat-1", true).seats.every(
-      (seat) => seat.reserve !== null && seat.scoringCardId !== null
+      (seat) => seat.reserve !== null && seat.scoringCardIds !== null
     )).toBe(true);
   });
 });

@@ -151,6 +151,31 @@ describe("Election Day scoring", () => {
     expect(result.winnerIds).toEqual([]);
   });
 
+  it("sums both low-player agendas while sharing district draws", () => {
+    const result = scoreElectionDay({
+      state: electionState({
+        six: district("six", 6, { honeycomb: 2, foxglove: 1 }),
+        four: district("four", 4, { riverworks: 2 })
+      }),
+      players: [
+        player("p1", 0, [
+          card("one-a", [["six", "honeycomb"]]),
+          card("one-b", [["four", "riverworks"]])
+        ]),
+        player("p2", 0, [
+          card("two-a", [["six", "foxglove"]]),
+          card("two-b", [["four", "night-parliament"]])
+        ])
+      ],
+      random: () => 0,
+      finalElection: false
+    });
+
+    expect(Object.keys(result.draws)).toEqual(["six", "four"]);
+    expect(result.scores.map((score) => score.baseDistrictScore)).toEqual([4, 1]);
+    expect(result.scores.every((score) => score.seatModifier === 0)).toBe(true);
+  });
+
   it("applies four-player references from base scores only", () => {
     const cards = [
       referencedCard("c1", "left", "right", "honeycomb"),
@@ -225,12 +250,16 @@ function card(
   };
 }
 
-function player(id: string, points: number, scoringCard: ScoringCard): ElectionPlayer {
+function player(
+  id: string,
+  points: number,
+  scoringCards: ScoringCard | ScoringCard[]
+): ElectionPlayer {
   return {
     id,
     position: Number.parseInt(id.replace(/\D/g, ""), 10) - 1,
     points,
-    card: scoringCard
+    cards: Array.isArray(scoringCards) ? scoringCards : [scoringCards]
   };
 }
 

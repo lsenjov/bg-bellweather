@@ -27,7 +27,7 @@ export interface ProjectedSeat {
         operations: OperationInventory;
       }
     | null;
-  scoringCardId: ScoringCardId | null;
+  scoringCardIds: ScoringCardId[] | null;
 }
 
 export interface ProjectedBid {
@@ -116,9 +116,9 @@ export function projectGameState(
                 operations: { ...seat.reserve.operations }
               }
             : null,
-        scoringCardId:
+        scoringCardIds:
           own || agendasRevealed || fullInformation
-            ? seat.scoringCardId
+            ? [...seat.scoringCardIds]
             : null
       };
     }),

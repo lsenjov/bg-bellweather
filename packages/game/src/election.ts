@@ -26,7 +26,7 @@ export interface ElectionPlayer {
   id: string;
   position: number;
   points: number;
-  card: ScoringCard;
+  cards: ScoringCard[];
 }
 
 export interface RecordedDistrictDraw {
@@ -129,13 +129,17 @@ export function scoreElectionDay(input: {
   }
   const draws = recordElectionDraws(
     input.state.districts,
-    players.map((player) => player.card),
+    players.flatMap((player) => player.cards),
     input.random
   );
   const baseScores = new Map(
     players.map((player) => [
       player.id,
-      scoreCard(player.card, draws, input.state.coalitionTargets)
+      player.cards.reduce(
+        (score, card) =>
+          score + scoreCard(card, draws, input.state.coalitionTargets),
+        0
+      )
     ])
   );
   const scores = players.map((player, seatIndex): ElectionScore => {
@@ -146,13 +150,13 @@ export function scoreElectionDay(input: {
         : referencedScore(
             players,
             seatIndex,
-            player.card.positiveSeat,
+            singleScoringCard(player).positiveSeat,
             baseScores
           ) -
           referencedScore(
             players,
             seatIndex,
-            player.card.negativeSeat,
+            singleScoringCard(player).negativeSeat,
             baseScores
           );
     const pointsChange = baseDistrictScore + seatModifier;
@@ -175,6 +179,13 @@ export function scoreElectionDay(input: {
     players: scoredPlayers,
     winnerIds: input.finalElection ? determineWinners(scoredPlayers) : []
   };
+}
+
+function singleScoringCard(player: ElectionPlayer): ScoringCard {
+  if (player.cards.length !== 1) {
+    throw new Error("Four-to-six-player elections require one scoring card per player");
+  }
+  return player.cards[0]!;
 }
 
 export function toElectionScoringCard(card: ContentScoringCard): ScoringCard {

@@ -34,7 +34,7 @@ export interface SeatState extends SeatConfiguration {
   position: number;
   firmIds: FirmId[];
   reserve: ResourcePool;
-  scoringCardId: ScoringCardId;
+  scoringCardIds: ScoringCardId[];
 }
 
 export interface BidPackage {
@@ -166,7 +166,7 @@ export interface ElectionRecord {
   afterRound: 4 | 8 | 12;
   scoringCards: Array<{
     seatId: SeatId;
-    scoringCardId: ScoringCardId;
+    scoringCardIds: ScoringCardId[];
   }>;
   draws: Record<
     string,
@@ -210,7 +210,7 @@ export interface GameState {
   support: Record<DistrictId, Partial<Record<PartyId, number>>>;
   courtSupport: Record<PartyId, Partial<Record<PartyId, number>>>;
   coalitionTargets: Record<PartyId, PartyId | null>;
-  scoringDeck: ScoringCardId[];
+  scoringDecks: ScoringCardId[][];
   contests: Partial<Record<ContestId, ContestState>>;
   bids: Record<BidId, BidState>;
   counterbidSlots: Record<SeatId, Array<BidId | null>>;

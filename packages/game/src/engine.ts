@@ -65,7 +65,13 @@ export function initializeGame(
       ? DOUBLED_PLAYER_SETUP
       : STANDARD_PLAYER_SETUP;
   const partyOrder = shuffle([...PARTY_IDS], random);
-  const scoringCards = shuffle([...SCORING_CARD_IDS], random);
+  const scoringDecks = ELECTION_ROUNDS.map(() =>
+    shuffle([...SCORING_CARD_IDS], random)
+  );
+  const initialScoringCards = dealScoringCards(
+    scoringDecks.shift()!,
+    configuration.seats.length
+  );
   const firstOpenerIndex = random.integer(configuration.seats.length);
   validateRandomInteger(firstOpenerIndex, configuration.seats.length);
 
@@ -75,7 +81,7 @@ export function initializeGame(
       position,
       firmIds: [FIRM_IDS[position]!],
       reserve: resourcesFromSetup(setup),
-      scoringCardId: scoringCards[position]!
+      scoringCardIds: initialScoringCards[position]!
     };
   });
 
@@ -105,7 +111,7 @@ export function initializeGame(
     support,
     courtSupport,
     coalitionTargets,
-    scoringDeck: scoringCards.slice(seats.length),
+    scoringDecks,
     contests: {},
     bids: {},
     counterbidSlots: Object.fromEntries(
@@ -795,7 +801,7 @@ function completeElection(state: GameState, randomValues: number[]): void {
   }
   const scoringCards = state.seats.map((seat) => ({
     seatId: seat.id,
-    scoringCardId: seat.scoringCardId
+    scoringCardIds: [...seat.scoringCardIds]
   }));
   let randomIndex = 0;
   const result = scoreElectionDay({
@@ -866,12 +872,13 @@ function setElectionReady(
     state.phase = complete;
     return;
   }
-  for (const seat of state.seats) {
-    const card = state.scoringDeck.shift();
-    if (card === undefined) {
-      throw new GameRuleError("scoring_deck_empty", "The scoring deck cannot deal every seat");
-    }
-    seat.scoringCardId = card;
+  const deck = state.scoringDecks.shift();
+  if (deck === undefined) {
+    throw new GameRuleError("scoring_deck_empty", "No scoring deck remains for the next campaign period");
+  }
+  const hands = dealScoringCards(deck, state.seats.length);
+  for (const [index, seat] of state.seats.entries()) {
+    seat.scoringCardIds = hands[index]!;
   }
   beginRound(state, state.round + 1);
 }
@@ -1014,23 +1021,69 @@ function clearCourtSupport(state: GameState): void {
 
 function electionPlayers(state: GameState): ElectionPlayer[] {
   return state.seats.map((seat) => {
-    const card = SCORING_CARDS_BY_ID[seat.scoringCardId];
-    const scoringCard: ScoringCard = {
-      id: card.id,
-      objectives: card.objectives.map((objective) => ({
-        districtId: objective.districtId,
-        party: objective.partyId
-      })),
-      positiveSeat: card.gain,
-      negativeSeat: card.lose
-    };
     return {
       id: seat.id,
       position: seat.position,
       points: seat.reserve.points,
-      card: scoringCard
+      cards: seat.scoringCardIds.map((scoringCardId): ScoringCard => {
+        const card = SCORING_CARDS_BY_ID[scoringCardId];
+        return {
+          id: card.id,
+          objectives: card.objectives.map((objective) => ({
+            districtId: objective.districtId,
+            party: objective.partyId
+          })),
+          positiveSeat: card.gain,
+          negativeSeat: card.lose
+        };
+      })
     };
   });
+}
+
+export function dealScoringCards(
+  deck: readonly ScoringCardId[],
+  playerCount: number
+): ScoringCardId[][] {
+  if (!Number.isInteger(playerCount) || playerCount < 2 || playerCount > 6) {
+    throw new GameRuleError("invalid_player_count", "Games require two to six seats");
+  }
+  const drawPile = [...deck];
+  const cardsPerPlayer = playerCount <= 3 ? 2 : 1;
+  const hands: ScoringCardId[][] = [];
+
+  for (let playerIndex = 0; playerIndex < playerCount; playerIndex += 1) {
+    const first = drawPile.shift();
+    if (first === undefined) {
+      throw new GameRuleError("scoring_deck_empty", "The scoring deck cannot deal every seat");
+    }
+    const hand = [first];
+    if (cardsPerPlayer === 2) {
+      const firstDistricts = new Set(
+        SCORING_CARDS_BY_ID[first].objectives.map((objective) => objective.districtId)
+      );
+      let second: ScoringCardId | undefined;
+      while (second === undefined) {
+        const candidate = drawPile.shift();
+        if (candidate === undefined) {
+          throw new GameRuleError(
+            "scoring_deck_empty",
+            "The scoring deck has no compatible second card"
+          );
+        }
+        const overlaps = SCORING_CARDS_BY_ID[candidate].objectives.some(
+          (objective) => firstDistricts.has(objective.districtId)
+        );
+        if (!overlaps) {
+          second = candidate;
+        }
+      }
+      hand.push(second);
+    }
+    hands.push(hand);
+  }
+
+  return hands;
 }
 
 function parseOperationRequest(
