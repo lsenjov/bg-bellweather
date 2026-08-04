@@ -40,6 +40,7 @@ import {
   joinLobby,
   sendCommand
 } from "./api.js";
+import { FIRM_ACCENTS, FirmEmblem } from "./FirmEmblem.js";
 import { PartyEmblem } from "./PartyEmblem.js";
 
 const SESSION_KEY = "bellweather-register-session";
@@ -461,15 +462,45 @@ function GameDesk(props: {
     props.view.phase === "counterbidding" &&
     !props.spectator &&
     props.ownSeat !== undefined;
+  const folioFirmIds = props.ownSeat?.firmIds ?? [];
+  const folioStyle = folioFirmIds.length > 0
+    ? {
+        "--folio-firm-a": FIRM_ACCENTS[folioFirmIds[0]!],
+        "--folio-firm-b": FIRM_ACCENTS[
+          folioFirmIds[1] ?? folioFirmIds[0]!
+        ]
+      } as React.CSSProperties
+    : undefined;
 
   return (
     <main className="game-grid">
-      <aside className="private-folio paper-panel">
+      <aside
+        className={`private-folio paper-panel ${folioFirmIds.length > 0 ? "private-folio-firm" : "private-folio-neutral"} ${folioFirmIds.length > 1 ? "private-folio-dual" : ""}`}
+        style={folioStyle}
+      >
+        {folioFirmIds.length > 0 && (
+          <div className="folio-watermarks" aria-hidden="true">
+            {folioFirmIds.map((firmId) => (
+              <FirmEmblem key={firmId} firmId={firmId} />
+            ))}
+          </div>
+        )}
         <div className="folio-heading">
           <p className="section-label">{props.spectator ? "Observer’s copy" : "Private folio"}</p>
           <h2>{props.ownSeat?.displayName ?? "Press gallery"}</h2>
           {props.ownSeat?.reserve && (
-            <p className="firm-line">{props.ownSeat.firmIds.map((id) => FIRMS_BY_ID[id as keyof typeof FIRMS_BY_ID]?.name ?? id).join(" · ")}</p>
+            <div className="folio-firms">
+              {props.ownSeat.firmIds.map((firmId) => (
+                <div
+                  className="folio-firm"
+                  key={firmId}
+                  style={{ "--firm-accent": FIRM_ACCENTS[firmId] } as React.CSSProperties}
+                >
+                  <FirmEmblem firmId={firmId} />
+                  <span>{FIRMS_BY_ID[firmId].name}</span>
+                </div>
+              ))}
+            </div>
           )}
         </div>
         {props.ownSeat?.reserve ? (
@@ -555,26 +586,33 @@ function GameDesk(props: {
         <ElectionDesk election={latestElection} seats={props.view.seats} />
       )}
 
-      <section className="deal-desk paper-panel">
-        <p className="section-label">Back channel</p>
-        <h2>Gift ledger</h2>
-        {!props.spectator && props.ownSeatId ? (
-          <form onSubmit={(event) => {
-            event.preventDefault();
-            void props.onCommand({ type: "give_resources", recipientSeatId: giftTo as never, leverage: gift.leverage, bluff: gift.bluff, points: gift.points, operations: { organise: gift.organise, rally: gift.rally, smear: gift.smear, court: gift.court } });
-          }}>
-            <label>Recipient<select required value={giftTo} onChange={(event) => setGiftTo(event.target.value)}><option value="">Choose a player</option>{props.view.seats.filter((seat) => seat.id !== props.ownSeatId).map((seat) => <option key={seat.id} value={seat.id}>{seat.displayName}</option>)}</select></label>
-            <div className="gift-grid">{(["leverage","bluff","points","organise","rally","smear","court"] as const).map((key) => <label key={key}>{key}<input type="number" min="0" value={gift[key]} onChange={(event) => setGift({ ...gift, [key]: Number(event.target.value) })} /></label>)}</div>
-            <button className="ink-button">Record one-way gift</button>
-          </form>
-        ) : <p>Observers cannot move table resources.</p>}
-      </section>
+      <section className="back-channel-desk paper-panel">
+        <div className="section-heading">
+          <div><p className="section-label">Back channel</p><h2>Gifts & table talk</h2></div>
+        </div>
+        <div className="back-channel-grid">
+          <section className="deal-desk">
+            <p className="section-label">Private transfer</p>
+            <h3>Gift ledger</h3>
+            {!props.spectator && props.ownSeatId ? (
+              <form onSubmit={(event) => {
+                event.preventDefault();
+                void props.onCommand({ type: "give_resources", recipientSeatId: giftTo as never, leverage: gift.leverage, bluff: gift.bluff, points: gift.points, operations: { organise: gift.organise, rally: gift.rally, smear: gift.smear, court: gift.court } });
+              }}>
+                <label>Recipient<select required value={giftTo} onChange={(event) => setGiftTo(event.target.value)}><option value="">Choose a player</option>{props.view.seats.filter((seat) => seat.id !== props.ownSeatId).map((seat) => <option key={seat.id} value={seat.id}>{seat.displayName}</option>)}</select></label>
+                <div className="gift-grid">{(["leverage","bluff","points","organise","rally","smear","court"] as const).map((key) => <label key={key}>{key}<input type="number" min="0" value={gift[key]} onChange={(event) => setGift({ ...gift, [key]: Number(event.target.value) })} /></label>)}</div>
+                <button className="ink-button">Record one-way gift</button>
+              </form>
+            ) : <p>Observers cannot move table resources.</p>}
+          </section>
 
-      <section className="chat-desk paper-panel">
-        <p className="section-label">Public wire</p>
-        <h2>Table talk</h2>
-        <div className="chat-log" aria-live="polite">{props.view.chat.length === 0 ? <p>No statements on record.</p> : props.view.chat.map((message) => <article key={message.id}><b>{props.view.seats.find((seat) => seat.id === message.seatId)?.displayName ?? "Desk"}</b><p>{message.text}</p></article>)}</div>
-        {!props.spectator && <form className="chat-form" onSubmit={(event) => { event.preventDefault(); if (chat.trim()) void props.onCommand({ type: "post_chat", message: chat }).then(() => setChat("")); }}><input aria-label="Public chat message" value={chat} onChange={(event) => setChat(event.target.value)} placeholder="Put a statement on the record…" /><button className="red-button">Send</button></form>}
+          <section className="chat-desk">
+            <p className="section-label">Public wire</p>
+            <h3>Table talk</h3>
+            <div className="chat-log" aria-live="polite">{props.view.chat.length === 0 ? <p>No statements on record.</p> : props.view.chat.map((message) => <article key={message.id}><b>{props.view.seats.find((seat) => seat.id === message.seatId)?.displayName ?? "Desk"}</b><p>{message.text}</p></article>)}</div>
+            {!props.spectator && <form className="chat-form" onSubmit={(event) => { event.preventDefault(); if (chat.trim()) void props.onCommand({ type: "post_chat", message: chat }).then(() => setChat("")); }}><input aria-label="Public chat message" value={chat} onChange={(event) => setChat(event.target.value)} placeholder="Put a statement on the record…" /><button className="red-button">Send</button></form>}
+          </section>
+        </div>
       </section>
     </main>
   );
