@@ -75,8 +75,15 @@ button:disabled { opacity: .45; cursor: not-allowed; transform: none !important;
 .phase-slug { background: var(--blue); color: white; padding: 8px 12px; font: .66rem var(--mono); text-transform: uppercase; }
 .district-map { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(5, minmax(82px, auto)); gap: 5px; padding: 12px; background: color-mix(in srgb, var(--blue) 72%, var(--paper)); min-height: 530px; }
 .district { background: var(--paper); border: 1px solid var(--ink); padding: 8px; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+.district-scoring { position: relative; border-width: 2px; background: color-mix(in srgb, var(--scoring-accent) 9%, var(--paper)); box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 6px var(--scoring-accent); }
+.district-scoring > strong { max-width: calc(100% - 8px); }
 .district strong { font-size: .86rem; line-height: 1; }
 .district small { font: .58rem var(--mono); opacity: .65; }
+.agenda-markers { display: grid; align-self: flex-start; gap: 3px; max-width: 100%; margin: 6px 0 2px; }
+.agenda-marker { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 5px; max-width: 100%; padding: 3px 6px 3px 4px; color: var(--paper); background: var(--ink); border-left: 5px solid var(--scoring-party); box-shadow: 2px 2px 0 color-mix(in srgb, var(--scoring-party) 62%, transparent); }
+.agenda-marker > b { display: grid; place-items: center; width: 19px; height: 19px; color: var(--ink); background: var(--paper); box-shadow: inset 0 0 0 2px var(--scoring-party); font-size: .8rem; line-height: 1; }
+.agenda-marker > span { display: grid; min-width: 0; overflow: hidden; font: 500 .52rem/1.15 var(--mono); text-transform: uppercase; white-space: nowrap; text-overflow: ellipsis; }
+.agenda-marker em { font-size: .42rem; font-style: normal; letter-spacing: .06em; opacity: .72; }
 .district-northreach { grid-column: 3 / 5; grid-row: 1; }.district-cloverfield{grid-column:5;grid-row:1}.district-harbormouth{grid-column:6;grid-row:1/3}.district-millbank{grid-column:6;grid-row:3}.district-reedwater{grid-column:6;grid-row:4}.district-sunmeadow{grid-column:5;grid-row:5}.district-grand-market{grid-column:3/5;grid-row:5}.district-red-orchard{grid-column:2;grid-row:5}.district-westgate{grid-column:1;grid-row:4}.district-mossfield{grid-column:1;grid-row:3}.district-ironwood{grid-column:1;grid-row:1/3}.district-high-pastures{grid-column:2;grid-row:1}.district-crown-road{grid-column:3/5;grid-row:2}.district-canal-ward{grid-column:4/6;grid-row:4}.district-old-quarter{grid-column:2/4;grid-row:4}.district-bellweather-centre{grid-column:3/5;grid-row:3;background:var(--ink);color:var(--paper);}
 .support-dots { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 8px; }
 .support-dots i { width: 10px; height: 10px; background: var(--party); border: 1px solid var(--ink); border-radius: 50%; }

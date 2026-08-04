@@ -7,7 +7,9 @@ import {
   SCORING_CARDS_BY_ID,
   type FirmId,
   type OperationId,
-  type PartyId
+  type PartyId,
+  type ScoringCardId,
+  type ScoringObjective
 } from "@bellweather/content";
 import type {
   GameCommand,
@@ -428,12 +430,23 @@ function GameDesk(props: {
   const ownReady = props.ownSeatId ? props.view.readySeatIds.includes(props.ownSeatId) : false;
   const scoringCard = props.ownSeat?.scoringCardId ? SCORING_CARDS_BY_ID[props.ownSeat.scoringCardId as keyof typeof SCORING_CARDS_BY_ID] : undefined;
   const latestElection = props.view.electionHistory.at(-1);
+  const revealedObjectives = revealedElectionObjectives(
+    props.view.phase,
+    latestElection
+  );
+  const scoringObjectives = revealedObjectives.length > 0
+    ? revealedObjectives
+    : scoringCard?.objectives;
 
   return (
     <main className="game-grid">
       <section className="map-desk paper-panel">
         <div className="section-heading"><div><p className="section-label">District returns</p><h2>The Crownwater map</h2></div><div className="phase-slug">{props.view.phase}</div></div>
-        <DistrictMap support={props.view.support} />
+        <DistrictMap
+          support={props.view.support}
+          scoringObjectives={scoringObjectives}
+          scoringLabel={revealedObjectives.length > 0 ? "Election agenda" : "Private agenda"}
+        />
         <PartyRail view={props.view} />
         <PlayerLedger seats={props.view.seats} />
       </section>
@@ -1444,9 +1457,23 @@ function ReplayState({ state }: { state: GameState }) {
   );
 }
 
-export function DistrictMap({ support }: { support: GameView["support"] }) {
+export function DistrictMap({
+  support,
+  scoringObjectives = [],
+  scoringLabel = "Private agenda"
+}: {
+  support: GameView["support"];
+  scoringObjectives?: readonly ScoringObjective[] | undefined;
+  scoringLabel?: "Private agenda" | "Election agenda";
+}) {
   return <div className="district-map" aria-label="Bellweather district map">{DISTRICTS.map((district) => {
     const districtSupport = support[district.id] ?? {};
+    const districtObjectives = scoringObjectives.filter(
+      (objective) => objective.districtId === district.id
+    );
+    const scoringParties = districtObjectives.map(
+      (objective) => PARTIES_BY_ID[objective.partyId]
+    );
     const summary = Object.entries(districtSupport)
       .filter(([, count]) => (count ?? 0) > 0)
       .map(([party, count]) => `${PARTIES_BY_ID[party as PartyId].shortName} ${count}`)
@@ -1465,11 +1492,33 @@ export function DistrictMap({ support }: { support: GameView["support"] }) {
     return (
       <article
         key={district.id}
-        className={`district district-${district.id}`}
-        aria-label={`${district.name}: ${summary || "no Support"}; ${free} free spots`}
+        className={`district district-${district.id}${scoringParties.length > 0 ? " district-scoring" : ""}`}
+        style={scoringParties.length > 0 ? {
+          "--scoring-accent": scoringParties.length === 1
+            ? scoringParties[0]!.color
+            : "var(--red)"
+        } as React.CSSProperties : undefined}
+        aria-label={`${district.name}: ${summary || "no Support"}; ${free} free spots${scoringParties.length > 0 ? `; ${scoringLabel.toLowerCase()} scores ${scoringParties.map((party) => party.name).join(", ")}` : ""}`}
       >
         <strong>{district.name}</strong>
         <small>{district.capacity} seats</small>
+        {districtObjectives.length > 0 && (
+          <span className="agenda-markers" aria-hidden="true">
+            {districtObjectives.map((objective) => {
+              const party = PARTIES_BY_ID[objective.partyId];
+              return (
+                <span
+                  className="agenda-marker"
+                  key={objective.partyId}
+                  style={{ "--scoring-party": party.color } as React.CSSProperties}
+                >
+                  <b>{PARTY_GLYPHS[objective.partyId]}</b>
+                  <span><em>{scoringLabel}</em>{party.shortName}</span>
+                </span>
+              );
+            })}
+          </span>
+        )}
         <span className="sr-only">{summary || "No party Support"}. {free} free spots.</span>
         <div className="support-dots" aria-hidden="true">
           {pieces}
@@ -1480,6 +1529,32 @@ export function DistrictMap({ support }: { support: GameView["support"] }) {
       </article>
     );
   })}</div>;
+}
+
+function revealedElectionObjectives(
+  phase: string,
+  election: Record<string, unknown> | undefined
+): ScoringObjective[] {
+  if (phase !== "election" || !Array.isArray(election?.scoringCards)) {
+    return [];
+  }
+  const objectives = new Map<string, ScoringObjective>();
+  for (const entry of election.scoringCards) {
+    if (!isObject(entry) || typeof entry.scoringCardId !== "string") {
+      continue;
+    }
+    if (!(entry.scoringCardId in SCORING_CARDS_BY_ID)) {
+      continue;
+    }
+    const card = SCORING_CARDS_BY_ID[entry.scoringCardId as ScoringCardId];
+    for (const objective of card.objectives) {
+      objectives.set(
+        `${objective.districtId}:${objective.partyId}`,
+        objective
+      );
+    }
+  }
+  return [...objectives.values()];
 }
 
 export function PartyRail({ view }: { view: GameView }) {

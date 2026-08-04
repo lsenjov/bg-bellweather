@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import React from "react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { App, ContestCard, DistrictMap, PartyRail } from "../src/App.js";
@@ -50,6 +50,48 @@ describe("browser play surface", () => {
         "Harbormouth: Honeycomb 2, Old Shell 1; 3 free spots"
       )
     ).toBeTruthy();
+  });
+
+  it("marks private scoring districts with their objective party", () => {
+    render(
+      <DistrictMap
+        support={{}}
+        scoringObjectives={[
+          { districtId: "grand-market", partyId: "foxglove" }
+        ]}
+      />
+    );
+
+    const target = screen.getByLabelText(
+      "Grand Market: no Support; 6 free spots; private agenda scores Foxglove League"
+    );
+    expect(target.classList.contains("district-scoring")).toBe(true);
+    expect(within(target).getByText("Private agenda")).toBeTruthy();
+    expect(within(target).getByText("Foxglove")).toBeTruthy();
+    expect(
+      within(target.parentElement!).getByLabelText("Cloverfield: no Support; 4 free spots")
+        .classList.contains("district-scoring")
+    ).toBe(false);
+  });
+
+  it("shows every revealed party when scoring cards share a district", () => {
+    render(
+      <DistrictMap
+        support={{}}
+        scoringLabel="Election agenda"
+        scoringObjectives={[
+          { districtId: "ironwood", partyId: "night-parliament" },
+          { districtId: "ironwood", partyId: "honeycomb" }
+        ]}
+      />
+    );
+
+    const target = screen.getByLabelText(
+      "Ironwood: no Support; 6 free spots; election agenda scores Night Parliament, Honeycomb Cooperative"
+    );
+    expect(within(target).getAllByText("Election agenda")).toHaveLength(2);
+    expect(within(target).getByText("Night")).toBeTruthy();
+    expect(within(target).getByText("Honeycomb")).toBeTruthy();
   });
 
   it("shows covered, owned, and revealed bid information", () => {
