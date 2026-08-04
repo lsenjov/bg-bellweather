@@ -9,7 +9,8 @@ import {
   type BidState,
   type GameAction,
   type GameEvent,
-  type GameState
+  type GameState,
+  type ResolutionPhase
 } from "@bellweather/game";
 import type { EventStore } from "./store.js";
 import type { GameRecord, StoredEvent } from "./types.js";
@@ -212,10 +213,12 @@ function publicPhase(state: GameState): Record<string, unknown> {
     };
   }
   if (phase.type === "resolution") {
+    const filingProgress = publicResolutionFilingProgress(state, phase);
     return {
       type: phase.type,
       contestOrder: phase.contestOrder,
       contestIndex: phase.contestIndex,
+      filingProgress,
       pendingDecision:
         phase.pendingDecision === null
           ? null
@@ -238,6 +241,38 @@ function publicPhase(state: GameState): Record<string, unknown> {
     };
   }
   return phase as unknown as Record<string, unknown>;
+}
+
+export function publicResolutionFilingProgress(
+  state: GameState,
+  phase: ResolutionPhase
+): {
+  currentContestId: string | null;
+  currentBidId: string | null;
+  completedBidIds: string[];
+} {
+  const currentBidId = phase.pendingDecision?.bidId ?? null;
+  const completedBidIds = new Set<string>();
+
+  for (const contestId of phase.contestOrder.slice(0, phase.contestIndex)) {
+    for (const bidId of state.contests[contestId]?.bidIds ?? []) {
+      if (state.bids[bidId]?.status !== "cancelled") {
+        completedBidIds.add(bidId);
+      }
+    }
+  }
+  for (const bidId of phase.executionBidIds.slice(0, phase.bidIndex)) {
+    completedBidIds.add(bidId);
+  }
+  if (currentBidId !== null) {
+    completedBidIds.delete(currentBidId);
+  }
+
+  return {
+    currentContestId: phase.contestOrder[phase.contestIndex] ?? null,
+    currentBidId,
+    completedBidIds: [...completedBidIds]
+  };
 }
 
 function publicBid(bid: BidState, reveal: boolean): Record<string, unknown> {
