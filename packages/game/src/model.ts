@@ -81,8 +81,8 @@ export interface ResolvedOperation {
 
 export interface OpeningPhase {
   type: "opening";
-  activeSeatId: SeatId;
-  submittedSeatIds: SeatId[];
+  turnSeatIds: SeatId[];
+  turnIndex: number;
 }
 
 export interface CounterbidPhase {

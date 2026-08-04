@@ -6,6 +6,7 @@ import {
   CreateLobbyRequestSchema,
   GameIdSchema,
   GiveResourcesCommandSchema,
+  PlayerGameActionSchema,
   ProjectedEventEnvelopeSchema,
   ServerWebSocketFrameSchema,
   ViewerStateEnvelopeSchema,
@@ -102,6 +103,29 @@ describe("protocol primitives", () => {
 });
 
 describe("commands", () => {
+  it("accepts at most one opening per action", () => {
+    const opening = {
+      firmId: "one-fell-swoop",
+      partyId: "honeycomb",
+      leverage: 1,
+      bluff: 0,
+      operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+    };
+
+    expect(
+      PlayerGameActionSchema.safeParse({
+        type: "submit_openings",
+        openings: [opening]
+      }).success
+    ).toBe(true);
+    expect(
+      PlayerGameActionSchema.safeParse({
+        type: "submit_openings",
+        openings: [opening, { ...opening, partyId: "foxglove" }]
+      }).success
+    ).toBe(false);
+  });
+
   it("requires a non-empty atomic gift", () => {
     const emptyGift = {
       type: "give_resources",

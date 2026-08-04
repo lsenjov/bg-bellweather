@@ -12,6 +12,7 @@ import {
   dealScoringCards,
   executeAction,
   initializeGame,
+  openingTurnSeatIds,
   projectGameState,
   replay,
   type GameAction,
@@ -91,11 +92,11 @@ describe("game setup and private projections", () => {
 
   it("rejects state from any non-current ruleset", () => {
     const initialized = initializeGame(configuration(2, null), zeroRandom);
-    initialized.state.rulesetVersion = "7";
+    initialized.state.rulesetVersion = "8";
 
-    expect(() => replay([initialized])).toThrow("Only ruleset 8 is supported");
+    expect(() => replay([initialized])).toThrow("Only ruleset 9 is supported");
     expect(() => projectGameState(initialized.state, null)).toThrow(
-      "Only ruleset 8 is supported"
+      "Only ruleset 9 is supported"
     );
   });
 
@@ -254,35 +255,133 @@ describe("game setup and private projections", () => {
 });
 
 describe("opening and counterbid phases", () => {
-  it("allows a low-player firm to place both required openings", () => {
-    const state = initializeGame(configuration(2, null), zeroRandom).state;
-    const seat = state.seats[0]!;
-    const next = act(state, {
-      type: "submit_openings",
-      seatId: seat.id,
-      now: 0,
-      openings: [
-        opening(seat.firmIds[0]!, PARTY_IDS[0], 1),
-        opening(seat.firmIds[0]!, PARTY_IDS[1], 1)
-      ]
+  it("builds Early Bird-relative opening order for every seat and player count", () => {
+    for (let playerCount = 2; playerCount <= 6; playerCount += 1) {
+      const seats = configuration(playerCount, null).seats.map((seat, position) => ({
+        id: seat.id,
+        position
+      }));
+      for (let firstIndex = 0; firstIndex < playerCount; firstIndex += 1) {
+        const clockwise = [
+          ...seats.slice(firstIndex),
+          ...seats.slice(0, firstIndex)
+        ].map((seat) => seat.id);
+        expect(openingTurnSeatIds(seats, seats[firstIndex]!.id)).toEqual(
+          playerCount <= 3
+            ? [...clockwise, ...clockwise.toReversed()]
+            : clockwise
+        );
+      }
+    }
+  });
+
+  it.each([
+    [2, ["seat-1", "seat-2", "seat-2", "seat-1"]],
+    [3, ["seat-1", "seat-2", "seat-3", "seat-3", "seat-2", "seat-1"]],
+    [4, ["seat-1", "seat-2", "seat-3", "seat-4"]]
+  ])("advances one opening at a time in the %i-player order", (playerCount, order) => {
+    let state = initializeGame(configuration(playerCount, null), zeroRandom).state;
+    expect(state.phase).toEqual({
+      type: "opening",
+      turnSeatIds: order,
+      turnIndex: 0
     });
-    expect(Object.keys(next.contests)).toEqual([
+
+    for (const [turnIndex, seatId] of order.entries()) {
+      expect(state.phase).toMatchObject({ type: "opening", turnIndex });
+      if (state.phase.type !== "opening") {
+        throw new Error("Expected opening phase");
+      }
+      expect(state.phase.turnSeatIds[state.phase.turnIndex]).toBe(seatId);
+      const seat = state.seats.find((candidate) => candidate.id === seatId)!;
+      const partyId = PARTY_IDS[turnIndex]!;
+      state = act(state, {
+        type: "submit_openings",
+        seatId,
+        now: turnIndex,
+        openings: [opening(seat.firmIds[0]!, partyId, 1)]
+      });
+      expect(state.contests[partyId]).toBeDefined();
+    }
+
+    expect(state.phase.type).toBe("counterbidding");
+  });
+
+  it("requires an affordable opening, permits an insolvent pass, and rechecks a later turn", () => {
+    let state = initializeGame(configuration(2, null), zeroRandom).state;
+    state.seats[0]!.reserve.leverage = 2;
+    state.seats[1]!.reserve.leverage = 0;
+    const firstSeat = state.seats[0]!;
+    const secondSeat = state.seats[1]!;
+
+    expect(() =>
+      act(state, {
+        type: "submit_openings",
+        seatId: firstSeat.id,
+        now: 0,
+        openings: []
+      })
+    ).toThrow("must open 1 contest");
+    expect(() =>
+      act(state, {
+        type: "submit_openings",
+        seatId: firstSeat.id,
+        now: 0,
+        openings: [
+          opening(firstSeat.firmIds[0]!, "invented-party" as PartyId, 1)
+        ]
+      })
+    ).toThrow("does not exist");
+    state = act(state, {
+      type: "submit_openings",
+      seatId: firstSeat.id,
+      now: 0,
+      openings: [opening(firstSeat.firmIds[0]!, PARTY_IDS[0], 1)]
+    });
+    state = act(state, {
+      type: "submit_openings",
+      seatId: secondSeat.id,
+      now: 1,
+      openings: []
+    });
+    state = act(state, {
+      type: "give_resources",
+      seatId: firstSeat.id,
+      recipientSeatId: secondSeat.id,
+      resources: {
+        leverage: 1,
+        bluff: 0,
+        operations: operations(),
+        points: 0
+      }
+    });
+    expect(() =>
+      act(state, {
+        type: "submit_openings",
+        seatId: secondSeat.id,
+        now: 2,
+        openings: []
+      })
+    ).toThrow("must open 1 contest");
+    state = act(state, {
+      type: "submit_openings",
+      seatId: secondSeat.id,
+      now: 2,
+      openings: [opening(secondSeat.firmIds[0]!, PARTY_IDS[1], 1)]
+    });
+    state = act(state, {
+      type: "submit_openings",
+      seatId: firstSeat.id,
+      now: 3,
+      openings: []
+    });
+
+    expect(state.phase.type).toBe("counterbidding");
+    expect(Object.keys(state.contests)).toEqual([
       "pecking-order",
       PARTY_IDS[0],
       PARTY_IDS[1]
     ]);
-    expect(next.seats[0]?.reserve.leverage).toBe(18);
-    expect(() =>
-      act(state, {
-        type: "submit_openings",
-        seatId: seat.id,
-        now: 0,
-        openings: [
-          opening(seat.firmIds[0]!, "invented-party" as PartyId, 1),
-          opening(seat.firmIds[0]!, PARTY_IDS[1], 1)
-        ]
-      })
-    ).toThrow("does not exist");
   });
 
   it("allows ready/unready, closes early when all ready, and enforces optional deadline", () => {
@@ -427,10 +526,12 @@ describe("contest resolution", () => {
       }
     });
     expect(state.support.harbormouth["old-shell"]).toBeUndefined();
-    expect(state.phase).toMatchObject({
-      type: "opening",
-      activeSeatId: seatTwo.id
-    });
+    expect(state.phase.type).toBe("opening");
+    if (state.phase.type !== "opening") {
+      throw new Error("Expected opening phase");
+    }
+    expect(state.phase.turnSeatIds[0]).toBe(seatTwo.id);
+    expect(state.phase.turnIndex).toBe(0);
   });
 
   it("resolves party contests in the order produced by Pecking Order swaps", () => {
@@ -878,7 +979,8 @@ function openingsForActiveSeat(
   if (state.phase.type !== "opening") {
     throw new Error("Expected opening phase");
   }
-  const seat = state.seats.find((candidate) => candidate.id === state.phase.activeSeatId)!;
+  const activeSeatId = state.phase.turnSeatIds[state.phase.turnIndex]!;
+  const seat = state.seats.find((candidate) => candidate.id === activeSeatId)!;
   const available = PARTY_IDS.filter(
     (party) => state.contests[party] === undefined
   );
@@ -890,7 +992,7 @@ function openingsForActiveSeat(
     available.splice(available.indexOf(firstTarget), 1);
     available.unshift(firstTarget);
   }
-  const count = Math.min(state.seats.length <= 3 ? 2 : 1, seat.reserve.leverage);
+  const count = Math.min(1, seat.reserve.leverage);
   return {
     type: "submit_openings",
     seatId: seat.id,

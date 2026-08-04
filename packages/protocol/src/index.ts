@@ -384,7 +384,7 @@ const SubmitOpeningsActionSchema = z
           partyId: PartyIdSchema
         }).strict()
       )
-      .max(2)
+      .max(1)
   })
   .strict();
 const SetCounterbidActionSchema = z

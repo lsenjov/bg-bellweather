@@ -124,11 +124,7 @@ export function initializeGame(
     resolvedOperations: [],
     roundHistory: [],
     electionHistory: [],
-    phase: {
-      type: "opening",
-      activeSeatId: firstOpener.id,
-      submittedSeatIds: []
-    },
+    phase: openingPhase(seats, firstOpener.id),
     nextEntitySequence: 1,
     configuration: {
       counterbidTimerSeconds: configuration.counterbidTimerSeconds
@@ -278,12 +274,11 @@ function submitOpenings(
   now: number
 ): void {
   const phase = requirePhase(state, "opening");
-  if (phase.activeSeatId !== seatId) {
+  if (phase.turnSeatIds[phase.turnIndex] !== seatId) {
     throw new GameRuleError("not_active_seat", "It is another seat's opening turn");
   }
   const seat = getSeat(state, seatId);
-  const setup = setupFor(state);
-  const required = Math.min(setup.openingBids, seat.reserve.leverage);
+  const required = Math.min(1, seat.reserve.leverage);
   if (openings.length !== required) {
     throw new GameRuleError(
       "wrong_opening_count",
@@ -325,8 +320,8 @@ function submitOpenings(
     };
   }
 
-  phase.submittedSeatIds.push(seatId);
-  if (phase.submittedSeatIds.length === state.seats.length) {
+  phase.turnIndex += 1;
+  if (phase.turnIndex === phase.turnSeatIds.length) {
     state.phase = {
       type: "counterbidding",
       deadlineAt:
@@ -337,7 +332,6 @@ function submitOpenings(
     };
     return;
   }
-  phase.activeSeatId = nextSeatId(state, seatId);
 }
 
 function setCounterbid(
@@ -886,10 +880,35 @@ function setElectionReady(
 function beginRound(state: GameState, round: number): void {
   state.round = round;
   resetRoundTable(state);
-  state.phase = {
+  state.phase = openingPhase(state.seats, state.nextFirstOpenerSeatId);
+}
+
+export function openingTurnSeatIds(
+  seats: readonly Pick<SeatState, "id" | "position">[],
+  firstSeatId: SeatId
+): SeatId[] {
+  const ordered = [...seats].sort((left, right) => left.position - right.position);
+  const firstIndex = ordered.findIndex((seat) => seat.id === firstSeatId);
+  if (firstIndex < 0) {
+    throw new GameRuleError("unknown_seat", "Opening seat does not exist");
+  }
+  const clockwise = [
+    ...ordered.slice(firstIndex),
+    ...ordered.slice(0, firstIndex)
+  ].map((seat) => seat.id);
+  return clockwise.length <= 3
+    ? [...clockwise, ...clockwise.toReversed()]
+    : clockwise;
+}
+
+function openingPhase(
+  seats: readonly Pick<SeatState, "id" | "position">[],
+  firstSeatId: SeatId
+): GameState["phase"] {
+  return {
     type: "opening",
-    activeSeatId: state.nextFirstOpenerSeatId,
-    submittedSeatIds: []
+    turnSeatIds: openingTurnSeatIds(seats, firstSeatId),
+    turnIndex: 0
   };
 }
 
@@ -1404,11 +1423,6 @@ function cloneOperations(
 
 function emptyOperations(): OperationInventory {
   return { organise: 0, rally: 0, smear: 0, court: 0 };
-}
-
-function nextSeatId(state: GameState, seatId: SeatId): SeatId {
-  const index = state.seats.findIndex((seat) => seat.id === seatId);
-  return state.seats[(index + 1) % state.seats.length]!.id;
 }
 
 function nextEntityId(state: GameState, prefix: string): string {
