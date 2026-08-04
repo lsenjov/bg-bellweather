@@ -61,6 +61,7 @@ interface ViewSeat {
 }
 
 interface GameView {
+  playerCount: number;
   round: number;
   electionNumber: number;
   phase: string;
@@ -462,45 +463,29 @@ function GameDesk(props: {
     props.view.phase === "counterbidding" &&
     !props.spectator &&
     props.ownSeat !== undefined;
-  const folioFirmIds = props.ownSeat?.firmIds ?? [];
-  const folioStyle = folioFirmIds.length > 0
+  const folioFirmId = props.ownSeat?.firmIds[0];
+  const folioStyle = folioFirmId
     ? {
-        "--folio-firm-a": FIRM_ACCENTS[folioFirmIds[0]!],
-        "--folio-firm-b": FIRM_ACCENTS[
-          folioFirmIds[1] ?? folioFirmIds[0]!
-        ]
+        "--folio-firm": FIRM_ACCENTS[folioFirmId]
       } as React.CSSProperties
     : undefined;
 
   return (
     <main className="game-grid">
       <aside
-        className={`private-folio paper-panel ${folioFirmIds.length > 0 ? "private-folio-firm" : "private-folio-neutral"} ${folioFirmIds.length > 1 ? "private-folio-dual" : ""}`}
+        className={`private-folio paper-panel ${folioFirmId ? "private-folio-firm" : "private-folio-neutral"}`}
         style={folioStyle}
       >
-        {folioFirmIds.length > 0 && (
+        {folioFirmId && (
           <div className="folio-watermarks" aria-hidden="true">
-            {folioFirmIds.map((firmId) => (
-              <FirmEmblem key={firmId} firmId={firmId} />
-            ))}
+            <FirmEmblem firmId={folioFirmId} />
           </div>
         )}
         <div className="folio-heading">
           <p className="section-label">{props.spectator ? "Observer’s copy" : "Private folio"}</p>
           <h2>{props.ownSeat?.displayName ?? "Press gallery"}</h2>
           {props.ownSeat?.reserve && (
-            <div className="folio-firms">
-              {props.ownSeat.firmIds.map((firmId) => (
-                <div
-                  className="folio-firm"
-                  key={firmId}
-                  style={{ "--firm-accent": FIRM_ACCENTS[firmId] } as React.CSSProperties}
-                >
-                  <FirmEmblem firmId={firmId} />
-                  <span>{FIRMS_BY_ID[firmId].name}</span>
-                </div>
-              ))}
-            </div>
+            <p className="firm-line">{folioFirmId ? FIRMS_BY_ID[folioFirmId].name : ""}</p>
           )}
         </div>
         {props.ownSeat?.reserve ? (
@@ -542,7 +527,13 @@ function GameDesk(props: {
           scoringObjectives={scoringObjectives}
           scoringLabel={revealedObjectives.length > 0 ? "Election agenda" : "Private agenda"}
         />
-        <PlayerLedger seats={props.view.seats} />
+        <PlayerLedger
+          seats={props.view.seats}
+          readySeatIds={props.view.readySeatIds}
+          showReadiness={
+            props.view.phase === "counterbidding" || props.view.phase === "election"
+          }
+        />
       </section>
 
       <section className="contest-desk paper-panel">
@@ -718,10 +709,8 @@ export function ContestCard(props: {
           );
           const leverageKnown = typeof bid.leverage === "number";
           const cardCount = numberOr(bid.cardCount, 0);
-          const firmId = String(bid.firmId) as FirmId;
+          const firmId = owner?.firmIds[0] ?? String(bid.firmId) as FirmId;
           const firm = FIRMS_BY_ID[firmId];
-          const concealedFamilies =
-            typeof bid.bluff !== "number" || operationInventory === null;
           return (
             <li
               key={String(bid.id)}
@@ -757,7 +746,7 @@ export function ContestCard(props: {
               {cardFamilies.length === 0 && !leverageKnown && (
                 <strong className="filing-covered">Covered</strong>
               )}
-              {concealedFamilies && cardCount > 0 && (
+              {cardCount > 0 && (
                 <span className="filing-total">
                   {cardCount} bid {cardCount === 1 ? "card" : "cards"} in stack
                 </span>
@@ -884,7 +873,7 @@ export function OpeningForm(props: {
     [props.view.contests]
   );
   const required = Math.min(
-    props.seat.firmIds.length,
+    props.view.playerCount <= 3 ? 2 : 1,
     props.seat.reserve?.leverage ?? 0,
     availableParties.length
   );
@@ -895,8 +884,8 @@ export function OpeningForm(props: {
     bluff: number;
     operations: TokenDraft;
   }>>(() =>
-    props.seat.firmIds.slice(0, required).map((firmId, index) => ({
-      firmId,
+    Array.from({ length: required }, (_, index) => ({
+      firmId: props.seat.firmIds[index] ?? props.seat.firmIds[0]!,
       partyId: availableParties[index] ?? availableParties[0] ?? "honeycomb",
       leverage: 1,
       bluff: 0,
@@ -968,7 +957,12 @@ export function OpeningForm(props: {
         });
       }}
     >
-      <h3>Place {required} opening {required === 1 ? "bid" : "bids"}</h3>
+      <h3>
+        Place {required} opening {required === 1 ? "bid" : "bids"}
+        {props.seat.firmIds[0]
+          ? ` as ${FIRMS_BY_ID[props.seat.firmIds[0]].name}`
+          : ""}
+      </h3>
       {rows.map((row, index) => {
         const leverageMaximum = reserve.leverage - rows.reduce(
           (total, candidate, candidateIndex) =>
@@ -993,7 +987,7 @@ export function OpeningForm(props: {
 
         return <fieldset
           className={`opening-draft ${index === activeRowIndex ? "opening-draft-active" : ""}`}
-          key={row.firmId}
+          key={index}
           onFocus={() => setActiveRowIndex(index)}
         >
           <legend>
@@ -1003,7 +997,7 @@ export function OpeningForm(props: {
               aria-pressed={index === activeRowIndex}
               onClick={() => setActiveRowIndex(index)}
             >
-              Edit {FIRMS_BY_ID[row.firmId as keyof typeof FIRMS_BY_ID]?.name}
+              Edit opening {index + 1}
             </button>
           </legend>
           <label>
@@ -1189,7 +1183,7 @@ export function CounterbidForm(props: {
     setSlotIndex(unusedSlotIndex);
     setContestId(selection.value);
     setSelectionFeedback(
-      `Unused counterbid ${(unusedSlotIndex % 2) + 1} selected for ${partyName(selection.value)}.`
+      `Unused counterbid ${unusedSlotIndex + 1} selected for ${partyName(selection.value)}.`
     );
   }, [contestId, dirty, props.contestSelection, props.view.contests, selectedBidId, slots]);
 
@@ -1209,7 +1203,7 @@ export function CounterbidForm(props: {
     >
       <h3>Counterbids</h3>
       <label>
-        Firm identity card
+        Counterbid card
         <select
           value={slotIndex}
           onChange={(event) => {
@@ -1225,17 +1219,15 @@ export function CounterbidForm(props: {
             setSlotIndex(nextSlotIndex);
           }}
         >
-          {slots.map((bidId, index) => {
-            const slotFirm = props.seat.firmIds[Math.floor(index / 2)];
-            return (
-              <option key={index} value={index}>
-                {FIRMS_BY_ID[slotFirm as keyof typeof FIRMS_BY_ID]?.numeral ??
-                  "Firm"}{" "}
-                · counterbid {(index % 2) + 1}
-                {bidId ? " · placed" : ""}
-              </option>
-            );
-          })}
+          {slots.map((bidId, index) => (
+            <option key={index} value={index}>
+              {props.seat.firmIds[0]
+                ? FIRMS_BY_ID[props.seat.firmIds[0]].numeral
+                : "Firm"}{" "}
+              · counterbid {index + 1}
+              {bidId ? " · placed" : ""}
+            </option>
+          ))}
         </select>
       </label>
       <label>
@@ -2020,16 +2012,45 @@ function courtSupportSummary(
   return placements.length > 0 ? `Court ${placements.join(", ")}` : "Court empty";
 }
 
-function PlayerLedger({ seats }: { seats: ViewSeat[] }) {
+export function PlayerLedger({
+  seats,
+  readySeatIds,
+  showReadiness
+}: {
+  seats: ViewSeat[];
+  readySeatIds: string[];
+  showReadiness: boolean;
+}) {
   return (
-    <div className="player-ledger" aria-label="Live public point totals">
-      {seats.map((seat) => (
-        <article key={seat.id}>
-          <span>{seat.displayName}</span>
-          <strong>{seat.points}</strong>
-          <small>points</small>
-        </article>
-      ))}
+    <div className="player-ledger" aria-label="Player identities, points, and readiness">
+      {seats.map((seat) => {
+        const firmId = seat.firmIds[0];
+        const ready = readySeatIds.includes(seat.id);
+        return (
+          <article
+            className={showReadiness ? (ready ? "player-ready" : "player-waiting") : ""}
+            key={seat.id}
+            style={firmId ? {
+              "--firm-accent": FIRM_ACCENTS[firmId]
+            } as React.CSSProperties : undefined}
+          >
+            {firmId && <FirmEmblem firmId={firmId} className="player-ledger-emblem" />}
+            <div className="player-ledger-identity">
+              <span>{seat.displayName}</span>
+              {firmId && <small>{FIRMS_BY_ID[firmId].name}</small>}
+            </div>
+            <div className="player-ledger-points">
+              <strong>{seat.points}</strong>
+              <small>points</small>
+            </div>
+            {showReadiness && (
+              <b className="player-ledger-status">
+                {ready ? "Ready" : "Waiting"}
+              </b>
+            )}
+          </article>
+        );
+      })}
     </div>
   );
 }
@@ -2069,6 +2090,7 @@ function extractView(state: ViewerStateEnvelope): GameView | null {
     }
   }
   return {
+    playerCount: state.publicState.configuration.playerCount,
     round: numberOr(publicGame.round, 1),
     electionNumber: numberOr(publicGame.electionNumber, 0),
     phase: typeof phase.type === "string" ? phase.type : String(publicGame.phase),

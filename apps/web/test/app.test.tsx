@@ -10,7 +10,8 @@ import {
   CounterbidForm,
   DistrictMap,
   OpeningForm,
-  PartyRail
+  PartyRail,
+  PlayerLedger
 } from "../src/App.js";
 
 beforeEach(() => {
@@ -60,6 +61,43 @@ describe("browser play surface", () => {
     ).toBeTruthy();
   });
 
+  it("marks the points tracker with each firm identity and active readiness", () => {
+    const { container } = render(
+      <PlayerLedger
+        seats={[
+          {
+            id: "seat-a",
+            displayName: "Ada",
+            controller: "human",
+            position: 0,
+            firmIds: ["one-fell-swoop"],
+            points: 10,
+            reserve: null,
+            scoringCardId: null
+          },
+          {
+            id: "seat-b",
+            displayName: "Bert",
+            controller: "human",
+            position: 1,
+            firmIds: ["pairliament"],
+            points: 7,
+            reserve: null,
+            scoringCardId: null
+          }
+        ]}
+        readySeatIds={["seat-b"]}
+        showReadiness
+      />
+    );
+
+    expect(container.querySelectorAll(".player-ledger-emblem")).toHaveLength(2);
+    expect(screen.getByText("One Fell Swoop Public Affairs")).toBeTruthy();
+    expect(screen.getByText("Pairliament Partners")).toBeTruthy();
+    expect(within(screen.getByText("Ada").closest("article")!).getByText("Waiting")).toBeTruthy();
+    expect(within(screen.getByText("Bert").closest("article")!).getByText("Ready")).toBeTruthy();
+  });
+
   it("marks private scoring districts with their objective party", () => {
     render(
       <DistrictMap
@@ -103,7 +141,7 @@ describe("browser play surface", () => {
   });
 
   it("shows covered, owned, and revealed bid information", () => {
-    render(
+    const { container } = render(
       <ContestCard
         contestId="honeycomb"
         seats={[
@@ -123,29 +161,33 @@ describe("browser play surface", () => {
             id: "bid-1",
             contestId: "honeycomb",
             ownerSeatId: "seat-a",
-            firmId: "one-fell-swoop",
+            firmId: "pairliament",
             kind: "counterbid",
             slotIndex: 2,
             status: "active",
             leverage: 3,
             bluff: 1,
-            operations: { organise: 1, rally: 0, smear: 1, court: 0 }
+            operations: { organise: 1, rally: 0, smear: 1, court: 0 },
+            cardCount: 6
           }
         ]}
       />
     );
+    const filing = within(container);
 
     expect(
-      screen.getByLabelText("3 Leverage, 1 Bluff, 1 Organise, 1 Smear")
+      filing.getByLabelText("3 Leverage, 1 Bluff, 1 Organise, 1 Smear")
     ).toBeTruthy();
-    expect(screen.getByText("3 L")).toBeTruthy();
-    expect(screen.getByText("1 B")).toBeTruthy();
-    expect(screen.getByText("1 O")).toBeTruthy();
-    expect(screen.getByText("1 S")).toBeTruthy();
-    expect(screen.queryByText(/0 [LBORSC]/)).toBeNull();
-    expect(screen.getByText(/One Fell Swoop Public Affairs/i)).toBeTruthy();
-    expect(screen.getByText(/counterbid · identity card · active/i)).toBeTruthy();
-    expect(document.querySelector(".filing-firm-emblem")).toBeTruthy();
+    expect(filing.getByText("3 L")).toBeTruthy();
+    expect(filing.getByText("1 B")).toBeTruthy();
+    expect(filing.getByText("1 O")).toBeTruthy();
+    expect(filing.getByText("1 S")).toBeTruthy();
+    expect(filing.queryByText(/0 [LBORSC]/)).toBeNull();
+    expect(filing.getByText("6 bid cards in stack")).toBeTruthy();
+    expect(filing.getByText(/One Fell Swoop Public Affairs/i)).toBeTruthy();
+    expect(filing.queryByText(/Pairliament Partners/i)).toBeNull();
+    expect(filing.getByText(/counterbid · identity card · active/i)).toBeTruthy();
+    expect(container.querySelector(".filing-firm-emblem")).toBeTruthy();
   });
 
   it("preserves the covered total beside a partially revealed opening", () => {
@@ -232,12 +274,13 @@ describe("browser play surface", () => {
     expect(onSelect).toHaveBeenCalledWith("old-shell");
   });
 
-  it("limits simultaneous opening selects to cards not used in other drafts", () => {
+  it("uses one digital firm for both low-player openings and shared card limits", () => {
+    const onCommand = vi.fn(async () => undefined);
     const { container } = render(
       <OpeningForm
-        view={{ contests: {} } as never}
+        view={{ playerCount: 2, contests: {} } as never}
         seat={{
-          firmIds: ["one-fell-swoop", "pairliament"],
+          firmIds: ["one-fell-swoop"],
           reserve: {
             leverage: 3,
             bluff: 2,
@@ -245,7 +288,7 @@ describe("browser play surface", () => {
           }
         } as never}
         busy={false}
-        onCommand={async () => undefined}
+        onCommand={onCommand}
       />
     );
 
@@ -258,12 +301,24 @@ describe("browser play surface", () => {
     const bluff = form.getAllByLabelText("Face-down Bluff") as HTMLSelectElement[];
     fireEvent.change(bluff[0]!, { target: { value: "2" } });
     expect([...bluff[1]!.options].map((option) => option.value)).toEqual(["0"]);
+    expect(form.getByText(/as One Fell Swoop Public Affairs/i)).toBeTruthy();
+    expect(form.queryByText(/Pairliament Partners/i)).toBeNull();
+
+    fireEvent.click(form.getByRole("button", { name: /file opening bids/i }));
+    expect(onCommand).toHaveBeenCalledWith(expect.objectContaining({
+      action: expect.objectContaining({
+        openings: expect.arrayContaining([
+          expect.objectContaining({ firmId: "one-fell-swoop" }),
+          expect.objectContaining({ firmId: "one-fell-swoop" })
+        ])
+      })
+    }));
   });
 
   it("applies party shortcuts only to the active opening draft", async () => {
-    const view = { contests: {} };
+    const view = { playerCount: 2, contests: {} };
     const seat = {
-      firmIds: ["one-fell-swoop", "pairliament"],
+      firmIds: ["one-fell-swoop"],
       reserve: {
         leverage: 3,
         bluff: 0,
@@ -291,7 +346,7 @@ describe("browser play surface", () => {
       />
     );
     await waitFor(() => expect(parties[0]!.value).toBe("riverworks"));
-    fireEvent.click(form.getByRole("button", { name: /edit pairliament partners/i }));
+    fireEvent.click(form.getByRole("button", { name: /edit opening 2/i }));
     rerender(
       <OpeningForm
         view={view as never}
@@ -447,9 +502,90 @@ describe("browser play surface", () => {
       />
     );
 
-    await waitFor(() => expect((form.getByLabelText("Firm identity card") as HTMLSelectElement).value).toBe("1"));
+    await waitFor(() => expect((form.getByLabelText("Counterbid card") as HTMLSelectElement).value).toBe("1"));
     expect((form.getByLabelText("Contest") as HTMLSelectElement).value).toBe("old-shell");
     expect(form.getByRole("status").textContent).toMatch(/unused counterbid 2 selected/i);
+  });
+
+  it("labels all four low-player counterbid cards with one firm", () => {
+    const { container } = render(
+      <CounterbidForm
+        view={{
+          contests: { honeycomb: {} },
+          counterbidSlots: [null, null, null, null],
+          bids: []
+        } as never}
+        seat={{
+          firmIds: ["one-fell-swoop"],
+          reserve: {
+            leverage: 20,
+            bluff: 8,
+            operations: { organise: 4, rally: 8, smear: 4, court: 2 }
+          }
+        } as never}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    const options = [
+      ...(within(container).getByLabelText("Counterbid card") as HTMLSelectElement).options
+    ].map((option) => option.textContent);
+    expect(options).toEqual([
+      "1 · counterbid 1",
+      "1 · counterbid 2",
+      "1 · counterbid 3",
+      "1 · counterbid 4"
+    ]);
+  });
+
+  it("announces the absolute number of a shortcut-selected low-player counterbid", async () => {
+    const view = {
+      contests: { honeycomb: {}, "old-shell": {} },
+      counterbidSlots: ["bid-1", "bid-2", null, null],
+      bids: [{
+        id: "bid-1",
+        contestId: "honeycomb",
+        leverage: 1,
+        bluff: 0,
+        operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+      }]
+    };
+    const seat = {
+      firmIds: ["one-fell-swoop"],
+      reserve: {
+        leverage: 20,
+        bluff: 8,
+        operations: { organise: 4, rally: 8, smear: 4, court: 2 }
+      }
+    };
+    const { container, rerender } = render(
+      <CounterbidForm
+        view={view as never}
+        seat={seat as never}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+    const form = within(container);
+    await waitFor(() =>
+      expect((form.getByLabelText("Hidden Leverage") as HTMLSelectElement).value).toBe("1")
+    );
+
+    rerender(
+      <CounterbidForm
+        view={view as never}
+        seat={seat as never}
+        busy={false}
+        contestSelection={{ value: "old-shell", revision: 1 }}
+        onCommand={async () => undefined}
+      />
+    );
+
+    await waitFor(() =>
+      expect((form.getByLabelText("Counterbid card") as HTMLSelectElement).value).toBe("2")
+    );
+    expect(form.getByRole("status").textContent).toMatch(/unused counterbid 3 selected/i);
   });
 
   it("does not replay a counterbid shortcut when the form remounts", () => {
@@ -511,11 +647,11 @@ describe("browser play surface", () => {
         expect.objectContaining({ dirty: true, contestId: "old-shell" })
       )
     );
-    fireEvent.change(form.getByLabelText("Firm identity card"), {
+    fireEvent.change(form.getByLabelText("Counterbid card"), {
       target: { value: "1" }
     });
     expect(
-      (form.getByLabelText("Firm identity card") as HTMLSelectElement).value
+      (form.getByLabelText("Counterbid card") as HTMLSelectElement).value
     ).toBe("0");
     fireEvent.click(form.getByRole("button", { name: /reset unsaved edits/i }));
     expect((form.getByLabelText("Contest") as HTMLSelectElement).value).toBe(
@@ -630,7 +766,7 @@ describe("browser play surface", () => {
       />
     );
 
-    expect((form.getByLabelText("Firm identity card") as HTMLSelectElement).value).toBe("0");
+    expect((form.getByLabelText("Counterbid card") as HTMLSelectElement).value).toBe("0");
     expect(form.getByRole("status").textContent).toMatch(/apply or reset/i);
     fireEvent.click(form.getByRole("button", { name: /reset unsaved edits/i }));
     expect(leverage.value).toBe("3");
@@ -669,7 +805,7 @@ describe("browser play surface", () => {
       />
     );
 
-    expect((form.getByLabelText("Firm identity card") as HTMLSelectElement).value).toBe("0");
+    expect((form.getByLabelText("Counterbid card") as HTMLSelectElement).value).toBe("0");
     expect((form.getByLabelText("Contest") as HTMLSelectElement).value).toBe("honeycomb");
     expect(form.getByRole("status").textContent).toMatch(/no unused counterbid/i);
   });

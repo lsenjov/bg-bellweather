@@ -69,17 +69,11 @@ export function initializeGame(
   const firstOpenerIndex = random.integer(configuration.seats.length);
   validateRandomInteger(firstOpenerIndex, configuration.seats.length);
 
-  let firmIndex = 0;
   const seats = configuration.seats.map((seat, position): SeatState => {
-    const firmIds = FIRM_IDS.slice(
-      firmIndex,
-      firmIndex + setup.firms
-    ) as FirmId[];
-    firmIndex += setup.firms;
     return {
       ...seat,
       position,
-      firmIds,
+      firmIds: [FIRM_IDS[position]!],
       reserve: resourcesFromSetup(setup),
       scoringCardId: scoringCards[position]!
     };
@@ -290,21 +284,16 @@ function submitOpenings(
     );
   }
 
-  const firms = new Set<FirmId>();
   const parties = new Set<PartyId>();
   for (const opening of openings) {
     validateFirm(seat, opening.firmId);
     if (!(PARTY_IDS as readonly string[]).includes(opening.partyId)) {
       throw new GameRuleError("unknown_party", "Opening target party does not exist");
     }
-    if (firms.has(opening.firmId)) {
-      throw new GameRuleError("duplicate_firm", "A firm can open only one contest");
-    }
     if (parties.has(opening.partyId) || state.contests[opening.partyId] !== undefined) {
       throw new GameRuleError("party_already_open", "Each party can host only one contest");
     }
     validatePackage(opening, false);
-    firms.add(opening.firmId);
     parties.add(opening.partyId);
   }
   validateCombinedResources(seat.reserve, openings);
@@ -376,7 +365,9 @@ function setCounterbid(
   }
 
   validateFirm(seat, input.firmId);
-  const slotFirm = seat.firmIds[Math.floor(slotIndex / 2)];
+  const slotFirm = seat.firmIds.length === 1
+    ? seat.firmIds[0]
+    : seat.firmIds[Math.floor(slotIndex / 2)];
   if (input.firmId !== slotFirm) {
     throw new GameRuleError(
       "wrong_counterbid_identity",

@@ -22,8 +22,8 @@ import {
 
 describe("game setup and private projections", () => {
   it.each([
-    [2, 2, 20, 8, 8, 10, 4],
-    [3, 2, 20, 8, 8, 10, 4],
+    [2, 1, 20, 8, 8, 10, 4],
+    [3, 1, 20, 8, 8, 10, 4],
     [4, 1, 10, 4, 4, 5, 2],
     [5, 1, 10, 4, 4, 5, 2],
     [6, 1, 10, 4, 4, 5, 2]
@@ -62,7 +62,7 @@ describe("game setup and private projections", () => {
     const initialized = initializeGame(configuration(2, null), zeroRandom);
     const state = initialized.state;
 
-    expect(state.seats.map((seat) => seat.firmIds.length)).toEqual([2, 2]);
+    expect(state.seats.map((seat) => seat.firmIds.length)).toEqual([1, 1]);
     expect(state.seats[0]?.reserve).toEqual({
       leverage: 20,
       bluff: 8,
@@ -178,22 +178,24 @@ describe("game setup and private projections", () => {
 });
 
 describe("opening and counterbid phases", () => {
-  it("requires every affordable opening with distinct firms and targets", () => {
+  it("allows a low-player firm to place both required openings", () => {
     const state = initializeGame(configuration(2, null), zeroRandom).state;
     const seat = state.seats[0]!;
-    expect(() =>
-      act(state, {
-        type: "submit_openings",
-        seatId: seat.id,
-        now: 0,
-        openings: [
-          opening(seat.firmIds[0]!, PARTY_IDS[0], 1),
-          opening(seat.firmIds[0]!, PARTY_IDS[1], 1)
-        ]
-      })
-    ).toThrow("firm can open only one");
-    expect(state.phase.type).toBe("opening");
-    expect(state.seats[0]?.reserve.leverage).toBe(20);
+    const next = act(state, {
+      type: "submit_openings",
+      seatId: seat.id,
+      now: 0,
+      openings: [
+        opening(seat.firmIds[0]!, PARTY_IDS[0], 1),
+        opening(seat.firmIds[0]!, PARTY_IDS[1], 1)
+      ]
+    });
+    expect(Object.keys(next.contests)).toEqual([
+      "pecking-order",
+      PARTY_IDS[0],
+      PARTY_IDS[1]
+    ]);
+    expect(next.seats[0]?.reserve.leverage).toBe(18);
     expect(() =>
       act(state, {
         type: "submit_openings",
@@ -201,7 +203,7 @@ describe("opening and counterbid phases", () => {
         now: 0,
         openings: [
           opening(seat.firmIds[0]!, "invented-party" as PartyId, 1),
-          opening(seat.firmIds[1]!, PARTY_IDS[1], 1)
+          opening(seat.firmIds[0]!, PARTY_IDS[1], 1)
         ]
       })
     ).toThrow("does not exist");
@@ -263,6 +265,18 @@ describe("opening and counterbid phases", () => {
     timed = act(timed, { type: "expire_counterbids", now: 11_000 });
     expect(timed).toMatchObject({ round: 2, phase: { type: "opening" } });
     expect(timed.roundHistory[0]?.bids).not.toEqual({});
+  });
+
+  it("uses the same digital firm across all four low-player counterbid cards", () => {
+    let state = submitAllOpenings(
+      initializeGame(configuration(2, null), zeroRandom).state,
+      1_000
+    );
+    const firmId = state.seats[0]!.firmIds[0]!;
+    state = setBid(state, "seat-1", 3, PARTY_IDS[0], 1);
+
+    const bidId = state.counterbidSlots["seat-1"]![3]!;
+    expect(state.bids[bidId]?.firmId).toBe(firmId);
   });
 
   it("cancels equal counterbids and performs the circular Revolving Door", () => {
@@ -671,14 +685,14 @@ function openingsForActiveSeat(
     available.splice(available.indexOf(firstTarget), 1);
     available.unshift(firstTarget);
   }
-  const count = Math.min(seat.firmIds.length, seat.reserve.leverage);
+  const count = Math.min(state.seats.length <= 3 ? 2 : 1, seat.reserve.leverage);
   return {
     type: "submit_openings",
     seatId: seat.id,
     now,
     openings: Array.from({ length: count }, (_, index) =>
       opening(
-        seat.firmIds[index]!,
+        seat.firmIds[0]!,
         available[index]!,
         1,
         index === 0 ? (seatOperations[seat.id] ?? operations()) : operations()

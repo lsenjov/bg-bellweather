@@ -37,6 +37,12 @@
           <tbody>
             <tr>
               <td>2026-08-04</td>
+              <td>In the web application, assign and present one firm per player at every player count. At two or three players, retain the doubled card supply, opening bids, and counterbid cards independently of firm count. The physical board game continues to give those players two firms' components.</td>
+              <td>A single public identity keeps each human legible as one actor while preserving the low-player component and action economy.</td>
+              <td>Players cannot distinguish their doubled bid capacity, or hiding the second physical identity creates confusion when moving between the board game and app.</td>
+            </tr>
+            <tr>
+              <td>2026-08-04</td>
               <td>Make the total number of transferable cards in every placed bid public, including Leverage, Bluff, and operation cards but excluding the firm identity card. Keep covered card-family quantities and stack composition hidden until reveal.</td>
               <td>A visible stack size matches the physical table state and gives the app useful public information without exposing whether extra cards are operatives or bluffs.</td>
               <td>Public size removes too much bluffing uncertainty, physical stacks cannot be counted consistently, or players mistake the identity card as part of the total.</td>
@@ -67,7 +73,7 @@
             </tr>
             <tr>
               <td>2026-07-31</td>
-              <td><strong>Partially superseded:</strong> Rename the setting from Bellwether to Bellweather, Clout to Leverage, the Court operation to Coalition, and each party’s Overture to its Coalition Target. Apply the same breaking rename to package scopes, state, protocol fields, operation IDs, environment variables, and saved-session keys with no legacy aliases. Give the six transferable card families unique L/B/O/R/S/C indices in the upper-left and rotated lower-right corners.</td>
+              <td><strong>Partially superseded:</strong> Rename the setting from Bellwether to Bellweather, Clout to Leverage, the Court operation to Coalition, and each party’s Overture to its Coalition Target. Apply the same breaking rename to package scopes, state, protocol fields, operation IDs, environment variables, and saved-session keys with no legacy aliases. Give the six transferable card families unique L/B/O/R/S/C indices in the upper-left and rotated lower-right corners; every card-family name must retain a distinct starting letter.</td>
               <td>Bellweather is the intended place-name. The Coalition vocabulary directly connects the action, directional target, and reciprocal state. Leverage gives every card family a distinct starting letter, and paired corner indices keep the family recognizable in either orientation and in a fanned hand.</td>
               <td>The Bellweather, Leverage, Coalition Target, package-scope, and corner-index choices remain current. Later on 2026-07-31, player confusion reopened the operation name: Court returned as the action keyword while Coalition remained the reciprocal state.</td>
             </tr>

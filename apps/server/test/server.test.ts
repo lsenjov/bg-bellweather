@@ -485,7 +485,7 @@ describe("game server", () => {
                   operations: { ...emptyOperations, organise: 1 }
                 },
                 {
-                  firmId: firms[1],
+                  firmId: firms[0],
                   partyId: active.publicState.publicGame.partyOrder[1],
                   leverage: 1,
                   bluff: 0,
@@ -655,8 +655,8 @@ describe("game server", () => {
           type: "game_action",
           action: {
             type: "submit_openings",
-            openings: parties.map((partyId, index) => ({
-              firmId: firms[index],
+            openings: parties.map((partyId) => ({
+              firmId: firms[0],
               partyId,
               leverage: 1,
               bluff: 0,
