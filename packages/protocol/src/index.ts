@@ -480,6 +480,7 @@ export const ProtocolErrorCodeSchema = z.enum([
   "version_conflict",
   "idempotency_conflict",
   "illegal_action",
+  "unsupported_ruleset",
   "phase_closed",
   "game_complete",
   "rate_limited",

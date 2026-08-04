@@ -526,6 +526,8 @@ function writeError(response: ServerResponse, error: unknown): void {
       ? "version_conflict"
       : appError.code === "idempotency_conflict"
         ? "idempotency_conflict"
+      : appError.code === "unsupported_ruleset"
+        ? "unsupported_ruleset"
       : appError.code === "phase_closed"
         ? "phase_closed"
         : appError.status === 400

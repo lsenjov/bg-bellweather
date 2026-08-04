@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import {
   GameRuleError,
   createElectionAction,
+  engineVersion,
   executeAction,
   initializeGame,
   type GameAction,
@@ -341,7 +342,6 @@ export class EventStore {
           },
           random
         );
-        initialized.state.rulesetVersion = game.rulesetVersion;
         event = this.appendEventUnsafe(game.id, now, {
           type: "game.started",
           actorSeatId: seatId,
@@ -497,7 +497,23 @@ export class EventStore {
 
   loadEngineState(gameId: string): GameState | null {
     const snapshot = this.loadLatestSnapshot(gameId);
-    return snapshot === null ? null : (snapshot.state as GameState);
+    if (snapshot === null) {
+      return null;
+    }
+
+    const state = snapshot.state as Partial<GameState> | null;
+    if (
+      snapshot.rulesetVersion !== engineVersion ||
+      state === null ||
+      state.rulesetVersion !== engineVersion
+    ) {
+      throw new AppError(
+        409,
+        "unsupported_ruleset",
+        `Only ruleset ${engineVersion} is supported; recreate this game`
+      );
+    }
+    return state as GameState;
   }
 
   authenticate(gameReference: string, token: string): AuthenticatedSeat {
@@ -821,6 +837,13 @@ export class EventStore {
 function mapGame(row: GameRow): GameRecord {
   if (row.status !== "lobby" && row.status !== "active" && row.status !== "finished") {
     throw new Error(`Unsupported game status: ${row.status}`);
+  }
+  if (row.ruleset_version !== engineVersion) {
+    throw new AppError(
+      409,
+      "unsupported_ruleset",
+      `Only ruleset ${engineVersion} is supported; recreate this game`
+    );
   }
 
   return {

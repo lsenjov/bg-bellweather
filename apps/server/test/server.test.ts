@@ -260,7 +260,7 @@ describe("game server", () => {
     await reopened.close();
   });
 
-  it("starts an older lobby with its persisted ruleset version", async () => {
+  it("rejects a lobby from an unsupported ruleset", async () => {
     const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
     temporaryDirectories.push(directory);
     const app = createAppServer({
@@ -272,7 +272,7 @@ describe("game server", () => {
     const created = await jsonRequest(baseUrl, "/api/v1/games", {
       method: "POST",
       body: {
-        displayName: "Legacy host",
+        displayName: "Host",
         controller: "human",
         configuration: {
           playerCount: 2,
@@ -289,26 +289,48 @@ describe("game server", () => {
       method: "POST",
       body: {
         inviteCode: host.inviteCode,
-        displayName: "Legacy opponent",
+        displayName: "Opponent",
         controller: "human",
         role: "player"
       }
     });
     app.store.database
-      .prepare("UPDATE games SET ruleset_version = '5' WHERE id = ?")
+      .prepare("UPDATE games SET ruleset_version = '6' WHERE id = ?")
       .run(host.session.gameId);
 
-    await sendCommand(baseUrl, host.session, 2, "start-legacy", {
-      type: "start_game"
+    const response = await jsonRequest(
+      baseUrl,
+      `/api/v1/games/${host.session.gameId}/commands`,
+      {
+        method: "POST",
+        token: host.session.accessToken,
+        body: {
+          gameId: host.session.gameId,
+          idempotencyKey: "start-unsupported",
+          expectedVersion: 2,
+          command: { type: "start_game" }
+        }
+      }
+    );
+
+    expect(response.status).toBe(409);
+    expect(response.body).toMatchObject({
+      error: { code: "unsupported_ruleset" }
     });
 
-    expect(app.store.loadEngineState(host.session.gameId)?.rulesetVersion).toBe(
-      "5"
-    );
-    expect(app.store.loadLatestSnapshot(host.session.gameId)).toMatchObject({
-      rulesetVersion: "5",
-      state: { rulesetVersion: "5" }
+    app.store.database
+      .prepare("UPDATE games SET ruleset_version = '7' WHERE id = ?")
+      .run(host.session.gameId);
+    await sendCommand(baseUrl, host.session, 2, "start-current", {
+      type: "start_game"
     });
+    app.store.database
+      .prepare("UPDATE snapshots SET ruleset_version = '6' WHERE game_id = ?")
+      .run(host.session.gameId);
+
+    expect(() => app.store.loadEngineState(host.session.gameId)).toThrow(
+      "Only ruleset 7 is supported"
+    );
     await app.close();
   });
 
