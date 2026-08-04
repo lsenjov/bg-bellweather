@@ -15,6 +15,7 @@ export function protocolErrorCode(error: AppError): ProtocolErrorCode {
   if (
     error.code === "version_conflict" ||
     error.code === "idempotency_conflict" ||
+    error.code === "lobby_full" ||
     error.code === "unsupported_ruleset" ||
     error.code === "phase_closed"
   ) {

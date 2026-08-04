@@ -14,6 +14,7 @@ import {
   type GameState,
   type OperationInventory
 } from "@bellweather/game";
+import { MIN_PLAYER_COUNT } from "@bellweather/protocol";
 import {
   tokenLookup,
   verifySeatToken,
@@ -331,12 +332,17 @@ export class EventStore {
         if (game.status !== "lobby") {
           throw new AppError(409, "phase_closed", "The game has already started");
         }
-        if (this.listSeats(game.id).length !== game.settings.playerCapacity) {
-          throw new AppError(409, "illegal_action", "Every seat must be filled");
+        const seats = this.listSeats(game.id);
+        if (seats.length < MIN_PLAYER_COUNT) {
+          throw new AppError(
+            409,
+            "illegal_action",
+            `At least ${MIN_PLAYER_COUNT} players are required`
+          );
         }
         const initialized = initializeGame(
           {
-            seats: this.listSeats(game.id).map((seat) => ({
+            seats: seats.map((seat) => ({
               id: seat.id,
               displayName: seat.displayName,
               controller: seat.controller

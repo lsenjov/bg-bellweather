@@ -67,7 +67,6 @@ describe("game server", () => {
         displayName: "Ada",
         controller: "human",
         configuration: {
-          playerCount: 2,
           counterbidTimer: { mode: "off" },
           allowSpectators: false
         }
@@ -77,9 +76,39 @@ describe("game server", () => {
     const createBody = created.body as {
       inviteCode: string;
       session: { gameId: string; accessToken: string };
-      state: { publicState: { latestSequence: number } };
+      state: {
+        publicState: {
+          latestSequence: number;
+          configuration: { playerCount: number };
+        };
+      };
     };
     expect(createBody.state.publicState.latestSequence).toBe(1);
+    expect(createBody.state.publicState.configuration.playerCount).toBe(1);
+
+    const prematureStart = await jsonRequest(
+      baseUrl,
+      `/api/v1/games/${createBody.session.gameId}/commands`,
+      {
+        method: "POST",
+        token: createBody.session.accessToken,
+        body: {
+          gameId: createBody.session.gameId,
+          idempotencyKey: "start-one-player",
+          expectedVersion: 1,
+          command: { type: "start_game" }
+        }
+      }
+    );
+    expect(prematureStart).toMatchObject({
+      status: 409,
+      body: {
+        error: {
+          code: "illegal_action",
+          message: "At least 2 players are required"
+        }
+      }
+    });
 
     const joined = await jsonRequest(baseUrl, "/api/v1/games/join", {
       method: "POST",
@@ -160,6 +189,17 @@ describe("game server", () => {
       }
     );
     expect(started.status).toBe(200);
+    const activeState = await jsonRequest(
+      baseUrl,
+      `/api/v1/games/${createBody.session.gameId}/state`,
+      { token: createBody.session.accessToken }
+    );
+    expect(activeState.body).toMatchObject({
+      publicState: {
+        lifecycle: "active",
+        configuration: { playerCount: 2 }
+      }
+    });
     const chatCommand = {
       gameId: createBody.session.gameId,
       idempotencyKey: "chat-once",
@@ -267,6 +307,152 @@ describe("game server", () => {
     await reopened.close();
   });
 
+  it.each([2, 3, 4, 5, 6])(
+    "starts a lobby with %i occupied player seats",
+    async (playerCount) => {
+      const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
+      temporaryDirectories.push(directory);
+      const app = createAppServer({
+        databasePath: resolve(directory, "game.sqlite"),
+        port: 0
+      });
+      const address = await app.listen();
+      const baseUrl = `http://${address.host}:${address.port}`;
+      const created = await jsonRequest(baseUrl, "/api/v1/games", {
+        method: "POST",
+        body: {
+          displayName: "Host",
+          controller: "human",
+          configuration: {
+            counterbidTimer: { mode: "off" },
+            allowSpectators: false
+          }
+        }
+      });
+      const host = created.body as {
+        inviteCode: string;
+        session: { gameId: string; accessToken: string };
+      };
+
+      for (let seat = 1; seat < playerCount; seat += 1) {
+        const joined = await jsonRequest(baseUrl, "/api/v1/games/join", {
+          method: "POST",
+          body: {
+            inviteCode: host.inviteCode,
+            displayName: `Player ${seat + 1}`,
+            controller: "human",
+            role: "player"
+          }
+        });
+        expect(joined.status).toBe(201);
+      }
+
+      if (playerCount === 6) {
+        const seventh = await jsonRequest(baseUrl, "/api/v1/games/join", {
+          method: "POST",
+          body: {
+            inviteCode: host.inviteCode,
+            displayName: "Player 7",
+            controller: "human",
+            role: "player"
+          }
+        });
+        expect(seventh).toMatchObject({
+          status: 409,
+          body: { error: { code: "lobby_full" } }
+        });
+      }
+
+      const started = await jsonRequest(
+        baseUrl,
+        `/api/v1/games/${host.session.gameId}/commands`,
+        {
+          method: "POST",
+          token: host.session.accessToken,
+          body: {
+            gameId: host.session.gameId,
+            idempotencyKey: `start-${playerCount}-players`,
+            expectedVersion: playerCount,
+            command: { type: "start_game" }
+          }
+        }
+      );
+      expect(started.status).toBe(200);
+
+      const state = await jsonRequest(
+        baseUrl,
+        `/api/v1/games/${host.session.gameId}/state`,
+        { token: host.session.accessToken }
+      );
+      expect(state.body).toMatchObject({
+        publicState: {
+          lifecycle: "active",
+          configuration: { playerCount },
+          publicGame: {
+            seats: expect.arrayContaining(
+              Array.from({ length: playerCount }, () => expect.any(Object))
+            )
+          }
+        }
+      });
+      expect(
+        (
+          state.body as {
+            publicState: { publicGame: { seats: unknown[] } };
+          }
+        ).publicState.publicGame.seats
+      ).toHaveLength(playerCount);
+      await app.close();
+    }
+  );
+
+  it("migrates fixed lobby seat counts to the shared six-player capacity", async () => {
+    const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
+    temporaryDirectories.push(directory);
+    const databasePath = resolve(directory, "game.sqlite");
+    const app = createAppServer({ databasePath, port: 0 });
+    const address = await app.listen();
+    const created = await jsonRequest(
+      `http://${address.host}:${address.port}`,
+      "/api/v1/games",
+      {
+        method: "POST",
+        body: {
+          displayName: "Host",
+          controller: "human",
+          configuration: {
+            counterbidTimer: { mode: "off" },
+            allowSpectators: false
+          }
+        }
+      }
+    );
+    const gameId = (created.body as { session: { gameId: string } }).session.gameId;
+    app.store.database
+      .prepare("UPDATE games SET settings_json = ? WHERE id = ?")
+      .run(
+        JSON.stringify({
+          seatCount: 3,
+          counterbidTimerSeconds: null,
+          allowSpectators: false
+        }),
+        gameId
+      );
+    app.store.database
+      .prepare("DELETE FROM schema_migrations WHERE name = ?")
+      .run("0002_variable_player_lobbies.sql");
+    await app.close();
+
+    const reopened = createAppServer({ databasePath, port: 0 });
+    await reopened.listen();
+    expect(reopened.store.resolveGame(gameId).settings).toEqual({
+      playerCapacity: 6,
+      counterbidTimerSeconds: null,
+      allowSpectators: false
+    });
+    await reopened.close();
+  });
+
   it("rejects unsupported persisted games without disrupting startup", async () => {
     const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
     temporaryDirectories.push(directory);
@@ -283,7 +469,6 @@ describe("game server", () => {
         displayName: "Host",
         controller: "human",
         configuration: {
-          playerCount: 2,
           counterbidTimer: { mode: "off" },
           allowSpectators: false
         }
@@ -431,7 +616,6 @@ describe("game server", () => {
         displayName: "Host",
         controller: "human",
         configuration: {
-          playerCount: 2,
           counterbidTimer: { mode: "countdown", durationSeconds: 90 },
           allowSpectators: true
         }
@@ -491,7 +675,6 @@ describe("game server", () => {
         displayName: "Host",
         controller: "human",
         configuration: {
-          playerCount: 2,
           counterbidTimer: { mode: "off" },
           allowSpectators: true
         }
@@ -747,7 +930,6 @@ describe("game server", () => {
         displayName: "Host",
         controller: "human",
         configuration: {
-          playerCount: 2,
           counterbidTimer: { mode: "countdown", durationSeconds: 5 },
           allowSpectators: false
         }
