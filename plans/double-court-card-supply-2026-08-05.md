@@ -12,7 +12,7 @@ four-to-six-player supply.
    standard supply and from two to four in the doubled supply, advance the
    executable ruleset to version 10 without a saved-game migration, and update
    focused setup and compatibility coverage.
-2. **Rules, components, and print supply.** Update current setup guidance,
+2. **Rules, components, and print supply — completed.** Update current setup guidance,
    playtest material, component inventories, the decision log, and changelog;
    archive the replaced one-Court-per-standard-player rule and six-card print
    specification; repack the nine printable bid-card sheets as a full 144-card
