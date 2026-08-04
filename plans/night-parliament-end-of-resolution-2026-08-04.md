@@ -6,10 +6,10 @@ Move Closing Argument and After-Hours Deal from the end of Night Parliament's co
 
 ## Steps
 
-1. Introduce ruleset version 7 and preserve ruleset-5/6 replay timing.
-2. Keep Night Parliament claims queued across contest boundaries and resolve them, highest claiming bid first, after every contest and Revolving Door completes.
-3. Add engine and projection regression coverage, including a later party contest resolving before the delayed Night operation.
-4. Archive the replaced contest-local timing and update current rules, components, design decisions, and changelog.
+1. ✅ Introduce ruleset version 7 and preserve ruleset-5/6 replay timing.
+2. ✅ Keep Night Parliament claims queued across contest boundaries and resolve them, highest claiming bid first, after every contest and Revolving Door completes.
+3. ✅ Add engine and projection regression coverage, including a later party contest resolving before the delayed Night operation.
+4. ✅ Archive the replaced contest-local timing and update current rules, components, design decisions, and changelog.
 5. Run the complete project check and repeat independent review until no high- or medium-severity findings remain.
 
 ## Constraints
