@@ -147,7 +147,7 @@ footer { display:flex;justify-content:space-between;padding:18px 4px;font:.65rem
 @media (max-width: 980px) {
   .entry-page { grid-template-columns: 1fr; padding: 40px 20px; }
   .entry-editorial h1 { font-size: clamp(4rem, 15vw, 8rem); }
-  .game-grid { grid-template-columns: 1fr; }
+  .game-grid { grid-template-columns: minmax(0, 1fr); }
   .map-desk,.contest-desk,.deal-desk,.chat-desk,.private-folio { grid-column: 1; grid-row: auto; }
   .private-folio { order: -1; }
   .district-map { min-height: 480px; }

@@ -188,27 +188,29 @@ describe("browser play surface", () => {
   });
 
   it("returns the selected counterbid stack to its available select limits", async () => {
-    const { container } = render(
+    const view = {
+      contests: { honeycomb: {} },
+      counterbidSlots: ["bid-1", null],
+      bids: [{
+        id: "bid-1",
+        contestId: "honeycomb",
+        leverage: 3,
+        bluff: 1,
+        operations: { organise: 1, rally: 0, smear: 0, court: 0 }
+      }]
+    };
+    const seat = {
+      firmIds: ["one-fell-swoop"],
+      reserve: {
+        leverage: 2,
+        bluff: 2,
+        operations: { organise: 2, rally: 0, smear: 0, court: 0 }
+      }
+    };
+    const { container, rerender } = render(
       <CounterbidForm
-        view={{
-          contests: { honeycomb: {} },
-          counterbidSlots: ["bid-1", null],
-          bids: [{
-            id: "bid-1",
-            contestId: "honeycomb",
-            leverage: 3,
-            bluff: 1,
-            operations: { organise: 1, rally: 0, smear: 0, court: 0 }
-          }]
-        } as never}
-        seat={{
-          firmIds: ["one-fell-swoop"],
-          reserve: {
-            leverage: 2,
-            bluff: 2,
-            operations: { organise: 2, rally: 0, smear: 0, court: 0 }
-          }
-        } as never}
+        view={view as never}
+        seat={seat as never}
         busy={false}
         onCommand={async () => undefined}
       />
@@ -224,6 +226,16 @@ describe("browser play surface", () => {
     expect([...organise.options].map((option) => option.value)).toEqual([
       "0", "1", "2", "3"
     ]);
+    fireEvent.change(leverage, { target: { value: "4" } });
+    rerender(
+      <CounterbidForm
+        view={{ ...view, bids: view.bids.map((bid) => ({ ...bid })) } as never}
+        seat={{ ...seat, reserve: { ...seat.reserve } } as never}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+    expect(leverage.value).toBe("4");
   });
 
   it("renders public Court Support beside the persistent Coalition Target", () => {
