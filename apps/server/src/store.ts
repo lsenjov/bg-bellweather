@@ -284,6 +284,7 @@ export class EventStore {
     random: EngineRandomSource
   ): ProcessedCommand {
     return this.transaction(() => {
+      const game = this.getGameById(gameId);
       const prior = this.database
         .prepare(
           `SELECT request_hash, response_json
@@ -302,6 +303,9 @@ export class EventStore {
             "Idempotency key was already used for a different command"
           );
         }
+        if (game.status !== "lobby") {
+          this.requireEngineState(gameId);
+        }
         return {
           accepted: JSON.parse(prior.response_json) as ProcessedCommand["accepted"],
           event: null,
@@ -309,7 +313,6 @@ export class EventStore {
         };
       }
 
-      const game = this.getGameById(gameId);
       if (
         command.expectedVersion !== undefined &&
         game.currentVersion !== command.expectedVersion

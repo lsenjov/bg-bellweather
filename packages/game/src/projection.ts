@@ -11,6 +11,7 @@ import type {
   SeatId
 } from "./model.js";
 import { GameRuleError } from "./model.js";
+import { assertCurrentRuleset } from "./engine.js";
 
 export interface ProjectedSeat {
   id: SeatId;
@@ -69,6 +70,7 @@ export function projectGameState(
   viewerSeatId: SeatId | null,
   fullInformation = false
 ): GameView {
+  assertCurrentRuleset(state);
   if (fullInformation && state.phase.type !== "complete") {
     throw new GameRuleError(
       "full_replay_unavailable",

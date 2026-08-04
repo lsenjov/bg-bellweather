@@ -145,7 +145,7 @@ export function evolve(
     if (state !== undefined) {
       throw new GameRuleError("already_initialized", "The game is already initialized");
     }
-    requireCurrentRuleset(event.state);
+    assertCurrentRuleset(event.state);
     return structuredClone(event.state);
   }
   if (state === undefined) {
@@ -172,7 +172,7 @@ export function createElectionAction(
   state: GameState,
   random: RandomSource
 ): Extract<GameAction, { type: "complete_election" }> {
-  requireCurrentRuleset(state);
+  assertCurrentRuleset(state);
   const phase = requirePhase(state, "election");
   if (phase.resultsRecorded) {
     throw new GameRuleError(
@@ -208,7 +208,7 @@ export function replay(events: readonly GameEvent[]): GameState {
 }
 
 export function applyAction(state: GameState, action: GameAction): GameState {
-  requireCurrentRuleset(state);
+  assertCurrentRuleset(state);
   const next = structuredClone(state);
   if (next.phase.type === "complete") {
     throw new GameRuleError("game_complete", "The game is complete");
@@ -1155,7 +1155,7 @@ function requirePhase<Type extends GameState["phase"]["type"]>(
   return state.phase as Extract<GameState["phase"], { type: Type }>;
 }
 
-function requireCurrentRuleset(state: GameState): void {
+export function assertCurrentRuleset(state: GameState): void {
   if (state.rulesetVersion !== RULESET_VERSION) {
     throw new GameRuleError(
       "unsupported_ruleset",

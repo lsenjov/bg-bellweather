@@ -82,6 +82,9 @@ describe("game setup and private projections", () => {
     initialized.state.rulesetVersion = "6";
 
     expect(() => replay([initialized])).toThrow("Only ruleset 7 is supported");
+    expect(() => projectGameState(initialized.state, null)).toThrow(
+      "Only ruleset 7 is supported"
+    );
   });
 
   it("applies Election retention to named districts but not Bellweather Centre", () => {
