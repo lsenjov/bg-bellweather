@@ -432,35 +432,46 @@ function GameDesk(props: {
 
   return (
     <main className="game-grid">
-      <section className="map-desk paper-panel">
-        <div className="section-heading"><div><p className="section-label">District returns</p><h2>The Crownwater map</h2></div><div className="phase-slug">{props.view.phase}</div></div>
-        <DistrictMap
-          support={props.view.support}
-          scoringObjectives={scoringObjectives}
-          scoringLabel={revealedObjectives.length > 0 ? "Election agenda" : "Private agenda"}
-        />
-        <PartyRail view={props.view} />
-        <PlayerLedger seats={props.view.seats} />
-      </section>
-
       <aside className="private-folio paper-panel">
-        <p className="section-label">{props.spectator ? "Observer’s copy" : "Private folio"}</p>
-        <h2>{props.ownSeat?.displayName ?? "Press gallery"}</h2>
+        <div className="folio-heading">
+          <p className="section-label">{props.spectator ? "Observer’s copy" : "Private folio"}</p>
+          <h2>{props.ownSeat?.displayName ?? "Press gallery"}</h2>
+          {props.ownSeat?.reserve && (
+            <p className="firm-line">{props.ownSeat.firmIds.map((id) => FIRMS_BY_ID[id as keyof typeof FIRMS_BY_ID]?.name ?? id).join(" · ")}</p>
+          )}
+        </div>
         {props.ownSeat?.reserve ? (
           <>
-            <div className="folio-score"><span>Points</span><strong>{props.ownSeat.points}</strong></div>
-            <div className="reserve-line"><strong>{props.ownSeat.reserve.leverage}</strong><span>Leverage</span></div>
-            <div className="reserve-line"><strong>{props.ownSeat.reserve.bluff}</strong><span>Bluff</span></div>
-            <p className="firm-line">{props.ownSeat.firmIds.map((id) => FIRMS_BY_ID[id as keyof typeof FIRMS_BY_ID]?.name ?? id).join(" · ")}</p>
-            <div className="operation-grid">{OPERATION_IDS.map((operation) => <div key={operation}><b>{props.ownSeat!.reserve!.operations[operation]}</b><span>{operation}</span></div>)}</div>
-            <div className="agenda">
+            <div className="folio-inventory">
+              <div className="folio-metric folio-points"><span>Points</span><strong>{props.ownSeat.points}</strong></div>
+              <div className="folio-metric"><span>Leverage</span><strong>{props.ownSeat.reserve.leverage}</strong></div>
+              <div className="folio-metric"><span>Bluff</span><strong>{props.ownSeat.reserve.bluff}</strong></div>
+              {OPERATION_IDS.map((operation) => (
+                <div className="folio-metric" key={operation}>
+                  <span>{operation}</span>
+                  <strong>{props.ownSeat!.reserve!.operations[operation]}</strong>
+                </div>
+              ))}
+            </div>
+            <div className="agenda folio-agenda">
               <span>Hidden election brief</span>
               <strong>{scoringCard?.id ?? props.ownSeat.scoringCardId ?? "Sealed"}</strong>
               {scoringCard?.objectives.map((objective) => <small key={objective.districtId}>{objective.districtId} · {PARTIES_BY_ID[objective.partyId].shortName}</small>)}
             </div>
           </>
-        ) : <p>Public information only. Private reserves remain behind the screen.</p>}
+        ) : <p className="folio-public-copy">Public information only. Private reserves remain behind the screen.</p>}
       </aside>
+
+      <section className="map-desk paper-panel">
+        <div className="section-heading"><div><p className="section-label">District returns</p><h2>The Crownwater map</h2></div><div className="phase-slug">{props.view.phase}</div></div>
+        <PartyRail view={props.view} />
+        <DistrictMap
+          support={props.view.support}
+          scoringObjectives={scoringObjectives}
+          scoringLabel={revealedObjectives.length > 0 ? "Election agenda" : "Private agenda"}
+        />
+        <PlayerLedger seats={props.view.seats} />
+      </section>
 
       <section className="contest-desk paper-panel">
         <div className="section-heading"><div><p className="section-label">Influence book</p><h2>Contests & filings</h2></div><b>Phase: {props.view.phase}</b></div>
