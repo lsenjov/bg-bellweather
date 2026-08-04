@@ -53,5 +53,5 @@ export const INITIAL_SUPPORT_DISTRICTS = deepFreeze([
 
 export const SUPPORT_SUPPLY = "unlimited" as const;
 export const ELECTION_ROUNDS = deepFreeze([4, 8, 12] as const);
-export const RULESET_VERSION = "6" as const;
+export const RULESET_VERSION = "7" as const;
 export const rulesetVersion = RULESET_VERSION;

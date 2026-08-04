@@ -600,6 +600,12 @@ function advanceResolution(state: GameState): void {
   const phase = requirePhase(state, "resolution");
   while (phase.pendingDecision === null) {
     if (phase.contestIndex >= phase.contestOrder.length) {
+      if (
+        resolvesNightBonusesAfterAllContests(state) &&
+        queueNextNightDelayedDecision(state, phase)
+      ) {
+        continue;
+      }
       finishRound(state);
       return;
     }
@@ -611,22 +617,9 @@ function advanceResolution(state: GameState): void {
     if (phase.bidIndex >= phase.executionBidIds.length) {
       if (
         contestId === "night-parliament" &&
-        phase.delayedClaimIndex < phase.delayedBonusClaims.length
+        !resolvesNightBonusesAfterAllContests(state) &&
+        queueNextNightDelayedDecision(state, phase)
       ) {
-        phase.delayedBonusClaims.sort(
-          (left, right) =>
-            left.bidRank - right.bidRank || left.order - right.order
-        );
-        const claim = phase.delayedBonusClaims[phase.delayedClaimIndex]!;
-        phase.pendingDecision = {
-          id: nextEntityId(state, "decision"),
-          kind: "night_delayed_operation",
-          seatId: claim.ownerId,
-          contestId,
-          bidId: claim.bidId,
-          claimId: claim.id,
-          operation: claim.operation
-        };
         continue;
       }
       transferContestBids(state, contest);
@@ -642,8 +635,10 @@ function advanceResolution(state: GameState): void {
       phase.bidIndex = 0;
       phase.remainingOperations = {};
       phase.claimedBonuses = [];
-      phase.delayedBonusClaims = [];
-      phase.delayedClaimIndex = 0;
+      if (!resolvesNightBonusesAfterAllContests(state)) {
+        phase.delayedBonusClaims = [];
+        phase.delayedClaimIndex = 0;
+      }
       continue;
     }
 
@@ -693,6 +688,34 @@ function resolvesPartiesInResultingOrder(state: GameState): boolean {
   return Number.isSafeInteger(rulesetVersion) && rulesetVersion >= 6;
 }
 
+function resolvesNightBonusesAfterAllContests(state: GameState): boolean {
+  const rulesetVersion = Number(state.rulesetVersion);
+  return Number.isSafeInteger(rulesetVersion) && rulesetVersion >= 7;
+}
+
+function queueNextNightDelayedDecision(
+  state: GameState,
+  phase: ResolutionPhase
+): boolean {
+  if (phase.delayedClaimIndex >= phase.delayedBonusClaims.length) {
+    return false;
+  }
+  phase.delayedBonusClaims.sort(
+    (left, right) => left.bidRank - right.bidRank || left.order - right.order
+  );
+  const claim = phase.delayedBonusClaims[phase.delayedClaimIndex]!;
+  phase.pendingDecision = {
+    id: nextEntityId(state, "decision"),
+    kind: "night_delayed_operation",
+    seatId: claim.ownerId,
+    contestId: "night-parliament",
+    bidId: claim.bidId,
+    claimId: claim.id,
+    operation: claim.operation
+  };
+  return true;
+}
+
 function prepareContest(
   state: GameState,
   phase: ResolutionPhase,
@@ -714,8 +737,10 @@ function prepareContest(
   );
   phase.contestPrepared = true;
   phase.claimedBonuses = [];
-  phase.delayedBonusClaims = [];
-  phase.delayedClaimIndex = 0;
+  if (!resolvesNightBonusesAfterAllContests(state)) {
+    phase.delayedBonusClaims = [];
+    phase.delayedClaimIndex = 0;
+  }
 }
 
 function transferContestBids(state: GameState, contest: ContestState): void {
