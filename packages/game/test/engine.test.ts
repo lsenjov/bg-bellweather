@@ -119,6 +119,27 @@ describe("game setup and private projections", () => {
     }
   });
 
+  it("recycles rejected second draws when a low-player deal exhausts the draw pile", () => {
+    const deck = [
+      "SC-22", "SC-03", "SC-09", "SC-10", "SC-16", "SC-02",
+      "SC-08", "SC-13", "SC-23", "SC-15", "SC-19", "SC-04",
+      "SC-05", "SC-18", "SC-06", "SC-07", "SC-12", "SC-21",
+      "SC-20", "SC-01", "SC-24", "SC-11", "SC-14", "SC-17"
+    ] as const;
+
+    const hands = dealScoringCards(deck, 3);
+
+    expect(hands).toHaveLength(3);
+    for (const hand of hands) {
+      const districts = hand.flatMap((cardId) =>
+        SCORING_CARDS_BY_ID[cardId].objectives.map(
+          (objective) => objective.districtId
+        )
+      );
+      expect(new Set(districts).size).toBe(6);
+    }
+  });
+
   it.each([4, 5, 6])(
     "retains one scoring card at %i players",
     (playerCount) => {

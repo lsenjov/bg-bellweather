@@ -37,19 +37,25 @@
           <tbody>
             <tr>
               <td>2026-08-05</td>
+              <td>At two or three players, deal every player two scoring cards whose six districts are distinct within that player’s pair. Draw the first card, discard and redraw any second card that overlaps one of its districts, and score all six objectives while continuing to ignore Gain and Lose references. At four to six players, retain one scoring card and its seat references. Shuffle all twenty-four cards before each campaign period. Apply this as ruleset version 8 with no saved-game migration.</td>
+              <td>Low-player games otherwise ignore the cards’ relative-seat layer and receive only half as many private map objectives as a full table. Compatible pairs restore six distinct objectives without double-sampling a player’s district, while a fresh full-deck shuffle makes rejected draws and three campaign-period deals physically complete and replayable.</td>
+              <td>Six private objectives overload low-player planning, pair rejection takes too long at the table, the full-deck reshuffle leaks or repeats too much information, or app/physical dealing outcomes diverge materially.</td>
+            </tr>
+            <tr>
+              <td>2026-08-05</td>
               <td>Open every web lobby without a chosen player count. Admit up to six players and let the host start with any occupied group of two through six; freeze the occupied seats as the game’s actual player count when play starts. Keep lobby readiness advisory.</td>
               <td>The host no longer has to predict attendance or recreate a table when the group changes. The engine already derives setup from the actual seat list, while the six-seat ceiling preserves the supported component and scoring range.</td>
               <td>Hosts start accidentally before intended players join, players need reservations or removal controls, or advisory readiness no longer communicates intent clearly enough.</td>
             </tr>
             <tr>
               <td>2026-08-05</td>
-              <td>Run the engine, server, persisted-game loader, replay path, protocol, and web application exclusively on ruleset version 7. Reject earlier prelaunch game records, snapshots, engine states, and incomplete browser projections instead of migrating them or reconstructing omitted fields. Keep the version identifier, schema migrations, malformed-current-input validation, and historical design archives; never delete a local database automatically.</td>
+              <td><strong>Superseded:</strong> Run the engine, server, persisted-game loader, replay path, protocol, and web application exclusively on ruleset version 7. Reject earlier prelaunch game records, snapshots, engine states, and incomplete browser projections instead of migrating them or reconstructing omitted fields. Keep the version identifier, schema migrations, malformed-current-input validation, and historical design archives; never delete a local database automatically.</td>
               <td>No public users or supported saves exist, so one executable rules path is safer and easier to change than speculative compatibility branches. Explicit rejection also makes an obsolete local database visible instead of allowing subtly mixed timing or fabricated card inventories.</td>
-              <td>The game launches publicly and a future ruleset change must preserve supported games, replays, or external clients.</td>
+              <td>Ruleset version 8 superseded version 7 on 2026-08-05 for compatible low-player scoring pairs. The no-migration policy remains current while no public saves are supported.</td>
             </tr>
             <tr>
               <td>2026-08-04</td>
-              <td>Move Night Parliament’s Closing Argument and After-Hours Deal to the end of the complete contest sequence. Claim and mark them during Night Parliament’s contest, complete every contest and Revolving Door, then resolve delayed baselines from highest claiming bid to lowest before ending the Campaign Round. This is the only supported timing in ruleset version 7.</td>
+              <td>Move Night Parliament’s Closing Argument and After-Hours Deal to the end of the complete contest sequence. Claim and mark them during Night Parliament’s contest, complete every contest and Revolving Door, then resolve delayed baselines from highest claiming bid to lowest before ending the Campaign Round. Ruleset version 7 introduced this timing and version 8 retains it.</td>
               <td>Night Parliament now receives the literal final word and makes its delayed choices against the complete round-end map and Court state.</td>
               <td>The long delay makes claims difficult to track, final operations feel detached from their bids, transferred cards obscure the original owner, or resolving against the final board creates excessive swing.</td>
             </tr>
@@ -249,7 +255,7 @@
               <td>2026-07-29</td>
               <td><strong>Partially superseded:</strong> Support two to six players in the first prototype. Give each lobbying house one player board, two circular 70 mm counterbid covers, one opening-bid marker, and one score marker. Put the house emblem on both markers and repeat a large Arabic house number at opposite edges of the opening marker. At four to six players, each human controls one house kit; at two or three, each controls two. Taking a second kit supplies the second opening marker and two additional counterbid covers required by the existing low-player allowance, but does not add another Clout supply, operation-token reserve, scoring card, or score; leave its score marker unused.</td>
               <td>Binding the physical bid allowance to identity kits makes ownership visible and lets the same six kits support the two-to-six-player prototype range without changing the existing player-based economy or scoring rules.</td>
-              <td>The identity-kit specification remains current. On 2026-07-30, the low-player economy and starting points changed to double the four- to six-player supply; players still use one scoring card, one score, and one active score marker.</td>
+              <td>The identity-kit specification remains current. On 2026-07-30, the low-player economy and starting points changed to double the four- to six-player supply. On 2026-08-05, low-player scoring changed to two compatible cards while retaining one score and one active score marker.</td>
             </tr>
             <tr>
               <td>2026-07-29</td>
@@ -261,7 +267,7 @@
               <td>2026-07-28</td>
               <td><strong>Partially superseded:</strong> Use a twenty-four-card hidden scoring deck. Each card pairs different parties with one 6-, one 4-, and one 2-capacity district, and its districts are pairwise non-neighboring. On Election Day, draw three, two, and one current Support respectively; one shared draw resolves each named district, drawn Support returns unchanged, and a matching party scores one point per Support. In games with four or more players, add one referenced player’s base district score and subtract a different referenced player’s base district score without copying seat adjustments; ignore both references at two or three. Scores may be negative. Deal a new hidden card after each of the first two Election Days. For the first test, hold Election Day after every twelve complete Campaign Rounds and end after the third; neither player count, contest count, nor insolvency changes the round count. Highest cumulative score wins.</td>
               <td>Hidden district–party agendas make the mutable map valuable to different players without publicly assigning any lobbying house to a party. Shared partial draws preserve uncertainty while giving every card a common election result. The positive and negative seat references add indirect interests in rivals’ plans, while fixed Campaign Round counting keeps the clock independent of auction allotments and resources.</td>
-              <td>The scoring-card and shared-draw procedure remains current. On 2026-07-30, the clock changed to Election Days after rounds 4, 8, and 12, points began above zero and became transferable, and tied highest totals became shared wins. On 2026-07-31, drawn Support began remaining in its named district while undrawn Support there returns to supply.</td>
+              <td>The scoring-card and shared-draw procedure remains current. On 2026-07-30, the clock changed to Election Days after rounds 4, 8, and 12, points began above zero and became transferable, and tied highest totals became shared wins. On 2026-07-31, drawn Support began remaining in its named district while undrawn Support there returns to supply. On 2026-08-05, two- and three-player hands changed to compatible pairs.</td>
             </tr>
             <tr>
               <td>2026-07-28</td>

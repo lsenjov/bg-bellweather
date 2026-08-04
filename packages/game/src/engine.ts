@@ -1049,6 +1049,7 @@ export function dealScoringCards(
     throw new GameRuleError("invalid_player_count", "Games require two to six seats");
   }
   const drawPile = [...deck];
+  let discardPile: ScoringCardId[] = [];
   const cardsPerPlayer = playerCount <= 3 ? 2 : 1;
   const hands: ScoringCardId[][] = [];
 
@@ -1063,20 +1064,32 @@ export function dealScoringCards(
         SCORING_CARDS_BY_ID[first].objectives.map((objective) => objective.districtId)
       );
       let second: ScoringCardId | undefined;
-      while (second === undefined) {
-        const candidate = drawPile.shift();
-        if (candidate === undefined) {
-          throw new GameRuleError(
-            "scoring_deck_empty",
-            "The scoring deck has no compatible second card"
+      const rejected: ScoringCardId[] = [];
+      const drawCompatibleCard = () => {
+        while (drawPile.length > 0 && second === undefined) {
+          const candidate = drawPile.shift()!;
+          const overlaps = SCORING_CARDS_BY_ID[candidate].objectives.some(
+            (objective) => firstDistricts.has(objective.districtId)
           );
+          if (overlaps) {
+            rejected.push(candidate);
+          } else {
+            second = candidate;
+          }
         }
-        const overlaps = SCORING_CARDS_BY_ID[candidate].objectives.some(
-          (objective) => firstDistricts.has(objective.districtId)
+      };
+      drawCompatibleCard();
+      if (second === undefined && discardPile.length > 0) {
+        drawPile.push(...discardPile);
+        discardPile = [];
+        drawCompatibleCard();
+      }
+      discardPile.push(...rejected);
+      if (second === undefined) {
+        throw new GameRuleError(
+          "scoring_deck_empty",
+          "The scoring deck has no compatible second card"
         );
-        if (!overlaps) {
-          second = candidate;
-        }
       }
       hand.push(second);
     }

@@ -564,7 +564,7 @@ export function GameDesk(props: {
               ))}
             </div>
             <div className="agenda folio-agenda">
-              <span>Hidden election brief</span>
+              <span>{scoringCards.length > 1 ? "Hidden election briefs" : "Hidden election brief"}</span>
               <strong>{scoringCards.length > 0 ? scoringCards.map((card) => card.id).join(" · ") : "Sealed"}</strong>
               {scoringCards.flatMap((card) => card.objectives).map((objective) => <small key={`${objective.districtId}:${objective.partyId}`}>{objective.districtId} · {PARTIES_BY_ID[objective.partyId].shortName}</small>)}
             </div>
