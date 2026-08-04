@@ -4,6 +4,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  ActionDesk,
   App,
   ContestCard,
   CounterbidForm,
@@ -220,13 +221,21 @@ describe("browser play surface", () => {
         view={view as never}
         seat={seat as never}
         busy={false}
-        partySelection={{ value: "riverworks", revision: 1 }}
         onCommand={async () => undefined}
       />
     );
 
     const form = within(container);
     const parties = form.getAllByLabelText("Party") as HTMLSelectElement[];
+    rerender(
+      <OpeningForm
+        view={view as never}
+        seat={seat as never}
+        busy={false}
+        partySelection={{ value: "riverworks", revision: 1 }}
+        onCommand={async () => undefined}
+      />
+    );
     await waitFor(() => expect(parties[0]!.value).toBe("riverworks"));
     fireEvent.click(form.getByRole("button", { name: /edit pairliament partners/i }));
     rerender(
@@ -240,6 +249,29 @@ describe("browser play surface", () => {
     );
     await waitFor(() => expect(parties[1]!.value).toBe("foxglove"));
     expect(parties[0]!.value).toBe("riverworks");
+  });
+
+  it("does not replay an opening shortcut when the form remounts", () => {
+    const { container } = render(
+      <OpeningForm
+        view={{ contests: {} } as never}
+        seat={{
+          firmIds: ["one-fell-swoop"],
+          reserve: {
+            leverage: 1,
+            bluff: 0,
+            operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+          }
+        } as never}
+        busy={false}
+        partySelection={{ value: "riverworks", revision: 3 }}
+        onCommand={async () => undefined}
+      />
+    );
+
+    expect(
+      (within(container).getByLabelText("Party") as HTMLSelectElement).value
+    ).toBe("honeycomb");
   });
 
   it("makes assigned opening parties unavailable from the party summaries", () => {
@@ -259,10 +291,13 @@ describe("browser play surface", () => {
       />
     );
 
-    expect(
-      (screen.getByRole("button", { name: /old shell union is assigned/i }) as HTMLButtonElement).disabled
-    ).toBe(true);
-    fireEvent.click(screen.getByRole("button", { name: /choose foxglove league/i }));
+    const assigned = screen.getByRole("button", {
+      name: /old shell.*assigned to another opening bid/i
+    });
+    expect(assigned.getAttribute("aria-disabled")).toBe("true");
+    fireEvent.click(assigned);
+    expect(onSelect).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: /foxglove/i }));
     expect(onSelect).toHaveBeenCalledWith("foxglove");
   });
 
@@ -361,6 +396,141 @@ describe("browser play surface", () => {
     await waitFor(() => expect((form.getByLabelText("Firm identity card") as HTMLSelectElement).value).toBe("1"));
     expect((form.getByLabelText("Contest") as HTMLSelectElement).value).toBe("old-shell");
     expect(form.getByRole("status").textContent).toMatch(/unused counterbid 2 selected/i);
+  });
+
+  it("does not replay a counterbid shortcut when the form remounts", () => {
+    const { container } = render(
+      <CounterbidForm
+        view={{
+          contests: { honeycomb: {}, "old-shell": {} },
+          counterbidSlots: [null, null],
+          bids: []
+        } as never}
+        seat={{
+          firmIds: ["one-fell-swoop"],
+          reserve: {
+            leverage: 1,
+            bluff: 0,
+            operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+          }
+        } as never}
+        busy={false}
+        contestSelection={{ value: "old-shell", revision: 4 }}
+        onCommand={async () => undefined}
+      />
+    );
+
+    expect(
+      (within(container).getByLabelText("Contest") as HTMLSelectElement).value
+    ).toBe("honeycomb");
+  });
+
+  it("treats an unused counterbid target as an unsaved edit", async () => {
+    const onDraftStateChange = vi.fn();
+    const { container } = render(
+      <CounterbidForm
+        view={{
+          contests: { honeycomb: {}, "old-shell": {} },
+          counterbidSlots: [null, null],
+          bids: []
+        } as never}
+        seat={{
+          firmIds: ["one-fell-swoop"],
+          reserve: {
+            leverage: 1,
+            bluff: 0,
+            operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+          }
+        } as never}
+        busy={false}
+        onDraftStateChange={onDraftStateChange}
+        onCommand={async () => undefined}
+      />
+    );
+    const form = within(container);
+
+    fireEvent.change(form.getByLabelText("Contest"), {
+      target: { value: "old-shell" }
+    });
+    await waitFor(() =>
+      expect(onDraftStateChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({ dirty: true, contestId: "old-shell" })
+      )
+    );
+    fireEvent.change(form.getByLabelText("Firm identity card"), {
+      target: { value: "1" }
+    });
+    expect(
+      (form.getByLabelText("Firm identity card") as HTMLSelectElement).value
+    ).toBe("0");
+    fireEvent.click(form.getByRole("button", { name: /reset unsaved edits/i }));
+    expect((form.getByLabelText("Contest") as HTMLSelectElement).value).toBe(
+      "honeycomb"
+    );
+  });
+
+  it("prevents locking while a counterbid draft has unsaved edits", () => {
+    const baseProps = {
+      view: {
+        phase: "counterbidding",
+        pendingDecision: null,
+        contests: { honeycomb: {} },
+        counterbidSlots: [null, null],
+        bids: []
+      } as never,
+      seat: {
+        firmIds: ["one-fell-swoop"],
+        reserve: {
+          leverage: 1,
+          bluff: 0,
+          operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+        }
+      } as never,
+      seatId: "seat-a",
+      busy: false,
+      openingPartyIntent: null,
+      onOpeningDraftChange: vi.fn(),
+      counterbidContestIntent: null,
+      onCounterbidDraftChange: vi.fn(),
+      onCommand: vi.fn(async () => undefined)
+    };
+    const { rerender } = render(
+      <ActionDesk
+        {...baseProps}
+        ownReady={false}
+        counterbidDraftSummary={{
+          contestId: "old-shell",
+          slotIndex: 0,
+          placed: false,
+          dirty: true
+        }}
+      />
+    );
+
+    expect(
+      (screen.getByRole("button", { name: /lock counterbids/i }) as HTMLButtonElement)
+        .disabled
+    ).toBe(true);
+    expect(
+      screen.getByText(/current counterbid edits before locking/i)
+    ).toBeTruthy();
+
+    rerender(
+      <ActionDesk
+        {...baseProps}
+        ownReady
+        counterbidDraftSummary={{
+          contestId: "old-shell",
+          slotIndex: 0,
+          placed: false,
+          dirty: true
+        }}
+      />
+    );
+    expect(
+      (screen.getByRole("button", { name: /unready & revise/i }) as HTMLButtonElement)
+        .disabled
+    ).toBe(false);
   });
 
   it("blocks contest shortcuts until unsaved placed-bid edits are applied or reset", async () => {

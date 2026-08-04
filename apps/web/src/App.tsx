@@ -544,6 +544,7 @@ function GameDesk(props: {
             openingPartyIntent={openingPartyIntent}
             onOpeningDraftChange={setOpeningDraftSummary}
             counterbidContestIntent={counterbidContestIntent}
+            counterbidDraftSummary={counterbidDraftSummary}
             onCounterbidDraftChange={setCounterbidDraftSummary}
             onCommand={props.onCommand}
           />
@@ -684,7 +685,7 @@ export function ContestCard(props: {
   );
 }
 
-function ActionDesk(props: {
+export function ActionDesk(props: {
   view: GameView;
   seat: ViewSeat;
   seatId: string;
@@ -693,6 +694,7 @@ function ActionDesk(props: {
   openingPartyIntent: SelectionIntent<PartyId> | null;
   onOpeningDraftChange(summary: OpeningDraftSummary): void;
   counterbidContestIntent: SelectionIntent<string> | null;
+  counterbidDraftSummary: CounterbidDraftSummary;
   onCounterbidDraftChange(summary: CounterbidDraftSummary): void;
   onCommand(command: GameCommand): Promise<void>;
 }) {
@@ -723,9 +725,17 @@ function ActionDesk(props: {
             contestSelection={props.counterbidContestIntent}
             onDraftStateChange={props.onCounterbidDraftChange}
           />
+          {!props.ownReady && props.counterbidDraftSummary.dirty && (
+            <p className="selection-feedback" role="status">
+              Apply or reset the current counterbid edits before locking.
+            </p>
+          )}
           <button
             className="red-button"
-            disabled={props.busy}
+            disabled={
+              props.busy ||
+              (!props.ownReady && props.counterbidDraftSummary.dirty)
+            }
             onClick={() =>
               props.onCommand({
                 type: "game_action",
@@ -808,7 +818,9 @@ export function OpeningForm(props: {
     }))
   );
   const [activeRowIndex, setActiveRowIndex] = useState(0);
-  const lastPartySelectionRevision = useRef(0);
+  const lastPartySelectionRevision = useRef(
+    props.partySelection?.revision ?? 0
+  );
   const reserve = props.seat.reserve ?? {
     leverage: 0,
     bluff: 0,
@@ -966,17 +978,19 @@ export function CounterbidForm(props: {
   onDraftStateChange?(summary: CounterbidDraftSummary): void;
   onCommand(command: GameCommand): Promise<void>;
 }) {
+  const defaultContestId =
+    Object.keys(props.view.contests)[0] ?? "pecking-order";
   const [slotIndex, setSlotIndex] = useState(0);
-  const [contestId, setContestId] = useState(
-    Object.keys(props.view.contests)[0] ?? "pecking-order"
-  );
+  const [contestId, setContestId] = useState(defaultContestId);
   const [leverage, setLeverage] = useState(0);
   const [bluff, setBluff] = useState(0);
   const [operations, setOperations] = useState<TokenDraft>({
     ...EMPTY_TOKENS
   });
   const [selectionFeedback, setSelectionFeedback] = useState<string | null>(null);
-  const lastContestSelectionRevision = useRef(0);
+  const lastContestSelectionRevision = useRef(
+    props.contestSelection?.revision ?? 0
+  );
   const slots = useMemo(
     () => props.view.counterbidSlots.length > 0
       ? props.view.counterbidSlots
@@ -1007,7 +1021,10 @@ export function CounterbidForm(props: {
   };
   const persistedOperations = objectValue(selectedBid?.operations);
   const dirty = selectedBid === undefined
-    ? leverage > 0 || bluff > 0 || OPERATION_IDS.some((operation) => operations[operation] > 0)
+    ? contestId !== defaultContestId ||
+      leverage > 0 ||
+      bluff > 0 ||
+      OPERATION_IDS.some((operation) => operations[operation] > 0)
     : contestId !== String(selectedBid.contestId) ||
       leverage !== numberOr(selectedBid.leverage, 0) ||
       bluff !== numberOr(selectedBid.bluff, 0) ||
@@ -1185,6 +1202,9 @@ export function CounterbidForm(props: {
             className="text-button"
             disabled={props.busy}
             onClick={() => {
+              if (selectedBid === undefined) {
+                setContestId(defaultContestId);
+              }
               hydrateSelectedSlot();
               setSelectionFeedback("Unsaved edits reset.");
             }}
@@ -1880,15 +1900,21 @@ export function PartyRail({
         return interaction ? (
           <button
             type="button"
-            className={`party-summary party-summary-action ${selected ? "party-summary-selected" : ""}`}
-            disabled={assignedElsewhere}
-            aria-label={assignedElsewhere ? `${party.name} is assigned to another opening bid` : `Choose ${party.name} for the active opening bid`}
+            className={`party-summary party-summary-action ${selected ? "party-summary-selected" : ""} ${assignedElsewhere ? "party-summary-unavailable" : ""}`}
+            aria-disabled={assignedElsewhere}
             aria-pressed={selected}
             key={id}
             style={style}
-            onClick={() => interaction.onSelect(id)}
+            onClick={() => {
+              if (!assignedElsewhere) {
+                interaction.onSelect(id);
+              }
+            }}
           >
             {content}
+            {assignedElsewhere && (
+              <span className="sr-only">Assigned to another opening bid</span>
+            )}
           </button>
         ) : (
           <article className="party-summary" key={id} style={style}>{content}</article>
