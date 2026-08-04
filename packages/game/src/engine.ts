@@ -437,15 +437,9 @@ function requireCounterbidTime(
 
 function beginResolution(state: GameState): void {
   cancelTiedCounterbids(state);
-  const contestOrder: ContestId[] = [
-    "pecking-order",
-    ...state.partyOrder.filter(
-      (partyId) => state.contests[partyId] !== undefined
-    )
-  ];
   state.phase = {
     type: "resolution",
-    contestOrder,
+    contestOrder: currentResolutionContestOrder(state),
     contestIndex: 0,
     contestPrepared: false,
     executionBidIds: [],
@@ -636,6 +630,9 @@ function advanceResolution(state: GameState): void {
         continue;
       }
       transferContestBids(state, contest);
+      if (contestId === "pecking-order") {
+        phase.contestOrder = currentResolutionContestOrder(state);
+      }
       phase.contestIndex += 1;
       phase.contestPrepared = false;
       phase.executionBidIds = [];
@@ -677,6 +674,15 @@ function advanceResolution(state: GameState): void {
             )
           };
   }
+}
+
+function currentResolutionContestOrder(state: GameState): ContestId[] {
+  return [
+    "pecking-order",
+    ...state.partyOrder.filter(
+      (partyId) => state.contests[partyId] !== undefined
+    )
+  ];
 }
 
 function prepareContest(
