@@ -357,6 +357,90 @@ describe("contest resolution", () => {
     });
   });
 
+  it("resolves party contests in the order produced by Pecking Order swaps", () => {
+    let state = submitAllOpenings(
+      initializeGame(configuration(4, null), zeroRandom).state,
+      0
+    );
+    const adjacentIndex = state.partyOrder.findIndex(
+      (partyId, index) =>
+        index < state.partyOrder.length - 1 &&
+        state.contests[partyId] !== undefined &&
+        state.contests[state.partyOrder[index + 1]!] !== undefined
+    );
+    expect(adjacentIndex).toBeGreaterThanOrEqual(0);
+    const originalLeft = state.partyOrder[adjacentIndex]!;
+    const originalRight = state.partyOrder[adjacentIndex + 1]!;
+    const leftBidder = state.seats[1]!;
+    const rightBidder = state.seats[2]!;
+    const peckingBidder = state.seats[3]!;
+
+    state = act(state, {
+      type: "set_counterbid",
+      seatId: leftBidder.id,
+      slotIndex: 0,
+      now: 1,
+      bid: {
+        contestId: originalLeft,
+        firmId: leftBidder.firmIds[0]!,
+        leverage: 0,
+        bluff: 0,
+        operations: operations({ smear: 1 })
+      }
+    });
+    state = act(state, {
+      type: "set_counterbid",
+      seatId: rightBidder.id,
+      slotIndex: 0,
+      now: 1,
+      bid: {
+        contestId: originalRight,
+        firmId: rightBidder.firmIds[0]!,
+        leverage: 0,
+        bluff: 0,
+        operations: operations({ rally: 1 })
+      }
+    });
+    state = act(state, {
+      type: "set_counterbid",
+      seatId: peckingBidder.id,
+      slotIndex: 0,
+      now: 1,
+      bid: {
+        contestId: "pecking-order",
+        firmId: peckingBidder.firmIds[0]!,
+        leverage: 0,
+        bluff: 0,
+        operations: operations({ organise: 1 })
+      }
+    });
+    state = readyAll(state);
+
+    const peckingDecision = pending(state);
+    state = act(state, {
+      type: "resolve_pecking_swap",
+      seatId: peckingDecision.seatId,
+      decisionId: peckingDecision.id,
+      adjacentIndex
+    });
+
+    expect(state.partyOrder[adjacentIndex]).toBe(originalRight);
+    expect(state.phase).toMatchObject({
+      type: "resolution",
+      contestOrder: [
+        "pecking-order",
+        ...state.partyOrder.filter(
+          (partyId) => state.contests[partyId] !== undefined
+        )
+      ],
+      pendingDecision: {
+        kind: "party_operation",
+        contestId: originalRight,
+        legalOperations: ["rally"]
+      }
+    });
+  });
+
   it("applies Many Wings repeated Organise and prevents claiming its bonus twice", () => {
     let state = submitAllOpenings(
       initializeGame(configuration(4, null), zeroRandom).state,

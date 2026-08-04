@@ -6,8 +6,8 @@ Ensure party contests resolve in the Pecking Order produced by the current round
 
 ## Steps
 
-1. Centralize construction of the resolution contest order and refresh its unresolved party portion when the Pecking Order contest finishes.
-2. Add an engine regression test proving an adjacent swap changes the next party contest, update the changelog, and run the full project checks.
+1. ✅ Centralize construction of the resolution contest order and refresh its unresolved party portion when the Pecking Order contest finishes.
+2. ✅ Add an engine regression test proving an adjacent swap changes the next party contest, update the changelog, and run the full project checks.
 3. Request an independent code review and address every high- or medium-severity finding.
 
 ## Constraints
