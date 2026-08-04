@@ -111,6 +111,13 @@ describe("game server", () => {
     expect(
       (state.body as { publicState: { seats: unknown[] } }).publicState.seats
     ).toHaveLength(2);
+    const lobbySocket = await authenticatedSocket(
+      address.port,
+      createBody.session.gameId,
+      createBody.session.accessToken,
+      2
+    );
+    lobbySocket.close();
 
     const command = {
       gameId: createBody.session.gameId,
