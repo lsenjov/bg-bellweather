@@ -303,6 +303,9 @@ export function publicResolutionFilingProgress(
   for (const bidId of phase.executionBidIds.slice(0, phase.bidIndex)) {
     completedBidIds.add(bidId);
   }
+  for (const claim of phase.delayedBonusClaims.slice(phase.delayedClaimIndex)) {
+    completedBidIds.delete(claim.bidId);
+  }
   if (currentBidId !== null) {
     completedBidIds.delete(currentBidId);
   }

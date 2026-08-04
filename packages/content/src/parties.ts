@@ -166,14 +166,14 @@ export const PARTIES = deepFreeze([
         operation: "rally",
         name: "Closing Argument",
         effect:
-          "After ordinary operation cards finish, the claiming bid resolves one additional Rally baseline.",
+          "After every contest and Revolving Door finishes, the claiming bid resolves one additional Rally baseline.",
         timing: "delayed"
       },
       {
         operation: "court",
         name: "After-Hours Deal",
         effect:
-          "After ordinary operation cards finish, the claiming bid resolves one additional Court operation.",
+          "After every contest and Revolving Door finishes, the claiming bid resolves one additional Court baseline.",
         timing: "delayed"
       }
     ]

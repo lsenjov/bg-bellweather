@@ -10,6 +10,7 @@ import {
   INITIAL_SUPPORT_DISTRICTS,
   OPERATION_IDS,
   PARTIES,
+  PARTIES_BY_ID,
   PARTY_IDS,
   SCORING_CARDS,
   SCORING_CARD_IDS,
@@ -112,6 +113,15 @@ describe("parties and firms", () => {
         party.favoredOperations
       );
     }
+  });
+
+  it("describes both Night bonuses with end-of-resolution timing", () => {
+    expect(
+      PARTIES_BY_ID["night-parliament"].bonuses.map((bonus) => bonus.effect)
+    ).toEqual([
+      "After every contest and Revolving Door finishes, the claiming bid resolves one additional Rally baseline.",
+      "After every contest and Revolving Door finishes, the claiming bid resolves one additional Court baseline."
+    ]);
   });
 
   it("defines six distinct, sequentially numbered firms", () => {

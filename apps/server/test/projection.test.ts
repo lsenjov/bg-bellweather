@@ -61,11 +61,17 @@ describe("resolution filing projection", () => {
       firmId,
       "transferred"
     );
+    state.bids["night-bid-two"] = bid(
+      "night-bid-two",
+      "night-parliament",
+      firmId,
+      "transferred"
+    );
     state.contests["night-parliament"] = {
       id: "night-parliament",
       targetPartyId: "night-parliament",
       openingBidId: "night-bid",
-      bidIds: ["night-bid"]
+      bidIds: ["night-bid", "night-bid-two"]
     };
     state.phase.contestOrder.push("night-parliament");
     state.phase.contestIndex = state.phase.contestOrder.length;
@@ -80,6 +86,24 @@ describe("resolution filing projection", () => {
       claimId: "claim-final",
       operation: "court"
     };
+    state.phase.delayedBonusClaims = [
+      {
+        id: "claim-final",
+        ownerId: "seat-1",
+        bidId: "night-bid",
+        bidRank: 0,
+        order: 0,
+        operation: "court"
+      },
+      {
+        id: "claim-next",
+        ownerId: "seat-1",
+        bidId: "night-bid-two",
+        bidRank: 1,
+        order: 1,
+        operation: "rally"
+      }
+    ];
 
     const progress = publicResolutionFilingProgress(state, state.phase);
     expect(progress).toMatchObject({
@@ -96,6 +120,21 @@ describe("resolution filing projection", () => {
       ])
     );
     expect(progress.completedBidIds).not.toContain("night-bid");
+    expect(progress.completedBidIds).not.toContain("night-bid-two");
+
+    state.phase.delayedClaimIndex = 1;
+    state.phase.pendingDecision = {
+      id: "decision-delayed-next",
+      kind: "night_delayed_operation",
+      seatId: "seat-1",
+      contestId: "night-parliament",
+      bidId: "night-bid-two",
+      claimId: "claim-next",
+      operation: "rally"
+    };
+    const nextProgress = publicResolutionFilingProgress(state, state.phase);
+    expect(nextProgress.completedBidIds).toContain("night-bid");
+    expect(nextProgress.completedBidIds).not.toContain("night-bid-two");
   });
 
   it("reveals completed and current contests while keeping future contests covered", () => {
