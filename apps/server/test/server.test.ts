@@ -512,7 +512,7 @@ describe("game server", () => {
     });
 
     app.store.database
-      .prepare("UPDATE games SET ruleset_version = '7' WHERE id = ?")
+      .prepare("UPDATE games SET ruleset_version = '8' WHERE id = ?")
       .run(host.session.gameId);
     await sendCommand(baseUrl, host.session, 2, "start-current", {
       type: "start_game"
@@ -533,14 +533,14 @@ describe("game server", () => {
     });
 
     app.store.database
-      .prepare("UPDATE games SET ruleset_version = '7' WHERE id = ?")
+      .prepare("UPDATE games SET ruleset_version = '8' WHERE id = ?")
       .run(host.session.gameId);
     app.store.database
       .prepare("UPDATE snapshots SET ruleset_version = '6' WHERE game_id = ?")
       .run(host.session.gameId);
 
     expect(() => app.store.loadEngineState(host.session.gameId)).toThrow(
-      "Only ruleset 7 is supported"
+      "Only ruleset 8 is supported"
     );
     const retry = await jsonRequest(
       baseUrl,
@@ -762,7 +762,7 @@ describe("game server", () => {
       seatState: {
         privateGame: {
           reserve: unknown;
-          scoringCardId: string;
+          scoringCardIds: string[];
         };
       };
       publicState: {
@@ -775,7 +775,7 @@ describe("game server", () => {
       };
     };
     const publicGameJson = JSON.stringify(active.publicState.publicGame);
-    expect(publicGameJson).not.toContain("scoringCardId");
+    expect(publicGameJson).not.toContain("scoringCardIds");
     expect(publicGameJson).not.toContain('"reserve"');
     expect(active.publicState.publicGame.courtSupport).toEqual({
       honeycomb: {},
@@ -786,6 +786,7 @@ describe("game server", () => {
       "night-parliament": {}
     });
     expect(active.seatState.privateGame).toMatchObject({
+      scoringCardIds: [expect.any(String), expect.any(String)],
       reserve: {
         leverage: 20,
         bluff: 8,

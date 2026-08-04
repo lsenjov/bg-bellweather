@@ -60,7 +60,7 @@ interface ViewSeat {
     bluff: number;
     operations: Record<OperationId, number>;
   } | null;
-  scoringCardId: string | null;
+  scoringCardIds: string[] | null;
 }
 
 interface GameView {
@@ -443,7 +443,12 @@ export function GameDesk(props: {
   const [resolutionMapSummary, setResolutionMapSummary] =
     useState<ResolutionMapSummary | null>(null);
   const ownReady = props.ownSeatId ? props.view.readySeatIds.includes(props.ownSeatId) : false;
-  const scoringCard = props.ownSeat?.scoringCardId ? SCORING_CARDS_BY_ID[props.ownSeat.scoringCardId as keyof typeof SCORING_CARDS_BY_ID] : undefined;
+  const scoringCards = (props.ownSeat?.scoringCardIds ?? []).flatMap(
+    (scoringCardId) =>
+      scoringCardId in SCORING_CARDS_BY_ID
+        ? [SCORING_CARDS_BY_ID[scoringCardId as ScoringCardId]]
+        : []
+  );
   const latestElection = props.view.electionHistory.at(-1);
   const revealedObjectives = revealedElectionObjectives(
     props.view.phase,
@@ -451,7 +456,7 @@ export function GameDesk(props: {
   );
   const scoringObjectives = revealedObjectives.length > 0
     ? revealedObjectives
-    : scoringCard?.objectives;
+    : scoringCards.flatMap((card) => card.objectives);
   const activeOpening =
     props.ownSeatId !== undefined &&
     props.view.phase === "opening" &&
@@ -560,8 +565,8 @@ export function GameDesk(props: {
             </div>
             <div className="agenda folio-agenda">
               <span>Hidden election brief</span>
-              <strong>{scoringCard?.id ?? props.ownSeat.scoringCardId ?? "Sealed"}</strong>
-              {scoringCard?.objectives.map((objective) => <small key={objective.districtId}>{objective.districtId} · {PARTIES_BY_ID[objective.partyId].shortName}</small>)}
+              <strong>{scoringCards.length > 0 ? scoringCards.map((card) => card.id).join(" · ") : "Sealed"}</strong>
+              {scoringCards.flatMap((card) => card.objectives).map((objective) => <small key={`${objective.districtId}:${objective.partyId}`}>{objective.districtId} · {PARTIES_BY_ID[objective.partyId].shortName}</small>)}
             </div>
           </>
         ) : <p className="folio-public-copy">Public information only. Private reserves remain behind the screen.</p>}
@@ -2149,7 +2154,7 @@ function ReplayState({ state }: { state: GameState }) {
       bluff: seat.reserve.bluff,
       operations: { ...seat.reserve.operations }
     },
-    scoringCardId: seat.scoringCardId
+    scoringCardIds: [...seat.scoringCardIds]
   }));
   return (
     <div className="replay-state">
@@ -2166,7 +2171,7 @@ function ReplayState({ state }: { state: GameState }) {
             <span>{seat.reserve.leverage} Leverage · {seat.reserve.bluff} Bluff · {OPERATION_IDS.map(
               (operation) => `${seat.reserve.operations[operation]} ${operation}`
             ).join(" · ")}</span>
-            <small>Agenda {seat.scoringCardId}</small>
+            <small>Agenda {seat.scoringCardIds.join(" · ")}</small>
           </article>
         ))}
       </div>
@@ -2395,18 +2400,20 @@ function revealedElectionObjectives(
   }
   const objectives = new Map<string, ScoringObjective>();
   for (const entry of election.scoringCards) {
-    if (!isObject(entry) || typeof entry.scoringCardId !== "string") {
+    if (!isObject(entry) || !Array.isArray(entry.scoringCardIds)) {
       continue;
     }
-    if (!(entry.scoringCardId in SCORING_CARDS_BY_ID)) {
-      continue;
-    }
-    const card = SCORING_CARDS_BY_ID[entry.scoringCardId as ScoringCardId];
-    for (const objective of card.objectives) {
-      objectives.set(
-        `${objective.districtId}:${objective.partyId}`,
-        objective
-      );
+    for (const scoringCardId of entry.scoringCardIds) {
+      if (typeof scoringCardId !== "string" || !(scoringCardId in SCORING_CARDS_BY_ID)) {
+        continue;
+      }
+      const card = SCORING_CARDS_BY_ID[scoringCardId as ScoringCardId];
+      for (const objective of card.objectives) {
+        objectives.set(
+          `${objective.districtId}:${objective.partyId}`,
+          objective
+        );
+      }
     }
   }
   return [...objectives.values()];
@@ -2553,7 +2560,10 @@ export function extractView(state: ViewerStateEnvelope): GameView | null {
     state.scope === "seat" &&
     (!isObject(privateGame) ||
       !isObject(privateGame.reserve) ||
-      typeof privateGame.scoringCardId !== "string" ||
+      !Array.isArray(privateGame.scoringCardIds) ||
+      !privateGame.scoringCardIds.every(
+        (cardId) => typeof cardId === "string" && cardId in SCORING_CARDS_BY_ID
+      ) ||
       !Array.isArray(privateGame.ownBids) ||
       !Array.isArray(privateGame.counterbidSlots))
   ) {
@@ -2566,8 +2576,10 @@ export function extractView(state: ViewerStateEnvelope): GameView | null {
     (seat) => ({
       ...seat,
       reserve: seat.id === viewerSeatId ? privateState.reserve ?? null : null,
-      scoringCardId:
-        seat.id === viewerSeatId ? privateState.scoringCardId ?? null : null
+      scoringCardIds:
+        seat.id === viewerSeatId
+          ? privateState.scoringCardIds as string[]
+          : null
     })
   );
   const contests = publicGame.contests;

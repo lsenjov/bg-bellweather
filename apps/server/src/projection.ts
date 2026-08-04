@@ -360,7 +360,7 @@ function seatEngineState(
   );
   return {
     reserve: seat.reserve,
-    scoringCardId: seat.scoringCardId,
+    scoringCardIds: seat.scoringCardIds,
     ownBids,
     counterbidSlots: state.counterbidSlots[viewerSeatId] ?? [],
     pendingDecision:

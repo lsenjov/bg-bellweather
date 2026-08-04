@@ -93,7 +93,7 @@ describe("browser play surface", () => {
         seats: [],
         spectators: [],
         publicGame: {
-          rulesetVersion: "7",
+          rulesetVersion: "8",
           round: 1,
           electionNumber: 0,
           nextFirstOpenerSeatId: "seat-a",
@@ -126,7 +126,7 @@ describe("browser play surface", () => {
             bluff: 0,
             operations: { organise: 0, rally: 0, smear: 0, court: 0 }
           },
-          scoringCardId: "kingmaker",
+          scoringCardIds: ["SC-01", "SC-02"],
           ownBids: [],
           counterbidSlots: [null, null],
           pendingDecision: {
@@ -149,13 +149,13 @@ describe("browser play surface", () => {
   });
 
   it("rejects an active payload from an unsupported ruleset", () => {
-    expect(extractView(activePublicState("6", TEST_PARTY_ORDER))).toBeNull();
+    expect(extractView(activePublicState("7", TEST_PARTY_ORDER))).toBeNull();
   });
 
   it("rejects an incomplete or duplicate current party order", () => {
-    expect(extractView(activePublicState("7", []))).toBeNull();
+    expect(extractView(activePublicState("8", []))).toBeNull();
     expect(
-      extractView(activePublicState("7", [
+      extractView(activePublicState("8", [
         ...TEST_PARTY_ORDER.slice(0, -1),
         "honeycomb"
       ]))
@@ -201,7 +201,7 @@ describe("browser play surface", () => {
         },
         seats: [host],
         spectators: [],
-        publicGame: { phase: "lobby", rulesetVersion: "7" }
+        publicGame: { phase: "lobby", rulesetVersion: "8" }
       },
       seatState: { seatId: host.seatId, privateGame: null }
     };
@@ -296,7 +296,7 @@ describe("browser play surface", () => {
             firmIds: ["one-fell-swoop"],
             points: 10,
             reserve: null,
-            scoringCardId: null
+            scoringCardIds: null
           },
           {
             id: "seat-b",
@@ -306,7 +306,7 @@ describe("browser play surface", () => {
             firmIds: ["pairliament"],
             points: 7,
             reserve: null,
-            scoringCardId: null
+            scoringCardIds: null
           }
         ]}
         readySeatIds={["seat-b"]}
@@ -363,6 +363,99 @@ describe("browser play surface", () => {
     expect(within(target).getByText("Honeycomb")).toBeTruthy();
   });
 
+  it("shows both low-player agendas in the private folio", () => {
+    const seat = {
+      id: "seat-a",
+      displayName: "Ada",
+      controller: "human",
+      position: 0,
+      firmIds: ["one-fell-swoop"],
+      points: 10,
+      reserve: {
+        leverage: 20,
+        bluff: 8,
+        operations: { organise: 4, rally: 8, smear: 4, court: 2 }
+      },
+      scoringCardIds: ["SC-01", "SC-02"]
+    };
+    render(
+      <GameDesk
+        view={{
+          playerCount: 2,
+          round: 1,
+          electionNumber: 0,
+          phase: "opening",
+          phaseData: { activeSeatId: "seat-b", submittedSeatIds: [] },
+          deadlineAt: null,
+          nextFirstOpenerSeatId: "seat-b",
+          seats: [seat],
+          partyOrder: [...TEST_PARTY_ORDER],
+          support: {},
+          courtSupport: {},
+          coalitionTargets: {},
+          contests: {},
+          bids: [],
+          readySeatIds: [],
+          pendingDecision: null,
+          counterbidSlots: [],
+          electionHistory: [],
+          chat: []
+        } as never}
+        ownSeat={seat as never}
+        ownSeatId="seat-a"
+        spectator
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    expect(screen.getByText("SC-01 · SC-02")).toBeTruthy();
+    expect(screen.getByText(/grand-market · Honeycomb/i)).toBeTruthy();
+    expect(screen.getByText(/ironwood · Old Shell/i)).toBeTruthy();
+  });
+
+  it("marks every revealed low-player agenda objective on Election Day", () => {
+    render(
+      <GameDesk
+        view={{
+          playerCount: 2,
+          round: 4,
+          electionNumber: 0,
+          phase: "election",
+          phaseData: {},
+          deadlineAt: null,
+          nextFirstOpenerSeatId: "seat-a",
+          seats: [],
+          partyOrder: [...TEST_PARTY_ORDER],
+          support: {},
+          courtSupport: {},
+          coalitionTargets: {},
+          contests: {},
+          bids: [],
+          readySeatIds: [],
+          pendingDecision: null,
+          counterbidSlots: [],
+          electionHistory: [
+            {
+              scoringCards: [
+                { seatId: "seat-a", scoringCardIds: ["SC-01", "SC-02"] }
+              ]
+            }
+          ],
+          chat: []
+        } as never}
+        ownSeat={undefined}
+        ownSeatId={undefined}
+        spectator
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    expect(screen.getByLabelText(/Grand Market.*Election agenda scores Honeycomb/i)).toBeTruthy();
+    expect(screen.getByLabelText(/Ironwood.*Election agenda scores Old Shell/i)).toBeTruthy();
+  });
+
   it("uses an armed blank district field without overwriting map selections", () => {
     const onSelect = vi.fn();
     const { rerender } = render(
@@ -416,7 +509,7 @@ describe("browser play surface", () => {
             firmIds: ["one-fell-swoop"],
             points: 5,
             reserve: null,
-            scoringCardId: null
+            scoringCardIds: null
           }
         ]}
         bids={[
@@ -1275,7 +1368,7 @@ describe("browser play surface", () => {
         bluff: 0,
         operations: { organise: 0, rally: 0, smear: 0, court: 0 }
       },
-      scoringCardId: null
+      scoringCardIds: null
     };
     const { container } = render(
       <GameDesk
