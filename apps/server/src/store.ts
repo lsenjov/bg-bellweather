@@ -488,10 +488,12 @@ export class EventStore {
     });
   }
 
-  listActiveGameIds(): string[] {
+  listCurrentActiveGameIds(): string[] {
     const rows = this.database
-      .prepare("SELECT id FROM games WHERE status = 'active' ORDER BY id")
-      .all() as unknown as Array<{ id: string }>;
+      .prepare(
+        "SELECT id FROM games WHERE status = 'active' AND ruleset_version = ? ORDER BY id"
+      )
+      .all(engineVersion) as unknown as Array<{ id: string }>;
     return rows.map((row) => row.id);
   }
 

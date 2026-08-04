@@ -260,11 +260,12 @@ describe("game server", () => {
     await reopened.close();
   });
 
-  it("rejects a lobby from an unsupported ruleset", async () => {
+  it("rejects unsupported persisted games without disrupting startup", async () => {
     const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
     temporaryDirectories.push(directory);
+    const databasePath = resolve(directory, "game.sqlite");
     const app = createAppServer({
-      databasePath: resolve(directory, "game.sqlite"),
+      databasePath,
       port: 0
     });
     const address = await app.listen();
@@ -325,6 +326,24 @@ describe("game server", () => {
       type: "start_game"
     });
     app.store.database
+      .prepare("UPDATE games SET ruleset_version = '6' WHERE id = ?")
+      .run(host.session.gameId);
+    const unsupportedSocket = await openSocket(address.port, host.session.gameId);
+    const unsupportedFrame = nextSocketFrame(unsupportedSocket);
+    unsupportedSocket.send(JSON.stringify({
+      type: "authenticate",
+      gameId: host.session.gameId,
+      accessToken: host.session.accessToken
+    }));
+    await expect(unsupportedFrame).resolves.toMatchObject({
+      type: "error",
+      error: { code: "unsupported_ruleset" }
+    });
+
+    app.store.database
+      .prepare("UPDATE games SET ruleset_version = '7' WHERE id = ?")
+      .run(host.session.gameId);
+    app.store.database
       .prepare("UPDATE snapshots SET ruleset_version = '6' WHERE game_id = ?")
       .run(host.session.gameId);
 
@@ -332,6 +351,15 @@ describe("game server", () => {
       "Only ruleset 7 is supported"
     );
     await app.close();
+
+    const reopened = createAppServer({ databasePath, port: 0 });
+    const reopenedAddress = await reopened.listen();
+    const health = await jsonRequest(
+      `http://${reopenedAddress.host}:${reopenedAddress.port}`,
+      "/api/v1/health"
+    );
+    expect(health).toMatchObject({ status: 200 });
+    await reopened.close();
   });
 
   it("allows configured spectators without granting player commands", async () => {
@@ -471,7 +499,7 @@ describe("game server", () => {
     );
     await expect(wrongRouteFrame).resolves.toMatchObject({
       type: "error",
-      error: { code: "invalid_request" }
+      error: { code: "not_found" }
     });
 
     const opponentSocket = await authenticatedSocket(

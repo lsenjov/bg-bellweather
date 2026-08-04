@@ -94,7 +94,7 @@ describe("browser play surface", () => {
           round: 1,
           electionNumber: 0,
           nextFirstOpenerSeatId: "seat-a",
-          partyOrder: ["honeycomb", "old-shell"],
+          partyOrder: [...TEST_PARTY_ORDER],
           support: {},
           courtSupport: {},
           coalitionTargets: {},
@@ -146,39 +146,17 @@ describe("browser play surface", () => {
   });
 
   it("rejects an active payload from an unsupported ruleset", () => {
-    const view = extractView({
-      scope: "public",
-      publicState: {
-        gameId: "game-1",
-        version: 1,
-        latestSequence: 1,
-        lifecycle: "active",
-        configuration: {
-          playerCount: 2,
-          counterbidTimer: { mode: "off" },
-          allowSpectators: false
-        },
-        seats: [],
-        spectators: [],
-        publicGame: {
-          rulesetVersion: "6",
-          round: 1,
-          electionNumber: 0,
-          nextFirstOpenerSeatId: "seat-a",
-          partyOrder: [],
-          support: {},
-          courtSupport: {},
-          coalitionTargets: {},
-          contests: {},
-          electionHistory: [],
-          chat: [],
-          phase: { type: "opening" },
-          seats: []
-        }
-      }
-    } as never);
+    expect(extractView(activePublicState("6", TEST_PARTY_ORDER))).toBeNull();
+  });
 
-    expect(view).toBeNull();
+  it("rejects an incomplete or duplicate current party order", () => {
+    expect(extractView(activePublicState("7", []))).toBeNull();
+    expect(
+      extractView(activePublicState("7", [
+        ...TEST_PARTY_ORDER.slice(0, -1),
+        "honeycomb"
+      ]))
+    ).toBeNull();
   });
 
   it("renders the human table creator with a configurable optional timer", () => {
@@ -1347,3 +1325,40 @@ describe("browser play surface", () => {
     ).toBeTruthy();
   });
 });
+
+function activePublicState(
+  rulesetVersion: string,
+  partyOrder: readonly string[]
+) {
+  return {
+    scope: "public",
+    publicState: {
+      gameId: "game-1",
+      version: 1,
+      latestSequence: 1,
+      lifecycle: "active",
+      configuration: {
+        playerCount: 2,
+        counterbidTimer: { mode: "off" },
+        allowSpectators: false
+      },
+      seats: [],
+      spectators: [],
+      publicGame: {
+        rulesetVersion,
+        round: 1,
+        electionNumber: 0,
+        nextFirstOpenerSeatId: "seat-a",
+        partyOrder: [...partyOrder],
+        support: {},
+        courtSupport: {},
+        coalitionTargets: {},
+        contests: {},
+        electionHistory: [],
+        chat: [],
+        phase: { type: "opening" },
+        seats: []
+      }
+    }
+  } as never;
+}

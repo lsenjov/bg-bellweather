@@ -3,7 +3,7 @@ import {
   ServerWebSocketFrameSchema
 } from "@bellweather/protocol";
 import type { WebSocket } from "ws";
-import { AppError } from "./errors.js";
+import { AppError, protocolErrorCode } from "./errors.js";
 import { projectEvent, projectState } from "./projection.js";
 import type { EventStore } from "./store.js";
 import type { StoredEvent } from "./types.js";
@@ -131,12 +131,16 @@ export class Subscriptions {
 
   private sendError(socket: WebSocket, error: unknown): void {
     const message = error instanceof Error ? error.message : "Invalid frame";
+    const appError =
+      error instanceof AppError
+        ? error
+        : new AppError(400, "invalid_request", message);
     this.send(socket, {
       type: "error",
       error: {
-        code: "invalid_request",
-        message,
-        retryable: false
+        code: protocolErrorCode(appError),
+        message: appError.message,
+        retryable: appError.status >= 500
       }
     });
   }

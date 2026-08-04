@@ -2421,7 +2421,7 @@ export function PartyRail({
 }) {
   return (
     <div className="party-rail">
-      {(view.partyOrder.length ? view.partyOrder : PARTIES.map((party) => party.id)).map((id, index) => {
+      {view.partyOrder.map((id, index) => {
         const party = PARTIES_BY_ID[id];
         const selected = interaction?.activePartyId === id;
         const assignedElsewhere =
@@ -2535,7 +2535,7 @@ export function extractView(state: ViewerStateEnvelope): GameView | null {
     typeof publicGame.phase.type !== "string" ||
     typeof publicGame.nextFirstOpenerSeatId !== "string" ||
     !Array.isArray(publicGame.seats) ||
-    !Array.isArray(publicGame.partyOrder) ||
+    !isCurrentPartyOrder(publicGame.partyOrder) ||
     !isObject(publicGame.support) ||
     !isObject(publicGame.courtSupport) ||
     !isObject(publicGame.coalitionTargets) ||
@@ -2674,6 +2674,17 @@ export function orderedContestIds(
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isCurrentPartyOrder(value: unknown): value is PartyId[] {
+  if (!Array.isArray(value) || value.length !== PARTIES.length) {
+    return false;
+  }
+  const ids = new Set(value);
+  return (
+    ids.size === PARTIES.length &&
+    PARTIES.every((party) => ids.has(party.id))
+  );
 }
 
 function objectValue(value: unknown): Record<string, unknown> {

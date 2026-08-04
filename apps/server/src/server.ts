@@ -16,7 +16,7 @@ import { engineVersion } from "@bellweather/game";
 import { WebSocketServer } from "ws";
 import { ZodError } from "zod";
 import { createSeatToken } from "./auth.js";
-import { AppError } from "./errors.js";
+import { AppError, protocolErrorCode } from "./errors.js";
 import { projectEvent, projectState } from "./projection.js";
 import { EventStore } from "./store.js";
 import { Subscriptions } from "./subscriptions.js";
@@ -346,8 +346,14 @@ class CounterbidDeadlines {
   ) {}
 
   recover(): void {
-    for (const gameId of this.store.listActiveGameIds()) {
-      this.schedule(gameId);
+    for (const gameId of this.store.listCurrentActiveGameIds()) {
+      try {
+        this.schedule(gameId);
+      } catch (error) {
+        if (!(error instanceof AppError) || error.code !== "unsupported_ruleset") {
+          throw error;
+        }
+      }
     }
   }
 
@@ -521,29 +527,9 @@ function writeError(response: ServerResponse, error: unknown): void {
             ? error.message
             : "Internal server error"
         );
-  const protocolCode =
-    appError.code === "version_conflict"
-      ? "version_conflict"
-      : appError.code === "idempotency_conflict"
-        ? "idempotency_conflict"
-      : appError.code === "unsupported_ruleset"
-        ? "unsupported_ruleset"
-      : appError.code === "phase_closed"
-        ? "phase_closed"
-        : appError.status === 400
-          ? "invalid_request"
-          : appError.status === 401
-            ? "unauthorized"
-            : appError.status === 403
-              ? "forbidden"
-              : appError.status === 404
-                ? "not_found"
-                : appError.status >= 500
-                  ? "internal_error"
-                  : "illegal_action";
   writeJson(response, appError.status, {
     error: {
-      code: protocolCode,
+      code: protocolErrorCode(appError),
       message: appError.message,
       retryable: appError.status >= 500,
       ...(appError.details === undefined ? {} : { details: appError.details })

@@ -256,7 +256,6 @@ export const StartGameCommandSchema = z
     type: z.literal("start_game")
   })
   .strict();
-export const StartLobbyCommandSchema = StartGameCommandSchema;
 export const PostChatCommandSchema = z
   .object({
     type: z.literal("post_chat"),
@@ -445,7 +444,6 @@ export const GameCommandSchema = z.union([
 ]);
 export type SetLobbyReadyCommand = z.infer<typeof SetLobbyReadyCommandSchema>;
 export type StartGameCommand = z.infer<typeof StartGameCommandSchema>;
-export type StartLobbyCommand = StartGameCommand;
 export type PostChatCommand = z.infer<typeof PostChatCommandSchema>;
 export type GiveResourcesCommand = z.infer<typeof GiveResourcesCommandSchema>;
 export type PlayerGameAction = z.infer<typeof PlayerGameActionSchema>;
