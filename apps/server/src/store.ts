@@ -341,6 +341,7 @@ export class EventStore {
           },
           random
         );
+        initialized.state.rulesetVersion = game.rulesetVersion;
         event = this.appendEventUnsafe(game.id, now, {
           type: "game.started",
           actorSeatId: seatId,

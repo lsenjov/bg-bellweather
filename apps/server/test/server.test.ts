@@ -260,6 +260,58 @@ describe("game server", () => {
     await reopened.close();
   });
 
+  it("starts an older lobby with its persisted ruleset version", async () => {
+    const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
+    temporaryDirectories.push(directory);
+    const app = createAppServer({
+      databasePath: resolve(directory, "game.sqlite"),
+      port: 0
+    });
+    const address = await app.listen();
+    const baseUrl = `http://${address.host}:${address.port}`;
+    const created = await jsonRequest(baseUrl, "/api/v1/games", {
+      method: "POST",
+      body: {
+        displayName: "Legacy host",
+        controller: "human",
+        configuration: {
+          playerCount: 2,
+          counterbidTimer: { mode: "off" },
+          allowSpectators: false
+        }
+      }
+    });
+    const host = created.body as {
+      inviteCode: string;
+      session: { gameId: string; accessToken: string };
+    };
+    await jsonRequest(baseUrl, "/api/v1/games/join", {
+      method: "POST",
+      body: {
+        inviteCode: host.inviteCode,
+        displayName: "Legacy opponent",
+        controller: "human",
+        role: "player"
+      }
+    });
+    app.store.database
+      .prepare("UPDATE games SET ruleset_version = '5' WHERE id = ?")
+      .run(host.session.gameId);
+
+    await sendCommand(baseUrl, host.session, 2, "start-legacy", {
+      type: "start_game"
+    });
+
+    expect(app.store.loadEngineState(host.session.gameId)?.rulesetVersion).toBe(
+      "5"
+    );
+    expect(app.store.loadLatestSnapshot(host.session.gameId)).toMatchObject({
+      rulesetVersion: "5",
+      state: { rulesetVersion: "5" }
+    });
+    await app.close();
+  });
+
   it("allows configured spectators without granting player commands", async () => {
     const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
     temporaryDirectories.push(directory);
