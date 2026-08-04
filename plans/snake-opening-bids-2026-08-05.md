@@ -8,7 +8,7 @@ Make every low-player opening bid an individual turn in Early Bird-relative snak
 
 1. **Plan and rule boundaries — completed.** Define the authoritative turn sequence, repeated turn-around seat, affordability/pass behavior, public progress contract, and unchanged four-to-six-player path.
 2. **Engine and protocol — completed.** Replace once-per-seat opening completion with an ordered repeated-seat sequence and cursor, accept exactly one affordable opening or an insolvent pass per turn, preserve replay determinism, advance to ruleset version 9, and cover every Early Bird rotation, wraparound, turn-around, insolvency, gifts, and standard-player order.
-3. **Server, web, and agent integration.** Project the full public sequence and cursor, submit one opening at a time from the browser and example agent, reset the form across a consecutive turn-around, show every repeated opening turn with completed/current/waiting state to players and spectators, and update focused server/UI coverage.
+3. **Server, web, and agent integration — completed.** Project the full public sequence and cursor, submit one opening at a time from the browser and example agent, reset the form across a consecutive turn-around, show every repeated opening turn with completed/current/waiting state to players and spectators, and update focused server/UI coverage.
 4. **Physical rules, history, verification, and review.** Archive the replaced batched low-player opening rule, update current rules, glossary, player aids, agent API, decisions, and changelog, run the full repository check, and resolve every high or medium independent-review finding.
 
 ## Committed interpretation

@@ -143,7 +143,8 @@ async function takeTurn(
 
   if (
     phaseType === "opening" &&
-    phase["activeSeatId"] === session.seatId &&
+    arrayValue(phase["turnSeatIds"])[Number(phase["turnIndex"] ?? 0)] ===
+      session.seatId &&
     ownSeat !== undefined
   ) {
     const firms = arrayValue(ownSeat["firmIds"]).map(
@@ -153,18 +154,17 @@ async function takeTurn(
     const available = arrayValue(game["partyOrder"])
       .map((partyId) => stringValue(partyId) as PartyId)
       .filter((partyId) => !(partyId in contests));
-    const count = Math.min(firms.length, Number(reserve["leverage"] ?? 0));
+    const count = Math.min(1, Number(reserve["leverage"] ?? 0));
     await command(client, session.gameId, publicState.version, {
       type: "game_action",
       action: {
         type: "submit_openings",
-        openings: firms.slice(0, count).map((firmId, index) => ({
+        openings: firms.slice(0, count).map((firmId) => ({
           firmId,
-          partyId: available[index] ?? available[0] ?? "honeycomb",
+          partyId: available[0] ?? "honeycomb",
           leverage: 1,
           bluff: 0,
           operations:
-            index === 0 &&
             Number(objectValue(reserve["operations"])["organise"] ?? 0) > 0
               ? { ...emptyOperations(), organise: 1 }
               : emptyOperations()

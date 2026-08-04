@@ -201,8 +201,9 @@ function publicPhase(state: GameState): Record<string, unknown> {
   if (phase.type === "opening") {
     return {
       type: phase.type,
-      activeSeatId: phase.activeSeatId,
-      submittedSeatIds: phase.submittedSeatIds
+      activeSeatId: phase.turnSeatIds[phase.turnIndex],
+      turnSeatIds: phase.turnSeatIds,
+      turnIndex: phase.turnIndex
     };
   }
   if (phase.type === "counterbidding") {

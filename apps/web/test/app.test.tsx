@@ -14,6 +14,7 @@ import {
   LobbyDesk,
   mergePendingDecision,
   OpeningForm,
+  OpeningOrder,
   OperationForm,
   orderedContestIds,
   PartyRail,
@@ -93,7 +94,7 @@ describe("browser play surface", () => {
         seats: [],
         spectators: [],
         publicGame: {
-          rulesetVersion: "8",
+          rulesetVersion: "9",
           round: 1,
           electionNumber: 0,
           nextFirstOpenerSeatId: "seat-a",
@@ -149,13 +150,13 @@ describe("browser play surface", () => {
   });
 
   it("rejects an active payload from an unsupported ruleset", () => {
-    expect(extractView(activePublicState("7", TEST_PARTY_ORDER))).toBeNull();
+    expect(extractView(activePublicState("8", TEST_PARTY_ORDER))).toBeNull();
   });
 
   it("rejects an incomplete or duplicate current party order", () => {
-    expect(extractView(activePublicState("8", []))).toBeNull();
+    expect(extractView(activePublicState("9", []))).toBeNull();
     expect(
-      extractView(activePublicState("8", [
+      extractView(activePublicState("9", [
         ...TEST_PARTY_ORDER.slice(0, -1),
         "honeycomb"
       ]))
@@ -201,7 +202,7 @@ describe("browser play surface", () => {
         },
         seats: [host],
         spectators: [],
-        publicGame: { phase: "lobby", rulesetVersion: "8" }
+        publicGame: { phase: "lobby", rulesetVersion: "9" }
       },
       seatState: { seatId: host.seatId, privateGame: null }
     };
@@ -385,7 +386,11 @@ describe("browser play surface", () => {
           round: 1,
           electionNumber: 0,
           phase: "opening",
-          phaseData: { activeSeatId: "seat-b", submittedSeatIds: [] },
+          phaseData: {
+            activeSeatId: "seat-b",
+            turnSeatIds: ["seat-b", "seat-a", "seat-a", "seat-b"],
+            turnIndex: 0
+          },
           deadlineAt: null,
           nextFirstOpenerSeatId: "seat-b",
           seats: [seat],
@@ -734,7 +739,7 @@ describe("browser play surface", () => {
     expect(screen.queryByRole("radio")).toBeNull();
   });
 
-  it("uses one digital firm for both low-player openings and shared card limits", () => {
+  it("files one low-player opening per turn", () => {
     const onCommand = vi.fn(async () => undefined);
     const { container } = render(
       <OpeningForm
@@ -753,29 +758,29 @@ describe("browser play surface", () => {
     );
 
     const form = within(container);
-    const leverage = form.getAllByLabelText("Leverage") as HTMLSelectElement[];
-    expect([...leverage[0]!.options].map((option) => option.value)).toEqual(["1", "2"]);
-    fireEvent.change(leverage[0]!, { target: { value: "2" } });
-    expect([...leverage[1]!.options].map((option) => option.value)).toEqual(["1"]);
+    const leverage = form.getByLabelText("Leverage") as HTMLSelectElement;
+    expect([...leverage.options].map((option) => option.value)).toEqual(["1", "2", "3"]);
+    fireEvent.change(leverage, { target: { value: "2" } });
 
-    const bluff = form.getAllByLabelText("Face-down Bluff") as HTMLSelectElement[];
-    fireEvent.change(bluff[0]!, { target: { value: "2" } });
-    expect([...bluff[1]!.options].map((option) => option.value)).toEqual(["0"]);
+    fireEvent.change(form.getByLabelText("Face-down Bluff"), {
+      target: { value: "2" }
+    });
     expect(form.getByText(/as One Fell Swoop Public Affairs/i)).toBeTruthy();
     expect(form.queryByText(/Pairliament Partners/i)).toBeNull();
 
-    fireEvent.click(form.getByRole("button", { name: /file opening bids/i }));
+    fireEvent.click(form.getByRole("button", { name: /file opening bid/i }));
     expect(onCommand).toHaveBeenCalledWith(expect.objectContaining({
       action: expect.objectContaining({
-        openings: expect.arrayContaining([
-          expect.objectContaining({ firmId: "one-fell-swoop" }),
-          expect.objectContaining({ firmId: "one-fell-swoop" })
-        ])
+        openings: [expect.objectContaining({
+          firmId: "one-fell-swoop",
+          leverage: 2,
+          bluff: 2
+        })]
       })
     }));
   });
 
-  it("applies party shortcuts only to the active opening draft", async () => {
+  it("applies party shortcuts to the current opening", async () => {
     const view = { playerCount: 2, contests: {} };
     const seat = {
       firmIds: ["one-fell-swoop"],
@@ -795,7 +800,7 @@ describe("browser play surface", () => {
     );
 
     const form = within(container);
-    const parties = form.getAllByLabelText("Party") as HTMLSelectElement[];
+    const party = form.getByLabelText("Party") as HTMLSelectElement;
     rerender(
       <OpeningForm
         view={view as never}
@@ -805,8 +810,7 @@ describe("browser play surface", () => {
         onCommand={async () => undefined}
       />
     );
-    await waitFor(() => expect(parties[0]!.value).toBe("riverworks"));
-    fireEvent.click(form.getByRole("button", { name: /edit opening 2/i }));
+    await waitFor(() => expect(party.value).toBe("riverworks"));
     rerender(
       <OpeningForm
         view={view as never}
@@ -816,8 +820,113 @@ describe("browser play surface", () => {
         onCommand={async () => undefined}
       />
     );
-    await waitFor(() => expect(parties[1]!.value).toBe("foxglove"));
-    expect(parties[0]!.value).toBe("riverworks");
+    await waitFor(() => expect(party.value).toBe("foxglove"));
+  });
+
+  it("shows the complete repeated opening order and public progress", () => {
+    const seats = [
+      { id: "seat-a", displayName: "Ada" },
+      { id: "seat-b", displayName: "Bert" },
+      { id: "seat-c", displayName: "Cy" }
+    ];
+    render(
+      <OpeningOrder
+        view={{
+          playerCount: 3,
+          phase: "opening",
+          phaseData: {
+            activeSeatId: "seat-c",
+            turnSeatIds: [
+              "seat-a",
+              "seat-b",
+              "seat-c",
+              "seat-c",
+              "seat-b",
+              "seat-a"
+            ],
+            turnIndex: 2
+          },
+          seats
+        } as never}
+      />
+    );
+
+    expect(screen.getByText("Clockwise, then reverse")).toBeTruthy();
+    expect(screen.getByText("Turn 3 / 6")).toBeTruthy();
+    expect(
+      screen.getAllByRole("listitem").map((item) => item.textContent)
+    ).toEqual([
+      "1AdaComplete",
+      "2BertComplete",
+      "3CyNow",
+      "4CyWaiting",
+      "5BertWaiting",
+      "6AdaWaiting"
+    ]);
+  });
+
+  it("resets the opening draft when the same turn-around player acts again", () => {
+    const baseProps = {
+      view: {
+        playerCount: 2,
+        phase: "opening",
+        phaseData: {
+          activeSeatId: "seat-b",
+          turnSeatIds: ["seat-a", "seat-b", "seat-b", "seat-a"],
+          turnIndex: 1
+        },
+        seats: [
+          { id: "seat-a", displayName: "Ada" },
+          { id: "seat-b", displayName: "Bert" }
+        ],
+        contests: {},
+        pendingDecision: null
+      } as never,
+      seat: {
+        firmIds: ["one-fell-swoop"],
+        reserve: {
+          leverage: 3,
+          bluff: 0,
+          operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+        }
+      } as never,
+      seatId: "seat-b",
+      busy: false,
+      ownReady: false,
+      openingPartyIntent: null,
+      onOpeningDraftChange: vi.fn(),
+      counterbidContestIntent: null,
+      counterbidDraftSummary: {
+        contestId: null,
+        slotIndex: 0,
+        placed: false,
+        dirty: false
+      },
+      onCounterbidDraftChange: vi.fn(),
+      onCommand: vi.fn(async () => undefined)
+    };
+    const { rerender } = render(<ActionDesk {...baseProps} />);
+
+    fireEvent.change(screen.getByLabelText("Party"), {
+      target: { value: "riverworks" }
+    });
+    expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe(
+      "riverworks"
+    );
+
+    rerender(
+      <ActionDesk
+        {...baseProps}
+        view={{
+          ...baseProps.view,
+          phaseData: { ...baseProps.view.phaseData, turnIndex: 2 }
+        } as never}
+      />
+    );
+
+    expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe(
+      "honeycomb"
+    );
   });
 
   it("does not replay an opening shortcut when the form remounts", () => {

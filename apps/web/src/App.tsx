@@ -457,10 +457,10 @@ export function GameDesk(props: {
   const scoringObjectives = revealedObjectives.length > 0
     ? revealedObjectives
     : scoringCards.flatMap((card) => card.objectives);
+  const openingProgress = readOpeningProgress(props.view);
   const activeOpening =
     props.ownSeatId !== undefined &&
-    props.view.phase === "opening" &&
-    props.view.phaseData.activeSeatId === props.ownSeatId;
+    openingProgress?.activeSeatId === props.ownSeatId;
   const chooseOpeningParty = useCallback((partyId: PartyId) => {
     setOpeningPartyIntent((current) => ({
       value: partyId,
@@ -599,6 +599,7 @@ export function GameDesk(props: {
             : {})}
         />
         {props.view.phase === "resolution" && actionDesk}
+        {openingProgress && <OpeningOrder view={props.view} />}
         <PlayerLedger
           seats={props.view.seats}
           readySeatIds={props.view.readySeatIds}
@@ -912,9 +913,11 @@ export function ActionDesk(props: {
 }) {
   const phase = props.view.phase;
   const publicPhase = props.view.pendingDecision;
-  const activeOpening =
-    phase === "opening" &&
-    props.view.phaseData.activeSeatId === props.seatId;
+  const openingProgress = readOpeningProgress(props.view);
+  const activeOpening = openingProgress?.activeSeatId === props.seatId;
+  const activeOpeningSeat = openingProgress === null
+    ? undefined
+    : props.view.seats.find((seat) => seat.id === openingProgress.activeSeatId);
 
   return (
     <div className="action-compose">
@@ -922,12 +925,18 @@ export function ActionDesk(props: {
       {phase === "opening" && (
         activeOpening ? (
           <OpeningForm
+            key={`opening-${openingProgress.turnIndex}`}
             {...props}
             partySelection={props.openingPartyIntent}
             onDraftStateChange={props.onOpeningDraftChange}
           />
         ) : (
-          <p className="empty-copy">Another firm is placing its opening bid.</p>
+          <p className="empty-copy">
+            {activeOpeningSeat?.displayName ?? "Another firm"} is placing opening
+            bid {(openingProgress?.turnIndex ?? 0) + 1} of{
+              openingProgress?.turnSeatIds.length ?? 0
+            }.
+          </p>
         )
       )}
       {phase === "counterbidding" && (
@@ -1010,7 +1019,7 @@ export function OpeningForm(props: {
     [props.view.contests]
   );
   const required = Math.min(
-    props.view.playerCount <= 3 ? 2 : 1,
+    1,
     props.seat.reserve?.leverage ?? 0,
     availableParties.length
   );
@@ -1095,7 +1104,7 @@ export function OpeningForm(props: {
       }}
     >
       <h3>
-        Place {required} opening {required === 1 ? "bid" : "bids"}
+        {required === 0 ? "Pass this opening turn" : "Place 1 opening bid"}
         {props.seat.firmIds[0]
           ? ` as ${FIRMS_BY_ID[props.seat.firmIds[0]].name}`
           : ""}
@@ -1181,7 +1190,7 @@ export function OpeningForm(props: {
         </fieldset>;
       })}
       <button className="ink-button" disabled={props.busy}>
-        File opening {required === 1 ? "bid" : "bids"}
+        {required === 0 ? "Pass opening turn" : "File opening bid"}
       </button>
     </form>
   );
@@ -2527,6 +2536,68 @@ export function PlayerLedger({
         );
       })}
     </div>
+  );
+}
+
+interface OpeningProgress {
+  activeSeatId: string;
+  turnSeatIds: string[];
+  turnIndex: number;
+}
+
+function readOpeningProgress(view: GameView): OpeningProgress | null {
+  if (
+    view.phase !== "opening" ||
+    !Array.isArray(view.phaseData.turnSeatIds) ||
+    !view.phaseData.turnSeatIds.every((seatId) => typeof seatId === "string") ||
+    typeof view.phaseData.turnIndex !== "number"
+  ) {
+    return null;
+  }
+  const turnSeatIds = view.phaseData.turnSeatIds as string[];
+  const turnIndex = view.phaseData.turnIndex;
+  const activeSeatId = turnSeatIds[turnIndex];
+  return activeSeatId === undefined
+    ? null
+    : { activeSeatId, turnSeatIds, turnIndex };
+}
+
+export function OpeningOrder({ view }: { view: GameView }) {
+  const progress = readOpeningProgress(view);
+  if (progress === null) {
+    return null;
+  }
+  const snake = view.playerCount <= 3;
+  return (
+    <section className="opening-order" aria-label="Opening bid order">
+      <header>
+        <div>
+          <p className="section-label">Opening order</p>
+          <h3>{snake ? "Clockwise, then reverse" : "Clockwise from Early Bird"}</h3>
+        </div>
+        <strong>Turn {progress.turnIndex + 1} / {progress.turnSeatIds.length}</strong>
+      </header>
+      <ol>
+        {progress.turnSeatIds.map((seatId, index) => {
+          const seat = view.seats.find((candidate) => candidate.id === seatId);
+          const status = index < progress.turnIndex
+            ? "Complete"
+            : index === progress.turnIndex
+              ? "Now"
+              : "Waiting";
+          return (
+            <li
+              className={index === progress.turnIndex ? "opening-turn-current" : ""}
+              key={`${seatId}-${index}`}
+            >
+              <span>{index + 1}</span>
+              <b>{seat?.displayName ?? "Unknown firm"}</b>
+              <small>{status}</small>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
   );
 }
 

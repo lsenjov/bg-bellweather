@@ -512,7 +512,7 @@ describe("game server", () => {
     });
 
     app.store.database
-      .prepare("UPDATE games SET ruleset_version = '8' WHERE id = ?")
+      .prepare("UPDATE games SET ruleset_version = '9' WHERE id = ?")
       .run(host.session.gameId);
     await sendCommand(baseUrl, host.session, 2, "start-current", {
       type: "start_game"
@@ -533,14 +533,14 @@ describe("game server", () => {
     });
 
     app.store.database
-      .prepare("UPDATE games SET ruleset_version = '8' WHERE id = ?")
+      .prepare("UPDATE games SET ruleset_version = '9' WHERE id = ?")
       .run(host.session.gameId);
     app.store.database
       .prepare("UPDATE snapshots SET ruleset_version = '6' WHERE game_id = ?")
       .run(host.session.gameId);
 
     expect(() => app.store.loadEngineState(host.session.gameId)).toThrow(
-      "Only ruleset 8 is supported"
+      "Only ruleset 9 is supported"
     );
     const retry = await jsonRequest(
       baseUrl,
@@ -767,7 +767,11 @@ describe("game server", () => {
       };
       publicState: {
         publicGame: {
-          phase: { activeSeatId: string };
+          phase: {
+            activeSeatId: string;
+            turnSeatIds: string[];
+            turnIndex: number;
+          };
           partyOrder: string[];
           courtSupport: Record<string, Record<string, number>>;
           seats: Array<{ id: string; firmIds: string[] }>;
@@ -794,6 +798,11 @@ describe("game server", () => {
         points: 10
       }
     });
+    expect(active.publicState.publicGame.phase.turnSeatIds).toHaveLength(4);
+    expect(active.publicState.publicGame.phase.turnIndex).toBe(0);
+    expect(active.publicState.publicGame.phase.activeSeatId).toBe(
+      active.publicState.publicGame.phase.turnSeatIds[0]
+    );
     const actor =
       active.publicState.publicGame.phase.activeSeatId === host.session.seatId
         ? host.session
@@ -823,13 +832,6 @@ describe("game server", () => {
                   leverage: 1,
                   bluff: 1,
                   operations: { ...emptyOperations, organise: 1 }
-                },
-                {
-                  firmId: firms[0],
-                  partyId: active.publicState.publicGame.partyOrder[1],
-                  leverage: 1,
-                  bluff: 0,
-                  operations: emptyOperations
                 }
               ]
             }
@@ -957,25 +959,42 @@ describe("game server", () => {
     });
 
     let version = 3;
-    for (const session of [host.session, opponent]) {
+    for (let turnIndex = 0; turnIndex < 4; turnIndex += 1) {
       const state = await jsonRequest(
         baseUrl,
         `/api/v1/games/${host.session.gameId}/state`,
-        { token: session.accessToken }
+        { token: host.session.accessToken }
       );
       const view = state.body as {
         publicState: {
           publicGame: {
-            phase: { activeSeatId: string };
+            phase: {
+              activeSeatId: string;
+              turnSeatIds: string[];
+              turnIndex: number;
+            };
             partyOrder: string[];
             seats: Array<{ id: string; firmIds: string[] }>;
             contests: Record<string, unknown>;
           };
         };
       };
-      expect(view.publicState.publicGame.phase.activeSeatId).toBe(session.seatId);
+      const activeSeatId = view.publicState.publicGame.phase.activeSeatId;
+      expect(view.publicState.publicGame.phase).toMatchObject({
+        turnSeatIds: [
+          host.session.seatId,
+          opponent.seatId,
+          opponent.seatId,
+          host.session.seatId
+        ],
+        turnIndex,
+        activeSeatId
+      });
+      const session = activeSeatId === host.session.seatId
+        ? host.session
+        : opponent;
       const firms = view.publicState.publicGame.seats.find(
-        (seat) => seat.id === session.seatId
+        (seat) => seat.id === activeSeatId
       )!.firmIds;
       const openParties = new Set(
         Object.keys(view.publicState.publicGame.contests).filter(
@@ -984,12 +1003,12 @@ describe("game server", () => {
       );
       const parties = view.publicState.publicGame.partyOrder
         .filter((partyId) => !openParties.has(partyId))
-        .slice(0, 2);
+        .slice(0, 1);
       await sendCommand(
         baseUrl,
         { ...session, gameId: host.session.gameId },
         version,
-        `open-${session.seatId}`,
+        `open-${turnIndex}-${session.seatId}`,
         {
           type: "game_action",
           action: {
@@ -1038,7 +1057,7 @@ describe("game server", () => {
       }
       await new Promise((resolveWait) => setTimeout(resolveWait, 10));
     }
-    expect(recovered?.publicState.latestSequence).toBe(6);
+    expect(recovered?.publicState.latestSequence).toBe(8);
     expect(recovered?.publicState.publicGame).toMatchObject({
       round: 2,
       phase: { type: "opening" }
