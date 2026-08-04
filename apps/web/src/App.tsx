@@ -644,6 +644,18 @@ const EMPTY_TOKENS: TokenDraft = {
   court: 0
 };
 
+const CARD_FAMILY_LABELS: Record<
+  "leverage" | "bluff" | OperationId,
+  { initial: string; name: string }
+> = {
+  leverage: { initial: "L", name: "Leverage" },
+  bluff: { initial: "B", name: "Bluff" },
+  organise: { initial: "O", name: "Organise" },
+  rally: { initial: "R", name: "Rally" },
+  smear: { initial: "S", name: "Smear" },
+  court: { initial: "C", name: "Court" }
+};
+
 export function ContestCard(props: {
   contestId: string;
   bids: Array<Record<string, unknown>>;
@@ -680,40 +692,76 @@ export function ContestCard(props: {
           const operationInventory = isObject(bid.operations)
             ? bid.operations
             : null;
-          const operations = operationInventory
-            ? OPERATION_IDS.map(
-                (operation) =>
-                  `${String(operationInventory[operation] ?? 0)} ${operation}`
-              ).join(" · ")
-            : null;
+          const cardFamilies = [
+            ...(typeof bid.leverage === "number"
+              ? [{ family: "leverage" as const, count: bid.leverage }]
+              : []),
+            ...(typeof bid.bluff === "number"
+              ? [{ family: "bluff" as const, count: bid.bluff }]
+              : []),
+            ...(operationInventory
+              ? OPERATION_IDS.map((operation) => ({
+                  family: operation,
+                  count: numberOr(operationInventory[operation], 0)
+                }))
+              : [])
+          ].filter((entry) => entry.count > 0);
+          const cardSummaryLabel = cardFamilies
+            .map(
+              ({ family, count }) =>
+                `${count} ${CARD_FAMILY_LABELS[family].name}`
+            )
+            .join(", ");
           const owner = props.seats.find((seat) => seat.id === bid.ownerSeatId);
           const recipient = props.seats.find(
             (seat) => seat.id === bid.transferredToSeatId
           );
-          const revealed = typeof bid.leverage === "number";
+          const leverageKnown = typeof bid.leverage === "number";
           const cardCount = numberOr(bid.cardCount, 0);
+          const firmId = String(bid.firmId) as FirmId;
+          const firm = FIRMS_BY_ID[firmId];
+          const concealedFamilies =
+            typeof bid.bluff !== "number" || operationInventory === null;
           return (
             <li
               key={String(bid.id)}
               className={`bid-line bid-${String(bid.status ?? "active")}`}
+              style={firm ? {
+                "--firm-accent": FIRM_ACCENTS[firmId]
+              } as React.CSSProperties : undefined}
             >
+              {firm && (
+                <FirmEmblem
+                  firmId={firmId}
+                  className="filing-firm-emblem"
+                />
+              )}
               <div>
-                <b>{revealed ? `#${index + 1} · ` : ""}{owner?.displayName ?? "Unknown firm"}</b>
+                <b>{leverageKnown ? `#${index + 1} · ` : ""}{owner?.displayName ?? "Unknown firm"}</b>
                 <small>
-                  {FIRMS_BY_ID[
-                    String(bid.firmId) as keyof typeof FIRMS_BY_ID
-                  ]?.name ?? String(bid.firmId)} · {String(bid.kind)}
+                  {firm?.name ?? String(bid.firmId)} · {String(bid.kind)}
                   {typeof bid.slotIndex === "number"
                     ? " · identity card"
                     : ""} · {String(bid.status ?? "covered")}
                 </small>
               </div>
-              <strong>{revealed ? `${String(bid.leverage)} Leverage` : "Covered"}</strong>
-              <span>
-                {operations
-                  ? `${operations} · ${String(bid.bluff ?? 0)} bluff`
-                  : `${cardCount} bid ${cardCount === 1 ? "card" : "cards"} in stack`}
-              </span>
+              {cardFamilies.length > 0 && (
+                <strong className="filing-cards" aria-label={cardSummaryLabel}>
+                  {cardFamilies.map(({ family, count }) => (
+                    <span className="filing-card-token" key={family}>
+                      {count} {CARD_FAMILY_LABELS[family].initial}
+                    </span>
+                  ))}
+                </strong>
+              )}
+              {cardFamilies.length === 0 && !leverageKnown && (
+                <strong className="filing-covered">Covered</strong>
+              )}
+              {concealedFamilies && cardCount > 0 && (
+                <span className="filing-total">
+                  {cardCount} bid {cardCount === 1 ? "card" : "cards"} in stack
+                </span>
+              )}
               {recipient && <em>Transferred to {recipient.displayName}</em>}
             </li>
           );

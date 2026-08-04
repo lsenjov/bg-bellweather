@@ -135,14 +135,68 @@ describe("browser play surface", () => {
       />
     );
 
-    expect(screen.getByText(/3 Leverage/i)).toBeTruthy();
-    expect(screen.getByText(/1 organise.*1 smear/i)).toBeTruthy();
+    expect(
+      screen.getByLabelText("3 Leverage, 1 Bluff, 1 Organise, 1 Smear")
+    ).toBeTruthy();
+    expect(screen.getByText("3 L")).toBeTruthy();
+    expect(screen.getByText("1 B")).toBeTruthy();
+    expect(screen.getByText("1 O")).toBeTruthy();
+    expect(screen.getByText("1 S")).toBeTruthy();
+    expect(screen.queryByText(/0 [LBORSC]/)).toBeNull();
     expect(screen.getByText(/One Fell Swoop Public Affairs/i)).toBeTruthy();
     expect(screen.getByText(/counterbid · identity card · active/i)).toBeTruthy();
+    expect(document.querySelector(".filing-firm-emblem")).toBeTruthy();
+  });
+
+  it("preserves the covered total beside a partially revealed opening", () => {
+    const { container } = render(
+      <ContestCard
+        contestId="honeycomb"
+        seats={[]}
+        bids={[{
+          id: "bid-opening",
+          firmId: "pairliament",
+          kind: "opening",
+          status: "active",
+          leverage: 3,
+          bluff: null,
+          operations: null,
+          cardCount: 6
+        }]}
+      />
+    );
+
+    const filing = within(container);
+    expect(filing.getByText("3 L")).toBeTruthy();
+    expect(filing.getByText("6 bid cards in stack")).toBeTruthy();
+    expect(filing.queryByText(/[BORSC]$/)).toBeNull();
+  });
+
+  it("omits the card summary for an empty filing", () => {
+    const { container } = render(
+      <ContestCard
+        contestId="honeycomb"
+        seats={[]}
+        bids={[{
+          id: "bid-empty",
+          firmId: "triumvirat",
+          kind: "counterbid",
+          status: "active",
+          leverage: 0,
+          bluff: 0,
+          operations: { organise: 0, rally: 0, smear: 0, court: 0 },
+          cardCount: 0
+        }]}
+      />
+    );
+
+    const filing = within(container).getByRole("listitem");
+    expect(filing.querySelector(".filing-cards")).toBeNull();
+    expect(filing.querySelector(".filing-total")).toBeNull();
   });
 
   it("shows a covered stack total without exposing its card families", () => {
-    render(
+    const { container } = render(
       <ContestCard
         contestId="honeycomb"
         seats={[]}
@@ -156,8 +210,8 @@ describe("browser play surface", () => {
       />
     );
 
-    expect(screen.getByText("6 bid cards in stack")).toBeTruthy();
-    expect(screen.queryByText("Contents concealed")).toBeNull();
+    expect(within(container).getByText("6 bid cards in stack")).toBeTruthy();
+    expect(within(container).queryByText("Contents concealed")).toBeNull();
   });
 
   it("exposes a contest target button during counterbidding", () => {
