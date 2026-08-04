@@ -2,7 +2,7 @@ export type GameStatus = "lobby" | "active" | "finished";
 export type Controller = "human" | "agent";
 
 export interface GameSettings {
-  seatCount: number;
+  playerCapacity: number;
   counterbidTimerSeconds: number | null;
   allowSpectators: boolean;
 }

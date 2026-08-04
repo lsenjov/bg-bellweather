@@ -10,6 +10,7 @@ import {
   CreateLobbyResponseSchema,
   JoinLobbyRequestSchema,
   JoinLobbyResponseSchema,
+  MAX_PLAYER_COUNT,
   ReplayResponseSchema
 } from "@bellweather/protocol";
 import { engineVersion } from "@bellweather/game";
@@ -148,7 +149,7 @@ async function route(
       code: inviteCode,
       rulesetVersion: engineVersion,
       settings: {
-        seatCount: input.configuration.playerCount,
+        playerCapacity: MAX_PLAYER_COUNT,
         counterbidTimerSeconds:
           input.configuration.counterbidTimer.mode === "off"
             ? null

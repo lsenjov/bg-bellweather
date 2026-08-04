@@ -61,6 +61,8 @@ export const VersionSchema = z.number().int().nonnegative().max(Number.MAX_SAFE_
 export const SequenceSchema = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 export const DisplayNameSchema = z.string().trim().min(1).max(40);
 export const ChatTextSchema = z.string().trim().min(1).max(2_000);
+export const MIN_PLAYER_COUNT = 2;
+export const MAX_PLAYER_COUNT = 6;
 
 export const CounterbidTimerSettingsSchema = z.discriminatedUnion("mode", [
   z.object({ mode: z.literal("off") }).strict(),
@@ -82,20 +84,24 @@ export type SeatRole = z.infer<typeof SeatRoleSchema>;
 export type ControllerKind = z.infer<typeof ControllerKindSchema>;
 export type JoinRole = z.infer<typeof JoinRoleSchema>;
 
-export const LobbyConfigurationSchema = z
+export const LobbyOptionsSchema = z
   .object({
-    playerCount: z.number().int().min(2).max(6),
     counterbidTimer: CounterbidTimerSettingsSchema,
     allowSpectators: z.boolean()
   })
   .strict();
+export type LobbyOptions = z.infer<typeof LobbyOptionsSchema>;
+
+export const LobbyConfigurationSchema = LobbyOptionsSchema.extend({
+  playerCount: z.number().int().min(1).max(MAX_PLAYER_COUNT)
+}).strict();
 export type LobbyConfiguration = z.infer<typeof LobbyConfigurationSchema>;
 
 export const CreateLobbyRequestSchema = z
   .object({
     displayName: DisplayNameSchema,
     controller: ControllerKindSchema,
-    configuration: LobbyConfigurationSchema
+    configuration: LobbyOptionsSchema
   })
   .strict();
 export type CreateLobbyRequest = z.infer<typeof CreateLobbyRequestSchema>;

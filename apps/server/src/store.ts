@@ -214,7 +214,7 @@ export class EventStore {
       }
 
       const seats = this.listSeats(game.id);
-      if (seats.length >= game.settings.seatCount) {
+      if (seats.length >= game.settings.playerCapacity) {
         throw new AppError(409, "lobby_full", "The lobby has no open seats");
       }
 
@@ -331,7 +331,7 @@ export class EventStore {
         if (game.status !== "lobby") {
           throw new AppError(409, "phase_closed", "The game has already started");
         }
-        if (this.listSeats(game.id).length !== game.settings.seatCount) {
+        if (this.listSeats(game.id).length !== game.settings.playerCapacity) {
           throw new AppError(409, "illegal_action", "Every seat must be filled");
         }
         const initialized = initializeGame(

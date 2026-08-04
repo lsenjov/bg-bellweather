@@ -65,11 +65,37 @@ describe("protocol primitives", () => {
         displayName: "Ada",
         controller: "human",
         configuration: {
-          playerCount: 4,
           counterbidTimer: { mode: "off" },
           allowSpectators: true
         },
         admin: true
+      }).success
+    ).toBe(false);
+  });
+
+  it("creates lobbies without a fixed player count", () => {
+    expect(
+      CreateLobbyRequestSchema.parse({
+        displayName: "Ada",
+        controller: "human",
+        configuration: {
+          counterbidTimer: { mode: "off" },
+          allowSpectators: true
+        }
+      }).configuration
+    ).toEqual({
+      counterbidTimer: { mode: "off" },
+      allowSpectators: true
+    });
+    expect(
+      CreateLobbyRequestSchema.safeParse({
+        displayName: "Ada",
+        controller: "human",
+        configuration: {
+          playerCount: 4,
+          counterbidTimer: { mode: "off" },
+          allowSpectators: true
+        }
       }).success
     ).toBe(false);
   });

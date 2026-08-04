@@ -23,13 +23,14 @@ export function projectState(
   const lifecycle =
     game.status === "finished" ? "completed" : game.status;
   const engineState = store.loadEngineState(game.id);
+  const seats = store.listSeats(game.id);
   const publicState = {
     gameId: game.id,
     version: game.currentVersion,
     latestSequence: game.currentVersion,
     lifecycle,
     configuration: {
-      playerCount: game.settings.seatCount,
+      playerCount: engineState?.seats.length ?? seats.length,
       counterbidTimer:
         game.settings.counterbidTimerSeconds === null
           ? { mode: "off" as const }
@@ -39,7 +40,7 @@ export function projectState(
             },
       allowSpectators: game.settings.allowSpectators
     },
-    seats: store.listSeats(game.id).map((seat) => ({
+    seats: seats.map((seat) => ({
       seatId: seat.id,
       seatIndex: seat.position,
       displayName: seat.displayName,
