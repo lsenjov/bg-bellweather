@@ -110,7 +110,7 @@ button:disabled { opacity: .45; cursor: not-allowed; transform: none !important;
 .phase-form fieldset { border: 1px solid var(--ink); padding: 14px; display: grid; gap: 12px; }
 .phase-form legend { padding: 0 7px; font: .62rem var(--mono); text-transform: uppercase; }
 .token-fields { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
-.token-fields input { padding: 7px; }
+.token-fields select { padding: 7px; }
 .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .bonus-check { padding: 11px; border: 1px solid var(--red); color: var(--red); }
 .swap-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }

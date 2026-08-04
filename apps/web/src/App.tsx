@@ -668,7 +668,7 @@ function ActionDesk(props: {
   );
 }
 
-function OpeningForm(props: {
+export function OpeningForm(props: {
   view: GameView;
   seat: ViewSeat;
   busy: boolean;
@@ -697,6 +697,11 @@ function OpeningForm(props: {
       operations: { ...EMPTY_TOKENS }
     }))
   );
+  const reserve = props.seat.reserve ?? {
+    leverage: 0,
+    bluff: 0,
+    operations: { ...EMPTY_TOKENS }
+  };
 
   const updateRow = (
     index: number,
@@ -721,8 +726,29 @@ function OpeningForm(props: {
       }}
     >
       <h3>Place {required} opening {required === 1 ? "bid" : "bids"}</h3>
-      {rows.map((row, index) => (
-        <fieldset key={row.firmId}>
+      {rows.map((row, index) => {
+        const leverageMaximum = reserve.leverage - rows.reduce(
+          (total, candidate, candidateIndex) =>
+            total + (candidateIndex === index ? 0 : candidate.leverage),
+          0
+        );
+        const bluffMaximum = reserve.bluff - rows.reduce(
+          (total, candidate, candidateIndex) =>
+            total + (candidateIndex === index ? 0 : candidate.bluff),
+          0
+        );
+        const operationMaximums = Object.fromEntries(
+          OPERATION_IDS.map((operation) => [
+            operation,
+            reserve.operations[operation] - rows.reduce(
+              (total, candidate, candidateIndex) =>
+                total + (candidateIndex === index ? 0 : candidate.operations[operation]),
+              0
+            )
+          ])
+        ) as TokenDraft;
+
+        return <fieldset key={row.firmId}>
           <legend>{FIRMS_BY_ID[row.firmId as keyof typeof FIRMS_BY_ID]?.name}</legend>
           <label>
             Party
@@ -746,34 +772,26 @@ function OpeningForm(props: {
               ))}
             </select>
           </label>
-          <label>
-            Leverage
-            <input
-              type="number"
-              min="1"
-              value={row.leverage}
-              onChange={(event) =>
-                updateRow(index, { leverage: Number(event.target.value) })
-              }
-            />
-          </label>
-          <label>
-            Face-down Bluff
-            <input
-              type="number"
-              min="0"
-              value={row.bluff}
-              onChange={(event) =>
-                updateRow(index, { bluff: Number(event.target.value) })
-              }
-            />
-          </label>
+          <CardCountSelect
+            label="Leverage"
+            minimum={1}
+            maximum={leverageMaximum}
+            value={row.leverage}
+            onChange={(leverage) => updateRow(index, { leverage })}
+          />
+          <CardCountSelect
+            label="Face-down Bluff"
+            maximum={bluffMaximum}
+            value={row.bluff}
+            onChange={(bluff) => updateRow(index, { bluff })}
+          />
           <TokenFields
             value={row.operations}
+            maximums={operationMaximums}
             onChange={(operations) => updateRow(index, { operations })}
           />
-        </fieldset>
-      ))}
+        </fieldset>;
+      })}
       <button className="ink-button" disabled={props.busy}>
         File opening {required === 1 ? "bid" : "bids"}
       </button>
@@ -781,7 +799,7 @@ function OpeningForm(props: {
   );
 }
 
-function CounterbidForm(props: {
+export function CounterbidForm(props: {
   view: GameView;
   seat: ViewSeat;
   busy: boolean;
@@ -805,6 +823,23 @@ function CounterbidForm(props: {
     props.seat.firmIds[0] ??
     "";
   const selectedBidId = slots[slotIndex];
+  const selectedBid = props.view.bids.find(
+    (candidate) => candidate.id === selectedBidId
+  );
+  const returnedOperations = objectValue(selectedBid?.operations);
+  const maximums = {
+    leverage:
+      (props.seat.reserve?.leverage ?? 0) + numberOr(selectedBid?.leverage, 0),
+    bluff:
+      (props.seat.reserve?.bluff ?? 0) + numberOr(selectedBid?.bluff, 0),
+    operations: Object.fromEntries(
+      OPERATION_IDS.map((operation) => [
+        operation,
+        (props.seat.reserve?.operations[operation] ?? 0) +
+          numberOr(returnedOperations[operation], 0)
+      ])
+    ) as TokenDraft
+  };
 
   useEffect(() => {
     if (selectedBidId === null || selectedBidId === undefined) {
@@ -813,25 +848,24 @@ function CounterbidForm(props: {
       setOperations({ ...EMPTY_TOKENS });
       return;
     }
-    const bid = props.view.bids.find((candidate) => candidate.id === selectedBidId);
-    if (bid === undefined) {
+    if (selectedBid === undefined) {
       return;
     }
-    if (typeof bid.contestId === "string") {
-      setContestId(bid.contestId);
+    if (typeof selectedBid.contestId === "string") {
+      setContestId(selectedBid.contestId);
     }
-    if (typeof bid.leverage === "number") {
-      setLeverage(bid.leverage);
+    if (typeof selectedBid.leverage === "number") {
+      setLeverage(selectedBid.leverage);
     }
-    if (typeof bid.bluff === "number") {
-      setBluff(bid.bluff);
+    if (typeof selectedBid.bluff === "number") {
+      setBluff(selectedBid.bluff);
     }
-    if (isObject(bid.operations)) {
+    if (isObject(selectedBid.operations)) {
       setOperations({
-        organise: numberOr(bid.operations.organise, 0),
-        rally: numberOr(bid.operations.rally, 0),
-        smear: numberOr(bid.operations.smear, 0),
-        court: numberOr(bid.operations.court, 0)
+        organise: numberOr(selectedBid.operations.organise, 0),
+        rally: numberOr(selectedBid.operations.rally, 0),
+        smear: numberOr(selectedBid.operations.smear, 0),
+        court: numberOr(selectedBid.operations.court, 0)
       });
     }
   }, [selectedBidId, slotIndex]);
@@ -881,25 +915,23 @@ function CounterbidForm(props: {
           ))}
         </select>
       </label>
-      <label>
-        Hidden Leverage
-        <input
-          type="number"
-          min="0"
-          value={leverage}
-          onChange={(event) => setLeverage(Number(event.target.value))}
-        />
-      </label>
-      <label>
-        Hidden Bluff
-        <input
-          type="number"
-          min="0"
-          value={bluff}
-          onChange={(event) => setBluff(Number(event.target.value))}
-        />
-      </label>
-      <TokenFields value={operations} onChange={setOperations} />
+      <CardCountSelect
+        label="Hidden Leverage"
+        maximum={maximums.leverage}
+        value={leverage}
+        onChange={setLeverage}
+      />
+      <CardCountSelect
+        label="Hidden Bluff"
+        maximum={maximums.bluff}
+        value={bluff}
+        onChange={setBluff}
+      />
+      <TokenFields
+        value={operations}
+        maximums={maximums.operations}
+        onChange={setOperations}
+      />
       <div className="form-actions">
         <button className="ink-button" disabled={props.busy}>
           Place / replace counterbid
@@ -919,27 +951,44 @@ function CounterbidForm(props: {
 
 function TokenFields(props: {
   value: TokenDraft;
+  maximums: TokenDraft;
   onChange(value: TokenDraft): void;
 }) {
   return (
     <div className="token-fields">
       {OPERATION_IDS.map((operation) => (
-        <label key={operation}>
-          {operation}
-          <input
-            type="number"
-            min="0"
-            value={props.value[operation]}
-            onChange={(event) =>
-              props.onChange({
-                ...props.value,
-                [operation]: Number(event.target.value)
-              })
-            }
-          />
-        </label>
+        <CardCountSelect
+          key={operation}
+          label={operation}
+          maximum={props.maximums[operation]}
+          value={props.value[operation]}
+          onChange={(value) => props.onChange({ ...props.value, [operation]: value })}
+        />
       ))}
     </div>
+  );
+}
+
+function CardCountSelect(props: {
+  label: string;
+  minimum?: number;
+  maximum: number;
+  value: number;
+  onChange(value: number): void;
+}) {
+  const minimum = props.minimum ?? 0;
+  const maximum = Math.max(minimum, props.maximum);
+  return (
+    <label>
+      {props.label}
+      <select
+        value={props.value}
+        onChange={(event) => props.onChange(Number(event.target.value))}
+      >
+        {Array.from({ length: maximum - minimum + 1 }, (_, index) => minimum + index)
+          .map((value) => <option key={value} value={value}>{value}</option>)}
+      </select>
+    </label>
   );
 }
 

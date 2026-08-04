@@ -1,9 +1,16 @@
 /** @vitest-environment jsdom */
 
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import React from "react";
 import { beforeEach, describe, expect, it } from "vitest";
-import { App, ContestCard, DistrictMap, PartyRail } from "../src/App.js";
+import {
+  App,
+  ContestCard,
+  CounterbidForm,
+  DistrictMap,
+  OpeningForm,
+  PartyRail
+} from "../src/App.js";
 
 beforeEach(() => {
   const values = new Map<string, string>();
@@ -131,6 +138,73 @@ describe("browser play surface", () => {
     expect(screen.getByText(/1 organise.*1 smear/i)).toBeTruthy();
     expect(screen.getByText(/One Fell Swoop Public Affairs/i)).toBeTruthy();
     expect(screen.getByText(/counterbid · identity card · active/i)).toBeTruthy();
+  });
+
+  it("limits simultaneous opening selects to cards not used in other drafts", () => {
+    const { container } = render(
+      <OpeningForm
+        view={{ contests: {} } as never}
+        seat={{
+          firmIds: ["one-fell-swoop", "pairliament"],
+          reserve: {
+            leverage: 3,
+            bluff: 2,
+            operations: { organise: 2, rally: 0, smear: 0, court: 0 }
+          }
+        } as never}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    const form = within(container);
+    const leverage = form.getAllByLabelText("Leverage") as HTMLSelectElement[];
+    expect([...leverage[0]!.options].map((option) => option.value)).toEqual(["1", "2"]);
+    fireEvent.change(leverage[0]!, { target: { value: "2" } });
+    expect([...leverage[1]!.options].map((option) => option.value)).toEqual(["1"]);
+
+    const bluff = form.getAllByLabelText("Face-down Bluff") as HTMLSelectElement[];
+    fireEvent.change(bluff[0]!, { target: { value: "2" } });
+    expect([...bluff[1]!.options].map((option) => option.value)).toEqual(["0"]);
+  });
+
+  it("returns the selected counterbid stack to its available select limits", async () => {
+    const { container } = render(
+      <CounterbidForm
+        view={{
+          contests: { honeycomb: {} },
+          counterbidSlots: ["bid-1", null],
+          bids: [{
+            id: "bid-1",
+            contestId: "honeycomb",
+            leverage: 3,
+            bluff: 1,
+            operations: { organise: 1, rally: 0, smear: 0, court: 0 }
+          }]
+        } as never}
+        seat={{
+          firmIds: ["one-fell-swoop"],
+          reserve: {
+            leverage: 2,
+            bluff: 2,
+            operations: { organise: 2, rally: 0, smear: 0, court: 0 }
+          }
+        } as never}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    const form = within(container);
+    const leverage = form.getByLabelText("Hidden Leverage") as HTMLSelectElement;
+    await waitFor(() => expect(leverage.value).toBe("3"));
+    expect([...leverage.options].map((option) => option.value)).toEqual([
+      "0", "1", "2", "3", "4", "5"
+    ]);
+    const organise = form.getByLabelText("organise") as HTMLSelectElement;
+    expect([...organise.options].map((option) => option.value)).toEqual([
+      "0", "1", "2", "3"
+    ]);
   });
 
   it("renders public Court Support beside the persistent Coalition Target", () => {
