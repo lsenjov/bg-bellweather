@@ -145,6 +145,7 @@ export function evolve(
     if (state !== undefined) {
       throw new GameRuleError("already_initialized", "The game is already initialized");
     }
+    requireCurrentRuleset(event.state);
     return structuredClone(event.state);
   }
   if (state === undefined) {
@@ -171,6 +172,7 @@ export function createElectionAction(
   state: GameState,
   random: RandomSource
 ): Extract<GameAction, { type: "complete_election" }> {
+  requireCurrentRuleset(state);
   const phase = requirePhase(state, "election");
   if (phase.resultsRecorded) {
     throw new GameRuleError(
@@ -206,9 +208,8 @@ export function replay(events: readonly GameEvent[]): GameState {
 }
 
 export function applyAction(state: GameState, action: GameAction): GameState {
+  requireCurrentRuleset(state);
   const next = structuredClone(state);
-  next.roundHistory ??= [];
-  next.electionHistory ??= [];
   if (next.phase.type === "complete") {
     throw new GameRuleError("game_complete", "The game is complete");
   }
@@ -600,10 +601,7 @@ function advanceResolution(state: GameState): void {
   const phase = requirePhase(state, "resolution");
   while (phase.pendingDecision === null) {
     if (phase.contestIndex >= phase.contestOrder.length) {
-      if (
-        resolvesNightBonusesAfterAllContests(state) &&
-        queueNextNightDelayedDecision(state, phase)
-      ) {
+      if (queueNextNightDelayedDecision(state, phase)) {
         continue;
       }
       finishRound(state);
@@ -615,18 +613,8 @@ function advanceResolution(state: GameState): void {
       prepareContest(state, phase, contest);
     }
     if (phase.bidIndex >= phase.executionBidIds.length) {
-      if (
-        contestId === "night-parliament" &&
-        !resolvesNightBonusesAfterAllContests(state) &&
-        queueNextNightDelayedDecision(state, phase)
-      ) {
-        continue;
-      }
       transferContestBids(state, contest);
-      if (
-        contestId === "pecking-order" &&
-        resolvesPartiesInResultingOrder(state)
-      ) {
+      if (contestId === "pecking-order") {
         phase.contestOrder = currentResolutionContestOrder(state);
       }
       phase.contestIndex += 1;
@@ -635,10 +623,6 @@ function advanceResolution(state: GameState): void {
       phase.bidIndex = 0;
       phase.remainingOperations = {};
       phase.claimedBonuses = [];
-      if (!resolvesNightBonusesAfterAllContests(state)) {
-        phase.delayedBonusClaims = [];
-        phase.delayedClaimIndex = 0;
-      }
       continue;
     }
 
@@ -681,16 +665,6 @@ function currentResolutionContestOrder(state: GameState): ContestId[] {
       (partyId) => state.contests[partyId] !== undefined
     )
   ];
-}
-
-function resolvesPartiesInResultingOrder(state: GameState): boolean {
-  const rulesetVersion = Number(state.rulesetVersion);
-  return Number.isSafeInteger(rulesetVersion) && rulesetVersion >= 6;
-}
-
-function resolvesNightBonusesAfterAllContests(state: GameState): boolean {
-  const rulesetVersion = Number(state.rulesetVersion);
-  return Number.isSafeInteger(rulesetVersion) && rulesetVersion >= 7;
 }
 
 function queueNextNightDelayedDecision(
@@ -737,10 +711,6 @@ function prepareContest(
   );
   phase.contestPrepared = true;
   phase.claimedBonuses = [];
-  if (!resolvesNightBonusesAfterAllContests(state)) {
-    phase.delayedBonusClaims = [];
-    phase.delayedClaimIndex = 0;
-  }
 }
 
 function transferContestBids(state: GameState, contest: ContestState): void {
@@ -1183,6 +1153,15 @@ function requirePhase<Type extends GameState["phase"]["type"]>(
     throw new GameRuleError("wrong_phase", `Action requires the ${type} phase`);
   }
   return state.phase as Extract<GameState["phase"], { type: Type }>;
+}
+
+function requireCurrentRuleset(state: GameState): void {
+  if (state.rulesetVersion !== RULESET_VERSION) {
+    throw new GameRuleError(
+      "unsupported_ruleset",
+      `Only ruleset ${RULESET_VERSION} is supported`
+    );
+  }
 }
 
 function requireResolutionDecision(

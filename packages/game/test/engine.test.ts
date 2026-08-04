@@ -77,6 +77,13 @@ describe("game setup and private projections", () => {
     expect(replay([initialized])).toEqual(state);
   });
 
+  it("rejects state from any non-current ruleset", () => {
+    const initialized = initializeGame(configuration(2, null), zeroRandom);
+    initialized.state.rulesetVersion = "6";
+
+    expect(() => replay([initialized])).toThrow("Only ruleset 7 is supported");
+  });
+
   it("applies Election retention to named districts but not Bellweather Centre", () => {
     let state = initializeGame(configuration(2, null), zeroRandom).state;
     const namedDistrictId =
@@ -423,19 +430,6 @@ describe("contest resolution", () => {
       decisionId: peckingDecision.id,
       adjacentIndex
     } as const satisfies GameAction;
-    const legacyState = structuredClone(state);
-    legacyState.rulesetVersion = "5";
-    const legacyReplay = replay([
-      { type: "game_initialized", state: legacyState },
-      { type: "action_applied", action: peckingAction }
-    ]);
-
-    expect(pending(legacyReplay)).toMatchObject({
-      kind: "party_operation",
-      contestId: originalLeft,
-      legalOperations: ["smear"]
-    });
-
     state = act(state, peckingAction);
 
     expect(state.partyOrder[adjacentIndex]).toBe(originalRight);
@@ -551,17 +545,6 @@ describe("contest resolution", () => {
         claimBonus: true
       }
     } as const satisfies GameAction;
-    const legacyState = structuredClone(state);
-    legacyState.rulesetVersion = "6";
-    const legacyReplay = replay([
-      { type: "game_initialized", state: legacyState },
-      { type: "action_applied", action: claimAction }
-    ]);
-    expect(pending(legacyReplay)).toMatchObject({
-      kind: "night_delayed_operation",
-      operation: "court"
-    });
-
     state = act(state, claimAction);
     decision = pending(state);
     expect(decision).toMatchObject({
