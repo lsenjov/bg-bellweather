@@ -9,7 +9,9 @@ import {
   ContestCard,
   CounterbidForm,
   DistrictMap,
+  GameDesk,
   OpeningForm,
+  OperationForm,
   orderedContestIds,
   PartyRail,
   PlayerLedger
@@ -139,6 +141,29 @@ describe("browser play surface", () => {
     expect(within(target).getAllByText("Election agenda")).toHaveLength(2);
     expect(within(target).getByText("Night")).toBeTruthy();
     expect(within(target).getByText("Honeycomb")).toBeTruthy();
+  });
+
+  it("uses an armed blank district field without overwriting map selections", () => {
+    const onSelect = vi.fn();
+    render(
+      <DistrictMap
+        support={{}}
+        interaction={{
+          activeTarget: "destination",
+          selections: { source: "harbormouth" },
+          onSelect
+        }}
+      />
+    );
+
+    const source = screen.getByRole("button", {
+      name: /Harbormouth.*selected as source.*choose as destination/i
+    });
+    expect(source.classList.contains("district-selected-source")).toBe(true);
+    fireEvent.click(
+      screen.getByRole("button", { name: /Cloverfield.*choose as destination/i })
+    );
+    expect(onSelect).toHaveBeenCalledWith("cloverfield");
   });
 
   it("shows covered, owned, and revealed bid information", () => {
@@ -807,6 +832,151 @@ describe("browser play surface", () => {
       (screen.getByRole("button", { name: /unready & revise/i }) as HTMLButtonElement)
         .disabled
     ).toBe(false);
+  });
+
+  it("lists remaining operation cards as radios and applies armed map choices", async () => {
+    const onCommand = vi.fn(async () => undefined);
+    const onResolutionMapStateChange = vi.fn();
+    const decision = {
+      id: "decision-1",
+      kind: "party_operation",
+      contestId: "honeycomb",
+      partyId: "honeycomb",
+      legalOperations: ["organise", "rally"],
+      availableOperations: [
+        { operation: "organise", count: 1 },
+        { operation: "rally", count: 3 }
+      ]
+    };
+    const baseProps = {
+      view: {} as never,
+      busy: false,
+      decision,
+      decisionId: "decision-1",
+      onResolutionMapStateChange,
+      onCommand
+    };
+    const { container, rerender } = render(<OperationForm {...baseProps} />);
+    const form = within(container);
+    const organise = form.getByRole("radio", { name: /1 O.*Organise/i });
+    const rally = form.getByRole("radio", { name: /3 R.*Rally/i });
+
+    expect((organise as HTMLInputElement).checked).toBe(true);
+    expect((rally as HTMLInputElement).checked).toBe(false);
+    expect((form.getByLabelText("Destination district") as HTMLSelectElement).value).toBe("");
+    expect((form.getByRole("button", { name: /resolve operation/i }) as HTMLButtonElement).disabled).toBe(true);
+    await waitFor(() =>
+      expect(onResolutionMapStateChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({ activeTarget: "destination" })
+      )
+    );
+
+    rerender(
+      <OperationForm
+        {...baseProps}
+        resolutionDistrictIntent={{
+          decisionId: "decision-1",
+          value: "harbormouth",
+          revision: 1
+        }}
+      />
+    );
+    await waitFor(() =>
+      expect((form.getByLabelText("Destination district") as HTMLSelectElement).value).toBe("harbormouth")
+    );
+    fireEvent.click(form.getByRole("button", { name: /choose on map/i }));
+    rerender(
+      <OperationForm
+        {...baseProps}
+        resolutionDistrictIntent={{
+          decisionId: "decision-1",
+          value: "millbank",
+          revision: 2
+        }}
+      />
+    );
+    await waitFor(() =>
+      expect((form.getByLabelText("Source district (optional)") as HTMLSelectElement).value).toBe("millbank")
+    );
+    fireEvent.click(form.getByRole("button", { name: /resolve operation/i }));
+    expect(onCommand).toHaveBeenCalledWith(expect.objectContaining({
+      action: expect.objectContaining({
+        operation: "organise",
+        choice: expect.objectContaining({
+          operation: "organise",
+          sourceDistrictId: "millbank",
+          destinationDistrictId: "harbormouth"
+        })
+      })
+    }));
+
+    rerender(
+      <OperationForm
+        {...baseProps}
+        decision={{
+          ...decision,
+          availableOperations: [{ operation: "rally", count: 2 }],
+          legalOperations: ["rally"]
+        }}
+      />
+    );
+    expect(
+      (form.getByRole("radio", { name: /2 R.*Rally/i }) as HTMLInputElement)
+        .checked
+    ).toBe(true);
+    expect(form.queryByRole("radio", { name: /Organise/i })).toBeNull();
+  });
+
+  it("places the resolution desk immediately beneath the map", () => {
+    const seat = {
+      id: "seat-a",
+      displayName: "Ada",
+      controller: "human",
+      position: 0,
+      firmIds: ["one-fell-swoop"],
+      points: 10,
+      reserve: {
+        leverage: 1,
+        bluff: 0,
+        operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+      },
+      scoringCardId: null
+    };
+    const { container } = render(
+      <GameDesk
+        view={{
+          playerCount: 2,
+          round: 1,
+          electionNumber: 0,
+          phase: "resolution",
+          phaseData: {},
+          deadlineAt: null,
+          nextFirstOpenerSeatId: "seat-a",
+          seats: [seat],
+          partyOrder: ["honeycomb", "old-shell", "foxglove", "riverworks", "many-wings", "night-parliament"],
+          support: {},
+          courtSupport: {},
+          coalitionTargets: {},
+          contests: {},
+          bids: [],
+          readySeatIds: [],
+          pendingDecision: null,
+          counterbidSlots: [],
+          electionHistory: [],
+          chat: []
+        } as never}
+        ownSeat={seat as never}
+        ownSeatId="seat-a"
+        spectator={false}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+    const map = container.querySelector(".map-desk .district-map");
+    const actionDesk = map?.nextElementSibling;
+
+    expect(actionDesk?.classList.contains("action-compose")).toBe(true);
+    expect(container.querySelector(".contest-desk .action-compose")).toBeNull();
   });
 
   it("blocks contest shortcuts until unsaved placed-bid edits are applied or reset", async () => {

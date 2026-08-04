@@ -410,7 +410,7 @@ function LobbyDesk(props: {
   );
 }
 
-function GameDesk(props: {
+export function GameDesk(props: {
   view: GameView;
   ownSeat: ViewSeat | undefined;
   ownSeatId: string | undefined;
@@ -433,6 +433,10 @@ function GameDesk(props: {
     placed: false,
     dirty: false
   });
+  const [resolutionDistrictIntent, setResolutionDistrictIntent] =
+    useState<ResolutionDistrictIntent | null>(null);
+  const [resolutionMapSummary, setResolutionMapSummary] =
+    useState<ResolutionMapSummary | null>(null);
   const ownReady = props.ownSeatId ? props.view.readySeatIds.includes(props.ownSeatId) : false;
   const scoringCard = props.ownSeat?.scoringCardId ? SCORING_CARDS_BY_ID[props.ownSeat.scoringCardId as keyof typeof SCORING_CARDS_BY_ID] : undefined;
   const latestElection = props.view.electionHistory.at(-1);
@@ -474,6 +478,49 @@ function GameDesk(props: {
     props.view.partyOrder
   );
   const resolutionFilingProgress = readResolutionFilingProgress(props.view);
+  const pendingDecisionId =
+    typeof props.view.pendingDecision?.id === "string"
+      ? props.view.pendingDecision.id
+      : null;
+  const activeResolutionMapSummary =
+    pendingDecisionId !== null &&
+    resolutionMapSummary?.decisionId === pendingDecisionId
+      ? resolutionMapSummary
+      : null;
+  const chooseResolutionDistrict = useCallback((districtId: string) => {
+    if (
+      activeResolutionMapSummary === null ||
+      activeResolutionMapSummary.activeTarget === null ||
+      activeResolutionMapSummary.selections[
+        activeResolutionMapSummary.activeTarget
+      ] !== undefined
+    ) {
+      return;
+    }
+    setResolutionDistrictIntent((current) => ({
+      decisionId: activeResolutionMapSummary.decisionId,
+      value: districtId,
+      revision: (current?.revision ?? 0) + 1
+    }));
+  }, [activeResolutionMapSummary]);
+  const actionDesk =
+    !props.spectator && props.ownSeat && props.ownSeatId ? (
+      <ActionDesk
+        view={props.view}
+        seat={props.ownSeat}
+        seatId={props.ownSeatId}
+        busy={props.busy}
+        ownReady={ownReady}
+        openingPartyIntent={openingPartyIntent}
+        onOpeningDraftChange={setOpeningDraftSummary}
+        counterbidContestIntent={counterbidContestIntent}
+        counterbidDraftSummary={counterbidDraftSummary}
+        onCounterbidDraftChange={setCounterbidDraftSummary}
+        resolutionDistrictIntent={resolutionDistrictIntent}
+        onResolutionMapStateChange={setResolutionMapSummary}
+        onCommand={props.onCommand}
+      />
+    ) : null;
 
   return (
     <main className="game-grid">
@@ -531,7 +578,17 @@ function GameDesk(props: {
           support={props.view.support}
           scoringObjectives={scoringObjectives}
           scoringLabel={revealedObjectives.length > 0 ? "Election agenda" : "Private agenda"}
+          {...(activeResolutionMapSummary
+            ? {
+                interaction: {
+                  activeTarget: activeResolutionMapSummary.activeTarget,
+                  selections: activeResolutionMapSummary.selections,
+                  onSelect: chooseResolutionDistrict
+                }
+              }
+            : {})}
         />
+        {props.view.phase === "resolution" && actionDesk}
         <PlayerLedger
           seats={props.view.seats}
           readySeatIds={props.view.readySeatIds}
@@ -564,21 +621,7 @@ function GameDesk(props: {
             ))
           )}
         </div>
-        {!props.spectator && props.ownSeat && props.ownSeatId && (
-          <ActionDesk
-            view={props.view}
-            seat={props.ownSeat}
-            seatId={props.ownSeatId}
-            busy={props.busy}
-            ownReady={ownReady}
-            openingPartyIntent={openingPartyIntent}
-            onOpeningDraftChange={setOpeningDraftSummary}
-            counterbidContestIntent={counterbidContestIntent}
-            counterbidDraftSummary={counterbidDraftSummary}
-            onCounterbidDraftChange={setCounterbidDraftSummary}
-            onCommand={props.onCommand}
-          />
-        )}
+        {props.view.phase !== "resolution" && actionDesk}
       </section>
 
       {latestElection && (
@@ -639,6 +682,24 @@ interface CounterbidDraftSummary {
 interface ResolutionFilingProgress {
   currentBidId: string | null;
   completedBidIds: string[];
+}
+
+type DistrictMapTarget =
+  | "source"
+  | "destination"
+  | "district"
+  | "bonus"
+  | "repeat-source"
+  | "repeat-destination";
+
+interface ResolutionMapSummary {
+  decisionId: string;
+  activeTarget: DistrictMapTarget | null;
+  selections: Partial<Record<DistrictMapTarget, string>>;
+}
+
+interface ResolutionDistrictIntent extends SelectionIntent<string> {
+  decisionId: string;
 }
 
 const EMPTY_TOKENS: TokenDraft = {
@@ -835,6 +896,8 @@ export function ActionDesk(props: {
   counterbidContestIntent: SelectionIntent<string> | null;
   counterbidDraftSummary: CounterbidDraftSummary;
   onCounterbidDraftChange(summary: CounterbidDraftSummary): void;
+  resolutionDistrictIntent?: ResolutionDistrictIntent | null;
+  onResolutionMapStateChange?(summary: ResolutionMapSummary): void;
   onCommand(command: GameCommand): Promise<void>;
 }) {
   const phase = props.view.phase;
@@ -1410,6 +1473,8 @@ function DecisionForm(props: {
   busy: boolean;
   onCommand(command: GameCommand): Promise<void>;
   decision: Record<string, unknown>;
+  resolutionDistrictIntent?: ResolutionDistrictIntent | null;
+  onResolutionMapStateChange?(summary: ResolutionMapSummary): void;
 }) {
   const decisionId = String(props.decision.id ?? "");
   const kind = String(props.decision.kind ?? "");
@@ -1449,73 +1514,248 @@ function DecisionForm(props: {
   return <OperationForm key={decisionId} {...props} decisionId={decisionId} />;
 }
 
-function OperationForm(props: {
+export function OperationForm(props: {
   view: GameView;
   busy: boolean;
   onCommand(command: GameCommand): Promise<void>;
   decision: Record<string, unknown>;
   decisionId: string;
+  resolutionDistrictIntent?: ResolutionDistrictIntent | null;
+  onResolutionMapStateChange?(summary: ResolutionMapSummary): void;
 }) {
-  const legal = Array.isArray(props.decision.legalOperations)
+  const availableFromProjection = Array.isArray(
+    props.decision.availableOperations
+  )
+    ? props.decision.availableOperations.flatMap((candidate) =>
+        isObject(candidate) &&
+        OPERATION_IDS.includes(candidate.operation as OperationId) &&
+        typeof candidate.count === "number" &&
+        Number.isSafeInteger(candidate.count) &&
+        candidate.count > 0
+          ? [{ operation: candidate.operation as OperationId, count: candidate.count }]
+          : []
+      )
+    : [];
+  const fallbackOperations = Array.isArray(props.decision.legalOperations)
     ? (props.decision.legalOperations as OperationId[])
     : props.decision.operation
       ? [props.decision.operation as OperationId]
       : [];
+  const availableOperations = availableFromProjection.length > 0
+    ? availableFromProjection
+    : fallbackOperations.map((candidate) => ({ operation: candidate, count: 1 }));
   const partyId = String(
     props.decision.partyId ?? props.decision.contestId ?? ""
   ) as PartyId;
   const defaultOtherParty =
     PARTIES.find((party) => party.id !== partyId)?.id ?? "honeycomb";
   const [operation, setOperation] = useState<OperationId>(
-    legal[0] ?? "organise"
+    availableOperations[0]?.operation ?? "organise"
   );
-  const [districtId, setDistrictId] = useState<string>(DISTRICTS[0].id);
+  const selectedOperation = availableOperations.some(
+    (candidate) => candidate.operation === operation
+  )
+    ? operation
+    : availableOperations[0]?.operation ?? "organise";
+  const [districtId, setDistrictId] = useState("");
   const [sourceDistrictId, setSourceDistrictId] = useState("");
   const [rivalParty, setRivalParty] =
     useState<PartyId>(defaultOtherParty);
   const [targetParty, setTargetParty] =
     useState<PartyId>(defaultOtherParty);
-  const [bonusDistrictId, setBonusDistrictId] = useState<string>(
-    DISTRICTS[0].id
-  );
+  const [bonusDistrictId, setBonusDistrictId] = useState("");
   const [claimBonus, setClaimBonus] = useState(false);
   const [repeatSource, setRepeatSource] = useState("");
-  const [repeatDestination, setRepeatDestination] = useState<string>(
-    DISTRICTS[0].id
+  const [repeatDestination, setRepeatDestination] = useState("");
+  const [activeMapTarget, setActiveMapTarget] =
+    useState<DistrictMapTarget | null>(
+      selectedOperation === "organise"
+        ? "destination"
+        : selectedOperation === "rally" || selectedOperation === "smear"
+          ? "district"
+          : null
   );
+  const consumedDistrictIntentRevision = useRef(0);
   const party = PARTIES_BY_ID[partyId];
   const delayed = props.decision.kind === "night_delayed_operation";
   const matchingBonus = party?.bonuses.find(
-    (bonus) => bonus.operation === operation
+    (bonus) => bonus.operation === selectedOperation
+  );
+  const claimingBonus = claimBonus && !delayed && matchingBonus !== undefined;
+  const bonusNeedsDistrict =
+    claimingBonus &&
+    (partyId === "riverworks" ||
+      (partyId === "many-wings" && selectedOperation === "court"));
+  const repeatsOrganise =
+    claimingBonus &&
+    partyId === "many-wings" &&
+    selectedOperation === "organise";
+  const districtSelections: Partial<Record<DistrictMapTarget, string>> = {
+    ...(selectedOperation === "organise" && sourceDistrictId
+      ? { source: sourceDistrictId }
+      : {}),
+    ...(selectedOperation === "organise" && districtId
+      ? { destination: districtId }
+      : {}),
+    ...((selectedOperation === "rally" || selectedOperation === "smear") &&
+    districtId
+      ? { district: districtId }
+      : {}),
+    ...(bonusNeedsDistrict && bonusDistrictId
+      ? { bonus: bonusDistrictId }
+      : {}),
+    ...(repeatsOrganise && repeatSource
+      ? { "repeat-source": repeatSource }
+      : {}),
+    ...(repeatsOrganise && repeatDestination
+      ? { "repeat-destination": repeatDestination }
+      : {})
+  };
+  const relevantMapTargets: DistrictMapTarget[] = [
+    ...(selectedOperation === "organise"
+      ? (["source", "destination"] as DistrictMapTarget[])
+      : selectedOperation === "rally" || selectedOperation === "smear"
+        ? (["district"] as DistrictMapTarget[])
+        : []),
+    ...(bonusNeedsDistrict ? (["bonus"] as DistrictMapTarget[]) : []),
+    ...(repeatsOrganise
+      ? (["repeat-source", "repeat-destination"] as DistrictMapTarget[])
+      : [])
+  ];
+  const requiredMapTargets: DistrictMapTarget[] = [
+    ...(selectedOperation === "organise"
+      ? (["destination"] as DistrictMapTarget[])
+      : selectedOperation === "rally" || selectedOperation === "smear"
+        ? (["district"] as DistrictMapTarget[])
+        : []),
+    ...(bonusNeedsDistrict ? (["bonus"] as DistrictMapTarget[]) : []),
+    ...(repeatsOrganise
+      ? (["repeat-destination"] as DistrictMapTarget[])
+      : [])
+  ];
+  const missingRequiredMapTarget = requiredMapTargets.find(
+    (target) => districtSelections[target] === undefined
   );
 
+  useEffect(() => {
+    if (operation !== selectedOperation) {
+      setOperation(selectedOperation);
+    }
+  }, [operation, selectedOperation]);
+
+  useEffect(() => {
+    setActiveMapTarget((current) => {
+      if (
+        current !== null &&
+        relevantMapTargets.includes(current) &&
+        districtSelections[current] === undefined
+      ) {
+        return current;
+      }
+      return missingRequiredMapTarget ?? null;
+    });
+  }, [
+    selectedOperation,
+    sourceDistrictId,
+    districtId,
+    bonusDistrictId,
+    repeatSource,
+    repeatDestination,
+    bonusNeedsDistrict,
+    repeatsOrganise,
+    missingRequiredMapTarget
+  ]);
+
+  useEffect(() => {
+    const intent = props.resolutionDistrictIntent;
+    if (
+      intent === undefined ||
+      intent === null ||
+      intent.decisionId !== props.decisionId ||
+      intent.revision <= consumedDistrictIntentRevision.current
+    ) {
+      return;
+    }
+    consumedDistrictIntentRevision.current = intent.revision;
+    if (
+      activeMapTarget === null ||
+      districtSelections[activeMapTarget] !== undefined
+    ) {
+      return;
+    }
+    if (activeMapTarget === "source") {
+      setSourceDistrictId(intent.value);
+    } else if (activeMapTarget === "destination" || activeMapTarget === "district") {
+      setDistrictId(intent.value);
+    } else if (activeMapTarget === "bonus") {
+      setBonusDistrictId(intent.value);
+    } else if (activeMapTarget === "repeat-source") {
+      setRepeatSource(intent.value);
+    } else {
+      setRepeatDestination(intent.value);
+    }
+  }, [props.resolutionDistrictIntent]);
+
+  useEffect(() => {
+    props.onResolutionMapStateChange?.({
+      decisionId: props.decisionId,
+      activeTarget: activeMapTarget,
+      selections: districtSelections
+    });
+  }, [
+    props.decisionId,
+    activeMapTarget,
+    selectedOperation,
+    sourceDistrictId,
+    districtId,
+    bonusDistrictId,
+    repeatSource,
+    repeatDestination,
+    bonusNeedsDistrict,
+    repeatsOrganise,
+    props.onResolutionMapStateChange
+  ]);
+
+  const changeDistrict = (
+    target: DistrictMapTarget,
+    setter: (value: string) => void,
+    value: string
+  ) => {
+    setter(value);
+    setActiveMapTarget(value === "" ? target : null);
+  };
+
   const choice: OperationChoice =
-    operation === "organise"
+    selectedOperation === "organise"
       ? {
-          operation,
+          operation: selectedOperation,
           destinationDistrictId: districtId,
           ...(sourceDistrictId ? { sourceDistrictId } : {})
         }
-      : operation === "rally"
-        ? { operation, districtId, ...(claimBonus ? { bonusDistrictId } : {}) }
-        : operation === "smear"
+      : selectedOperation === "rally"
+        ? {
+            operation: selectedOperation,
+            districtId,
+            ...(bonusNeedsDistrict ? { bonusDistrictId } : {})
+          }
+        : selectedOperation === "smear"
           ? {
-              operation,
+              operation: selectedOperation,
               districtId,
               rivalParty,
-              ...(claimBonus ? { bonusDistrictId } : {})
+              ...(bonusNeedsDistrict ? { bonusDistrictId } : {})
             }
           : {
-              operation,
+              operation: selectedOperation,
               targetParty,
-              ...(claimBonus ? { bonusDistrictId } : {})
+              ...(bonusNeedsDistrict ? { bonusDistrictId } : {})
             };
   const submittedChoice: OperationResolutionChoice =
-    claimBonus && !delayed
+    claimingBonus
       ? {
           choice,
           claimBonus: true,
-          ...(partyId === "many-wings" && operation === "organise"
+          ...(repeatsOrganise
             ? {
                 repeatChoice: {
                   operation: "organise",
@@ -1537,43 +1777,68 @@ function OperationForm(props: {
           action: {
             type: "resolve_party_operation",
             decisionId: props.decisionId,
-            operation,
+            operation: selectedOperation,
             choice: submittedChoice
           }
         });
       }}
     >
       <h3>{delayed ? "Resolve delayed operation" : `Act for ${party?.shortName ?? partyId}`}</h3>
-      <label>
-        Operation card
-        <select
-          value={operation}
-          disabled={legal.length === 1}
-          onChange={(event) => setOperation(event.target.value as OperationId)}
-        >
-          {legal.map((candidate) => (
-            <option key={candidate}>{candidate}</option>
+      <fieldset className="operation-radio-group">
+        <legend>Operation card</legend>
+        <div className="operation-radio-options">
+          {availableOperations.map((candidate) => (
+            <label key={candidate.operation}>
+              <input
+                type="radio"
+                name={`operation-${props.decisionId}`}
+                value={candidate.operation}
+                checked={selectedOperation === candidate.operation}
+                onChange={() => setOperation(candidate.operation)}
+              />
+              <strong>
+                {candidate.count} {CARD_FAMILY_LABELS[candidate.operation].initial}
+              </strong>
+              <small>{CARD_FAMILY_LABELS[candidate.operation].name}</small>
+            </label>
           ))}
-        </select>
-      </label>
-      {operation === "organise" && (
+        </div>
+      </fieldset>
+      {selectedOperation === "organise" && (
         <>
           <DistrictSelect
-            label="Source district (leave blank when absent)"
+            label="Source district (optional)"
             value={sourceDistrictId}
             allowBlank
-            onChange={setSourceDistrictId}
+            mapTarget="source"
+            activeMapTarget={activeMapTarget}
+            onArmMapTarget={setActiveMapTarget}
+            onChange={(value) => changeDistrict("source", setSourceDistrictId, value)}
           />
-          <DistrictSelect label="Destination district" value={districtId} onChange={setDistrictId} />
+          <DistrictSelect
+            label="Destination district"
+            value={districtId}
+            mapTarget="destination"
+            activeMapTarget={activeMapTarget}
+            onArmMapTarget={setActiveMapTarget}
+            onChange={(value) => changeDistrict("destination", setDistrictId, value)}
+          />
         </>
       )}
-      {(operation === "rally" || operation === "smear") && (
-        <DistrictSelect label="District" value={districtId} onChange={setDistrictId} />
+      {(selectedOperation === "rally" || selectedOperation === "smear") && (
+        <DistrictSelect
+          label="District"
+          value={districtId}
+          mapTarget="district"
+          activeMapTarget={activeMapTarget}
+          onArmMapTarget={setActiveMapTarget}
+          onChange={(value) => changeDistrict("district", setDistrictId, value)}
+        />
       )}
-      {operation === "smear" && (
+      {selectedOperation === "smear" && (
         <PartySelect label="Rival party" value={rivalParty} excludes={[partyId]} onChange={setRivalParty} />
       )}
-      {operation === "court" && (
+      {selectedOperation === "court" && (
         <PartySelect
           label="Court space"
           value={targetParty}
@@ -1591,32 +1856,42 @@ function OperationForm(props: {
           Claim {matchingBonus.name} · {matchingBonus.timing}
         </label>
       )}
-      {claimBonus &&
-        (partyId === "riverworks" ||
-          (partyId === "many-wings" && operation === "court")) && (
+      {bonusNeedsDistrict && (
           <DistrictSelect
             label="Bonus district"
             value={bonusDistrictId}
-            onChange={setBonusDistrictId}
+            mapTarget="bonus"
+            activeMapTarget={activeMapTarget}
+            onArmMapTarget={setActiveMapTarget}
+            onChange={(value) => changeDistrict("bonus", setBonusDistrictId, value)}
           />
         )}
-      {claimBonus && partyId === "many-wings" && operation === "organise" && (
+      {repeatsOrganise && (
         <fieldset>
           <legend>Murmuration’s second Organise</legend>
           <DistrictSelect
-            label="Second source (leave blank when absent)"
+            label="Second source (optional)"
             value={repeatSource}
             allowBlank
-            onChange={setRepeatSource}
+            mapTarget="repeat-source"
+            activeMapTarget={activeMapTarget}
+            onArmMapTarget={setActiveMapTarget}
+            onChange={(value) => changeDistrict("repeat-source", setRepeatSource, value)}
           />
           <DistrictSelect
             label="Second destination"
             value={repeatDestination}
-            onChange={setRepeatDestination}
+            mapTarget="repeat-destination"
+            activeMapTarget={activeMapTarget}
+            onArmMapTarget={setActiveMapTarget}
+            onChange={(value) => changeDistrict("repeat-destination", setRepeatDestination, value)}
           />
         </fieldset>
       )}
-      <button className="ink-button" disabled={props.busy}>
+      <button
+        className="ink-button"
+        disabled={props.busy || missingRequiredMapTarget !== undefined}
+      >
         Resolve operation
       </button>
     </form>
@@ -1627,23 +1902,49 @@ function DistrictSelect(props: {
   label: string;
   value: string;
   allowBlank?: boolean;
+  mapTarget: DistrictMapTarget;
+  activeMapTarget: DistrictMapTarget | null;
+  onArmMapTarget(target: DistrictMapTarget): void;
   onChange(value: string): void;
 }) {
   return (
-    <label>
-      {props.label}
-      <select
-        value={props.value}
-        onChange={(event) => props.onChange(event.target.value)}
-      >
-        {props.allowBlank && <option value="">No source</option>}
-        {DISTRICTS.map((district) => (
-          <option key={district.id} value={district.id}>
-            {district.name}
+    <div
+      className={`district-field ${props.activeMapTarget === props.mapTarget ? "district-field-armed" : ""}`}
+    >
+      <label>
+        {props.label}
+        <select
+          value={props.value}
+          onFocus={() => {
+            if (props.value === "") {
+              props.onArmMapTarget(props.mapTarget);
+            }
+          }}
+          onChange={(event) => props.onChange(event.target.value)}
+        >
+          <option value="">
+            {props.allowBlank ? "No source" : "Choose a district"}
           </option>
-        ))}
-      </select>
-    </label>
+          {DISTRICTS.map((district) => (
+            <option key={district.id} value={district.id}>
+              {district.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      {props.value === "" && (
+        <button
+          type="button"
+          className="map-target-button"
+          aria-pressed={props.activeMapTarget === props.mapTarget}
+          onClick={() => props.onArmMapTarget(props.mapTarget)}
+        >
+          {props.activeMapTarget === props.mapTarget
+            ? "Click a district on the map"
+            : "Choose on map"}
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -1911,16 +2212,38 @@ function ReplayState({ state }: { state: GameState }) {
   );
 }
 
+export interface DistrictMapInteraction {
+  activeTarget: DistrictMapTarget | null;
+  selections: Partial<Record<DistrictMapTarget, string>>;
+  onSelect(districtId: string): void;
+}
+
+const DISTRICT_MAP_TARGET_LABELS: Record<DistrictMapTarget, string> = {
+  source: "source",
+  destination: "destination",
+  district: "operation district",
+  bonus: "bonus district",
+  "repeat-source": "second source",
+  "repeat-destination": "second destination"
+};
+
 export function DistrictMap({
   support,
   scoringObjectives = [],
-  scoringLabel = "Private agenda"
+  scoringLabel = "Private agenda",
+  interaction
 }: {
   support: GameView["support"];
   scoringObjectives?: readonly ScoringObjective[] | undefined;
   scoringLabel?: "Private agenda" | "Election agenda";
+  interaction?: DistrictMapInteraction;
 }) {
-  return <div className="district-map" aria-label="Bellweather district map">{DISTRICTS.map((district) => {
+  return <div
+    className={`district-map ${interaction ? "district-map-interactive" : ""}`}
+    aria-label={interaction?.activeTarget
+      ? `Bellweather district map; choose ${DISTRICT_MAP_TARGET_LABELS[interaction.activeTarget]}`
+      : "Bellweather district map"}
+  >{DISTRICTS.map((district) => {
     const districtSupport = support[district.id] ?? {};
     const districtObjectives = scoringObjectives.filter(
       (objective) => objective.districtId === district.id
@@ -1943,16 +2266,37 @@ export function DistrictMap({
       ))
     );
     const free = Math.max(0, district.capacity - pieces.length);
+    const selectedTargets = interaction
+      ? (Object.entries(interaction.selections) as Array<
+          [DistrictMapTarget, string]
+        >).filter(([, districtId]) => districtId === district.id)
+          .map(([target]) => target)
+      : [];
+    const DistrictElement: "button" | "article" = interaction
+      ? "button"
+      : "article";
+    const districtSummary = `${district.name}: ${summary || "no Support"}; ${free} free spots${scoringParties.length > 0 ? `; ${scoringLabel.toLowerCase()} scores ${scoringParties.map((party) => party.name).join(", ")}` : ""}`;
+    const interactionSummary = interaction
+      ? `${selectedTargets.length > 0 ? `; selected as ${selectedTargets.map((target) => DISTRICT_MAP_TARGET_LABELS[target]).join(" and ")}` : ""}${interaction.activeTarget ? `; choose as ${DISTRICT_MAP_TARGET_LABELS[interaction.activeTarget]}` : ""}`
+      : "";
     return (
-      <article
+      <DistrictElement
         key={district.id}
-        className={`district district-${district.id}${scoringParties.length > 0 ? " district-scoring" : ""}`}
+        className={`district district-${district.id}${scoringParties.length > 0 ? " district-scoring" : ""}${interaction ? " district-action" : ""}${selectedTargets.map((target) => ` district-selected-${target}`).join("")}`}
         style={scoringParties.length > 0 ? {
           "--scoring-accent": scoringParties.length === 1
             ? scoringParties[0]!.color
             : "var(--red)"
         } as React.CSSProperties : undefined}
-        aria-label={`${district.name}: ${summary || "no Support"}; ${free} free spots${scoringParties.length > 0 ? `; ${scoringLabel.toLowerCase()} scores ${scoringParties.map((party) => party.name).join(", ")}` : ""}`}
+        aria-label={`${districtSummary}${interactionSummary}`}
+        {...(interaction
+          ? {
+              type: "button" as const,
+              disabled: interaction.activeTarget === null,
+              "aria-pressed": selectedTargets.length > 0,
+              onClick: () => interaction.onSelect(district.id)
+            }
+          : {})}
       >
         <strong>{district.name}</strong>
         <small>{district.capacity} seats</small>
@@ -1980,7 +2324,7 @@ export function DistrictMap({
             <i className="empty" key={`empty-${index}`} />
           ))}
         </div>
-      </article>
+      </DistrictElement>
     );
   })}</div>;
 }

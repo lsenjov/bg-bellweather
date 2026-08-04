@@ -76,6 +76,13 @@ button:disabled { opacity: .45; cursor: not-allowed; transform: none !important;
 .phase-slug { background: var(--blue); color: white; padding: 8px 12px; font: .66rem var(--mono); text-transform: uppercase; }
 .district-map { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(5, minmax(82px, auto)); gap: 5px; padding: 12px; background: color-mix(in srgb, var(--blue) 72%, var(--paper)); min-height: 530px; }
 .district { background: var(--paper); border: 1px solid var(--ink); padding: 8px; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+.district-action { appearance: none; color: inherit; font: inherit; text-align: left; cursor: crosshair; transition: box-shadow .15s, transform .15s, background-color .15s; }
+.district-action:not(:disabled):hover, .district-action:not(:disabled):focus-visible { z-index: 2; box-shadow: inset 0 0 0 3px var(--red), 3px 3px 0 color-mix(in srgb, var(--ink) 32%, transparent); transform: translateY(-2px); }
+.district-action:disabled { cursor: default; }
+.district-selected-source, .district-selected-repeat-source { outline: 3px dashed var(--red); outline-offset: -5px; }
+.district-selected-destination, .district-selected-repeat-destination { outline: 4px solid var(--blue); outline-offset: -6px; }
+.district-selected-district { outline: 4px solid var(--red); outline-offset: -6px; }
+.district-selected-bonus { box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 8px var(--red); }
 .district-scoring { position: relative; border-width: 2px; background: color-mix(in srgb, var(--scoring-accent) 9%, var(--paper)); box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 6px var(--scoring-accent); }
 .district-scoring > strong { max-width: calc(100% - 8px); }
 .district strong { font-size: .86rem; line-height: 1; }
@@ -166,10 +173,23 @@ button:disabled { opacity: .45; cursor: not-allowed; transform: none !important;
 .filing-resolution-current { color: var(--red); }
 .filing-resolution-complete { color: color-mix(in srgb, var(--ink) 68%, var(--paper)); }
 .action-compose { margin-top:18px;border-top:1px solid var(--ink);padding-top:18px}.quick-actions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.quick-actions button{background:transparent;border:1px solid var(--ink);padding:7px;font: .6rem var(--mono)}
+.map-desk > .action-compose { margin-top: 0; border: 2px solid var(--ink); border-top: 8px solid var(--red); padding: 16px; background: color-mix(in srgb, var(--red) 5%, var(--paper)); box-shadow: 4px 4px 0 color-mix(in srgb, var(--ink) 18%, transparent); }
 .phase-form { margin-top: 14px; }
 .phase-form h3 { margin: 0; font-size: 1.45rem; }
 .phase-form fieldset { border: 1px solid var(--ink); padding: 14px; display: grid; gap: 12px; }
 .phase-form legend { padding: 0 7px; font: .62rem var(--mono); text-transform: uppercase; }
+.operation-radio-group { margin: 0; }
+.operation-radio-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 7px; }
+.operation-radio-options label { position: relative; display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; align-items: center; gap: 0 8px; min-height: 58px; border: 1px solid var(--ink); padding: 8px; background: var(--paper); cursor: pointer; }
+.operation-radio-options label:has(input:checked) { color: var(--paper); background: var(--ink); box-shadow: inset 0 -4px 0 var(--red); }
+.operation-radio-options input { grid-row: 1 / 3; width: 17px; height: 17px; margin: 0; accent-color: var(--red); }
+.operation-radio-options strong { font: 700 1rem var(--mono); }
+.operation-radio-options small { font: .5rem var(--mono); text-transform: uppercase; }
+.district-field { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 7px; border-left: 4px solid transparent; padding-left: 7px; }
+.district-field > label { min-width: 0; }
+.district-field-armed { border-left-color: var(--red); }
+.map-target-button { min-height: 38px; border: 1px solid var(--ink); padding: 7px 9px; color: var(--ink); background: transparent; font: .55rem var(--mono); text-transform: uppercase; }
+.map-target-button[aria-pressed="true"] { color: var(--paper); background: var(--red); }
 .opening-draft { transition: border-color .15s, box-shadow .15s; }
 .phase-form fieldset.opening-draft-active { border-color: var(--blue); box-shadow: inset 4px 0 0 var(--blue); }
 .draft-selector { padding: 3px 5px; color: inherit; background: var(--paper); border: 0; font: inherit; text-transform: inherit; }
