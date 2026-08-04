@@ -79,7 +79,7 @@ npm run dev</code></pre>
           <table>
             <thead><tr><th>Action</th><th>Required payload</th></tr></thead>
             <tbody>
-              <tr><td><code>submit_openings</code></td><td><code>openings[]</code>, each containing <code>firmId</code>, <code>partyId</code>, integer <code>leverage</code>, integer <code>bluff</code>, and all four integer operation counts.</td></tr>
+              <tr><td><code>submit_openings</code></td><td><code>openings[]</code> contains exactly one opening when the active seat has Leverage, or is empty only when that seat has none. The opening contains <code>firmId</code>, <code>partyId</code>, integer <code>leverage</code>, integer <code>bluff</code>, and all four integer operation counts.</td></tr>
               <tr><td><code>set_counterbid</code></td><td><code>slotIndex</code> from 0–3 and <code>bid</code>, either null to withdraw or an object containing <code>contestId</code>, <code>firmId</code>, <code>leverage</code>, <code>bluff</code>, and operation counts.</td></tr>
               <tr><td><code>set_counterbid_ready</code></td><td>Boolean <code>ready</code>.</td></tr>
               <tr><td><code>resolve_pecking_swap</code></td><td><code>decisionId</code> from private state and <code>adjacentIndex</code> from the projected legal indexes.</td></tr>
@@ -88,6 +88,7 @@ npm run dev</code></pre>
             </tbody>
           </table>
         </div>
+        <p>During the opening phase, public <code>phase.turnSeatIds</code> contains the complete Early Bird-relative turn sequence and may repeat a seat: ABBA at two players, ABCCBA at three, or one clockwise pass at four to six. <code>phase.turnIndex</code> is the zero-based current turn, and <code>phase.activeSeatId</code> is the seat at that index. Re-read the cursor after every accepted action, including when the same seat appears twice consecutively.</p>
         <pre><code>{
   "type": "resolve_party_operation",
   "decisionId": "decision-19",

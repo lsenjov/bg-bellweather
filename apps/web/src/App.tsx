@@ -918,6 +918,14 @@ export function ActionDesk(props: {
   const activeOpeningSeat = openingProgress === null
     ? undefined
     : props.view.seats.find((seat) => seat.id === openingProgress.activeSeatId);
+  const openingDraftKey = [
+    openingProgress?.turnIndex ?? -1,
+    props.seat.reserve?.leverage ?? 0,
+    props.seat.reserve?.bluff ?? 0,
+    ...OPERATION_IDS.map(
+      (operation) => props.seat.reserve?.operations[operation] ?? 0
+    )
+  ].join(":");
 
   return (
     <div className="action-compose">
@@ -925,7 +933,7 @@ export function ActionDesk(props: {
       {phase === "opening" && (
         activeOpening ? (
           <OpeningForm
-            key={`opening-${openingProgress.turnIndex}`}
+            key={`opening-${openingDraftKey}`}
             {...props}
             partySelection={props.openingPartyIntent}
             onDraftStateChange={props.onOpeningDraftChange}
@@ -933,7 +941,7 @@ export function ActionDesk(props: {
         ) : (
           <p className="empty-copy">
             {activeOpeningSeat?.displayName ?? "Another firm"} is placing opening
-            bid {(openingProgress?.turnIndex ?? 0) + 1} of{
+            bid {(openingProgress?.turnIndex ?? 0) + 1} of{" "}{
               openingProgress?.turnSeatIds.length ?? 0
             }.
           </p>

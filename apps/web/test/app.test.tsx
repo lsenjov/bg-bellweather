@@ -929,6 +929,109 @@ describe("browser play surface", () => {
     );
   });
 
+  it("rebuilds the active opening after same-turn reserve gifts", () => {
+    const baseProps = {
+      view: {
+        playerCount: 2,
+        phase: "opening",
+        phaseData: {
+          activeSeatId: "seat-b",
+          turnSeatIds: ["seat-a", "seat-b", "seat-b", "seat-a"],
+          turnIndex: 1
+        },
+        seats: [
+          { id: "seat-a", displayName: "Ada" },
+          { id: "seat-b", displayName: "Bert" }
+        ],
+        contests: {},
+        pendingDecision: null
+      } as never,
+      seat: {
+        firmIds: ["one-fell-swoop"],
+        reserve: {
+          leverage: 0,
+          bluff: 0,
+          operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+        }
+      } as never,
+      seatId: "seat-b",
+      busy: false,
+      ownReady: false,
+      openingPartyIntent: null,
+      onOpeningDraftChange: vi.fn(),
+      counterbidContestIntent: null,
+      counterbidDraftSummary: {
+        contestId: null,
+        slotIndex: 0,
+        placed: false,
+        dirty: false
+      },
+      onCounterbidDraftChange: vi.fn(),
+      onCommand: vi.fn(async () => undefined)
+    };
+    const { rerender } = render(<ActionDesk {...baseProps} />);
+
+    expect(screen.getByRole("button", { name: /pass opening turn/i })).toBeTruthy();
+    expect(screen.queryByLabelText("Party")).toBeNull();
+
+    rerender(
+      <ActionDesk
+        {...baseProps}
+        seat={{
+          ...baseProps.seat,
+          reserve: { ...baseProps.seat.reserve, leverage: 1 }
+        } as never}
+      />
+    );
+    expect(screen.getByLabelText("Party")).toBeTruthy();
+    expect(screen.getByRole("button", { name: /file opening bid/i })).toBeTruthy();
+
+    rerender(
+      <ActionDesk
+        {...baseProps}
+        seat={{
+          ...baseProps.seat,
+          reserve: {
+            leverage: 3,
+            bluff: 2,
+            operations: { organise: 2, rally: 0, smear: 0, court: 0 }
+          }
+        } as never}
+      />
+    );
+    fireEvent.change(screen.getByLabelText("Leverage"), {
+      target: { value: "3" }
+    });
+    fireEvent.change(screen.getByLabelText("Face-down Bluff"), {
+      target: { value: "2" }
+    });
+    fireEvent.change(screen.getByLabelText("organise"), {
+      target: { value: "2" }
+    });
+    expect((screen.getByLabelText("Leverage") as HTMLSelectElement).value).toBe("3");
+
+    rerender(
+      <ActionDesk
+        {...baseProps}
+        seat={{
+          ...baseProps.seat,
+          reserve: {
+            leverage: 1,
+            bluff: 0,
+            operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+          }
+        } as never}
+      />
+    );
+    expect((screen.getByLabelText("Leverage") as HTMLSelectElement).value).toBe("1");
+    expect((screen.getByLabelText("Face-down Bluff") as HTMLSelectElement).value).toBe("0");
+    expect((screen.getByLabelText("organise") as HTMLSelectElement).value).toBe("0");
+
+    rerender(<ActionDesk {...baseProps} />);
+    expect(screen.getByRole("button", { name: /pass opening turn/i })).toBeTruthy();
+    expect(screen.queryByLabelText("Party")).toBeNull();
+  });
+
   it("does not replay an opening shortcut when the form remounts", () => {
     const { container } = render(
       <OpeningForm
