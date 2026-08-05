@@ -148,6 +148,108 @@ describe("browser play surface", () => {
     }));
   });
 
+  it("does not cross out an owner's covered cancellation before reveal", () => {
+    const state = {
+      scope: "seat",
+      viewerSeatId: "seat-a",
+      publicState: {
+        gameId: "game-1",
+        version: 1,
+        latestSequence: 1,
+        lifecycle: "active",
+        configuration: {
+          playerCount: 2,
+          counterbidTimer: { mode: "off" },
+          allowSpectators: false
+        },
+        seats: [],
+        spectators: [],
+        publicGame: {
+          rulesetVersion: "11",
+          round: 1,
+          electionNumber: 0,
+          nextFirstOpenerSeatId: "seat-a",
+          partyOrder: [...TEST_PARTY_ORDER],
+          support: {},
+          courtSupport: {},
+          coalitionTargets: {},
+          electionHistory: [],
+          chat: [],
+          phase: { type: "resolution" },
+          seats: [],
+          contests: {
+            honeycomb: {
+              id: "honeycomb",
+              targetPartyId: "honeycomb",
+              openingBidId: null,
+              bids: [{
+                id: "future-bid",
+                contestId: "honeycomb",
+                ownerSeatId: "seat-a",
+                firmId: "one-fell-swoop",
+                kind: "counterbid",
+                slotIndex: 0,
+                cardCount: 2
+              }]
+            }
+          }
+        }
+      },
+      seatState: {
+        seatId: "seat-a",
+        privateGame: {
+          reserve: {
+            leverage: 0,
+            bluff: 0,
+            operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+          },
+          scoringCardIds: ["SC-01", "SC-02"],
+          ownBids: [{
+            id: "future-bid",
+            contestId: "honeycomb",
+            ownerSeatId: "seat-a",
+            firmId: "one-fell-swoop",
+            kind: "counterbid",
+            slotIndex: 0,
+            leverage: 2,
+            bluff: 0,
+            operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+          }],
+          counterbidSlots: ["future-bid", null],
+          pendingDecision: null
+        }
+      }
+    };
+    const coveredView = extractView(state as never)!;
+    const { container, rerender } = render(
+      <ContestCard
+        contestId="honeycomb"
+        seats={[]}
+        bids={coveredView.bids}
+      />
+    );
+
+    expect(within(container).getByRole("listitem").classList.contains(
+      "bid-cancelled"
+    )).toBe(false);
+
+    state.publicState.publicGame.contests.honeycomb.bids[0]!.status =
+      "cancelled";
+    state.seatState.privateGame.ownBids[0]!.status = "cancelled";
+    const revealedView = extractView(state as never)!;
+    rerender(
+      <ContestCard
+        contestId="honeycomb"
+        seats={[]}
+        bids={revealedView.bids}
+      />
+    );
+
+    expect(within(container).getByRole("listitem").classList.contains(
+      "bid-cancelled"
+    )).toBe(true);
+  });
+
   it("rejects an active payload from an unsupported ruleset", () => {
     expect(extractView(activePublicState("8", TEST_PARTY_ORDER))).toBeNull();
   });

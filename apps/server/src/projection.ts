@@ -327,13 +327,13 @@ function publicBid(bid: BidState, reveal: boolean): Record<string, unknown> {
     firmId: bid.firmId,
     kind: bid.kind,
     slotIndex: bid.slotIndex,
-    status: bid.status,
-    cardCount: bidCardCount(bid),
-    transferredToSeatId: bid.transferredToSeatId
+    cardCount: bidCardCount(bid)
   };
   if (reveal) {
     return {
       ...base,
+      status: bid.status,
+      transferredToSeatId: bid.transferredToSeatId,
       leverage: bid.leverage,
       bluff: bid.bluff,
       operations: bid.operations
@@ -348,7 +348,7 @@ function publicBid(bid: BidState, reveal: boolean): Record<string, unknown> {
   return base;
 }
 
-function seatEngineState(
+export function seatEngineState(
   state: GameState,
   viewerSeatId: string
 ): Record<string, unknown> {
@@ -356,9 +356,9 @@ function seatEngineState(
   if (seat === undefined) {
     return {};
   }
-  const ownBids = Object.values(state.bids).filter(
-    (bid) => bid.ownerSeatId === viewerSeatId
-  );
+  const ownBids = Object.values(state.bids)
+    .filter((bid) => bid.ownerSeatId === viewerSeatId)
+    .map((bid) => privateBid(state, bid));
   return {
     reserve: seat.reserve,
     scoringCardIds: seat.scoringCardIds,
@@ -370,6 +370,17 @@ function seatEngineState(
         ? state.phase.pendingDecision
         : null
   };
+}
+
+function privateBid(
+  state: GameState,
+  bid: BidState
+): Record<string, unknown> {
+  if (shouldRevealContestBids(state, bid.contestId)) {
+    return { ...bid };
+  }
+  const { status: _status, transferredToSeatId: _recipient, ...covered } = bid;
+  return covered;
 }
 
 function isEngineEventPayload(

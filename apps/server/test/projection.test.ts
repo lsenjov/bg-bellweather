@@ -2,7 +2,8 @@ import { initializeGame, type BidState, type GameState } from "@bellweather/game
 import { describe, expect, it } from "vitest";
 import {
   publicEngineState,
-  publicResolutionFilingProgress
+  publicResolutionFilingProgress,
+  seatEngineState
 } from "../src/projection.js";
 
 describe("resolution filing projection", () => {
@@ -160,8 +161,11 @@ describe("resolution filing projection", () => {
       operations: { organise: 2, rally: 3, smear: 0, court: 0 }
     });
     expect(currentCancellation).toHaveProperty("operations");
+    expect(currentCancellation).toMatchObject({ status: "cancelled" });
     expect(futureContestBid).not.toHaveProperty("bluff");
     expect(futureContestBid).not.toHaveProperty("operations");
+    expect(futureContestBid).not.toHaveProperty("status");
+    expect(futureContestBid).not.toHaveProperty("transferredToSeatId");
     expect(projectedPendingDecision(projected).availableOperations).toEqual([
       { operation: "organise", count: 1 },
       { operation: "rally", count: 3 }
@@ -169,6 +173,32 @@ describe("resolution filing projection", () => {
     expect(
       projectedPendingDecision(projected).availableBonusOperations
     ).toEqual(["organise", "rally"]);
+  });
+
+  it("keeps owner-visible contents but masks future contest outcomes", () => {
+    const state = resolutionState();
+    state.bids["unresolved-contest-bid"]!.status = "cancelled";
+    state.bids["unresolved-contest-bid"]!.transferredToSeatId = "seat-2";
+
+    const privateState = seatEngineState(state, "seat-1");
+    const ownBids = privateState.ownBids as Array<Record<string, unknown>>;
+    const currentCancellation = ownBids.find(
+      (bid) => bid.id === "current-cancelled-bid"
+    )!;
+    const futureCancellation = ownBids.find(
+      (bid) => bid.id === "unresolved-contest-bid"
+    )!;
+
+    expect(currentCancellation).toMatchObject({
+      status: "cancelled",
+      transferredToSeatId: null
+    });
+    expect(futureCancellation).toMatchObject({
+      leverage: 1,
+      operations: { organise: 0, rally: 0, smear: 2, court: 0 }
+    });
+    expect(futureCancellation).not.toHaveProperty("status");
+    expect(futureCancellation).not.toHaveProperty("transferredToSeatId");
   });
 
   it("omits a bonus operation after an earlier bid claims it", () => {
