@@ -68,6 +68,10 @@ export interface OperationResolution {
   bonusFailure: string | null;
 }
 
+export interface OperationLegalityOptions {
+  ignoreOrganiseAdjacency?: boolean;
+}
+
 export interface DelayedResolution {
   claim: NightDelayedClaim;
   applied: boolean;
@@ -189,6 +193,80 @@ export function supportCount(state: OperationState, party?: Party): number {
           )
         : (district.support[party] ?? 0)),
     0
+  );
+}
+
+export function isOperationChoiceLegal(
+  initialState: OperationState,
+  party: Party,
+  choice: OperationChoice,
+  options: OperationLegalityOptions = {}
+): boolean {
+  return applyBaseline(
+    cloneState(initialState),
+    party,
+    choice,
+    options.ignoreOrganiseAdjacency === true
+  ).applied;
+}
+
+export function hasLegalOperationChoice(
+  state: OperationState,
+  party: Party,
+  operation: Operation,
+  options: OperationLegalityOptions = {}
+): boolean {
+  const districts = Object.values(state.districts);
+  if (operation === "organise") {
+    if (supportCount(state, party) === 0) {
+      return districts.some((destination) =>
+        isOperationChoiceLegal(
+          state,
+          party,
+          {
+            operation,
+            destinationDistrictId: destination.id
+          },
+          options
+        )
+      );
+    }
+    return districts.some((source) =>
+      districts.some((destination) =>
+        isOperationChoiceLegal(
+          state,
+          party,
+          {
+            operation,
+            sourceDistrictId: source.id,
+            destinationDistrictId: destination.id
+          },
+          options
+        )
+      )
+    );
+  }
+  if (operation === "rally") {
+    return districts.some((district) =>
+      isOperationChoiceLegal(state, party, {
+        operation,
+        districtId: district.id
+      })
+    );
+  }
+  if (operation === "smear") {
+    return districts.some((district) =>
+      PARTIES.some((rivalParty) =>
+        isOperationChoiceLegal(state, party, {
+          operation,
+          districtId: district.id,
+          rivalParty
+        })
+      )
+    );
+  }
+  return PARTIES.some((targetParty) =>
+    isOperationChoiceLegal(state, party, { operation, targetParty })
   );
 }
 

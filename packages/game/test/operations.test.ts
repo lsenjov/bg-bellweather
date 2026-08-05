@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  hasLegalOperationChoice,
+  isOperationChoiceLegal,
   PARTY_BONUSES,
   PARTIES,
   resolveNightDelayedOperations,
@@ -98,6 +100,85 @@ describe("operation baselines", () => {
         choice: { operation: "court", targetParty: "honeycomb" }
       }).baselineApplied
     ).toBe(false);
+  });
+
+  it("reports current baseline legality without mutating the board", () => {
+    const initial = state({
+      a: { honeycomb: 1, foxglove: 1 },
+      c: { riverworks: 1 }
+    });
+
+    expect(
+      isOperationChoiceLegal(initial, "honeycomb", {
+        operation: "organise",
+        sourceDistrictId: "a",
+        destinationDistrictId: "b"
+      })
+    ).toBe(true);
+    expect(
+      isOperationChoiceLegal(initial, "honeycomb", {
+        operation: "organise",
+        sourceDistrictId: "a",
+        destinationDistrictId: "c"
+      })
+    ).toBe(false);
+    expect(
+      isOperationChoiceLegal(
+        initial,
+        "honeycomb",
+        {
+          operation: "organise",
+          sourceDistrictId: "a",
+          destinationDistrictId: "c"
+        },
+        { ignoreOrganiseAdjacency: true }
+      )
+    ).toBe(true);
+    expect(initial.districts.a?.support.honeycomb).toBe(1);
+    expect(initial.districts.b?.support.honeycomb).toBeUndefined();
+  });
+
+  it("detects whether each operation family has any legal baseline choice", () => {
+    const initial = state({
+      a: { honeycomb: 5 },
+      b: { foxglove: 4 },
+      c: { riverworks: 1 },
+      d: { "night-parliament": 1, "old-shell": 1 }
+    });
+
+    expect(hasLegalOperationChoice(initial, "honeycomb", "organise")).toBe(
+      false
+    );
+    expect(
+      hasLegalOperationChoice(initial, "honeycomb", "organise", {
+        ignoreOrganiseAdjacency: true
+      })
+    ).toBe(true);
+    expect(hasLegalOperationChoice(initial, "honeycomb", "rally")).toBe(
+      false
+    );
+    expect(hasLegalOperationChoice(initial, "honeycomb", "smear")).toBe(
+      true
+    );
+    expect(hasLegalOperationChoice(initial, "honeycomb", "court")).toBe(
+      true
+    );
+
+    const emptyMap = state({
+      a: { honeycomb: 5 },
+      b: { honeycomb: 4 },
+      c: { honeycomb: 2 },
+      d: { honeycomb: 1 }
+    });
+    expect(hasLegalOperationChoice(emptyMap, "foxglove", "organise")).toBe(
+      false
+    );
+    expect(hasLegalOperationChoice(emptyMap, "foxglove", "rally")).toBe(
+      false
+    );
+    expect(hasLegalOperationChoice(emptyMap, "foxglove", "smear")).toBe(
+      true
+    );
   });
 });
 
