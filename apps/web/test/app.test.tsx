@@ -675,6 +675,175 @@ describe("browser play surface", () => {
     expect(contest.style.getPropertyValue("--contest-party")).toBe("#3f7447");
   });
 
+  it("makes only an owned counterbid filing selectable", () => {
+    const onSelectCounterbid = vi.fn();
+    const { container } = render(
+      <ContestCard
+        contestId="honeycomb"
+        seats={[
+          {
+            id: "seat-a",
+            displayName: "Ada",
+            controller: "human",
+            position: 0,
+            firmIds: ["one-fell-swoop"],
+            points: 5,
+            reserve: null,
+            scoringCardIds: null
+          },
+          {
+            id: "seat-b",
+            displayName: "Turing",
+            controller: "human",
+            position: 1,
+            firmIds: ["pairliament"],
+            points: 5,
+            reserve: null,
+            scoringCardIds: null
+          }
+        ]}
+        bids={[
+          {
+            id: "bid-own",
+            contestId: "honeycomb",
+            ownerSeatId: "seat-a",
+            kind: "counterbid",
+            slotIndex: 1,
+            status: "active",
+            leverage: 3,
+            cardCount: 3
+          },
+          {
+            id: "bid-opponent",
+            contestId: "honeycomb",
+            ownerSeatId: "seat-b",
+            kind: "counterbid",
+            slotIndex: 0,
+            status: "active",
+            leverage: 2,
+            cardCount: 2
+          }
+        ]}
+        ownSeatId="seat-a"
+        selectedCounterbidSlotIndex={1}
+        onSelectCounterbid={onSelectCounterbid}
+      />
+    );
+
+    const ownFiling = within(container).getByRole("button", {
+      name: "Edit counterbid 2 in Honeycomb Cooperative"
+    });
+    expect(ownFiling.getAttribute("aria-pressed")).toBe("true");
+    expect(ownFiling.closest("li")?.classList.contains("bid-line-selected")).toBe(
+      true
+    );
+    fireEvent.click(ownFiling);
+    expect(onSelectCounterbid).toHaveBeenCalledWith({
+      contestId: "honeycomb",
+      slotIndex: 1
+    });
+    expect(
+      within(container).getByText(/Turing/).closest("li")?.querySelector("button")
+    ).toBeNull();
+  });
+
+  it("hydrates the counterbid desk from a clicked owned filing", async () => {
+    const ownSeat = {
+      id: "seat-a",
+      displayName: "Ada",
+      controller: "human",
+      position: 0,
+      firmIds: ["one-fell-swoop"],
+      points: 5,
+      reserve: {
+        leverage: 3,
+        bluff: 2,
+        operations: { organise: 2, rally: 0, smear: 0, court: 0 }
+      },
+      scoringCardIds: []
+    };
+    render(
+      <GameDesk
+        view={{
+          playerCount: 2,
+          round: 1,
+          electionNumber: 0,
+          phase: "counterbidding",
+          phaseData: {},
+          deadlineAt: null,
+          nextFirstOpenerSeatId: "seat-a",
+          seats: [ownSeat],
+          partyOrder: [...TEST_PARTY_ORDER],
+          support: {},
+          courtSupport: {},
+          coalitionTargets: {},
+          contests: { honeycomb: {}, "old-shell": {} },
+          bids: [
+            {
+              id: "bid-1",
+              contestId: "honeycomb",
+              ownerSeatId: "seat-a",
+              firmId: "one-fell-swoop",
+              kind: "counterbid",
+              slotIndex: 0,
+              status: "active",
+              leverage: 1,
+              bluff: 0,
+              operations: { organise: 0, rally: 0, smear: 0, court: 0 },
+              cardCount: 1
+            },
+            {
+              id: "bid-2",
+              contestId: "old-shell",
+              ownerSeatId: "seat-a",
+              firmId: "one-fell-swoop",
+              kind: "counterbid",
+              slotIndex: 1,
+              status: "active",
+              leverage: 2,
+              bluff: 1,
+              operations: { organise: 1, rally: 0, smear: 0, court: 0 },
+              cardCount: 4
+            }
+          ],
+          readySeatIds: [],
+          pendingDecision: null,
+          counterbidSlots: ["bid-1", "bid-2"],
+          electionHistory: [],
+          chat: []
+        } as never}
+        ownSeat={ownSeat as never}
+        ownSeatId="seat-a"
+        spectator={false}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    await waitFor(() =>
+      expect((screen.getByLabelText("Hidden Leverage") as HTMLSelectElement).value).toBe("1")
+    );
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Edit counterbid 2 in Old Shell Union"
+      })
+    );
+    await waitFor(() =>
+      expect((screen.getByLabelText("Counterbid card") as HTMLSelectElement).value).toBe("1")
+    );
+    expect((screen.getByLabelText("Contest") as HTMLSelectElement).value).toBe(
+      "old-shell"
+    );
+    expect((screen.getByLabelText("Hidden Leverage") as HTMLSelectElement).value).toBe(
+      "2"
+    );
+    expect(
+      screen
+        .getByRole("button", { name: "Edit counterbid 2 in Old Shell Union" })
+        .getAttribute("aria-pressed")
+    ).toBe("true");
+  });
+
   it("keeps the Pecking Order contest visually neutral", () => {
     const { container } = render(
       <ContestCard
@@ -1239,6 +1408,152 @@ describe("browser play surface", () => {
     await waitFor(() => expect((form.getByLabelText("Counterbid card") as HTMLSelectElement).value).toBe("1"));
     expect((form.getByLabelText("Contest") as HTMLSelectElement).value).toBe("old-shell");
     expect(form.getByRole("status").textContent).toMatch(/unused counterbid 2 selected/i);
+  });
+
+  it("selects and hydrates an exact placed counterbid filing", async () => {
+    const view = {
+      partyOrder: TEST_PARTY_ORDER,
+      contests: { honeycomb: {}, "old-shell": {} },
+      counterbidSlots: ["bid-1", "bid-2"],
+      bids: [
+        {
+          id: "bid-1",
+          contestId: "honeycomb",
+          leverage: 1,
+          bluff: 0,
+          operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+        },
+        {
+          id: "bid-2",
+          contestId: "old-shell",
+          leverage: 2,
+          bluff: 1,
+          operations: { organise: 1, rally: 0, smear: 0, court: 0 }
+        }
+      ]
+    };
+    const seat = {
+      firmIds: ["one-fell-swoop"],
+      reserve: {
+        leverage: 3,
+        bluff: 2,
+        operations: { organise: 2, rally: 0, smear: 0, court: 0 }
+      }
+    };
+    const { container, rerender } = render(
+      <CounterbidForm
+        view={view as never}
+        seat={seat as never}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+    const form = within(container);
+    await waitFor(() =>
+      expect((form.getByLabelText("Hidden Leverage") as HTMLSelectElement).value).toBe("1")
+    );
+
+    rerender(
+      <CounterbidForm
+        view={view as never}
+        seat={seat as never}
+        busy={false}
+        contestSelection={{
+          value: { contestId: "old-shell", slotIndex: 1 },
+          revision: 1
+        }}
+        onCommand={async () => undefined}
+      />
+    );
+
+    await waitFor(() =>
+      expect((form.getByLabelText("Counterbid card") as HTMLSelectElement).value).toBe("1")
+    );
+    expect((form.getByLabelText("Contest") as HTMLSelectElement).value).toBe(
+      "old-shell"
+    );
+    expect((form.getByLabelText("Hidden Leverage") as HTMLSelectElement).value).toBe(
+      "2"
+    );
+    expect((form.getByLabelText("Hidden Bluff") as HTMLSelectElement).value).toBe(
+      "1"
+    );
+    expect((form.getByLabelText("organise") as HTMLSelectElement).value).toBe(
+      "1"
+    );
+    expect(form.getByRole("status").textContent).toMatch(
+      /counterbid 2 selected from old shell union/i
+    );
+  });
+
+  it("keeps a dirty draft when another placed filing is clicked", async () => {
+    const view = {
+      partyOrder: TEST_PARTY_ORDER,
+      contests: { honeycomb: {}, "old-shell": {} },
+      counterbidSlots: ["bid-1", "bid-2"],
+      bids: [
+        {
+          id: "bid-1",
+          contestId: "honeycomb",
+          leverage: 1,
+          bluff: 0,
+          operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+        },
+        {
+          id: "bid-2",
+          contestId: "old-shell",
+          leverage: 2,
+          bluff: 0,
+          operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+        }
+      ]
+    };
+    const seat = {
+      firmIds: ["one-fell-swoop"],
+      reserve: {
+        leverage: 3,
+        bluff: 0,
+        operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+      }
+    };
+    const { container, rerender } = render(
+      <CounterbidForm
+        view={view as never}
+        seat={seat as never}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+    const form = within(container);
+    await waitFor(() =>
+      expect((form.getByLabelText("Hidden Leverage") as HTMLSelectElement).value).toBe("1")
+    );
+    fireEvent.change(form.getByLabelText("Hidden Leverage"), {
+      target: { value: "3" }
+    });
+
+    rerender(
+      <CounterbidForm
+        view={view as never}
+        seat={seat as never}
+        busy={false}
+        contestSelection={{
+          value: { contestId: "old-shell", slotIndex: 1 },
+          revision: 1
+        }}
+        onCommand={async () => undefined}
+      />
+    );
+
+    expect((form.getByLabelText("Counterbid card") as HTMLSelectElement).value).toBe(
+      "0"
+    );
+    expect((form.getByLabelText("Hidden Leverage") as HTMLSelectElement).value).toBe(
+      "3"
+    );
+    expect(form.getByRole("status").textContent).toMatch(
+      /apply or reset the unsaved edits before choosing another counterbid/i
+    );
   });
 
   it("labels all four low-player counterbid cards with one firm", () => {
