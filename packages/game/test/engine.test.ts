@@ -1,4 +1,5 @@
 import {
+  DISTRICTS,
   DISTRICTS_BY_ID,
   PARTY_IDS,
   SCORING_CARDS_BY_ID,
@@ -591,6 +592,9 @@ describe("contest resolution", () => {
         operations: operations({ organise: 1 })
       }
     });
+    delete state.support.harbormouth[
+      PARTY_IDS.find((partyId) => partyId !== originalRight)!
+    ];
     state = readyAll(state);
 
     const peckingDecision = pending(state);
@@ -700,6 +704,9 @@ describe("contest resolution", () => {
           partyId !== "night-parliament" && partyId !== laterBid.contestId
       )
     ];
+    delete state.support.harbormouth[
+      PARTY_IDS.find((partyId) => partyId !== laterBid.contestId)!
+    ];
     state = readyAll(state);
     let decision = pending(state);
     const claimAction = {
@@ -730,7 +737,7 @@ describe("contest resolution", () => {
       operation: "rally",
       choice: {
         operation: "rally",
-        districtId: "cloverfield"
+        districtId: "harbormouth"
       }
     });
     decision = pending(state);
@@ -757,6 +764,81 @@ describe("contest resolution", () => {
     expect(state.phase.type).toBe("opening");
   });
 
+  it("automatically fails a delayed operation when no legal choice remains", () => {
+    let state = submitAllOpenings(
+      initializeGame(configuration(4, null), zeroRandom).state,
+      0,
+      {
+        "seat-1": operations({ rally: 1 }),
+        "seat-2": operations({ court: 1 })
+      },
+      "night-parliament"
+    );
+    const nightBid = Object.values(state.bids).find(
+      (bid) => bid.contestId === "night-parliament" && bid.kind === "opening"
+    )!;
+    const laterBid = Object.values(state.bids).find(
+      (bid) =>
+        bid.ownerSeatId === "seat-2" &&
+        bid.kind === "opening" &&
+        bid.operations.court === 1
+    )!;
+    state.partyOrder = [
+      "night-parliament",
+      laterBid.contestId as PartyId,
+      ...state.partyOrder.filter(
+        (partyId) =>
+          partyId !== "night-parliament" && partyId !== laterBid.contestId
+      )
+    ];
+    delete state.support.harbormouth.honeycomb;
+    state = readyAll(state);
+    let decision = pending(state);
+    state = act(state, {
+      type: "resolve_party_operation",
+      seatId: decision.seatId,
+      decisionId: decision.id,
+      operation: "rally",
+      choice: {
+        choice: { operation: "rally", districtId: "harbormouth" },
+        claimBonus: true
+      }
+    });
+    decision = pending(state);
+    expect(decision).toMatchObject({
+      kind: "party_operation",
+      contestId: laterBid.contestId,
+      legalOperations: ["court"]
+    });
+
+    state = act(state, {
+      type: "resolve_party_operation",
+      seatId: decision.seatId,
+      decisionId: decision.id,
+      operation: "court",
+      choice: {
+        operation: "court",
+        targetParty: PARTY_IDS.find(
+          (partyId) => partyId !== laterBid.contestId
+        )!
+      }
+    });
+
+    expect(state.phase.type).toBe("opening");
+    expect(
+      state.resolvedOperations.findLast(
+        (resolution) =>
+          resolution.bidId === nightBid.id &&
+          resolution.operation === "rally"
+      )
+    ).toMatchObject({
+      choice: null,
+      baselineApplied: false,
+      bonusApplied: true,
+      failure: "No legal choice remained for the delayed operation"
+    });
+  });
+
   it("rejects malformed party identifiers in operation choices", () => {
     let state = submitAllOpenings(
       initializeGame(configuration(4, null), zeroRandom).state,
@@ -778,6 +860,132 @@ describe("contest resolution", () => {
         }
       })
     ).toThrow("must be a party");
+  });
+
+  it("rejects illegal operation choices without consuming the decision", () => {
+    let state = submitAllOpenings(
+      initializeGame(configuration(4, null), zeroRandom).state,
+      0,
+      { "seat-1": operations({ organise: 1, smear: 1 }) },
+      "honeycomb"
+    );
+    state = readyAll(state);
+    const decision = pending(state);
+    const before = structuredClone(state);
+
+    expect(() =>
+      act(state, {
+        type: "resolve_party_operation",
+        seatId: decision.seatId,
+        decisionId: decision.id,
+        operation: "organise",
+        choice: {
+          operation: "organise",
+          sourceDistrictId: "harbormouth",
+          destinationDistrictId: "northreach"
+        }
+      })
+    ).toThrow("must neighbor the source");
+    expect(state).toEqual(before);
+
+    expect(() =>
+      act(state, {
+        type: "resolve_party_operation",
+        seatId: decision.seatId,
+        decisionId: decision.id,
+        operation: "smear",
+        choice: {
+          operation: "smear",
+          districtId: "northreach",
+          rivalParty: "old-shell"
+        }
+      })
+    ).toThrow("requires rival Support");
+    expect(state).toEqual(before);
+  });
+
+  it("fails every remaining card and advances when no operation is legal", () => {
+    let state = submitAllOpenings(
+      initializeGame(configuration(4, null), zeroRandom).state,
+      0,
+      { "seat-1": operations({ organise: 1, rally: 2 }) },
+      "honeycomb"
+    );
+    const bid = Object.values(state.bids).find(
+      (candidate) =>
+        candidate.ownerSeatId === "seat-1" &&
+        candidate.contestId === "honeycomb"
+    )!;
+    for (const district of DISTRICTS) {
+      state.support[district.id] = { honeycomb: district.capacity };
+    }
+
+    state = readyAll(state);
+
+    expect(state.phase.type).toBe("opening");
+    expect(
+      state.resolvedOperations.filter(
+        (resolution) => resolution.bidId === bid.id
+      )
+    ).toEqual([
+      expect.objectContaining({
+        operation: "organise",
+        baselineApplied: false,
+        failure: "No legal choice remained for this operation"
+      }),
+      expect.objectContaining({
+        operation: "rally",
+        baselineApplied: false,
+        failure: "No legal choice remained for this operation"
+      }),
+      expect.objectContaining({
+        operation: "rally",
+        baselineApplied: false,
+        failure: "No legal choice remained for this operation"
+      })
+    ]);
+  });
+
+  it("offers another legal family before failing an impossible card", () => {
+    let state = submitAllOpenings(
+      initializeGame(configuration(4, null), zeroRandom).state,
+      0,
+      { "seat-1": operations({ rally: 1, court: 1 }) },
+      "honeycomb"
+    );
+    const bid = Object.values(state.bids).find(
+      (candidate) =>
+        candidate.ownerSeatId === "seat-1" &&
+        candidate.contestId === "honeycomb"
+    )!;
+    for (const district of DISTRICTS) {
+      state.support[district.id] = { honeycomb: district.capacity };
+    }
+    state = readyAll(state);
+    const decision = pending(state);
+    expect(decision).toMatchObject({
+      kind: "party_operation",
+      legalOperations: ["court"]
+    });
+
+    state = act(state, {
+      type: "resolve_party_operation",
+      seatId: decision.seatId,
+      decisionId: decision.id,
+      operation: "court",
+      choice: { operation: "court", targetParty: "old-shell" }
+    });
+
+    expect(state.phase.type).toBe("opening");
+    expect(
+      state.resolvedOperations.find(
+        (resolution) =>
+          resolution.bidId === bid.id && resolution.operation === "rally"
+      )
+    ).toMatchObject({
+      baselineApplied: false,
+      failure: "No legal choice remained for this operation"
+    });
   });
 });
 

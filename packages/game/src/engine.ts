@@ -20,6 +20,7 @@ import {
 } from "@bellweather/content";
 import type {
   BidPackage,
+  BidId,
   BidState,
   CompletePhase,
   ContestId,
@@ -47,6 +48,7 @@ import {
   type ScoringCard
 } from "./election.js";
 import {
+  hasLegalOperationChoice,
   resolveNightDelayedOperations,
   resolveOperation,
   type NightDelayedClaim,
@@ -510,6 +512,13 @@ function resolvePartyOperation(
       [toNightClaim(claim)],
       { [claim.id]: operationChoice }
     );
+    const delayedResolution = result.resolutions[0];
+    if (delayedResolution?.applied !== true) {
+      throw new GameRuleError(
+        "illegal_operation",
+        delayedResolution?.failure ?? "That delayed operation is not legal"
+      );
+    }
     applyOperationState(state, result.state);
     state.resolvedOperations.push({
       round: state.round,
@@ -517,9 +526,9 @@ function resolvePartyOperation(
       bidId: decision.bidId,
       operation,
       choice,
-      baselineApplied: result.resolutions[0]?.applied ?? false,
+      baselineApplied: true,
       bonusApplied: true,
-      failure: result.resolutions[0]?.failure ?? null
+      failure: null
     });
     phase.delayedClaimIndex += 1;
     phase.pendingDecision = null;
@@ -570,6 +579,12 @@ function resolvePartyOperation(
     throw new GameRuleError(
       "illegal_bonus_claim",
       result.bonusFailure ?? "The claimed bonus cannot resolve"
+    );
+  }
+  if (result.baselineApplied === false) {
+    throw new GameRuleError(
+      "illegal_operation",
+      result.failure ?? "That operation is not legal"
     );
   }
   applyOperationState(state, result.state);
@@ -634,27 +649,37 @@ function advanceResolution(state: GameState): void {
       continue;
     }
 
-    phase.pendingDecision =
-      contestId === "pecking-order"
-        ? {
-            id: nextEntityId(state, "decision"),
-            kind: "pecking_swap",
-            seatId: bid.ownerSeatId,
-            contestId,
-            bidId,
-            adjacentIndexes: [0, 1, 2, 3, 4]
-          }
-        : {
-            id: nextEntityId(state, "decision"),
-            kind: "party_operation",
-            seatId: bid.ownerSeatId,
-            contestId,
-            partyId: contestId,
-            bidId,
-            legalOperations: OPERATION_IDS.filter(
-              (operation) => remaining[operation] > 0
-            )
-          };
+    if (contestId === "pecking-order") {
+      phase.pendingDecision = {
+        id: nextEntityId(state, "decision"),
+        kind: "pecking_swap",
+        seatId: bid.ownerSeatId,
+        contestId,
+        bidId,
+        adjacentIndexes: [0, 1, 2, 3, 4]
+      };
+      continue;
+    }
+
+    const legalOperations = legalPartyOperations(
+      state,
+      phase,
+      contestId,
+      remaining
+    );
+    if (legalOperations.length === 0) {
+      failRemainingOperations(state, contestId, bidId, remaining);
+      continue;
+    }
+    phase.pendingDecision = {
+      id: nextEntityId(state, "decision"),
+      kind: "party_operation",
+      seatId: bid.ownerSeatId,
+      contestId,
+      partyId: contestId,
+      bidId,
+      legalOperations
+    };
   }
 }
 
@@ -671,23 +696,91 @@ function queueNextNightDelayedDecision(
   state: GameState,
   phase: ResolutionPhase
 ): boolean {
-  if (phase.delayedClaimIndex >= phase.delayedBonusClaims.length) {
-    return false;
-  }
   phase.delayedBonusClaims.sort(
     (left, right) => left.bidRank - right.bidRank || left.order - right.order
   );
-  const claim = phase.delayedBonusClaims[phase.delayedClaimIndex]!;
-  phase.pendingDecision = {
-    id: nextEntityId(state, "decision"),
-    kind: "night_delayed_operation",
-    seatId: claim.ownerId,
-    contestId: "night-parliament",
-    bidId: claim.bidId,
-    claimId: claim.id,
-    operation: claim.operation
-  };
-  return true;
+  while (phase.delayedClaimIndex < phase.delayedBonusClaims.length) {
+    const claim = phase.delayedBonusClaims[phase.delayedClaimIndex]!;
+    if (
+      !hasLegalOperationChoice(
+        toOperationState(state),
+        "night-parliament",
+        claim.operation
+      )
+    ) {
+      state.resolvedOperations.push({
+        round: state.round,
+        contestId: "night-parliament",
+        bidId: claim.bidId,
+        operation: claim.operation,
+        choice: null,
+        baselineApplied: false,
+        bonusApplied: true,
+        failure: "No legal choice remained for the delayed operation"
+      });
+      phase.delayedClaimIndex += 1;
+      continue;
+    }
+    phase.pendingDecision = {
+      id: nextEntityId(state, "decision"),
+      kind: "night_delayed_operation",
+      seatId: claim.ownerId,
+      contestId: "night-parliament",
+      bidId: claim.bidId,
+      claimId: claim.id,
+      operation: claim.operation
+    };
+    return true;
+  }
+  return false;
+}
+
+function legalPartyOperations(
+  state: GameState,
+  phase: ResolutionPhase,
+  partyId: PartyId,
+  remaining: OperationInventory
+): OperationId[] {
+  const operationState = toOperationState(state);
+  return OPERATION_IDS.filter((operation) => {
+    if (remaining[operation] === 0) {
+      return false;
+    }
+    if (hasLegalOperationChoice(operationState, partyId, operation)) {
+      return true;
+    }
+    return (
+      partyId === "foxglove" &&
+      operation === "organise" &&
+      !phase.claimedBonuses.includes(operation) &&
+      hasLegalOperationChoice(operationState, partyId, operation, {
+        ignoreOrganiseAdjacency: true
+      })
+    );
+  });
+}
+
+function failRemainingOperations(
+  state: GameState,
+  contestId: PartyId,
+  bidId: BidId,
+  remaining: OperationInventory
+): void {
+  for (const operation of OPERATION_IDS) {
+    while (remaining[operation] > 0) {
+      state.resolvedOperations.push({
+        round: state.round,
+        contestId,
+        bidId,
+        operation,
+        choice: null,
+        baselineApplied: false,
+        bonusApplied: false,
+        failure: "No legal choice remained for this operation"
+      });
+      remaining[operation] -= 1;
+    }
+  }
 }
 
 function prepareContest(

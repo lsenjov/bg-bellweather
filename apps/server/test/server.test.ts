@@ -1,6 +1,8 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
+import { PARTY_IDS } from "@bellweather/content";
+import { executeAction, type GameState } from "@bellweather/game";
 import { afterEach, describe, expect, it } from "vitest";
 import WebSocket from "ws";
 import { createAppServer } from "../src/server.js";
@@ -657,6 +659,148 @@ describe("game server", () => {
       }
     );
     expect(command.status).toBe(403);
+    await app.close();
+  });
+
+  it("returns illegal operation choices without advancing the decision", async () => {
+    const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
+    temporaryDirectories.push(directory);
+    const app = createAppServer({
+      databasePath: resolve(directory, "game.sqlite"),
+      port: 0
+    });
+    const address = await app.listen();
+    const baseUrl = `http://${address.host}:${address.port}`;
+    const created = await jsonRequest(baseUrl, "/api/v1/games", {
+      method: "POST",
+      body: {
+        displayName: "Ada",
+        controller: "human",
+        configuration: {
+          counterbidTimer: { mode: "off" },
+          allowSpectators: false
+        }
+      }
+    });
+    const host = created.body as {
+      inviteCode: string;
+      session: { gameId: string; seatId: string; accessToken: string };
+    };
+    const joined = await jsonRequest(baseUrl, "/api/v1/games/join", {
+      method: "POST",
+      body: {
+        inviteCode: host.inviteCode,
+        displayName: "Turing",
+        controller: "human",
+        role: "player"
+      }
+    });
+    const guest = joined.body as {
+      session: { gameId: string; seatId: string; accessToken: string };
+    };
+    await sendCommand(baseUrl, host.session, 2, "start", {
+      type: "start_game"
+    });
+
+    let state = app.store.loadEngineState(host.session.gameId)!;
+    let hostOperationCommitted = false;
+    while (state.phase.type === "opening") {
+      const seatId = state.phase.turnSeatIds[state.phase.turnIndex]!;
+      const seat = state.seats.find((candidate) => candidate.id === seatId)!;
+      const partyId = PARTY_IDS.find(
+        (candidate) => state.contests[candidate] === undefined
+      )!;
+      const includeOperation =
+        seatId === host.session.seatId && !hostOperationCommitted;
+      state = executeAction(state, {
+        type: "submit_openings",
+        seatId,
+        now: 1,
+        openings: [{
+          firmId: seat.firmIds[0]!,
+          partyId,
+          leverage: 1,
+          bluff: 0,
+          operations: {
+            organise: includeOperation ? 1 : 0,
+            rally: 0,
+            smear: 0,
+            court: 0
+          }
+        }]
+      }).state;
+      hostOperationCommitted ||= includeOperation;
+    }
+    for (const seat of state.seats) {
+      state = executeAction(state, {
+        type: "set_counterbid_ready",
+        seatId: seat.id,
+        ready: true,
+        now: 1
+      }).state;
+      if (state.phase.type !== "counterbidding") {
+        break;
+      }
+    }
+    if (
+      state.phase.type !== "resolution" ||
+      state.phase.pendingDecision?.kind !== "party_operation"
+    ) {
+      throw new Error("Expected a party operation decision");
+    }
+    const decision = state.phase.pendingDecision;
+    const version = 3;
+    app.store.saveSnapshot(
+      host.session.gameId,
+      version,
+      state.rulesetVersion,
+      state,
+      new Date().toISOString()
+    );
+    const session =
+      decision.seatId === host.session.seatId ? host.session : guest.session;
+
+    const response = await jsonRequest(
+      baseUrl,
+      `/api/v1/games/${host.session.gameId}/commands`,
+      {
+        method: "POST",
+        token: session.accessToken,
+        body: {
+          gameId: host.session.gameId,
+          idempotencyKey: "illegal-organise",
+          expectedVersion: version,
+          command: {
+            type: "game_action",
+            action: {
+              type: "resolve_party_operation",
+              decisionId: decision.id,
+              operation: "organise",
+              choice: {
+                operation: "organise",
+                sourceDistrictId: "harbormouth",
+                destinationDistrictId: "northreach"
+              }
+            }
+          }
+        }
+      }
+    );
+
+    expect(response).toMatchObject({
+      status: 409,
+      body: {
+        error: {
+          code: "illegal_action",
+          message: "Organise destination must neighbor the source"
+        }
+      }
+    });
+    const unchanged = app.store.loadEngineState(host.session.gameId) as GameState;
+    expect(unchanged.phase).toMatchObject({
+      type: "resolution",
+      pendingDecision: { id: decision.id }
+    });
     await app.close();
   });
 
