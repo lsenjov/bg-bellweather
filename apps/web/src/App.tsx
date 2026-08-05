@@ -2815,10 +2815,7 @@ export function PartyRail({
             <PartyEmblem partyId={id} className="party-glyph party-glyph-primary" />
             <span className="party-rail-copy">
               <strong>{party.shortName}</strong>
-              <span
-                className="party-court-support"
-                aria-label={`${party.shortName} courting`}
-              >
+              <span className="party-court-support">
                 <span className="party-court-label">Courting:</span>
                 {courtPlacements.length > 0 ? (
                   courtPlacements.map(({ party: courtedParty, count }) => (

@@ -2032,10 +2032,15 @@ describe("browser play surface", () => {
             honeycomb: { foxglove: 2, riverworks: 1 }
           }
         } as never}
+        interaction={{
+          activePartyId: null,
+          assignedPartyIds: [],
+          onSelect: vi.fn()
+        }}
       />
     );
 
-    const courting = screen.getByLabelText("Honeycomb courting");
+    const courting = screen.getByText("Courting:").parentElement!;
     expect(
       within(courting)
         .getByLabelText("Foxglove Court Support: 2")
@@ -2051,6 +2056,11 @@ describe("browser play surface", () => {
     expect(target.classList.contains("coalition-target-prospective")).toBe(true);
     expect(target.querySelector("svg")).toBeTruthy();
     expect(container.querySelector(".party-glyph-primary")).toBeTruthy();
+    expect(
+      screen.getByRole("button", {
+        name: /Honeycomb.*Courting:.*Foxglove Court Support: 2.*Riverworks Court Support: 1.*Target: Foxglove/i
+      })
+    ).toBeTruthy();
   });
 
   it("labels an empty Court and distinguishes reciprocal coalitions", () => {
@@ -2067,9 +2077,7 @@ describe("browser play surface", () => {
       />
     );
 
-    expect(
-      within(screen.getByLabelText("Honeycomb courting")).getByText("none")
-    ).toBeTruthy();
+    expect(within(screen.getAllByText("Courting:")[0]!.parentElement!).getByText("none")).toBeTruthy();
     const coalition = screen.getByLabelText("Coalition with Foxglove");
     expect(coalition.classList.contains("coalition-target-reciprocal")).toBe(
       true
