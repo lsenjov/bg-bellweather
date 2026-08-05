@@ -23,10 +23,14 @@ import {
   type ViewerStateEnvelope
 } from "@bellweather/protocol";
 import {
+  isOperationChoiceLegal,
   openingTurnSeatIds,
   replay as replayGame,
+  supportCount,
   type GameEvent,
-  type GameState
+  type GameState,
+  type OperationChoice as EngineOperationChoice,
+  type OperationState
 } from "@bellweather/game";
 import {
   FormEvent,
@@ -504,7 +508,9 @@ export function GameDesk(props: {
       activeResolutionMapSummary.activeTarget === null ||
       activeResolutionMapSummary.selections[
         activeResolutionMapSummary.activeTarget
-      ] !== undefined
+      ] !== undefined ||
+      (activeResolutionMapSummary.selectableDistrictIds !== null &&
+        !activeResolutionMapSummary.selectableDistrictIds.includes(districtId))
     ) {
       return;
     }
@@ -594,6 +600,8 @@ export function GameDesk(props: {
                 interaction: {
                   activeTarget: activeResolutionMapSummary.activeTarget,
                   selections: activeResolutionMapSummary.selections,
+                  selectableDistrictIds:
+                    activeResolutionMapSummary.selectableDistrictIds,
                   onSelect: chooseResolutionDistrict
                 }
               }
@@ -709,6 +717,7 @@ interface ResolutionMapSummary {
   decisionId: string;
   activeTarget: DistrictMapTarget | null;
   selections: Partial<Record<DistrictMapTarget, string>>;
+  selectableDistrictIds: string[] | null;
 }
 
 interface ResolutionDistrictIntent extends SelectionIntent<string> {
@@ -1642,6 +1651,15 @@ function CurrentOperationForm(props: {
     claimingBonus &&
     partyId === "many-wings" &&
     selectedOperation === "organise";
+  const operationState = useMemo(
+    () => operationStateFromView(props.view),
+    [props.view.support, props.view.courtSupport, props.view.coalitionTargets]
+  );
+  const organiseNeedsSource = supportCount(operationState, partyId) > 0;
+  const ignoreOrganiseAdjacency =
+    claimingBonus &&
+    partyId === "foxglove" &&
+    selectedOperation === "organise";
   const districtSelections: Partial<Record<DistrictMapTarget, string>> = {
     ...(selectedOperation === "organise" && sourceDistrictId
       ? { source: sourceDistrictId }
@@ -1676,7 +1694,10 @@ function CurrentOperationForm(props: {
   ];
   const requiredMapTargets: DistrictMapTarget[] = [
     ...(selectedOperation === "organise"
-      ? (["destination"] as DistrictMapTarget[])
+      ? ([
+          ...(organiseNeedsSource ? ["source" as const] : []),
+          "destination" as const
+        ] as DistrictMapTarget[])
       : selectedOperation === "rally" || selectedOperation === "smear"
         ? (["district"] as DistrictMapTarget[])
         : []),
@@ -1687,6 +1708,61 @@ function CurrentOperationForm(props: {
   ];
   const missingRequiredMapTarget = requiredMapTargets.find(
     (target) => districtSelections[target] === undefined
+  );
+  const choice: OperationChoice =
+    selectedOperation === "organise"
+      ? {
+          operation: selectedOperation,
+          destinationDistrictId: districtId,
+          ...(sourceDistrictId ? { sourceDistrictId } : {})
+        }
+      : selectedOperation === "rally"
+        ? {
+            operation: selectedOperation,
+            districtId,
+            ...(bonusNeedsDistrict ? { bonusDistrictId } : {})
+          }
+        : selectedOperation === "smear"
+          ? {
+              operation: selectedOperation,
+              districtId,
+              rivalParty,
+              ...(bonusNeedsDistrict ? { bonusDistrictId } : {})
+            }
+          : {
+              operation: selectedOperation,
+              targetParty,
+              ...(bonusNeedsDistrict ? { bonusDistrictId } : {})
+            };
+  const baselineChoiceLegal = isOperationChoiceLegal(
+    operationState,
+    partyId,
+    choice as EngineOperationChoice,
+    { ignoreOrganiseAdjacency }
+  );
+  const selectableDistrictIds = useMemo(
+    () => legalDistrictIdsForTarget(
+      operationState,
+      partyId,
+      selectedOperation,
+      activeMapTarget,
+      {
+        sourceDistrictId,
+        destinationDistrictId: districtId,
+        rivalParty,
+        ignoreOrganiseAdjacency
+      }
+    ),
+    [
+      operationState,
+      partyId,
+      selectedOperation,
+      activeMapTarget,
+      sourceDistrictId,
+      districtId,
+      rivalParty,
+      ignoreOrganiseAdjacency
+    ]
   );
 
   useEffect(() => {
@@ -1706,7 +1782,12 @@ function CurrentOperationForm(props: {
       if (
         current !== null &&
         relevantMapTargets.includes(current) &&
-        districtSelections[current] === undefined
+        districtSelections[current] === undefined &&
+        !(
+          selectedOperation === "organise" &&
+          current === "source" &&
+          !organiseNeedsSource
+        )
       ) {
         return current;
       }
@@ -1715,7 +1796,7 @@ function CurrentOperationForm(props: {
         sourceDistrictId === "" &&
         districtId === ""
       ) {
-        return "source";
+        return organiseNeedsSource ? "source" : "destination";
       }
       return missingRequiredMapTarget ?? null;
     });
@@ -1728,6 +1809,7 @@ function CurrentOperationForm(props: {
     repeatDestination,
     bonusNeedsDistrict,
     repeatsOrganise,
+    organiseNeedsSource,
     missingRequiredMapTarget
   ]);
 
@@ -1765,7 +1847,8 @@ function CurrentOperationForm(props: {
     props.onResolutionMapStateChange?.({
       decisionId: props.decisionId,
       activeTarget: activeMapTarget,
-      selections: districtSelections
+      selections: districtSelections,
+      selectableDistrictIds
     });
   }, [
     props.decisionId,
@@ -1778,6 +1861,7 @@ function CurrentOperationForm(props: {
     repeatDestination,
     bonusNeedsDistrict,
     repeatsOrganise,
+    selectableDistrictIds,
     props.onResolutionMapStateChange
   ]);
 
@@ -1790,31 +1874,6 @@ function CurrentOperationForm(props: {
     setActiveMapTarget(value === "" ? target : null);
   };
 
-  const choice: OperationChoice =
-    selectedOperation === "organise"
-      ? {
-          operation: selectedOperation,
-          destinationDistrictId: districtId,
-          ...(sourceDistrictId ? { sourceDistrictId } : {})
-        }
-      : selectedOperation === "rally"
-        ? {
-            operation: selectedOperation,
-            districtId,
-            ...(bonusNeedsDistrict ? { bonusDistrictId } : {})
-          }
-        : selectedOperation === "smear"
-          ? {
-              operation: selectedOperation,
-              districtId,
-              rivalParty,
-              ...(bonusNeedsDistrict ? { bonusDistrictId } : {})
-            }
-          : {
-              operation: selectedOperation,
-              targetParty,
-              ...(bonusNeedsDistrict ? { bonusDistrictId } : {})
-            };
   const submittedChoice: OperationResolutionChoice =
     claimingBonus
       ? {
@@ -1883,11 +1942,23 @@ function CurrentOperationForm(props: {
       {selectedOperation === "organise" && (
         <>
           <DistrictSelect
-            label="Source district (optional)"
+            label={`Source district (${organiseNeedsSource ? "required" : "optional"})`}
             value={sourceDistrictId}
-            allowBlank
+            allowBlank={!organiseNeedsSource}
             mapTarget="source"
             activeMapTarget={activeMapTarget}
+            availableDistrictIds={legalDistrictIdsForTarget(
+              operationState,
+              partyId,
+              selectedOperation,
+              "source",
+              {
+                sourceDistrictId,
+                destinationDistrictId: districtId,
+                rivalParty,
+                ignoreOrganiseAdjacency
+              }
+            ) ?? []}
             onArmMapTarget={setActiveMapTarget}
             onChange={(value) => changeDistrict("source", setSourceDistrictId, value)}
           />
@@ -1896,6 +1967,18 @@ function CurrentOperationForm(props: {
             value={districtId}
             mapTarget="destination"
             activeMapTarget={activeMapTarget}
+            availableDistrictIds={legalDistrictIdsForTarget(
+              operationState,
+              partyId,
+              selectedOperation,
+              "destination",
+              {
+                sourceDistrictId,
+                destinationDistrictId: districtId,
+                rivalParty,
+                ignoreOrganiseAdjacency
+              }
+            ) ?? []}
             onArmMapTarget={setActiveMapTarget}
             onChange={(value) => changeDistrict("destination", setDistrictId, value)}
           />
@@ -1907,12 +1990,39 @@ function CurrentOperationForm(props: {
           value={districtId}
           mapTarget="district"
           activeMapTarget={activeMapTarget}
+          availableDistrictIds={legalDistrictIdsForTarget(
+            operationState,
+            partyId,
+            selectedOperation,
+            "district",
+            {
+              sourceDistrictId,
+              destinationDistrictId: districtId,
+              rivalParty,
+              ignoreOrganiseAdjacency
+            }
+          ) ?? []}
           onArmMapTarget={setActiveMapTarget}
           onChange={(value) => changeDistrict("district", setDistrictId, value)}
         />
       )}
       {selectedOperation === "smear" && (
-        <PartySelect label="Rival party" value={rivalParty} excludes={[partyId]} onChange={setRivalParty} />
+        <PartySelect
+          label="Rival party"
+          value={rivalParty}
+          excludes={[partyId]}
+          disabledValues={PARTIES
+            .map((candidate) => candidate.id)
+            .filter((candidate) =>
+              candidate !== partyId &&
+              !isOperationChoiceLegal(operationState, partyId, {
+                operation: "smear",
+                districtId,
+                rivalParty: candidate
+              })
+            )}
+          onChange={setRivalParty}
+        />
       )}
       {selectedOperation === "court" && (
         <PartySelect
@@ -1971,7 +2081,11 @@ function CurrentOperationForm(props: {
       )}
       <button
         className="ink-button"
-        disabled={props.busy || missingRequiredMapTarget !== undefined}
+        disabled={
+          props.busy ||
+          missingRequiredMapTarget !== undefined ||
+          !baselineChoiceLegal
+        }
       >
         Resolve operation
       </button>
@@ -1985,6 +2099,7 @@ function DistrictSelect(props: {
   allowBlank?: boolean;
   mapTarget: DistrictMapTarget;
   activeMapTarget: DistrictMapTarget | null;
+  availableDistrictIds?: readonly string[];
   onArmMapTarget(target: DistrictMapTarget): void;
   onChange(value: string): void;
 }) {
@@ -2007,7 +2122,14 @@ function DistrictSelect(props: {
             {props.allowBlank ? "No source" : "Choose a district"}
           </option>
           {DISTRICTS.map((district) => (
-            <option key={district.id} value={district.id}>
+            <option
+              key={district.id}
+              value={district.id}
+              disabled={
+                props.availableDistrictIds !== undefined &&
+                !props.availableDistrictIds.includes(district.id)
+              }
+            >
               {district.name}
             </option>
           ))}
@@ -2033,6 +2155,7 @@ function PartySelect(props: {
   label: string;
   value: PartyId;
   excludes?: PartyId[];
+  disabledValues?: PartyId[];
   onChange(value: PartyId): void;
 }) {
   return (
@@ -2045,11 +2168,109 @@ function PartySelect(props: {
         {PARTIES.filter(
           (party) => !(props.excludes ?? []).includes(party.id)
         ).map((party) => (
-          <option key={party.id} value={party.id}>{party.name}</option>
+          <option
+            key={party.id}
+            value={party.id}
+            disabled={props.disabledValues?.includes(party.id)}
+          >{party.name}</option>
         ))}
       </select>
     </label>
   );
+}
+
+function operationStateFromView(view: GameView): OperationState {
+  return {
+    districts: Object.fromEntries(
+      DISTRICTS.map((district) => [
+        district.id,
+        {
+          id: district.id,
+          capacity: district.capacity,
+          neighbors: district.adjacentDistrictIds,
+          support: { ...(view.support?.[district.id] ?? {}) }
+        }
+      ])
+    ),
+    courtSupport: Object.fromEntries(
+      PARTIES.map((party) => [
+        party.id,
+        { ...(view.courtSupport?.[party.id] ?? {}) }
+      ])
+    ) as OperationState["courtSupport"],
+    coalitionTargets: Object.fromEntries(
+      PARTIES.map((party) => [
+        party.id,
+        view.coalitionTargets?.[party.id] ?? null
+      ])
+    ) as OperationState["coalitionTargets"]
+  };
+}
+
+function legalDistrictIdsForTarget(
+  state: OperationState,
+  partyId: PartyId,
+  operation: OperationId,
+  target: DistrictMapTarget | null,
+  selection: {
+    sourceDistrictId: string;
+    destinationDistrictId: string;
+    rivalParty: PartyId;
+    ignoreOrganiseAdjacency: boolean;
+  }
+): string[] | null {
+  if (operation === "organise" && target === "source") {
+    return DISTRICTS.filter((source) =>
+      DISTRICTS.some((destination) =>
+        (selection.destinationDistrictId === "" ||
+          selection.destinationDistrictId === destination.id) &&
+        isOperationChoiceLegal(
+          state,
+          partyId,
+          {
+            operation,
+            sourceDistrictId: source.id,
+            destinationDistrictId: destination.id
+          },
+          { ignoreOrganiseAdjacency: selection.ignoreOrganiseAdjacency }
+        )
+      )
+    ).map((district) => district.id);
+  }
+  if (operation === "organise" && target === "destination") {
+    return DISTRICTS.filter((destination) =>
+      isOperationChoiceLegal(
+        state,
+        partyId,
+        {
+          operation,
+          destinationDistrictId: destination.id,
+          ...(selection.sourceDistrictId
+            ? { sourceDistrictId: selection.sourceDistrictId }
+            : {})
+        },
+        { ignoreOrganiseAdjacency: selection.ignoreOrganiseAdjacency }
+      )
+    ).map((district) => district.id);
+  }
+  if (operation === "rally" && target === "district") {
+    return DISTRICTS.filter((district) =>
+      isOperationChoiceLegal(state, partyId, {
+        operation,
+        districtId: district.id
+      })
+    ).map((district) => district.id);
+  }
+  if (operation === "smear" && target === "district") {
+    return DISTRICTS.filter((district) =>
+      isOperationChoiceLegal(state, partyId, {
+        operation,
+        districtId: district.id,
+        rivalParty: selection.rivalParty
+      })
+    ).map((district) => district.id);
+  }
+  return null;
 }
 
 function ElectionDesk(props: {
@@ -2296,6 +2517,7 @@ function ReplayState({ state }: { state: GameState }) {
 export interface DistrictMapInteraction {
   activeTarget: DistrictMapTarget | null;
   selections: Partial<Record<DistrictMapTarget, string>>;
+  selectableDistrictIds?: readonly string[] | null;
   onSelect(districtId: string): void;
 }
 
@@ -2354,6 +2576,9 @@ export function DistrictMap({
           .map(([target]) => target)
       : [];
     const mapTargetArmed = interaction?.activeTarget != null;
+    const districtSelectable =
+      interaction?.selectableDistrictIds == null ||
+      interaction.selectableDistrictIds.includes(district.id);
     const DistrictElement: "button" | "article" = mapTargetArmed
       ? "button"
       : "article";
@@ -2375,6 +2600,7 @@ export function DistrictMap({
           ? {
               type: "button" as const,
               "aria-pressed": selectedTargets.length > 0,
+              disabled: !districtSelectable,
               onClick: () => interaction!.onSelect(district.id)
             }
           : {})}

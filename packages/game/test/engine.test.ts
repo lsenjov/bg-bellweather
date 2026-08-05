@@ -95,9 +95,9 @@ describe("game setup and private projections", () => {
     const initialized = initializeGame(configuration(2, null), zeroRandom);
     initialized.state.rulesetVersion = "8";
 
-    expect(() => replay([initialized])).toThrow("Only ruleset 10 is supported");
+    expect(() => replay([initialized])).toThrow("Only ruleset 11 is supported");
     expect(() => projectGameState(initialized.state, null)).toThrow(
-      "Only ruleset 10 is supported"
+      "Only ruleset 11 is supported"
     );
   });
 

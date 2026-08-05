@@ -93,7 +93,7 @@ describe("browser play surface", () => {
         seats: [],
         spectators: [],
         publicGame: {
-          rulesetVersion: "10",
+          rulesetVersion: "11",
           round: 1,
           electionNumber: 0,
           nextFirstOpenerSeatId: "seat-a",
@@ -201,7 +201,7 @@ describe("browser play surface", () => {
         },
         seats: [host],
         spectators: [],
-        publicGame: { phase: "lobby", rulesetVersion: "10" }
+        publicGame: { phase: "lobby", rulesetVersion: "11" }
       },
       seatState: { seatId: host.seatId, privateGame: null }
     };
@@ -468,6 +468,7 @@ describe("browser play surface", () => {
         interaction={{
           activeTarget: "destination",
           selections: { source: "harbormouth" },
+          selectableDistrictIds: ["cloverfield"],
           onSelect
         }}
       />
@@ -477,6 +478,7 @@ describe("browser play surface", () => {
       name: /Harbormouth.*selected as source.*choose as destination/i
     });
     expect(source.classList.contains("district-selected-source")).toBe(true);
+    expect((source as HTMLButtonElement).disabled).toBe(true);
     fireEvent.click(
       screen.getByRole("button", { name: /Cloverfield.*choose as destination/i })
     );
@@ -1476,7 +1478,11 @@ describe("browser play surface", () => {
       ]
     };
     const baseProps = {
-      view: {} as never,
+      view: {
+        support: { harbormouth: { honeycomb: 1 } },
+        courtSupport: {},
+        coalitionTargets: {}
+      } as never,
       busy: false,
       decision,
       decisionId: "decision-1",
@@ -1522,7 +1528,7 @@ describe("browser play surface", () => {
       />
     );
     await waitFor(() =>
-      expect((form.getByLabelText("Source district (optional)") as HTMLSelectElement).value).toBe("harbormouth")
+      expect((form.getByLabelText("Source district (required)") as HTMLSelectElement).value).toBe("harbormouth")
     );
     await waitFor(() =>
       expect(onResolutionMapStateChange).toHaveBeenLastCalledWith(
@@ -1569,6 +1575,83 @@ describe("browser play surface", () => {
         .checked
     ).toBe(true);
     expect(form.queryByRole("radio", { name: /Organise/i })).toBeNull();
+  });
+
+  it("disables illegal Organise and Smear parameters", async () => {
+    const onCommand = vi.fn(async () => undefined);
+    const view = {
+      support: {
+        harbormouth: { honeycomb: 1, "old-shell": 1 }
+      },
+      courtSupport: {},
+      coalitionTargets: {}
+    } as never;
+    const { container, rerender } = render(
+      <OperationForm
+        view={view}
+        busy={false}
+        decision={{
+          id: "decision-1",
+          kind: "party_operation",
+          contestId: "honeycomb",
+          partyId: "honeycomb",
+          availableBonusOperations: [],
+          availableOperations: [{ operation: "organise", count: 1 }]
+        }}
+        decisionId="decision-1"
+        onCommand={onCommand}
+      />
+    );
+    const form = within(container);
+    fireEvent.change(form.getByLabelText("Source district (required)"), {
+      target: { value: "harbormouth" }
+    });
+    const destination = form.getByLabelText(
+      "Destination district"
+    ) as HTMLSelectElement;
+    expect(
+      [...destination.options].find((option) => option.value === "northreach")
+        ?.disabled
+    ).toBe(true);
+    expect(
+      [...destination.options].find((option) => option.value === "millbank")
+        ?.disabled
+    ).toBe(false);
+    fireEvent.change(destination, { target: { value: "northreach" } });
+    expect(
+      (form.getByRole("button", { name: /resolve operation/i }) as HTMLButtonElement)
+        .disabled
+    ).toBe(true);
+
+    rerender(
+      <OperationForm
+        view={view}
+        busy={false}
+        decision={{
+          id: "decision-2",
+          kind: "party_operation",
+          contestId: "honeycomb",
+          partyId: "honeycomb",
+          availableBonusOperations: [],
+          availableOperations: [{ operation: "smear", count: 1 }]
+        }}
+        decisionId="decision-2"
+        onCommand={onCommand}
+      />
+    );
+    fireEvent.change(form.getByLabelText("District"), {
+      target: { value: "northreach" }
+    });
+    const rival = form.getByLabelText("Rival party") as HTMLSelectElement;
+    expect(
+      [...rival.options].find((option) => option.value === "old-shell")
+        ?.disabled
+    ).toBe(true);
+    expect(
+      (form.getByRole("button", { name: /resolve operation/i }) as HTMLButtonElement)
+        .disabled
+    ).toBe(true);
+    expect(onCommand).not.toHaveBeenCalled();
   });
 
   it("clears and removes a bonus choice after an earlier bid claims it", async () => {

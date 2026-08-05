@@ -514,7 +514,7 @@ describe("game server", () => {
     });
 
     app.store.database
-      .prepare("UPDATE games SET ruleset_version = '10' WHERE id = ?")
+      .prepare("UPDATE games SET ruleset_version = '11' WHERE id = ?")
       .run(host.session.gameId);
     await sendCommand(baseUrl, host.session, 2, "start-current", {
       type: "start_game"
@@ -535,14 +535,14 @@ describe("game server", () => {
     });
 
     app.store.database
-      .prepare("UPDATE games SET ruleset_version = '10' WHERE id = ?")
+      .prepare("UPDATE games SET ruleset_version = '11' WHERE id = ?")
       .run(host.session.gameId);
     app.store.database
       .prepare("UPDATE snapshots SET ruleset_version = '6' WHERE game_id = ?")
       .run(host.session.gameId);
 
     expect(() => app.store.loadEngineState(host.session.gameId)).toThrow(
-      "Only ruleset 10 is supported"
+      "Only ruleset 11 is supported"
     );
     const retry = await jsonRequest(
       baseUrl,
