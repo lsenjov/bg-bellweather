@@ -439,7 +439,6 @@ function requireCounterbidTime(
 }
 
 function beginResolution(state: GameState): void {
-  cancelTiedCounterbids(state);
   state.phase = {
     type: "resolution",
     contestOrder: currentResolutionContestOrder(state),
@@ -788,6 +787,7 @@ function prepareContest(
   phase: ResolutionPhase,
   contest: ContestState
 ): void {
+  cancelTiedCounterbids(state, contest);
   const ranked = contest.bidIds
     .map((bidId) => state.bids[bidId]!)
     .filter((bid) => bid.status === "active")
@@ -827,25 +827,23 @@ function rankedActiveBids(
     .sort((left, right) => right.leverage - left.leverage);
 }
 
-function cancelTiedCounterbids(state: GameState): void {
-  for (const contest of Object.values(state.contests)) {
-    if (contest === undefined) {
-      continue;
-    }
-    const opening =
-      contest.openingBidId === null ? null : state.bids[contest.openingBidId]!;
-    const counters = contest.bidIds
-      .map((bidId) => state.bids[bidId]!)
-      .filter((bid) => bid.kind === "counterbid");
-    const counts = new Map<number, number>();
-    for (const bid of counters) {
-      counts.set(bid.leverage, (counts.get(bid.leverage) ?? 0) + 1);
-    }
-    for (const bid of counters) {
-      if ((counts.get(bid.leverage) ?? 0) > 1 || opening?.leverage === bid.leverage) {
-        bid.status = "cancelled";
-        addPackage(getSeat(state, bid.ownerSeatId).reserve, bid);
-      }
+function cancelTiedCounterbids(
+  state: GameState,
+  contest: ContestState
+): void {
+  const opening =
+    contest.openingBidId === null ? null : state.bids[contest.openingBidId]!;
+  const counters = contest.bidIds
+    .map((bidId) => state.bids[bidId]!)
+    .filter((bid) => bid.kind === "counterbid");
+  const counts = new Map<number, number>();
+  for (const bid of counters) {
+    counts.set(bid.leverage, (counts.get(bid.leverage) ?? 0) + 1);
+  }
+  for (const bid of counters) {
+    if ((counts.get(bid.leverage) ?? 0) > 1 || opening?.leverage === bid.leverage) {
+      bid.status = "cancelled";
+      addPackage(getSeat(state, bid.ownerSeatId).reserve, bid);
     }
   }
 }

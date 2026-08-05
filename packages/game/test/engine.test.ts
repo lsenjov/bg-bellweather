@@ -475,6 +475,82 @@ describe("opening and counterbid phases", () => {
     expect(revolved.seats.map((seat) => seat.reserve.leverage)).toEqual([21, 19]);
     expect(revolved.seats.map((seat) => seat.reserve.bluff)).toEqual([9, 7]);
   });
+
+  it("keeps future tied counterbids escrowed until their contest starts", () => {
+    let state = submitAllOpenings(
+      initializeGame(configuration(2, null), zeroRandom).state,
+      0
+    );
+    const orderedContests = state.partyOrder.filter(
+      (partyId) => state.contests[partyId] !== undefined
+    );
+    const currentContestId = orderedContests[0]!;
+    const futureContestId = orderedContests[1]!;
+    const currentOpeningBid =
+      state.bids[state.contests[currentContestId]!.openingBidId!]!;
+    for (const contestId of [currentContestId, futureContestId]) {
+      const openingBid = state.bids[state.contests[contestId]!.openingBidId!]!;
+      openingBid.operations.smear = 1;
+      const owner = state.seats.find(
+        (seat) => seat.id === openingBid.ownerSeatId
+      )!;
+      owner.reserve.operations.smear -= 1;
+    }
+    state = setBid(state, "seat-1", 0, futureContestId, 2);
+    state = setBid(state, "seat-2", 0, futureContestId, 2);
+    const tiedBidIds = state.seats.map(
+      (seat) => state.counterbidSlots[seat.id]![0]!
+    );
+    const escrowedLeverage = state.seats.map(
+      (seat) => seat.reserve.leverage
+    );
+
+    state = readyAll(state);
+
+    expect(state.phase).toMatchObject({
+      type: "resolution",
+      pendingDecision: { contestId: currentContestId }
+    });
+    expect(tiedBidIds.map((bidId) => state.bids[bidId]!.status)).toEqual([
+      "active",
+      "active"
+    ]);
+    expect(state.seats.map((seat) => seat.reserve.leverage)).toEqual(
+      escrowedLeverage
+    );
+
+    const decision = pending(state);
+    state = act(state, {
+      type: "resolve_party_operation",
+      seatId: decision.seatId,
+      decisionId: decision.id,
+      operation: "smear",
+      choice: {
+        operation: "smear",
+        districtId: "harbormouth",
+        rivalParty: PARTY_IDS.find((partyId) => partyId !== currentContestId)!
+      }
+    });
+
+    expect(state.phase).toMatchObject({
+      type: "resolution",
+      pendingDecision: { contestId: futureContestId }
+    });
+    expect(tiedBidIds.map((bidId) => state.bids[bidId]!.status)).toEqual([
+      "cancelled",
+      "cancelled"
+    ]);
+    expect(state.seats.map((seat) => seat.reserve.leverage)).toEqual(
+      escrowedLeverage.map(
+        (leverage, index) =>
+          leverage +
+          2 +
+          (state.seats[index]!.id === currentOpeningBid.ownerSeatId
+            ? currentOpeningBid.leverage
+            : 0)
+      )
+    );
+  });
 });
 
 describe("contest resolution", () => {
