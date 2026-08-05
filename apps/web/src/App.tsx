@@ -2793,6 +2793,17 @@ export function PartyRail({
     <div className="party-rail">
       {view.partyOrder.map((id, index) => {
         const party = PARTIES_BY_ID[id];
+        const coalitionTargetId = view.coalitionTargets[id] ?? null;
+        const coalitionTarget = coalitionTargetId === null
+          ? null
+          : PARTIES_BY_ID[coalitionTargetId];
+        const reciprocal =
+          coalitionTargetId !== null &&
+          view.coalitionTargets[coalitionTargetId] === id;
+        const courtPlacements = PARTIES.flatMap((candidate) => {
+          const count = view.courtSupport[id]?.[candidate.id] ?? 0;
+          return count > 0 ? [{ party: candidate, count }] : [];
+        });
         const selected = interaction?.activePartyId === id;
         const assignedElsewhere =
           interaction !== undefined &&
@@ -2800,12 +2811,53 @@ export function PartyRail({
           !selected;
         const content = (
           <>
-            <b>{index + 1}</b>
-            <PartyEmblem partyId={id} className="party-glyph" />
-            <span>
+            <b className="party-position">{index + 1}</b>
+            <PartyEmblem partyId={id} className="party-glyph party-glyph-primary" />
+            <span className="party-rail-copy">
               <strong>{party.shortName}</strong>
-              <small>Targets {view.coalitionTargets[id] ? PARTIES_BY_ID[view.coalitionTargets[id]!].shortName : "no party"} · {courtSupportSummary(view.courtSupport[id])}</small>
+              <span
+                className="party-court-support"
+                aria-label={`${party.shortName} courting`}
+              >
+                <span className="party-court-label">Courting:</span>
+                {courtPlacements.length > 0 ? (
+                  courtPlacements.map(({ party: courtedParty, count }) => (
+                    <span
+                      className="party-court-entry"
+                      aria-label={`${courtedParty.shortName} Court Support: ${count}`}
+                      key={courtedParty.id}
+                      style={{ "--courted-party": courtedParty.color } as React.CSSProperties}
+                    >
+                      <PartyEmblem
+                        partyId={courtedParty.id}
+                        className="party-court-glyph"
+                      />
+                      <b>{count}</b>
+                    </span>
+                  ))
+                ) : (
+                  <span className="party-court-empty">none</span>
+                )}
+              </span>
             </span>
+            {coalitionTarget !== null ? (
+              <span
+                className={`coalition-target ${reciprocal ? "coalition-target-reciprocal" : "coalition-target-prospective"}`}
+                aria-label={
+                  reciprocal
+                    ? `Coalition with ${coalitionTarget.shortName}`
+                    : `Target: ${coalitionTarget.shortName}`
+                }
+                style={{ "--target-party": coalitionTarget.color } as React.CSSProperties}
+              >
+                <PartyEmblem
+                  partyId={coalitionTarget.id}
+                  className="coalition-target-glyph"
+                />
+              </span>
+            ) : (
+              <span className="coalition-target-empty" aria-hidden="true" />
+            )}
           </>
         );
         const style = { "--party": party.color } as React.CSSProperties;

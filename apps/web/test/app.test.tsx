@@ -2022,8 +2022,8 @@ describe("browser play surface", () => {
     expect(form.getByRole("status").textContent).toMatch(/no unused counterbid/i);
   });
 
-  it("renders public Court Support beside the persistent Coalition Target", () => {
-    render(
+  it("renders Court Support as emblems and mutes a one-way target", () => {
+    const { container } = render(
       <PartyRail
         view={{
           partyOrder: ["honeycomb"],
@@ -2035,9 +2035,46 @@ describe("browser play surface", () => {
       />
     );
 
+    const courting = screen.getByLabelText("Honeycomb courting");
     expect(
-      screen.getByText(/Targets Foxglove · Court Foxglove 2, Riverworks 1/i)
+      within(courting)
+        .getByLabelText("Foxglove Court Support: 2")
+        .querySelector("svg")
     ).toBeTruthy();
+    expect(
+      within(courting)
+        .getByLabelText("Riverworks Court Support: 1")
+        .querySelector("svg")
+    ).toBeTruthy();
+    expect(within(courting).queryByText("Foxglove 2")).toBeNull();
+    const target = screen.getByLabelText("Target: Foxglove");
+    expect(target.classList.contains("coalition-target-prospective")).toBe(true);
+    expect(target.querySelector("svg")).toBeTruthy();
+    expect(container.querySelector(".party-glyph-primary")).toBeTruthy();
+  });
+
+  it("labels an empty Court and distinguishes reciprocal coalitions", () => {
+    render(
+      <PartyRail
+        view={{
+          partyOrder: ["honeycomb", "foxglove"],
+          coalitionTargets: {
+            honeycomb: "foxglove",
+            foxglove: "honeycomb"
+          },
+          courtSupport: {}
+        } as never}
+      />
+    );
+
+    expect(
+      within(screen.getByLabelText("Honeycomb courting")).getByText("none")
+    ).toBeTruthy();
+    const coalition = screen.getByLabelText("Coalition with Foxglove");
+    expect(coalition.classList.contains("coalition-target-reciprocal")).toBe(
+      true
+    );
+    expect(screen.queryByLabelText("Target: Foxglove")).toBeNull();
   });
 });
 
