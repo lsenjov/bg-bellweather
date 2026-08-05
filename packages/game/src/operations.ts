@@ -210,6 +210,35 @@ export function isOperationChoiceLegal(
   ).applied;
 }
 
+export function isOperationRequestLegal(
+  initialState: OperationState,
+  request: OperationRequest
+): boolean {
+  const preparedRequest =
+    request.claimBonus === true &&
+    request.party === "night-parliament" &&
+    (request.choice.operation === "rally" ||
+      request.choice.operation === "court") &&
+    request.nightClaim === undefined
+      ? {
+          ...request,
+          nightClaim: {
+            id: "legality-check",
+            ownerId: "legality-check",
+            bidRank: 0,
+            order: 0
+          }
+        }
+      : request;
+  const resolution = resolveOperation(initialState, preparedRequest);
+  return (
+    resolution.baselineApplied &&
+    (request.claimBonus !== true ||
+      resolution.bonusApplied ||
+      resolution.delayedClaim !== null)
+  );
+}
+
 export function hasLegalOperationChoice(
   state: OperationState,
   party: Party,

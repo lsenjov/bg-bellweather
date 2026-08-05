@@ -24,12 +24,14 @@ import {
 } from "@bellweather/protocol";
 import {
   isOperationChoiceLegal,
+  isOperationRequestLegal,
   openingTurnSeatIds,
   replay as replayGame,
   supportCount,
   type GameEvent,
   type GameState,
   type OperationChoice as EngineOperationChoice,
+  type OperationRequest as EngineOperationRequest,
   type OperationState
 } from "@bellweather/game";
 import {
@@ -1703,7 +1705,7 @@ function CurrentOperationForm(props: {
         : []),
     ...(bonusNeedsDistrict ? (["bonus"] as DistrictMapTarget[]) : []),
     ...(repeatsOrganise
-      ? (["repeat-destination"] as DistrictMapTarget[])
+      ? (["repeat-source", "repeat-destination"] as DistrictMapTarget[])
       : [])
   ];
   const missingRequiredMapTarget = requiredMapTargets.find(
@@ -1740,19 +1742,125 @@ function CurrentOperationForm(props: {
     choice as EngineOperationChoice,
     { ignoreOrganiseAdjacency }
   );
-  const selectableDistrictIds = useMemo(
-    () => legalDistrictIdsForTarget(
+  const engineRequest: EngineOperationRequest = {
+    party: partyId,
+    choice: choice as EngineOperationChoice,
+    ...(claimingBonus
+      ? {
+          claimBonus: true,
+          ...(repeatsOrganise
+            ? {
+                repeatChoice: {
+                  operation: "organise" as const,
+                  destinationDistrictId: repeatDestination,
+                  ...(repeatSource ? { sourceDistrictId: repeatSource } : {})
+                }
+              }
+            : {})
+        }
+      : {})
+  };
+  const completeRequestLegal = isOperationRequestLegal(
+    operationState,
+    engineRequest
+  );
+  const bonusDistrictIds = useMemo(
+    () => bonusNeedsDistrict
+      ? DISTRICTS.filter((district) =>
+          isOperationRequestLegal(operationState, {
+            ...engineRequest,
+            choice: {
+              ...engineRequest.choice,
+              bonusDistrictId: district.id
+            } as EngineOperationChoice
+          })
+        ).map((district) => district.id)
+      : null,
+    [
       operationState,
       partyId,
       selectedOperation,
-      activeMapTarget,
-      {
-        sourceDistrictId,
-        destinationDistrictId: districtId,
-        rivalParty,
-        ignoreOrganiseAdjacency
-      }
-    ),
+      districtId,
+      sourceDistrictId,
+      rivalParty,
+      targetParty,
+      claimingBonus,
+      bonusNeedsDistrict,
+      repeatsOrganise,
+      repeatSource,
+      repeatDestination
+    ]
+  );
+  const repeatSourceDistrictIds = useMemo(
+    () => repeatsOrganise
+      ? DISTRICTS.filter((source) =>
+          DISTRICTS.some((destination) =>
+            (repeatDestination === "" || repeatDestination === destination.id) &&
+            isOperationRequestLegal(operationState, {
+              ...engineRequest,
+              repeatChoice: {
+                operation: "organise",
+                sourceDistrictId: source.id,
+                destinationDistrictId: destination.id
+              }
+            })
+          )
+        ).map((district) => district.id)
+      : null,
+    [
+      operationState,
+      partyId,
+      selectedOperation,
+      districtId,
+      sourceDistrictId,
+      claimingBonus,
+      repeatsOrganise,
+      repeatDestination
+    ]
+  );
+  const repeatDestinationDistrictIds = useMemo(
+    () => repeatsOrganise
+      ? DISTRICTS.filter((destination) =>
+          isOperationRequestLegal(operationState, {
+            ...engineRequest,
+            repeatChoice: {
+              operation: "organise",
+              destinationDistrictId: destination.id,
+              ...(repeatSource ? { sourceDistrictId: repeatSource } : {})
+            }
+          })
+        ).map((district) => district.id)
+      : null,
+    [
+      operationState,
+      partyId,
+      selectedOperation,
+      districtId,
+      sourceDistrictId,
+      claimingBonus,
+      repeatsOrganise,
+      repeatSource
+    ]
+  );
+  const selectableDistrictIds = useMemo(
+    () => activeMapTarget === "bonus"
+      ? bonusDistrictIds
+      : activeMapTarget === "repeat-source"
+        ? repeatSourceDistrictIds
+        : activeMapTarget === "repeat-destination"
+          ? repeatDestinationDistrictIds
+          : legalDistrictIdsForTarget(
+              operationState,
+              partyId,
+              selectedOperation,
+              activeMapTarget,
+              {
+                sourceDistrictId,
+                destinationDistrictId: districtId,
+                rivalParty,
+                ignoreOrganiseAdjacency
+              }
+            ),
     [
       operationState,
       partyId,
@@ -1761,7 +1869,10 @@ function CurrentOperationForm(props: {
       sourceDistrictId,
       districtId,
       rivalParty,
-      ignoreOrganiseAdjacency
+      ignoreOrganiseAdjacency,
+      bonusDistrictIds,
+      repeatSourceDistrictIds,
+      repeatDestinationDistrictIds
     ]
   );
 
@@ -2051,6 +2162,7 @@ function CurrentOperationForm(props: {
           <DistrictSelect
             label="Bonus district"
             value={bonusDistrictId}
+            availableDistrictIds={bonusDistrictIds ?? []}
             mapTarget="bonus"
             activeMapTarget={activeMapTarget}
             onArmMapTarget={setActiveMapTarget}
@@ -2061,9 +2173,9 @@ function CurrentOperationForm(props: {
         <fieldset>
           <legend>Murmuration’s second Organise</legend>
           <DistrictSelect
-            label="Second source (optional)"
+            label="Second source"
             value={repeatSource}
-            allowBlank
+            availableDistrictIds={repeatSourceDistrictIds ?? []}
             mapTarget="repeat-source"
             activeMapTarget={activeMapTarget}
             onArmMapTarget={setActiveMapTarget}
@@ -2072,6 +2184,7 @@ function CurrentOperationForm(props: {
           <DistrictSelect
             label="Second destination"
             value={repeatDestination}
+            availableDistrictIds={repeatDestinationDistrictIds ?? []}
             mapTarget="repeat-destination"
             activeMapTarget={activeMapTarget}
             onArmMapTarget={setActiveMapTarget}
@@ -2084,7 +2197,8 @@ function CurrentOperationForm(props: {
         disabled={
           props.busy ||
           missingRequiredMapTarget !== undefined ||
-          !baselineChoiceLegal
+          !baselineChoiceLegal ||
+          !completeRequestLegal
         }
       >
         Resolve operation

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   hasLegalOperationChoice,
   isOperationChoiceLegal,
+  isOperationRequestLegal,
   PARTY_BONUSES,
   PARTIES,
   resolveNightDelayedOperations,
@@ -179,6 +180,64 @@ describe("operation baselines", () => {
     expect(hasLegalOperationChoice(emptyMap, "foxglove", "smear")).toBe(
       true
     );
+  });
+
+  it("reports complete immediate and delayed bonus request legality", () => {
+    expect(
+      isOperationRequestLegal(state({ a: { honeycomb: 4 } }), {
+        party: "honeycomb",
+        choice: { operation: "rally", districtId: "a" },
+        claimBonus: true
+      })
+    ).toBe(false);
+    expect(
+      isOperationRequestLegal(
+        state({ a: { "old-shell": 1, foxglove: 1 } }),
+        {
+          party: "old-shell",
+          choice: {
+            operation: "smear",
+            districtId: "a",
+            rivalParty: "foxglove"
+          },
+          claimBonus: true
+        }
+      )
+    ).toBe(false);
+    expect(
+      isOperationRequestLegal(state({ a: { riverworks: 1 } }), {
+        party: "riverworks",
+        choice: {
+          operation: "rally",
+          districtId: "a",
+          bonusDistrictId: "c"
+        },
+        claimBonus: true
+      })
+    ).toBe(false);
+    expect(
+      isOperationRequestLegal(state({ a: { "many-wings": 1 } }), {
+        party: "many-wings",
+        choice: {
+          operation: "organise",
+          sourceDistrictId: "a",
+          destinationDistrictId: "b"
+        },
+        repeatChoice: {
+          operation: "organise",
+          sourceDistrictId: "b",
+          destinationDistrictId: "d"
+        },
+        claimBonus: true
+      })
+    ).toBe(false);
+    expect(
+      isOperationRequestLegal(state(), {
+        party: "night-parliament",
+        choice: { operation: "court", targetParty: "foxglove" },
+        claimBonus: true
+      })
+    ).toBe(true);
   });
 });
 

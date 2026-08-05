@@ -1654,6 +1654,179 @@ describe("browser play surface", () => {
     expect(onCommand).not.toHaveBeenCalled();
   });
 
+  it("rejects immediate bonuses when their extra effect cannot resolve", () => {
+    const onCommand = vi.fn(async () => undefined);
+    const { container, rerender } = render(
+      <OperationForm
+        key="honeycomb"
+        view={{
+          support: { harbormouth: { honeycomb: 5 } },
+          courtSupport: {},
+          coalitionTargets: {}
+        } as never}
+        busy={false}
+        decision={{
+          id: "decision-1",
+          kind: "party_operation",
+          contestId: "honeycomb",
+          partyId: "honeycomb",
+          availableBonusOperations: ["rally"],
+          availableOperations: [{ operation: "rally", count: 1 }]
+        }}
+        decisionId="decision-1"
+        onCommand={onCommand}
+      />
+    );
+    const form = within(container);
+    fireEvent.change(form.getByLabelText("District"), {
+      target: { value: "harbormouth" }
+    });
+    fireEvent.click(form.getByRole("checkbox", { name: /claim swarm/i }));
+    expect(
+      (form.getByRole("button", { name: /resolve operation/i }) as HTMLButtonElement)
+        .disabled
+    ).toBe(true);
+
+    rerender(
+      <OperationForm
+        key="old-shell"
+        view={{
+          support: { harbormouth: { "old-shell": 1, foxglove: 1 } },
+          courtSupport: {},
+          coalitionTargets: {}
+        } as never}
+        busy={false}
+        decision={{
+          id: "decision-2",
+          kind: "party_operation",
+          contestId: "old-shell",
+          partyId: "old-shell",
+          availableBonusOperations: ["smear"],
+          availableOperations: [{ operation: "smear", count: 1 }]
+        }}
+        decisionId="decision-2"
+        onCommand={onCommand}
+      />
+    );
+    fireEvent.change(form.getByLabelText("District"), {
+      target: { value: "harbormouth" }
+    });
+    fireEvent.change(form.getByLabelText("Rival party"), {
+      target: { value: "foxglove" }
+    });
+    fireEvent.click(form.getByRole("checkbox", { name: /claim stonewall/i }));
+    expect(
+      (form.getByRole("button", { name: /resolve operation/i }) as HTMLButtonElement)
+        .disabled
+    ).toBe(true);
+  });
+
+  it("limits an immediate bonus district to choices where the bonus resolves", () => {
+    const onCommand = vi.fn(async () => undefined);
+    const { container } = render(
+      <OperationForm
+        view={{ support: {}, courtSupport: {}, coalitionTargets: {} } as never}
+        busy={false}
+        decision={{
+          id: "decision-1",
+          kind: "party_operation",
+          contestId: "riverworks",
+          partyId: "riverworks",
+          availableBonusOperations: ["rally"],
+          availableOperations: [{ operation: "rally", count: 1 }]
+        }}
+        decisionId="decision-1"
+        onCommand={onCommand}
+      />
+    );
+    const form = within(container);
+    fireEvent.change(form.getByLabelText("District"), {
+      target: { value: "harbormouth" }
+    });
+    fireEvent.click(
+      form.getByRole("checkbox", { name: /claim public works/i })
+    );
+    const bonusDistrict = form.getByLabelText(
+      "Bonus district"
+    ) as HTMLSelectElement;
+    expect(
+      [...bonusDistrict.options].find((option) => option.value === "northreach")
+        ?.disabled
+    ).toBe(true);
+    expect(
+      [...bonusDistrict.options].find((option) => option.value === "millbank")
+        ?.disabled
+    ).toBe(false);
+    fireEvent.change(bonusDistrict, { target: { value: "northreach" } });
+    expect(
+      (form.getByRole("button", { name: /resolve operation/i }) as HTMLButtonElement)
+        .disabled
+    ).toBe(true);
+  });
+
+  it("requires legal source and destination choices for Murmuration", () => {
+    const onCommand = vi.fn(async () => undefined);
+    const { container } = render(
+      <OperationForm
+        view={{
+          support: { harbormouth: { "many-wings": 1 } },
+          courtSupport: {},
+          coalitionTargets: {}
+        } as never}
+        busy={false}
+        decision={{
+          id: "decision-1",
+          kind: "party_operation",
+          contestId: "many-wings",
+          partyId: "many-wings",
+          availableBonusOperations: ["organise"],
+          availableOperations: [{ operation: "organise", count: 1 }]
+        }}
+        decisionId="decision-1"
+        onCommand={onCommand}
+      />
+    );
+    const form = within(container);
+    fireEvent.change(form.getByLabelText("Source district (required)"), {
+      target: { value: "harbormouth" }
+    });
+    fireEvent.change(form.getByLabelText("Destination district"), {
+      target: { value: "millbank" }
+    });
+    fireEvent.click(
+      form.getByRole("checkbox", { name: /claim murmuration/i })
+    );
+    const repeatSource = form.getByLabelText(
+      "Second source"
+    ) as HTMLSelectElement;
+    expect(
+      [...repeatSource.options].find((option) => option.value === "harbormouth")
+        ?.disabled
+    ).toBe(true);
+    expect(
+      [...repeatSource.options].find((option) => option.value === "millbank")
+        ?.disabled
+    ).toBe(false);
+    fireEvent.change(repeatSource, { target: { value: "millbank" } });
+    const repeatDestination = form.getByLabelText(
+      "Second destination"
+    ) as HTMLSelectElement;
+    expect(
+      [...repeatDestination.options].find(
+        (option) => option.value === "northreach"
+      )?.disabled
+    ).toBe(true);
+    expect(
+      [...repeatDestination.options].find((option) => option.value === "reedwater")
+        ?.disabled
+    ).toBe(false);
+    fireEvent.change(repeatDestination, { target: { value: "reedwater" } });
+    expect(
+      (form.getByRole("button", { name: /resolve operation/i }) as HTMLButtonElement)
+        .disabled
+    ).toBe(false);
+  });
+
   it("clears and removes a bonus choice after an earlier bid claims it", async () => {
     const onCommand = vi.fn(async () => undefined);
     const decision = {
