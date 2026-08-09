@@ -161,15 +161,17 @@ export function App() {
     setInviteCode(code ?? null);
   };
 
-  const command = async (gameCommand: GameCommand) => {
-    if (session === null || state === null) return;
+  const command = async (gameCommand: GameCommand): Promise<boolean> => {
+    if (session === null || state === null) return false;
     setBusy(true);
     setError(null);
     try {
       await sendCommand(session, gameCommand, state.publicState.version);
       await refresh();
+      return true;
     } catch (caught) {
       setError(messageOf(caught));
+      return false;
     } finally {
       setBusy(false);
     }
@@ -233,7 +235,9 @@ export function App() {
           hostSeatId={host?.seatId}
           inviteCode={inviteCode}
           busy={busy}
-          onCommand={command}
+          onCommand={async (gameCommand) => {
+            await command(gameCommand);
+          }}
         />
       ) : view ? (
         <GameDesk
@@ -428,11 +432,13 @@ export function GameDesk(props: {
   ownSeatId: string | undefined;
   spectator: boolean;
   busy: boolean;
-  onCommand(command: GameCommand): Promise<void>;
+  onCommand(command: GameCommand): Promise<boolean | void>;
 }) {
   const [chat, setChat] = useState("");
+  const [chatPending, setChatPending] = useState(false);
   const [giftTo, setGiftTo] = useState("");
   const [gift, setGift] = useState<GiftDraft>(emptyGiftDraft);
+  const [giftPending, setGiftPending] = useState(false);
   const [openingPartyIntent, setOpeningPartyIntent] = useState<SelectionIntent<PartyId> | null>(null);
   const [openingDraftSummary, setOpeningDraftSummary] = useState<OpeningDraftSummary>({
     activePartyId: null,
@@ -455,7 +461,7 @@ export function GameDesk(props: {
   const giftMaximums = useMemo<GiftDraft>(() => ({
     leverage: props.ownSeat?.reserve?.leverage ?? 0,
     bluff: props.ownSeat?.reserve?.bluff ?? 0,
-    points: props.ownSeat?.points ?? 0,
+    points: Math.max(0, props.ownSeat?.points ?? 0),
     organise: props.ownSeat?.reserve?.operations.organise ?? 0,
     rally: props.ownSeat?.reserve?.operations.rally ?? 0,
     smear: props.ownSeat?.reserve?.operations.smear ?? 0,
@@ -568,7 +574,9 @@ export function GameDesk(props: {
         onCounterbidDraftChange={setCounterbidDraftSummary}
         resolutionDistrictIntent={resolutionDistrictIntent}
         onResolutionMapStateChange={setResolutionMapSummary}
-        onCommand={props.onCommand}
+        onCommand={async (gameCommand) => {
+          await props.onCommand(gameCommand);
+        }}
       />
     ) : null;
 
@@ -700,14 +708,21 @@ export function GameDesk(props: {
             {!props.spectator && props.ownSeatId ? (
               <form onSubmit={(event) => {
                 event.preventDefault();
-                void props.onCommand({ type: "give_resources", recipientSeatId: giftTo as never, leverage: gift.leverage, bluff: gift.bluff, points: gift.points, operations: { organise: gift.organise, rally: gift.rally, smear: gift.smear, court: gift.court } }).then(() => {
-                  setGiftTo("");
-                  setGift(emptyGiftDraft());
-                });
+                setGiftPending(true);
+                void props.onCommand({ type: "give_resources", recipientSeatId: giftTo as never, leverage: gift.leverage, bluff: gift.bluff, points: gift.points, operations: { organise: gift.organise, rally: gift.rally, smear: gift.smear, court: gift.court } })
+                  .then((succeeded) => {
+                    if (succeeded !== false) {
+                      setGiftTo("");
+                      setGift(emptyGiftDraft());
+                    }
+                  })
+                  .finally(() => setGiftPending(false));
               }}>
-                <label>Recipient<select required value={giftTo} onChange={(event) => setGiftTo(event.target.value)}><option value="">Choose a player</option>{props.view.seats.filter((seat) => seat.id !== props.ownSeatId).map((seat) => <option key={seat.id} value={seat.id}>{seat.displayName}</option>)}</select></label>
-                <div className="gift-grid">{GIFT_KEYS.map((key) => <CardCountSelect key={key} label={key} maximum={giftMaximums[key]} value={gift[key]} onChange={(value) => setGift({ ...gift, [key]: value })} />)}</div>
-                <button className="ink-button" disabled={props.busy}>Record one-way gift</button>
+                <fieldset className="gift-fields" disabled={props.busy || giftPending}>
+                  <label>Recipient<select required value={giftTo} onChange={(event) => setGiftTo(event.target.value)}><option value="">Choose a player</option>{props.view.seats.filter((seat) => seat.id !== props.ownSeatId).map((seat) => <option key={seat.id} value={seat.id}>{seat.displayName}</option>)}</select></label>
+                  <div className="gift-grid">{GIFT_KEYS.map((key) => <CardCountSelect key={key} label={key} maximum={giftMaximums[key]} value={gift[key]} onChange={(value) => setGift({ ...gift, [key]: value })} />)}</div>
+                </fieldset>
+                <button className="ink-button" disabled={props.busy || giftPending}>Record one-way gift</button>
               </form>
             ) : <p>Observers cannot move table resources.</p>}
           </section>
@@ -716,7 +731,16 @@ export function GameDesk(props: {
             <p className="section-label">Public wire</p>
             <h3>Table talk</h3>
             <div className="chat-log" aria-live="polite">{props.view.chat.length === 0 ? <p>No statements on record.</p> : props.view.chat.map((message) => <article key={message.id}><b>{props.view.seats.find((seat) => seat.id === message.seatId)?.displayName ?? "Desk"}</b><p>{message.text}</p></article>)}</div>
-            {!props.spectator && <form className="chat-form" onSubmit={(event) => { event.preventDefault(); if (chat.trim()) void props.onCommand({ type: "post_chat", message: chat }).then(() => setChat("")); }}><input aria-label="Public chat message" value={chat} onChange={(event) => setChat(event.target.value)} placeholder="Put a statement on the record…" /><button className="red-button">Send</button></form>}
+            {!props.spectator && <form className="chat-form" onSubmit={(event) => {
+              event.preventDefault();
+              if (!chat.trim()) return;
+              setChatPending(true);
+              void props.onCommand({ type: "post_chat", message: chat })
+                .then((succeeded) => {
+                  if (succeeded !== false) setChat("");
+                })
+                .finally(() => setChatPending(false));
+            }}><input aria-label="Public chat message" disabled={props.busy || chatPending} value={chat} onChange={(event) => setChat(event.target.value)} placeholder="Put a statement on the record…" /><button className="red-button" disabled={props.busy || chatPending}>Send</button></form>}
           </section>
         </div>
       </section>
