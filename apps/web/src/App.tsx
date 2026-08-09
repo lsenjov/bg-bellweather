@@ -432,7 +432,7 @@ export function GameDesk(props: {
 }) {
   const [chat, setChat] = useState("");
   const [giftTo, setGiftTo] = useState("");
-  const [gift, setGift] = useState({ leverage: 0, bluff: 0, points: 0, organise: 0, rally: 0, smear: 0, court: 0 });
+  const [gift, setGift] = useState<GiftDraft>(emptyGiftDraft);
   const [openingPartyIntent, setOpeningPartyIntent] = useState<SelectionIntent<PartyId> | null>(null);
   const [openingDraftSummary, setOpeningDraftSummary] = useState<OpeningDraftSummary>({
     activePartyId: null,
@@ -452,6 +452,26 @@ export function GameDesk(props: {
   const [resolutionMapSummary, setResolutionMapSummary] =
     useState<ResolutionMapSummary | null>(null);
   const ownReady = props.ownSeatId ? props.view.readySeatIds.includes(props.ownSeatId) : false;
+  const giftMaximums = useMemo<GiftDraft>(() => ({
+    leverage: props.ownSeat?.reserve?.leverage ?? 0,
+    bluff: props.ownSeat?.reserve?.bluff ?? 0,
+    points: props.ownSeat?.points ?? 0,
+    organise: props.ownSeat?.reserve?.operations.organise ?? 0,
+    rally: props.ownSeat?.reserve?.operations.rally ?? 0,
+    smear: props.ownSeat?.reserve?.operations.smear ?? 0,
+    court: props.ownSeat?.reserve?.operations.court ?? 0
+  }), [
+    props.ownSeat?.points,
+    props.ownSeat?.reserve?.bluff,
+    props.ownSeat?.reserve?.leverage,
+    props.ownSeat?.reserve?.operations.court,
+    props.ownSeat?.reserve?.operations.organise,
+    props.ownSeat?.reserve?.operations.rally,
+    props.ownSeat?.reserve?.operations.smear
+  ]);
+  useEffect(() => {
+    setGift((current) => clampGiftDraft(current, giftMaximums));
+  }, [giftMaximums]);
   const scoringCards = (props.ownSeat?.scoringCardIds ?? []).flatMap(
     (scoringCardId) =>
       scoringCardId in SCORING_CARDS_BY_ID
@@ -680,11 +700,14 @@ export function GameDesk(props: {
             {!props.spectator && props.ownSeatId ? (
               <form onSubmit={(event) => {
                 event.preventDefault();
-                void props.onCommand({ type: "give_resources", recipientSeatId: giftTo as never, leverage: gift.leverage, bluff: gift.bluff, points: gift.points, operations: { organise: gift.organise, rally: gift.rally, smear: gift.smear, court: gift.court } });
+                void props.onCommand({ type: "give_resources", recipientSeatId: giftTo as never, leverage: gift.leverage, bluff: gift.bluff, points: gift.points, operations: { organise: gift.organise, rally: gift.rally, smear: gift.smear, court: gift.court } }).then(() => {
+                  setGiftTo("");
+                  setGift(emptyGiftDraft());
+                });
               }}>
                 <label>Recipient<select required value={giftTo} onChange={(event) => setGiftTo(event.target.value)}><option value="">Choose a player</option>{props.view.seats.filter((seat) => seat.id !== props.ownSeatId).map((seat) => <option key={seat.id} value={seat.id}>{seat.displayName}</option>)}</select></label>
-                <div className="gift-grid">{(["leverage","bluff","points","organise","rally","smear","court"] as const).map((key) => <label key={key}>{key}<input type="number" min="0" value={gift[key]} onChange={(event) => setGift({ ...gift, [key]: Number(event.target.value) })} /></label>)}</div>
-                <button className="ink-button">Record one-way gift</button>
+                <div className="gift-grid">{GIFT_KEYS.map((key) => <CardCountSelect key={key} label={key} maximum={giftMaximums[key]} value={gift[key]} onChange={(value) => setGift({ ...gift, [key]: value })} />)}</div>
+                <button className="ink-button" disabled={props.busy}>Record one-way gift</button>
               </form>
             ) : <p>Observers cannot move table resources.</p>}
           </section>
@@ -699,6 +722,37 @@ export function GameDesk(props: {
       </section>
     </main>
   );
+}
+
+const GIFT_KEYS = [
+  "leverage",
+  "bluff",
+  "points",
+  "organise",
+  "rally",
+  "smear",
+  "court"
+] as const;
+
+type GiftDraft = Record<(typeof GIFT_KEYS)[number], number>;
+
+function emptyGiftDraft(): GiftDraft {
+  return {
+    leverage: 0,
+    bluff: 0,
+    points: 0,
+    organise: 0,
+    rally: 0,
+    smear: 0,
+    court: 0
+  };
+}
+
+function clampGiftDraft(draft: GiftDraft, maximums: GiftDraft): GiftDraft {
+  const clamped = Object.fromEntries(
+    GIFT_KEYS.map((key) => [key, Math.min(draft[key], maximums[key])])
+  ) as GiftDraft;
+  return GIFT_KEYS.every((key) => clamped[key] === draft[key]) ? draft : clamped;
 }
 
 type TokenDraft = Record<OperationId, number>;

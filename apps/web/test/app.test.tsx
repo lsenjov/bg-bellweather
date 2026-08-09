@@ -29,6 +29,34 @@ const TEST_PARTY_ORDER = [
   "night-parliament"
 ] as const;
 
+function gameDeskView(seats: unknown[]) {
+  return {
+    playerCount: 2,
+    round: 1,
+    electionNumber: 0,
+    phase: "opening",
+    phaseData: {
+      activeSeatId: "seat-b",
+      turnSeatIds: ["seat-b", "seat-a"],
+      turnIndex: 0
+    },
+    deadlineAt: null,
+    nextFirstOpenerSeatId: "seat-b",
+    seats,
+    partyOrder: [...TEST_PARTY_ORDER],
+    support: {},
+    courtSupport: {},
+    coalitionTargets: {},
+    contests: {},
+    bids: [],
+    readySeatIds: [],
+    pendingDecision: null,
+    counterbidSlots: [],
+    electionHistory: [],
+    chat: []
+  };
+}
+
 beforeEach(() => {
   const values = new Map<string, string>();
   Object.defineProperty(globalThis, "localStorage", {
@@ -518,6 +546,207 @@ describe("browser play surface", () => {
     expect(screen.getByText("SC-01 · SC-02")).toBeTruthy();
     expect(screen.getByText(/grand-market · Honeycomb/i)).toBeTruthy();
     expect(screen.getByText(/ironwood · Old Shell/i)).toBeTruthy();
+  });
+
+  it("limits gift selects to the live transferable reserve", () => {
+    const ownSeat = {
+      id: "seat-a",
+      displayName: "Ada",
+      controller: "human",
+      position: 0,
+      firmIds: ["one-fell-swoop"],
+      points: 3,
+      reserve: {
+        leverage: 2,
+        bluff: 1,
+        operations: { organise: 1, rally: 2, smear: 0, court: 1 }
+      },
+      scoringCardIds: []
+    };
+    const otherSeat = {
+      id: "seat-b",
+      displayName: "Grace",
+      controller: "human",
+      position: 1,
+      firmIds: ["pairliament"],
+      points: 4,
+      reserve: null,
+      scoringCardIds: null
+    };
+    render(
+      <GameDesk
+        view={gameDeskView([ownSeat, otherSeat]) as never}
+        ownSeat={ownSeat as never}
+        ownSeatId="seat-a"
+        spectator={false}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    const maximums = {
+      leverage: 2,
+      bluff: 1,
+      points: 3,
+      organise: 1,
+      rally: 2,
+      smear: 0,
+      court: 1
+    };
+    for (const [label, maximum] of Object.entries(maximums)) {
+      const select = screen.getByLabelText(label) as HTMLSelectElement;
+      expect(Array.from(select.options, (option) => Number(option.value))).toEqual(
+        Array.from({ length: maximum + 1 }, (_, value) => value)
+      );
+    }
+  });
+
+  it("submits the gift payload and clears a successful draft", async () => {
+    const ownSeat = {
+      id: "seat-a",
+      displayName: "Ada",
+      controller: "human",
+      position: 0,
+      firmIds: ["one-fell-swoop"],
+      points: 3,
+      reserve: {
+        leverage: 2,
+        bluff: 1,
+        operations: { organise: 1, rally: 2, smear: 0, court: 1 }
+      },
+      scoringCardIds: []
+    };
+    const otherSeat = {
+      id: "seat-b",
+      displayName: "Grace",
+      controller: "human",
+      position: 1,
+      firmIds: ["pairliament"],
+      points: 4,
+      reserve: null,
+      scoringCardIds: null
+    };
+    let finishGift: (() => void) | undefined;
+    const onCommand = vi.fn(() => new Promise<void>((resolve) => {
+      finishGift = resolve;
+    }));
+    render(
+      <GameDesk
+        view={gameDeskView([ownSeat, otherSeat]) as never}
+        ownSeat={ownSeat as never}
+        ownSeatId="seat-a"
+        spectator={false}
+        busy={false}
+        onCommand={onCommand}
+      />
+    );
+
+    fireEvent.change(screen.getByLabelText("Recipient"), { target: { value: "seat-b" } });
+    fireEvent.change(screen.getByLabelText("leverage"), { target: { value: "2" } });
+    fireEvent.change(screen.getByLabelText("points"), { target: { value: "3" } });
+    fireEvent.change(screen.getByLabelText("rally"), { target: { value: "1" } });
+    fireEvent.click(screen.getByRole("button", { name: /record one-way gift/i }));
+
+    expect(onCommand).toHaveBeenCalledWith({
+      type: "give_resources",
+      recipientSeatId: "seat-b",
+      leverage: 2,
+      bluff: 0,
+      points: 3,
+      operations: { organise: 0, rally: 1, smear: 0, court: 0 }
+    });
+    expect((screen.getByLabelText("Recipient") as HTMLSelectElement).value).toBe("seat-b");
+
+    finishGift?.();
+    await waitFor(() => {
+      expect((screen.getByLabelText("Recipient") as HTMLSelectElement).value).toBe("");
+      expect((screen.getByLabelText("leverage") as HTMLSelectElement).value).toBe("0");
+      expect((screen.getByLabelText("points") as HTMLSelectElement).value).toBe("0");
+      expect((screen.getByLabelText("rally") as HTMLSelectElement).value).toBe("0");
+    });
+  });
+
+  it("clamps a gift draft when the projected reserve falls", async () => {
+    const ownSeat = {
+      id: "seat-a",
+      displayName: "Ada",
+      controller: "human",
+      position: 0,
+      firmIds: ["one-fell-swoop"],
+      points: 3,
+      reserve: {
+        leverage: 2,
+        bluff: 1,
+        operations: { organise: 1, rally: 2, smear: 0, court: 1 }
+      },
+      scoringCardIds: []
+    };
+    const otherSeat = {
+      id: "seat-b",
+      displayName: "Grace",
+      controller: "human",
+      position: 1,
+      firmIds: ["pairliament"],
+      points: 4,
+      reserve: null,
+      scoringCardIds: null
+    };
+    const { rerender } = render(
+      <GameDesk
+        view={gameDeskView([ownSeat, otherSeat]) as never}
+        ownSeat={ownSeat as never}
+        ownSeatId="seat-a"
+        spectator={false}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+    fireEvent.change(screen.getByLabelText("leverage"), { target: { value: "2" } });
+    fireEvent.change(screen.getByLabelText("points"), { target: { value: "3" } });
+    fireEvent.change(screen.getByLabelText("court"), { target: { value: "1" } });
+
+    const reducedSeat = {
+      ...ownSeat,
+      points: 1,
+      reserve: {
+        ...ownSeat.reserve,
+        leverage: 1,
+        operations: { ...ownSeat.reserve.operations, court: 0 }
+      }
+    };
+    rerender(
+      <GameDesk
+        view={gameDeskView([reducedSeat, otherSeat]) as never}
+        ownSeat={reducedSeat as never}
+        ownSeatId="seat-a"
+        spectator={false}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    await waitFor(() => {
+      expect((screen.getByLabelText("leverage") as HTMLSelectElement).value).toBe("1");
+      expect((screen.getByLabelText("points") as HTMLSelectElement).value).toBe("1");
+      expect((screen.getByLabelText("court") as HTMLSelectElement).value).toBe("0");
+    });
+  });
+
+  it("keeps gift controls private from spectators", () => {
+    render(
+      <GameDesk
+        view={gameDeskView([]) as never}
+        ownSeat={undefined}
+        ownSeatId={undefined}
+        spectator
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    expect(screen.getByText("Observers cannot move table resources.")).toBeTruthy();
+    expect(screen.queryByLabelText("Recipient")).toBeNull();
+    expect(screen.queryByRole("button", { name: /record one-way gift/i })).toBeNull();
   });
 
   it("marks every revealed low-player agenda objective on Election Day", () => {
