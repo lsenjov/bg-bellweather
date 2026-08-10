@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Four-agent ruleset-12 Bellweather API playtest of whole-map Election thinning on 11 August 2026.">
+    <title>Whole-Map Election API Playtest — Bellweather</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../../index.html">
+          <span class="brand-mark" aria-hidden="true">LB</span>
+          Design archive / playtest session
+        </a>
+        <h1>Whole-map Election API playtest</h1>
+        <p class="meta">A complete timerless ruleset-12 game played by four detached API-controlled agents.</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../index.html">Index</a><span>/</span><a href="../playtest-guide.html">Playtesting</a><span>/</span>Whole-map Election API playtest</nav>
+
+      <section>
+        <h2>Session</h2>
+        <div class="table-wrap" role="region" aria-label="Playtest session details" tabindex="0">
+          <table>
+            <tbody>
+              <tr><th>Date</th><td>11 August 2026</td></tr>
+              <tr><th>Rules version</th><td>12</td></tr>
+              <tr><th>Players</th><td>Marigold-12R, Kestrel-12R, Juniper-12R, and Sable-12R; one observer</td></tr>
+              <tr><th>Configuration</th><td>Counterbid timer off; spectators allowed; game API only</td></tr>
+              <tr><th>Game</th><td>C6A4SMMS / 1a030ca1-2907-4227-9372-b9d604a417db</td></tr>
+              <tr><th>Duration</th><td>98 seconds from lobby creation to final acknowledgment; 222 replay events</td></tr>
+              <tr><th>Main question</th><td>Does every Election thin all fifteen non-Centre districts while leaving Bellweather Centre unchanged?</td></tr>
+              <tr><th>Expectation</th><td>Each Election records exactly fifteen capacity-based draws, Ironwood falls from its initial six Support to three at Election 1, Bellweather Centre has no draw, and scoring still uses only revealed card objectives.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Method and limits</h2>
+        <p>Each player ran the conservative example-agent policy in a detached process. Every round therefore contained four one-Leverage openings, four empty Pecking Order counterbids, and four Organise resolutions. Across the game the replay recorded 48 openings, 48 counterbids, 48 counterbid readiness actions, 48 Organise decisions, and 12 Election acknowledgments.</p>
+        <ul>
+          <li>This was a strong end-to-end retention and replay smoke test, not a strategic balance test.</li>
+          <li>The shared policy repeatedly used the same Harbormouth-to-Cloverfield route and did not use Court, Rally, Smear, or Bellweather Centre.</li>
+          <li>Capacity-four retention was executed but not stressed because those districts were empty at each Election. Focused engine tests remain the evidence for a populated capacity-four draw.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Election 1</h2>
+        <div class="table-wrap" role="region" aria-label="Election 1 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Change</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>Marigold-12R</td><td>SC-11</td><td>0</td><td>-1</td><td>-1</td><td>4</td></tr>
+              <tr><td>Kestrel-12R</td><td>SC-13</td><td>1</td><td>0</td><td>+1</td><td>6</td></tr>
+              <tr><td>Juniper-12R</td><td>SC-12</td><td>0</td><td>0</td><td>0</td><td>5</td></tr>
+              <tr><td>Sable-12R</td><td>SC-04</td><td>0</td><td>+1</td><td>+1</td><td>6</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Non-empty draws:</strong> Northreach—Riverworks; Harbormouth—Old Shell, Many Wings, Honeycomb; Grand Market—Old Shell, Foxglove, Riverworks; Ironwood—Honeycomb, Night Parliament, Riverworks.</p>
+        <ul>
+          <li>The history contained exactly fifteen district draws and no Bellweather Centre key.</li>
+          <li>Ironwood began with all six parties and retained exactly three, directly confirming the reported six-to-three failure is fixed.</li>
+          <li>Eleven empty districts still produced explicit empty draw records. This makes whole-map processing auditable, but it makes the result substantially more verbose.</li>
+          <li>Only Kestrel scored a district point. The broader retention scope did not broaden the scoring scope.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Election 2</h2>
+        <div class="table-wrap" role="region" aria-label="Election 2 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Change</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>Marigold-12R</td><td>SC-07</td><td>0</td><td>0</td><td>0</td><td>4</td></tr>
+              <tr><td>Kestrel-12R</td><td>SC-16</td><td>1</td><td>0</td><td>+1</td><td>7</td></tr>
+              <tr><td>Juniper-12R</td><td>SC-01</td><td>0</td><td>+1</td><td>+1</td><td>6</td></tr>
+              <tr><td>Sable-12R</td><td>SC-12</td><td>0</td><td>-1</td><td>-1</td><td>5</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Non-empty draws:</strong> Northreach—Many Wings; Harbormouth—Honeycomb, Foxglove, Old Shell; Grand Market—Riverworks, Night Parliament, Old Shell; Ironwood—Riverworks, Honeycomb.</p>
+        <ul>
+          <li>All fifteen non-Centre districts were recorded again and Bellweather Centre was absent.</li>
+          <li>Ironwood had only two Support before the draw, so it correctly retained both rather than padding the result to its draw count of three.</li>
+          <li>The same eleven districts were empty. The test exercised repeated whole-map processing but little post-Election repopulation.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Election 3 and final result</h2>
+        <div class="table-wrap" role="region" aria-label="Election 3 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Change</th><th>Final</th></tr></thead>
+            <tbody>
+              <tr><td>Marigold-12R</td><td>SC-01</td><td>0</td><td>0</td><td>0</td><td>4</td></tr>
+              <tr><td>Kestrel-12R</td><td>SC-03</td><td>0</td><td>0</td><td>0</td><td>7 — winner</td></tr>
+              <tr><td>Juniper-12R</td><td>SC-17</td><td>0</td><td>0</td><td>0</td><td>6</td></tr>
+              <tr><td>Sable-12R</td><td>SC-05</td><td>0</td><td>0</td><td>0</td><td>5</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Non-empty draws:</strong> Northreach—Many Wings; Harbormouth—Honeycomb, Riverworks, Night Parliament; Grand Market—Old Shell; Ironwood—Honeycomb, Riverworks.</p>
+        <ol>
+          <li>Kestrel-12R — 7</li>
+          <li>Juniper-12R — 6</li>
+          <li>Sable-12R — 5</li>
+          <li>Marigold-12R — 4</li>
+        </ol>
+        <ul>
+          <li>The final history again contained fifteen non-Centre draws and no Centre draw, for 45 expected district records across the game.</li>
+          <li>All final base scores were zero. Kestrel won on the one district point scored in each of the first two Elections.</li>
+          <li>The three-point final spread reflects the deliberately narrow shared policy and is not useful evidence about competitive balance.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>End-of-game findings</h2>
+        <ul>
+          <li><strong>Rule implementation confirmed:</strong> every Election recorded all fifteen non-Centre districts, including districts absent from all revealed cards. Bellweather Centre never appeared in a draw.</li>
+          <li><strong>Reported defect resolved:</strong> Ironwood retained three of its six initial Support at Election 1 instead of remaining at six.</li>
+          <li><strong>Centre remains untested strategically:</strong> Bellweather Centre was empty at the observed Election snapshots and at game end. This session confirms that no Centre draw was recorded, but it does not exercise preservation of non-empty Centre Support or provide evidence about the Centre's value as a jumping-off point or blocker.</li>
+          <li><strong>Presentation question:</strong> 33 of the 45 district draw records were empty. Explicit empty draws improve auditability, but an Election bulletin may need compact grouping to keep the meaningful retained Support visible.</li>
+          <li><strong>Agent-policy limit:</strong> identical conservative policies concentrated activity in four starting or adjacent districts. The next test should deliberately populate capacity-two, capacity-four, and capacity-six districts across the map and route Support through the Centre before every Election.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Setup failure before the completed game</h2>
+        <p>An earlier ruleset-12 lobby completed all four Campaign Round 1 openings, then accepted two counterbids and two readiness actions before three player processes lost their controlling execution sessions. One bearer token had not been retained, so that seat could not reconnect through the public API. The attempt was abandoned without an Election, and no server-side credential workaround was used.</p>
+        <p>The replacement agents were launched as detached operating-system processes with private logs. All four remained alive through completion. Together with the earlier <a href="2026-08-10-agent-api-aborted.html">aborted API playtest</a>, this repeats the same operational finding: an agent seat has no recovery path after its bearer token is lost. Long-running playtests must preserve both the process and credential before the host starts, or the test API needs a development-only reconnect mechanism.</p>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <div class="page-footer-inner">
+        <a href="../playtest-guide.html">Back to playtest guide →</a>
+        <span class="stamp">Completed — Kestrel-12R won with 7</span>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -24,7 +24,7 @@
       <p class="intro">This is not a transcript. Promote a finding here when repeated observations or one decisive failure make it useful beyond a single session.</p>
 
       <section>
-        <span class="status decided">First complete game</span>
+        <span class="status decided">Ruleset 12 follow-up complete</span>
         <h2>Current findings</h2>
         <div class="table-wrap" role="region" aria-label="Current playtest findings" tabindex="0">
           <table>
@@ -66,6 +66,20 @@
                 <td>High</td>
                 <td>Clarify the revealed-bid ledger and player aid.</td>
                 <td>Ask new players to predict three equal-bid reveal outcomes before play.</td>
+              </tr>
+              <tr>
+                <td>Whole-map Election thinning now executes consistently while scoring remains limited to revealed objectives.</td>
+                <td><a href="sessions/2026-08-11-all-district-election-playtest.html">Ruleset-12 API game</a>: each Election recorded all fifteen non-Centre districts, never recorded Bellweather Centre, and thinned Ironwood from six Support to three at Election 1.</td>
+                <td>High for implementation; low for balance</td>
+                <td>Keep the rule. Run a targeted strategic test before judging how strongly it reopens the map.</td>
+                <td>Populate all three district capacities, route Support through the Centre, and compare pre- and post-Election mobility.</td>
+              </tr>
+              <tr>
+                <td>Losing an agent seat's bearer token or controlling process can force a complete playtest restart.</td>
+                <td>The <a href="sessions/2026-08-10-agent-api-aborted.html">first aborted API test</a> and the discarded setup before the <a href="sessions/2026-08-11-all-district-election-playtest.html">ruleset-12 follow-up</a> both stalled after a seat became unrecoverable.</td>
+                <td>High</td>
+                <td>Require verified credential and process persistence before start; investigate a development-only reconnect flow.</td>
+                <td>Kill and restore one agent process during a disposable lobby using the proposed recovery workflow.</td>
               </tr>
             </tbody>
           </table>
@@ -112,7 +126,7 @@
     <footer class="page-footer">
       <div class="page-footer-inner">
         <a href="playtest-guide.html">Back to playtest guide →</a>
-        <span>2 session records</span>
+        <span>3 session records</span>
       </div>
     </footer>
   </body>

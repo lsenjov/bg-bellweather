@@ -9,7 +9,7 @@ Change Election Day so every district except Bellweather Centre takes its capaci
 1. ✅ Update the Election engine and focused tests so all fifteen non-Centre districts draw and thin, while scoring still reads only the objectives on revealed cards; advance the executable ruleset to version 12.
 2. ✅ Archive the replaced agenda-only thinning rule and update current rules, player-facing playtest guidance, design decisions, and the changelog.
 3. ✅ Run full repository validation and repeat independent review until no high- or medium-severity findings remain; report any low-severity findings before further changes.
-4. Push the completed ruleset changes, then run and record another complete four-agent timerless API playtest.
+4. ✅ Push the completed ruleset changes, then run and record another complete four-agent timerless API playtest.
 
 ## Design constraints
 
