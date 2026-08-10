@@ -51,20 +51,13 @@ export interface ElectionResult {
 
 export function recordElectionDraws(
   districts: Readonly<Record<string, DistrictState>>,
-  cards: readonly ScoringCard[],
   random: () => number
 ): Record<string, RecordedDistrictDraw> {
-  const namedDistricts = new Set(
-    cards.flatMap((card) =>
-      card.objectives.map((objective) => objective.districtId)
-    )
-  );
   const draws: Record<string, RecordedDistrictDraw> = {};
 
-  for (const districtId of namedDistricts) {
-    const district = districts[districtId];
-    if (district === undefined) {
-      throw new Error(`Unknown election district: ${districtId}`);
+  for (const [districtId, district] of Object.entries(districts)) {
+    if (districtId === "bellweather-centre") {
+      continue;
     }
     const pool = Object.entries(district.support).flatMap(([party, count]) =>
       Array.from({ length: count ?? 0 }, () => party as Party)
@@ -129,7 +122,6 @@ export function scoreElectionDay(input: {
   }
   const draws = recordElectionDraws(
     input.state.districts,
-    players.flatMap((player) => player.cards),
     input.random
   );
   const baseScores = new Map(
@@ -284,5 +276,5 @@ function drawCount(capacity: number): number {
   if (capacity === 2) {
     return 1;
   }
-  throw new Error(`Election objectives cannot use capacity ${capacity}`);
+  throw new Error(`Election districts cannot use capacity ${capacity}`);
 }

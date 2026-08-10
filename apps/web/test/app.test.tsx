@@ -135,7 +135,7 @@ describe("browser play surface", () => {
         seats: [],
         spectators: [],
         publicGame: {
-          rulesetVersion: "11",
+          rulesetVersion: "12",
           round: 1,
           electionNumber: 0,
           nextFirstOpenerSeatId: "seat-a",
@@ -208,7 +208,7 @@ describe("browser play surface", () => {
         seats: [],
         spectators: [],
         publicGame: {
-          rulesetVersion: "11",
+          rulesetVersion: "12",
           round: 1,
           electionNumber: 0,
           nextFirstOpenerSeatId: "seat-a",
@@ -371,7 +371,7 @@ describe("browser play surface", () => {
         },
         seats: [host],
         spectators: [],
-        publicGame: { phase: "lobby", rulesetVersion: "11" }
+        publicGame: { phase: "lobby", rulesetVersion: "12" }
       },
       seatState: { seatId: host.seatId, privateGame: null }
     };

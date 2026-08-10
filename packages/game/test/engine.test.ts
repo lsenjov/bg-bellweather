@@ -95,9 +95,9 @@ describe("game setup and private projections", () => {
     const initialized = initializeGame(configuration(2, null), zeroRandom);
     initialized.state.rulesetVersion = "8";
 
-    expect(() => replay([initialized])).toThrow("Only ruleset 11 is supported");
+    expect(() => replay([initialized])).toThrow("Only ruleset 12 is supported");
     expect(() => projectGameState(initialized.state, null)).toThrow(
-      "Only ruleset 11 is supported"
+      "Only ruleset 12 is supported"
     );
   });
 
@@ -154,13 +154,24 @@ describe("game setup and private projections", () => {
     }
   );
 
-  it("applies Election retention to named districts but not Bellweather Centre", () => {
+  it("applies Election retention to every non-Centre district", () => {
     let state = initializeGame(configuration(2, null), zeroRandom).state;
-    const namedDistrictId =
-      SCORING_CARDS_BY_ID[state.seats[0]!.scoringCardIds[0]!].objectives[0]!.districtId;
-    const capacity = DISTRICTS_BY_ID[namedDistrictId].capacity;
-    state.support[namedDistrictId] = Object.fromEntries(
-      PARTY_IDS.slice(0, capacity).map((partyId) => [partyId, 1])
+    const scoredDistrictIds = new Set(
+      state.seats.flatMap((seat) =>
+        seat.scoringCardIds.flatMap((cardId) =>
+          SCORING_CARDS_BY_ID[cardId].objectives.map(
+            (objective) => objective.districtId
+          )
+        )
+      )
+    );
+    const unscoredDistrict = DISTRICTS.find(
+      (district) =>
+        district.id !== "bellweather-centre" &&
+        !scoredDistrictIds.has(district.id)
+    )!;
+    state.support[unscoredDistrict.id] = Object.fromEntries(
+      PARTY_IDS.slice(0, unscoredDistrict.capacity).map((partyId) => [partyId, 1])
     );
     state.support["bellweather-centre"] = {
       honeycomb: 1,
@@ -184,11 +195,12 @@ describe("game setup and private projections", () => {
     ).state;
 
     expect(
-      Object.values(result.support[namedDistrictId]).reduce(
+      Object.values(result.support[unscoredDistrict.id]).reduce(
         (total, count) => total + (count ?? 0),
         0
       )
-    ).toBe(capacity / 2);
+    ).toBe(unscoredDistrict.capacity / 2);
+    expect(Object.keys(result.electionHistory[0]!.draws)).toHaveLength(15);
     expect(result.support["bellweather-centre"]).toEqual({
       honeycomb: 1,
       "old-shell": 1,

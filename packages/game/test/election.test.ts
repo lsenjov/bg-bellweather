@@ -19,7 +19,7 @@ import type {
 } from "../src/operations.js";
 
 describe("Election Day draws and coalition scoring", () => {
-  it("records one shared capacity-based draw per named district without replacement", () => {
+  it("records one shared capacity-based draw per non-Centre district without replacement", () => {
     let randomCalls = 0;
     const draws = recordElectionDraws(
       {
@@ -31,16 +31,6 @@ describe("Election Day draws and coalition scoring", () => {
         four: district("four", 4, { "night-parliament": 1 }),
         two: district("two", 2, {})
       },
-      [
-        card("a", [
-          ["six", "honeycomb"],
-          ["four", "night-parliament"]
-        ]),
-        card("b", [
-          ["six", "foxglove"],
-          ["two", "riverworks"]
-        ])
-      ],
       () => {
         randomCalls += 1;
         return 0;
@@ -77,7 +67,7 @@ describe("Election Day draws and coalition scoring", () => {
     ).toBe(1);
   });
 
-  it("keeps drawn Support, removes the undrawn remainder, and leaves unnamed districts unchanged", () => {
+  it("keeps every non-Centre draw and leaves Bellweather Centre unchanged", () => {
     const districts = {
       six: district("six", 6, {
         honeycomb: 2,
@@ -91,7 +81,6 @@ describe("Election Day draws and coalition scoring", () => {
     };
     const draws = recordElectionDraws(
       districts,
-      [card("a", [["six", "honeycomb"]])],
       () => 0
     );
 
