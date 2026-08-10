@@ -24,9 +24,52 @@
       <p class="intro">This is not a transcript. Promote a finding here when repeated observations or one decisive failure make it useful beyond a single session.</p>
 
       <section>
-        <span class="status">No data</span>
+        <span class="status decided">First complete game</span>
         <h2>Current findings</h2>
-        <p class="empty">No playtests recorded.</p>
+        <div class="table-wrap" role="region" aria-label="Current playtest findings" tabindex="0">
+          <table>
+            <thead>
+              <tr><th>Pattern</th><th>Evidence</th><th>Confidence</th><th>Design response</th><th>Next test</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Minimal and empty counterbids can capture disproportionately large Revolving Door packages, concentrating resources and enabling repeated oversized bids.</td>
+                <td><a href="sessions/2026-08-10-four-agent-game.html">Four-agent API game</a>: a one-Leverage bid lifted one reserve to 25 Leverage; self-insurance repeatedly returned large openings and captured neighboring packages.</td>
+                <td>Medium</td>
+                <td>Investigate; this affected strategy throughout one complete game.</td>
+                <td>Repeat with players explicitly valuing transfer position, and compare package sizes and reserve concentration after each round.</td>
+              </tr>
+              <tr>
+                <td>Uncapped, non-depleting operation bundles can create deterministic district takeovers without reducing the winner's future agency.</td>
+                <td><a href="sessions/2026-08-10-four-agent-game.html">Four-agent API game</a>: one protected ten-card Foxglove opening converted a six-capacity district and denied an adjacent space, then returned through an empty self-bid.</td>
+                <td>Medium</td>
+                <td>Investigate burst size and recovery cost before changing limits.</td>
+                <td>Deliberately construct one large bundle per player and measure counterplay, resolution time, and subsequent reserve strength.</td>
+              </tr>
+              <tr>
+                <td>Relative-seat modifiers can outweigh excellent map play.</td>
+                <td><a href="sessions/2026-08-10-four-agent-game.html">Four-agent API game</a>: a maximum six-point base was cut to three in Election 1, another three-point base became zero, and one player lost five points cumulatively to modifiers.</td>
+                <td>Low</td>
+                <td>Keep under observation; one game's seat arrangement is insufficient for a balance change.</td>
+                <td>Rotate the same agendas among seats or replay recorded map states with alternate seat orders.</td>
+              </tr>
+              <tr>
+                <td>Players can misread directional Coalition Targets as active coalitions, causing costly strategic errors.</td>
+                <td><a href="sessions/2026-08-10-four-agent-game.html">Four-agent API game</a>: one agent overinvested in High Pastures after Foxglove redirected, because only Old Shell still targeted Foxglove.</td>
+                <td>Medium</td>
+                <td>Improve the web/API derived-state presentation before changing coalition rules.</td>
+                <td>Display explicit active reciprocal pairs and test whether players still make the same mistake.</td>
+              </tr>
+              <tr>
+                <td>Protected openings and equal counterbid cancellation are strategically important but easy to apply asymmetrically by mistake.</td>
+                <td><a href="sessions/2026-08-10-four-agent-game.html">Four-agent API game</a>: multiple agents expected an equal counterbid to cancel an opening; the counter cancelled while the opening survived.</td>
+                <td>High</td>
+                <td>Clarify the revealed-bid ledger and player aid.</td>
+                <td>Ask new players to predict three equal-bid reveal outcomes before play.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section>
@@ -69,7 +112,7 @@
     <footer class="page-footer">
       <div class="page-footer-inner">
         <a href="playtest-guide.html">Back to playtest guide →</a>
-        <span>0 sessions</span>
+        <span>2 session records</span>
       </div>
     </footer>
   </body>

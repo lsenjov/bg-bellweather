@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Four-agent Bellweather API playtest on 10 August 2026.">
+    <title>Four-Agent API Playtest — Bellweather</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../../index.html">
+          <span class="brand-mark" aria-hidden="true">LB</span>
+          Design archive / playtest session
+        </a>
+        <h1>Four-agent API playtest</h1>
+        <p class="meta">A complete timerless game played by four independent API-controlled agents.</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../index.html">Index</a><span>/</span><a href="../playtest-guide.html">Playtesting</a><span>/</span>Four-agent API playtest</nav>
+
+      <section>
+        <h2>Session</h2>
+        <div class="table-wrap" role="region" aria-label="Playtest session details" tabindex="0">
+          <table>
+            <tbody>
+              <tr><th>Date</th><td>10 August 2026</td></tr>
+              <tr><th>Rules version</th><td>11</td></tr>
+              <tr><th>Players</th><td>Marigold-2, Kestrel-2, Juniper-2, and Sable-2; one human observer</td></tr>
+              <tr><th>Configuration</th><td>Counterbid timer off; spectators allowed</td></tr>
+              <tr><th>Facilitator</th><td>Codex</td></tr>
+              <tr><th>Main question</th><td>What strategic, balance, and API usability findings emerge over one complete four-agent game?</td></tr>
+              <tr><th>Expectation</th><td>If the loop works, hidden agendas, map capacity, party bonuses, bid transfer, and relative-seat scoring will all change agent choices before the final result.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Election 1</h2>
+        <div class="table-wrap" role="region" aria-label="Election 1 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Change</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>Marigold-2</td><td>SC-04</td><td>5</td><td>+3</td><td>+8</td><td>13</td></tr>
+              <tr><td>Juniper-2</td><td>SC-17</td><td>3</td><td>-3</td><td>0</td><td>5</td></tr>
+              <tr><td>Kestrel-2</td><td>SC-14</td><td>6</td><td>-3</td><td>+3</td><td>8</td></tr>
+              <tr><td>Sable-2</td><td>SC-24</td><td>2</td><td>-3</td><td>-1</td><td>4</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Draws:</strong> Harbormouth—Riverworks, Night Parliament, Riverworks; Red Orchard—Many Wings ×2; Northreach—Night Parliament; Grand Market—Old Shell ×3; Mossfield—Old Shell ×2; Canal Ward—Foxglove; Millbank—Many Wings ×2; Westgate—Night Parliament; High Pastures—Riverworks ×2.</p>
+        <ul>
+          <li>Marigold hit all five direct agenda draws and gained another three from the seat references, moving decisively into first.</li>
+          <li>Kestrel engineered the maximum six-point base, but the relative-seat modifier removed half of that gain. Juniper's three-point base was erased entirely, and Sable's two-point base became a one-point loss.</li>
+          <li>Relative-seat effects dominated this Election: changes ranged from +8 to -1 while base scores ranged only from 6 to 2.</li>
+          <li>The public result separates draws, base scores, modifiers, changes, and totals clearly enough to audit the outcome.</li>
+          <li>Equal-Leverage cancellation erased carefully sequenced plans, while late full districts made recovery difficult.</li>
+          <li>Court Support remained visible while results awaited acknowledgment, then cleared at the unanimous transition while coalition targets persisted. The behavior is correct but the cleanup timing is not obvious from the intermediate projection.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Running findings</h2>
+        <ul>
+          <li>Persist each API participant session immediately after join; loss of a bearer token permanently stalls an active seat.</li>
+          <li>Agenda IDs require a separate card reference for informed agent play.</li>
+          <li>Repeated operations, spatial legality reconstruction, and Court target arithmetic create substantial API round-trip and reasoning overhead.</li>
+          <li>Delayed Night Parliament bonuses can become harmful or fail after intervening operations change the board.</li>
+          <li>Empty counterbids can obtain valuable Revolving Door transfers with essentially no escrow risk.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Election 2</h2>
+        <div class="table-wrap" role="region" aria-label="Election 2 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Change</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>Marigold-2</td><td>SC-20</td><td>3</td><td>0</td><td>+3</td><td>16</td></tr>
+              <tr><td>Juniper-2</td><td>SC-08</td><td>6</td><td>0</td><td>+6</td><td>11</td></tr>
+              <tr><td>Kestrel-2</td><td>SC-09</td><td>4</td><td>+3</td><td>+7</td><td>15</td></tr>
+              <tr><td>Sable-2</td><td>SC-02</td><td>4</td><td>-2</td><td>+2</td><td>6</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Draws:</strong> Grand Market—Old Shell ×3; Millbank—Riverworks, Many Wings; Old Quarter—Night Parliament; Ironwood—Foxglove ×3; Northreach—Many Wings; Sunmeadow—no Support; Westgate—Many Wings.</p>
+        <ul>
+          <li>Juniper maximized all six base points: Foxglove scored as Old Shell through one coalition, while Many Wings scored as Riverworks through another.</li>
+          <li>Sable's four base points all came from coalition partners rather than the parties printed on the agenda.</li>
+          <li>Kestrel's +3 seat modifier turned a four-point base into the Election's largest gain, again rivaling the value of a complete district objective.</li>
+          <li>Marigold scored only the pure Old Shell Grand Market objective. The final-round Night sandwich kept Old Quarter unavailable to Honeycomb and pure Many Wings in Millbank did not match Night.</li>
+          <li>The capacity-six Ironwood takeover yielded three points, while the heavily defended capacity-two Old Quarter yielded one; this made the efficiency difference between district sizes stark.</li>
+          <li>Election thinning retained three of six matching Foxglove at Ironwood and one of two coalition-matching Many Wings at Westgate.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Election 3 and final result</h2>
+        <div class="table-wrap" role="region" aria-label="Election 3 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Change</th><th>Final</th></tr></thead>
+            <tbody>
+              <tr><td>Marigold-2</td><td>SC-19</td><td>6</td><td>+1</td><td>+7</td><td>23 — winner</td></tr>
+              <tr><td>Juniper-2</td><td>SC-18</td><td>5</td><td>-2</td><td>+3</td><td>14</td></tr>
+              <tr><td>Kestrel-2</td><td>SC-03</td><td>6</td><td>-1</td><td>+5</td><td>20</td></tr>
+              <tr><td>Sable-2</td><td>SC-12</td><td>4</td><td>+1</td><td>+5</td><td>11</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Draws:</strong> Ironwood—Foxglove ×3; Cloverfield—Many Wings ×2; Crown Road—Night Parliament; Harbormouth—Riverworks, Night Parliament, Riverworks; High Pastures—Foxglove ×2; Old Quarter—no Support; Sunmeadow—Riverworks ×2; Canal Ward—Many Wings; Westgate—Foxglove.</p>
+        <ol>
+          <li>Marigold-2 — 23</li>
+          <li>Kestrel-2 — 20</li>
+          <li>Juniper-2 — 14</li>
+          <li>Sable-2 — 11</li>
+        </ol>
+        <ul>
+          <li>Marigold's cumulative path was 13 → 16 → 23. Kestrel followed 8 → 15 → 20, Juniper 5 → 11 → 14, and Sable 4 → 6 → 11.</li>
+          <li>Marigold and Kestrel both maximized six-point bases. The seat modifier widened Marigold's final lead by two more points.</li>
+          <li>The reciprocal Honeycomb–Foxglove coalition made Ironwood's Foxglove draws score for Marigold even after Kestrel removed the district's direct Honeycomb Support.</li>
+          <li>Sable incorrectly treated Old Shell → Foxglove as sufficient coalition scoring after Foxglove redirected to Honeycomb. The directional target map exposes the underlying state but not the derived active reciprocal pairs, and the misread drove several wasted investments.</li>
+          <li>An equal-Leverage counterbid cancelled itself against a protected opening rather than cancelling the opening. Two zero-Leverage operation bundles also cancelled each other, erasing twelve planned operations.</li>
+          <li>Kestrel's protected final Foxglove bundle removed both Night Parliament from Old Quarter. Juniper's cancelled cleanup package could not respond, costing one possible base point.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>End-of-game findings</h2>
+        <ul>
+          <li><strong>Revolving Door concentration:</strong> Minimal or empty bids repeatedly captured much larger neighboring packages. One one-Leverage bid lifted Juniper to 25 Leverage, while self-insurance sometimes returned an oversized opening and captured the package above it. Resource concentration compounded into further high-priority bundles.</li>
+          <li><strong>Non-depleting burst:</strong> A protected ten-card Foxglove opening deterministically converted a capacity-six district and denied an adjacent space. An empty self-bid returned the whole package, so the burst did not reduce future agency.</li>
+          <li><strong>Cancellation leverage:</strong> Exact ties can erase many operations at little cost, but opening protection is asymmetric and was misread more than once. The distinction deserves stronger projection/UI treatment.</li>
+          <li><strong>Seat-reference weight:</strong> Modifiers repeatedly equaled or exceeded entire district objectives. Juniper lost five cumulative points to modifiers; Kestrel's maximum Election 1 base was halved.</li>
+          <li><strong>Coalition recovery and opacity:</strong> Coalitions created satisfying recovery lines and cross-objective strategy, but reciprocal status was easy to miscalculate from separate directional targets.</li>
+          <li><strong>Capacity and sequencing:</strong> Later actions frequently invalidated precommitted routes. Delayed operations became harmful or failed, while repeated operations produced spillover once a district filled.</li>
+          <li><strong>API friction:</strong> The API exposes legal operation families but requires clients to reconstruct spatial choices and exact bonus wrappers. Repeated cards create one round trip per decision, and simultaneous counterbid editing caused recoverable version conflicts.</li>
+          <li><strong>Auditability:</strong> Phase ownership, reveals, transfers, Election draws, bases, modifiers, and totals were consistently clear enough to audit.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <div class="page-footer-inner">
+        <a href="../playtest-guide.html">Back to playtest guide →</a>
+        <span class="stamp">Completed — Marigold-2 won with 23</span>
+      </div>
+    </footer>
+  </body>
+</html>

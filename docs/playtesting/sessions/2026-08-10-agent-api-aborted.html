@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Aborted four-agent Bellweather API playtest on 10 August 2026.">
+    <title>Aborted Agent API Playtest — Bellweather</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../../index.html">
+          <span class="brand-mark" aria-hidden="true">LB</span>
+          Design archive / playtest session
+        </a>
+        <h1>Aborted four-agent API playtest</h1>
+        <p class="meta">Setup and one partial opening pass exposed an agent-session persistence failure.</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../index.html">Index</a><span>/</span><a href="../playtest-guide.html">Playtesting</a><span>/</span>Aborted agent API playtest</nav>
+
+      <section>
+        <h2>Session</h2>
+        <div class="table-wrap" role="region" aria-label="Playtest session details" tabindex="0">
+          <table>
+            <tbody>
+              <tr><th>Date</th><td>10 August 2026</td></tr>
+              <tr><th>Rules version</th><td>11</td></tr>
+              <tr><th>Players</th><td>Four API-controlled agents: Marigold, Kestrel, Juniper, and Sable; one human observer</td></tr>
+              <tr><th>Duration</th><td>Aborted during the first opening pass of Campaign Round 1</td></tr>
+              <tr><th>Facilitator</th><td>Codex</td></tr>
+              <tr><th>Main question</th><td>Can four independent agents complete the first Election through the authenticated game API?</td></tr>
+              <tr><th>Expectation</th><td>If this works, each agent will preserve its private session across orchestration turns, make agenda-informed choices, and advance the timerless game through unanimous readiness.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Prototype changes</h2>
+        <p>None. The counterbid timer was disabled and spectators were admitted through standard lobby configuration.</p>
+      </section>
+
+      <section>
+        <h2>Observed sequence</h2>
+        <ol>
+          <li>All four agents joined, marked themselves ready, and exposed no private bearer tokens to the facilitator or observer.</li>
+          <li>The host started successfully. The API clearly projected the first opening order as Kestrel, Juniper, Sable, then Marigold.</li>
+          <li>Kestrel opened Riverworks with 1 Leverage, 1 Rally, and 1 Smear to pursue Riverworks in Harbormouth on SC-04.</li>
+          <li>Juniper opened Honeycomb with 2 Leverage, 1 Organise, and 1 Rally to pursue Honeycomb in High Pastures on SC-06.</li>
+          <li>Sable could not act because its bearer token had been retained only in transient tool memory. The join transcript contained only intentionally sanitized fields, and the game API has no token-recovery or seat-reconnection route.</li>
+          <li>The session was abandoned rather than reading server internals or controlling Sable through another player.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Election Day record</h2>
+        <p class="empty">No Election occurred.</p>
+      </section>
+
+      <section>
+        <h2>Agent interpretations</h2>
+        <ul>
+          <li>The public phase cursor and private/public projection boundary made turn ownership and legal waiting unambiguous.</li>
+          <li>The seat projection identifies an agenda by card ID only. An agent must consult the repository's card reference to make an agenda-informed choice; the API projection alone does not provide the scoring conditions.</li>
+          <li>Opening composition communicates commitment through total visible card count while leaving operation families concealed, which supported divergent early strategies.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Operational failure</h2>
+        <p>A multi-turn agent must persist the complete participant session, including its bearer token, outside transient tool-call memory immediately after creating or joining a game. A permission-restricted, agent-specific temporary file is sufficient for a local playtest. Sanitized reporting should happen only after persistence succeeds.</p>
+        <p>Because active games reject new player joins and the API deliberately offers no credential recovery, losing one seat token permanently stalls any phase requiring that seat. This is an orchestration constraint rather than evidence about the game rules.</p>
+      </section>
+
+      <section>
+        <h2>Result against expectation</h2>
+        <p>Inconclusive for game behavior and contradicted for agent orchestration. The two completed openings showed agenda-informed play, but the session could not reach counterbidding or Election Day.</p>
+      </section>
+
+      <section>
+        <h2>One next test</h2>
+        <p>Repeat the same four-agent, timerless test after requiring every agent to persist and verify its session before the host starts. Stop after the first Election and record both game outcomes and API friction separately.</p>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <div class="page-footer-inner">
+        <a href="../playtest-guide.html">Back to playtest guide →</a>
+        <span class="stamp">Aborted before Election 1</span>
+      </div>
+    </footer>
+  </body>
+</html>
