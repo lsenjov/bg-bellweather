@@ -166,6 +166,7 @@ export type GameLifecycle = z.infer<typeof GameLifecycleSchema>;
 export const PublicGameStateSchema = z
   .object({
     gameId: GameIdSchema,
+    inviteCode: InviteCodeSchema,
     version: VersionSchema,
     latestSequence: SequenceSchema,
     lifecycle: GameLifecycleSchema,

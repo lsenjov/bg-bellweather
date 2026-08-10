@@ -84,7 +84,10 @@ beforeEach(() => {
   });
 });
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 describe("browser play surface", () => {
   it("keeps public operation counts when private decision details are merged", () => {
@@ -120,6 +123,7 @@ describe("browser play surface", () => {
       viewerSeatId: "seat-a",
       publicState: {
         gameId: "game-1",
+        inviteCode: "PRESS42",
         version: 1,
         latestSequence: 1,
         lifecycle: "active",
@@ -192,6 +196,7 @@ describe("browser play surface", () => {
       viewerSeatId: "seat-a",
       publicState: {
         gameId: "game-1",
+        inviteCode: "PRESS42",
         version: 1,
         latestSequence: 1,
         lifecycle: "active",
@@ -316,6 +321,30 @@ describe("browser play surface", () => {
     expect(screen.getByText(/unlimited support/i)).toBeTruthy();
   });
 
+  it("shows the active invitation code to an authenticated observer", async () => {
+    localStorage.setItem("bellweather-register-invite", "STALE42");
+    localStorage.setItem("bellweather-register-session", JSON.stringify({
+      participantType: "spectator",
+      gameId: "game-1",
+      spectatorId: "018f47d2-7830-7b84-a854-1b741f285f60",
+      accessToken: "x".repeat(43)
+    }));
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(
+      JSON.stringify(activePublicState("11", TEST_PARTY_ORDER)),
+      {
+        status: 200,
+        headers: { "content-type": "application/json" }
+      }
+    ));
+
+    render(<App />);
+
+    expect(await screen.findByText("Invite PRESS42")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /leave this desk/i }));
+    expect(localStorage.getItem("bellweather-register-session")).toBeNull();
+    expect(localStorage.getItem("bellweather-register-invite")).toBeNull();
+  });
+
   it("lets the host start once a second player occupies the six-seat lobby", async () => {
     const onCommand = vi.fn(async () => undefined);
     const host = {
@@ -331,6 +360,7 @@ describe("browser play surface", () => {
       viewerSeatId: host.seatId,
       publicState: {
         gameId: "018f47d2-7830-7b84-a854-1b741f285f5d",
+        inviteCode: "PRESS42",
         version: 1,
         latestSequence: 1,
         lifecycle: "lobby",
@@ -356,7 +386,6 @@ describe("browser play surface", () => {
         state={state as never}
         session={session as never}
         hostSeatId={host.seatId}
-        inviteCode="PRESS42"
         busy={false}
         onCommand={onCommand}
       />
@@ -395,7 +424,6 @@ describe("browser play surface", () => {
         state={twoPlayerState as never}
         session={session as never}
         hostSeatId={host.seatId}
-        inviteCode="PRESS42"
         busy={false}
         onCommand={onCommand}
       />
@@ -2866,6 +2894,7 @@ function activePublicState(
     scope: "public",
     publicState: {
       gameId: "game-1",
+      inviteCode: "PRESS42",
       version: 1,
       latestSequence: 1,
       lifecycle: "active",

@@ -54,7 +54,7 @@ import { FIRM_ACCENTS, FirmEmblem } from "./FirmEmblem.js";
 import { PartyEmblem } from "./PartyEmblem.js";
 
 const SESSION_KEY = "bellweather-register-session";
-const INVITE_KEY = "bellweather-register-invite";
+const LEGACY_INVITE_KEY = "bellweather-register-invite";
 interface ViewSeat {
   id: string;
   displayName: string;
@@ -97,9 +97,6 @@ export function App() {
     loadSession()
   );
   const [state, setState] = useState<ViewerStateEnvelope | null>(null);
-  const [inviteCode, setInviteCode] = useState<string | null>(() =>
-    localStorage.getItem(INVITE_KEY)
-  );
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [replayArchive, setReplayArchive] = useState<ReplayResponse | null>(
@@ -149,16 +146,12 @@ export function App() {
 
   const adoptSession = (
     nextSession: ParticipantSession,
-    nextState: ViewerStateEnvelope,
-    code?: string
+    nextState: ViewerStateEnvelope
   ) => {
+    localStorage.removeItem(LEGACY_INVITE_KEY);
     localStorage.setItem(SESSION_KEY, JSON.stringify(nextSession));
-    if (code !== undefined) {
-      localStorage.setItem(INVITE_KEY, code);
-    }
     setSession(nextSession);
     setState(nextState);
-    setInviteCode(code ?? null);
   };
 
   const command = async (gameCommand: GameCommand): Promise<boolean> => {
@@ -184,9 +177,7 @@ export function App() {
         error={error}
         onBusy={setBusy}
         onError={setError}
-        onCreate={(response) =>
-          adoptSession(response.session, response.state, response.inviteCode)
-        }
+        onCreate={(response) => adoptSession(response.session, response.state)}
         onJoin={(response) => adoptSession(response.session, response.state)}
       />
     );
@@ -212,7 +203,7 @@ export function App() {
         <div className="edition-stamp">
           <span>{state.publicState.lifecycle}</span>
           <strong>{view ? `Round ${view.round} / 12` : "Lobby edition"}</strong>
-          <small>{inviteCode ? `Invite ${inviteCode}` : state.publicState.gameId.slice(0, 8)}</small>
+          <small>Invite {state.publicState.inviteCode}</small>
         </div>
       </header>
 
@@ -233,7 +224,6 @@ export function App() {
           state={state}
           session={session}
           hostSeatId={host?.seatId}
-          inviteCode={inviteCode}
           busy={busy}
           onCommand={async (gameCommand) => {
             await command(gameCommand);
@@ -379,7 +369,6 @@ export function LobbyDesk(props: {
   state: ViewerStateEnvelope;
   session: ParticipantSession;
   hostSeatId: string | undefined;
-  inviteCode: string | null;
   busy: boolean;
   onCommand(command: GameCommand): Promise<void>;
 }) {
@@ -392,7 +381,7 @@ export function LobbyDesk(props: {
     <main className="lobby-layout">
       <section className="paper-panel lobby-call">
         <p className="section-label">Invitation wire</p>
-        <h2>{props.inviteCode ?? "Lobby open"}</h2>
+        <h2>{props.state.publicState.inviteCode}</h2>
         <p>Share the code. Player seats close once the presses start.</p>
         <div className="seat-list">
           {props.state.publicState.seats.map((seat) => (
@@ -3318,7 +3307,7 @@ function loadSession(): ParticipantSession | null {
 
 function leave(setSession: (session: ParticipantSession | null) => void) {
   localStorage.removeItem(SESSION_KEY);
-  localStorage.removeItem(INVITE_KEY);
+  localStorage.removeItem(LEGACY_INVITE_KEY);
   setSession(null);
 }
 

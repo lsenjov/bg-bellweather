@@ -239,8 +239,8 @@ export class EventStore {
   } {
     return this.transaction(() => {
       const game = this.resolveGame(input.gameReference);
-      if (game.status !== "lobby") {
-        throw new AppError(409, "phase_closed", "Spectators cannot join after play begins");
+      if (game.status === "finished") {
+        throw new AppError(409, "phase_closed", "Spectators cannot join after the game ends");
       }
       if (!game.settings.allowSpectators) {
         throw new AppError(403, "forbidden", "This game does not allow spectators");
@@ -264,7 +264,7 @@ export class EventStore {
         );
       const spectator = this.getSpectatorById(input.spectator.id);
       const event = this.appendEventUnsafe(game.id, input.now, {
-        type: "lobby.spectator_joined",
+        type: "spectator.joined",
         payload: {
           spectator: {
             spectatorId: spectator.id,
@@ -314,9 +314,13 @@ export class EventStore {
         };
       }
 
+      const latestEngineVersion = game.status === "active"
+        ? this.loadLatestSnapshot(game.id)?.version ?? game.currentVersion
+        : game.currentVersion;
       if (
         command.expectedVersion !== undefined &&
-        game.currentVersion !== command.expectedVersion
+        (command.expectedVersion > game.currentVersion ||
+          command.expectedVersion < latestEngineVersion)
       ) {
         throw new AppError(409, "version_conflict", "The game has changed", {
           expectedVersion: command.expectedVersion,

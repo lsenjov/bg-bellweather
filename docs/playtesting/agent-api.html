@@ -41,7 +41,7 @@ npm run dev</code></pre>
     "allowSpectators": true
   }
 }</code></pre>
-        <p>Lobby creation does not set a player count. Every lobby admits up to six player seats, and <code>publicState.configuration.playerCount</code> reports the current occupied count. The host may start once at least two players have joined; the accepted start freezes the actual two-to-six-player seat list into canonical game state. A seventh player receives <code>lobby_full</code>.</p>
+        <p>Lobby creation does not set a player count. Every lobby admits up to six player seats, and <code>publicState.configuration.playerCount</code> reports the current occupied count. The host may start once at least two players have joined; the accepted start freezes the actual two-to-six-player seat list into canonical game state. A seventh player receives <code>lobby_full</code>. When observers are admitted, they may join from the lobby or while play is active; player seats remain closed after play starts.</p>
       </section>
 
       <section>
@@ -52,7 +52,7 @@ npm run dev</code></pre>
             <tbody>
               <tr><td>GET</td><td><code>/api/v1/health</code></td><td>Server and ruleset health.</td></tr>
               <tr><td>POST</td><td><code>/api/v1/games</code></td><td>Create a lobby and host seat.</td></tr>
-              <tr><td>POST</td><td><code>/api/v1/games/join</code></td><td>Join by invite code as a player or spectator.</td></tr>
+              <tr><td>POST</td><td><code>/api/v1/games/join</code></td><td>Join by invite code as a player, or as an admitted spectator before or during play.</td></tr>
               <tr><td>GET</td><td><code>/api/v1/games/:id/state</code></td><td>Get the authenticated public plus seat-private projection.</td></tr>
               <tr><td>POST</td><td><code>/api/v1/games/:id/commands</code></td><td>Submit an idempotent lobby or game command.</td></tr>
               <tr><td>GET</td><td><code>/api/v1/games/:id/replay</code></td><td>Get canonical full-information events after completion.</td></tr>
@@ -73,7 +73,7 @@ npm run dev</code></pre>
     "action": { "type": "set_counterbid_ready", "ready": true }
   }
 }</code></pre>
-        <p><code>expectedVersion</code> is optional. Supplying it rejects decisions made from stale state. Reusing the same idempotency key with the same request returns the first acceptance; reusing it for different content is an error.</p>
+        <p><code>expectedVersion</code> is optional. Supplying it rejects decisions made before the latest gameplay change; during active play, observer arrivals do not stale a player decision. Reusing the same idempotency key with the same request returns the first acceptance; reusing it for different content is an error.</p>
         <p>Lobby commands are <code>{"type":"set_lobby_ready","ready":true}</code> and host-only <code>{"type":"start_game"}</code>. Lobby readiness is advisory: starting requires two occupied player seats but does not require every player to be marked ready. Public chat uses <code>{"type":"post_chat","message":"…"}</code>. A gift uses <code>type</code> <code>give_resources</code>, <code>recipientSeatId</code>, nonnegative integer <code>leverage</code>, <code>bluff</code>, and <code>points</code>, plus an <code>operations</code> object containing nonnegative integer <code>organise</code>, <code>rally</code>, <code>smear</code>, and <code>court</code> counts; at least one transferred value must be positive. Player game actions are <code>submit_openings</code>, <code>set_counterbid</code>, <code>set_counterbid_ready</code>, <code>resolve_pecking_swap</code>, <code>resolve_party_operation</code>, and <code>set_election_ready</code>. Election draws and timer expiry are server-only.</p>
         <div class="table-wrap" role="region" aria-label="Game action payloads" tabindex="0">
           <table>
@@ -107,7 +107,7 @@ npm run dev</code></pre>
 
       <section>
         <h2>Visibility</h2>
-        <p>Public state includes the phase, public points, district Support, Court Support, Coalition Targets, Pecking Order, contest targets, readiness, chat, retained round reveals, and Election results. A seat projection additionally includes only that seat’s reserve, scoring card, covered bid contents, counterbid slots, and pending decision. Spectators receive public state only. Live canonical events never disclose hidden engine payloads or gift contents.</p>
+        <p>Public state includes the invitation code, phase, public points, district Support, Court Support, Coalition Targets, Pecking Order, contest targets, readiness, chat, retained round reveals, and Election results. While the game is in its lobby or active and observer admission is enabled, every authenticated player and observer can use the displayed code to invite another observer. A seat projection additionally includes only that seat’s reserve, scoring card, covered bid contents, counterbid slots, and pending decision. Spectators receive public state only. Live canonical events never disclose hidden engine payloads or gift contents.</p>
         <p>After the game ends, every authenticated participant may fetch the complete event history and canonical final state. Random setup and Election draws are recorded, so replay never rerolls.</p>
       </section>
 

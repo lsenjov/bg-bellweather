@@ -36,6 +36,12 @@
           </thead>
           <tbody>
             <tr>
+              <td>2026-08-10</td>
+              <td>Allow observers to join an active web game by invitation code when the host enabled observer admission, and display that code to every authenticated participant throughout the game. Continue to close new player seats once play starts and close all new admission after the game ends.</td>
+              <td>Observation does not alter the player roster or reveal seat-private state, so requiring observers to arrive before the host starts needlessly prevents late viewers and playtest facilitators from following an ongoing game. Keeping the code visible lets any participant invite those observers without relying on the host’s local browser state.</td>
+              <td>Late observer joins disrupt active players, moderation requires host-only invitation control, or completed games need invitation-based observer access in addition to authenticated replay access.</td>
+            </tr>
+            <tr>
               <td>2026-08-05</td>
               <td>Reveal each contest as a whole when it becomes the next contest to resolve. At that boundary, cancel and return equal counterbids in that contest before ranking its survivors. Keep bids in future contests covered, their outcomes unpublished, and their cards escrowed until their own contest begins.</td>
               <td>Contest-by-contest reveals preserve suspense without splitting one contest’s result across individual bids. Matching the reveal, cancellation, and refund boundary also prevents concealed outcomes from leaking through crossed-out filings or unexpectedly restored reserves.</td>

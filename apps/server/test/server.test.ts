@@ -80,11 +80,13 @@ describe("game server", () => {
       session: { gameId: string; accessToken: string };
       state: {
         publicState: {
+          inviteCode: string;
           latestSequence: number;
           configuration: { playerCount: number };
         };
       };
     };
+    expect(createBody.state.publicState.inviteCode).toBe(createBody.inviteCode);
     expect(createBody.state.publicState.latestSequence).toBe(1);
     expect(createBody.state.publicState.configuration.playerCount).toBe(1);
 
@@ -603,7 +605,7 @@ describe("game server", () => {
     await reopened.close();
   });
 
-  it("allows configured spectators without granting player commands", async () => {
+  it("allows configured spectators to join active games without granting player commands", async () => {
     const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
     temporaryDirectories.push(directory);
     const app = createAppServer({
@@ -623,14 +625,38 @@ describe("game server", () => {
         }
       }
     });
-    const game = created.body as {
+    const host = created.body as {
       inviteCode: string;
-      session: { gameId: string };
+      session: { gameId: string; accessToken: string };
     };
+    const playerJoined = await jsonRequest(baseUrl, "/api/v1/games/join", {
+      method: "POST",
+      body: {
+        inviteCode: host.inviteCode,
+        displayName: "Player",
+        controller: "human",
+        role: "player"
+      }
+    });
+    expect(playerJoined.status).toBe(201);
+    const player = playerJoined.body as {
+      session: { accessToken: string };
+    };
+    await sendCommand(baseUrl, host.session, 2, "start-for-observer", {
+      type: "start_game"
+    });
+    const hostSocket = await authenticatedSocket(
+      address.port,
+      host.session.gameId,
+      host.session.accessToken,
+      3
+    );
+    const spectatorJoinedEvent = nextSocketFrame(hostSocket);
+
     const joined = await jsonRequest(baseUrl, "/api/v1/games/join", {
       method: "POST",
       body: {
-        inviteCode: game.inviteCode,
+        inviteCode: host.inviteCode,
         displayName: "Observer",
         controller: "agent",
         role: "spectator"
@@ -639,26 +665,170 @@ describe("game server", () => {
     expect(joined.status).toBe(201);
     const spectator = joined.body as {
       session: { accessToken: string };
-      state: { scope: string; publicState: { spectators: unknown[] } };
+      state: {
+        scope: string;
+        publicState: {
+          inviteCode: string;
+          lifecycle: string;
+          spectators: unknown[];
+        };
+      };
     };
     expect(spectator.state.scope).toBe("public");
+    expect(spectator.state.publicState.inviteCode).toBe(host.inviteCode);
+    expect(spectator.state.publicState.lifecycle).toBe("active");
     expect(spectator.state.publicState.spectators).toHaveLength(1);
+    await expect(spectatorJoinedEvent).resolves.toMatchObject({
+      type: "event",
+      event: {
+        eventType: "spectator.joined",
+        sequence: 4,
+        scope: "public"
+      }
+    });
+
+    const commandAfterPresenceChange = await jsonRequest(
+      baseUrl,
+      `/api/v1/games/${host.session.gameId}/commands`,
+      {
+        method: "POST",
+        token: host.session.accessToken,
+        body: {
+          gameId: host.session.gameId,
+          idempotencyKey: "chat-after-observer",
+          expectedVersion: 3,
+          command: { type: "post_chat", message: "Welcome" }
+        }
+      }
+    );
+    expect(commandAfterPresenceChange).toMatchObject({
+      status: 200,
+      body: { version: 5, latestSequence: 5 }
+    });
+
+    const staleGameplayCommand = await jsonRequest(
+      baseUrl,
+      `/api/v1/games/${host.session.gameId}/commands`,
+      {
+        method: "POST",
+        token: player.session.accessToken,
+        body: {
+          gameId: host.session.gameId,
+          idempotencyKey: "stale-after-chat",
+          expectedVersion: 3,
+          command: { type: "post_chat", message: "Stale" }
+        }
+      }
+    );
+    expect(staleGameplayCommand).toMatchObject({
+      status: 409,
+      body: { error: { code: "version_conflict" } }
+    });
 
     const command = await jsonRequest(
       baseUrl,
-      `/api/v1/games/${game.session.gameId}/commands`,
+      `/api/v1/games/${host.session.gameId}/commands`,
       {
         method: "POST",
         token: spectator.session.accessToken,
         body: {
-          gameId: game.session.gameId,
+          gameId: host.session.gameId,
           idempotencyKey: "spectator-command",
-          expectedVersion: 2,
+          expectedVersion: 5,
           command: { type: "post_chat", message: "Hello" }
         }
       }
     );
     expect(command.status).toBe(403);
+    hostSocket.close();
+
+    app.store.database
+      .prepare("UPDATE games SET status = 'finished', finished_at = ? WHERE id = ?")
+      .run(new Date().toISOString(), host.session.gameId);
+    const joinedAfterCompletion = await jsonRequest(
+      baseUrl,
+      "/api/v1/games/join",
+      {
+        method: "POST",
+        body: {
+          inviteCode: host.inviteCode,
+          displayName: "Late Observer",
+          controller: "human",
+          role: "spectator"
+        }
+      }
+    );
+    expect(joinedAfterCompletion).toMatchObject({
+      status: 409,
+      body: { error: { code: "phase_closed" } }
+    });
+    await app.close();
+  });
+
+  it("keeps active admission closed for players and disabled spectators", async () => {
+    const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
+    temporaryDirectories.push(directory);
+    const app = createAppServer({
+      databasePath: resolve(directory, "game.sqlite"),
+      port: 0
+    });
+    const address = await app.listen();
+    const baseUrl = `http://${address.host}:${address.port}`;
+    const created = await jsonRequest(baseUrl, "/api/v1/games", {
+      method: "POST",
+      body: {
+        displayName: "Host",
+        controller: "human",
+        configuration: {
+          counterbidTimer: { mode: "off" },
+          allowSpectators: false
+        }
+      }
+    });
+    const host = created.body as {
+      inviteCode: string;
+      session: { gameId: string; accessToken: string };
+    };
+    await jsonRequest(baseUrl, "/api/v1/games/join", {
+      method: "POST",
+      body: {
+        inviteCode: host.inviteCode,
+        displayName: "Player",
+        controller: "human",
+        role: "player"
+      }
+    });
+    await sendCommand(baseUrl, host.session, 2, "start-closed-game", {
+      type: "start_game"
+    });
+
+    const spectator = await jsonRequest(baseUrl, "/api/v1/games/join", {
+      method: "POST",
+      body: {
+        inviteCode: host.inviteCode,
+        displayName: "Observer",
+        controller: "human",
+        role: "spectator"
+      }
+    });
+    expect(spectator).toMatchObject({
+      status: 403,
+      body: { error: { code: "forbidden" } }
+    });
+
+    const player = await jsonRequest(baseUrl, "/api/v1/games/join", {
+      method: "POST",
+      body: {
+        inviteCode: host.inviteCode,
+        displayName: "Late Player",
+        controller: "human",
+        role: "player"
+      }
+    });
+    expect(player).toMatchObject({
+      status: 409,
+      body: { error: { code: "illegal_action" } }
+    });
     await app.close();
   });
 

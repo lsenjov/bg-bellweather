@@ -26,6 +26,7 @@ export function projectState(
   const seats = store.listSeats(game.id);
   const publicState = {
     gameId: game.id,
+    inviteCode: game.code,
     version: game.currentVersion,
     latestSequence: game.currentVersion,
     lifecycle,

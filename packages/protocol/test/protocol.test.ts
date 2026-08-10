@@ -21,6 +21,7 @@ const eventId = "018f47d2-7830-7b84-a854-1b741f285f5f";
 
 const publicState = {
   gameId,
+  inviteCode: "PRESS42",
   version: 2,
   latestSequence: 4,
   lifecycle: "active",
