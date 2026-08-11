@@ -42,19 +42,20 @@ export const PARTIES = deepFreeze([
     shortName: "Honeycomb",
     animal: "Bees",
     color: "#d7aa12",
-    favoredOperations: ["organise", "rally"],
+    favoredOperations: ["organise", "court"],
     bonuses: [
       {
         operation: "organise",
-        name: "Leave a Cell Behind",
+        name: "Waggle Route",
         effect:
-          "After moving Support, add one Honeycomb Support to the vacated source spot. When recovering from no Support, add a second Support in the destination district.",
+          "After Organise resolves, add one Honeycomb Support to another free spot in the destination district.",
         timing: "immediate"
       },
       {
-        operation: "rally",
-        name: "Swarm",
-        effect: "Add a second Honeycomb Support in the Rally district.",
+        operation: "court",
+        name: "Common Cause",
+        effect:
+          "After Court resolves, if the selected party is Honeycomb's Coalition Target, move one Honeycomb Support to a free spot in a different district containing that party's Support.",
         timing: "immediate"
       }
     ]
@@ -65,20 +66,20 @@ export const PARTIES = deepFreeze([
     shortName: "Old Shell",
     animal: "Tortoises",
     color: "#3f7447",
-    favoredOperations: ["smear", "court"],
+    favoredOperations: ["organise", "smear"],
     bonuses: [
+      {
+        operation: "organise",
+        name: "Dig In",
+        effect:
+          "After a movement Organise resolves, add one Old Shell Support to the vacated source spot. Dig In cannot be used when recovering from no Support.",
+        timing: "immediate"
+      },
       {
         operation: "smear",
         name: "Stonewall",
         effect:
-          "Remove a second Support belonging to the same rival from the same district.",
-        timing: "immediate"
-      },
-      {
-        operation: "court",
-        name: "Binding Pact",
-        effect:
-          "Place a second Old Shell Support on the Court space chosen for this Court operation.",
+          "After Smear removes rival Support, remove a second Support belonging to the same rival from the affected district.",
         timing: "immediate"
       }
     ]
@@ -89,19 +90,19 @@ export const PARTIES = deepFreeze([
     shortName: "Foxglove",
     animal: "Foxes",
     color: "#b83d6d",
-    favoredOperations: ["organise", "smear"],
+    favoredOperations: ["smear", "court"],
     bonuses: [
-      {
-        operation: "organise",
-        name: "Slip Away",
-        effect:
-          "When moving Foxglove Support, choose any free spot instead of a neighboring free spot.",
-        timing: "immediate"
-      },
       {
         operation: "smear",
         name: "Spin",
         effect: "Add one Foxglove Support to the spot its Smear vacated.",
+        timing: "immediate"
+      },
+      {
+        operation: "court",
+        name: "Whisper Network",
+        effect:
+          "After Court resolves, move one Foxglove Court Support from a different Court space to the selected party's Court space, then update Foxglove's Coalition Target again.",
         timing: "immediate"
       }
     ]
@@ -112,20 +113,20 @@ export const PARTIES = deepFreeze([
     shortName: "Riverworks",
     animal: "Beavers",
     color: "#2d6fa3",
-    favoredOperations: ["rally", "smear"],
+    favoredOperations: ["organise", "rally"],
     bonuses: [
+      {
+        operation: "organise",
+        name: "Canal Network",
+        effect:
+          "Riverworks may Organise through connected districts containing its Support and end in a free district at the end of that route.",
+        timing: "immediate"
+      },
       {
         operation: "rally",
         name: "Public Works",
         effect:
-          "Add a second Riverworks Support in a district neighboring the Rally district.",
-        timing: "immediate"
-      },
-      {
-        operation: "smear",
-        name: "Undermine",
-        effect:
-          "Remove a second Support belonging to the same rival from a district neighboring the first affected district.",
+          "After Rally resolves, add one Riverworks Support to a free spot in a district neighboring the Rally district.",
         timing: "immediate"
       }
     ]
@@ -136,20 +137,20 @@ export const PARTIES = deepFreeze([
     shortName: "Many Wings",
     animal: "Starlings",
     color: "#d86f24",
-    favoredOperations: ["organise", "court"],
+    favoredOperations: ["rally", "court"],
     bonuses: [
       {
-        operation: "organise",
-        name: "Murmuration",
+        operation: "rally",
+        name: "Scatter the Flock",
         effect:
-          "Resolve the Organise baseline again immediately using the updated map state.",
+          "After Rally resolves, move as many Many Wings Support as possible from the Rally district to distinct neighboring districts with free spots.",
         timing: "immediate"
       },
       {
         operation: "court",
-        name: "Local Chapters",
+        name: "Joint Campaign",
         effect:
-          "After Court resolves, add one Many Wings Support in a free spot in a district containing its current Coalition Target.",
+          "After Court resolves, add one Support belonging to the selected party to a free spot in a district containing Many Wings Support.",
         timing: "immediate"
       }
     ]
@@ -160,21 +161,21 @@ export const PARTIES = deepFreeze([
     shortName: "Night",
     animal: "Owls",
     color: "#252522",
-    favoredOperations: ["rally", "court"],
+    favoredOperations: ["rally", "smear"],
     bonuses: [
       {
         operation: "rally",
-        name: "Closing Argument",
+        name: "Night Shift",
         effect:
-          "After every contest and Revolving Door finishes, the claiming bid resolves one additional Rally baseline.",
+          "After every contest and Revolving Door finishes, add one Night Support to a legal Rally district tied for the fewest total Support.",
         timing: "delayed"
       },
       {
-        operation: "court",
-        name: "After-Hours Deal",
+        operation: "smear",
+        name: "Midnight Leak",
         effect:
-          "After every contest and Revolving Door finishes, the claiming bid resolves one additional Court baseline.",
-        timing: "delayed"
+          "After Smear removes rival Support, remove one Court Support belonging to that rival from any Court space, then update its Coalition Target.",
+        timing: "immediate"
       }
     ]
   }

@@ -559,7 +559,7 @@ function resolvePartyOperation(
   if (
     request.claimBonus === true &&
     decision.partyId === "night-parliament" &&
-    (operation === "rally" || operation === "court")
+    operation === "rally"
   ) {
     const ranked = rankedActiveBids(state, getContest(state, decision.contestId));
     request.nightClaim = {
@@ -749,11 +749,11 @@ function legalPartyOperations(
       return true;
     }
     return (
-      partyId === "foxglove" &&
+      partyId === "riverworks" &&
       operation === "organise" &&
       !phase.claimedBonuses.includes(operation) &&
       hasLegalOperationChoice(operationState, partyId, operation, {
-        ignoreOrganiseAdjacency: true
+        allowCanalNetwork: true
       })
     );
   });
@@ -1224,13 +1224,6 @@ function parseOperationRequest(
     }
     request.claimBonus = object["claimBonus"];
   }
-  if (nested && object["repeatChoice"] !== undefined) {
-    const repeat = parseOperationChoice(object["repeatChoice"], "organise");
-    if (repeat.operation !== "organise") {
-      throw new GameRuleError("invalid_operation", "Murmuration must repeat Organise");
-    }
-    request.repeatChoice = repeat;
-  }
   return request;
 }
 
@@ -1260,6 +1253,26 @@ function parseOperationChoice(
   if (value["bonusDistrictId"] !== undefined) {
     requireDistrictId(value["bonusDistrictId"], "bonusDistrictId");
   }
+  if (value["bonusSourceDistrictId"] !== undefined) {
+    requireDistrictId(value["bonusSourceDistrictId"], "bonusSourceDistrictId");
+  }
+  if (value["bonusDistrictIds"] !== undefined) {
+    if (!Array.isArray(value["bonusDistrictIds"])) {
+      throw new GameRuleError(
+        "invalid_operation",
+        "bonusDistrictIds must be districts"
+      );
+    }
+    for (const districtId of value["bonusDistrictIds"]) {
+      requireDistrictId(districtId, "bonusDistrictIds");
+    }
+  }
+  if (value["bonusCourtParty"] !== undefined) {
+    requirePartyId(value["bonusCourtParty"], "bonusCourtParty");
+  }
+  if (value["bonusCourtSourceParty"] !== undefined) {
+    requirePartyId(value["bonusCourtSourceParty"], "bonusCourtSourceParty");
+  }
   return value as unknown as OperationChoice;
 }
 
@@ -1286,7 +1299,7 @@ function toNightClaim(claim: {
   ownerId: string;
   bidRank: number;
   order: number;
-  operation: "rally" | "court";
+  operation: "rally";
 }): NightDelayedClaim {
   return {
     id: claim.id,

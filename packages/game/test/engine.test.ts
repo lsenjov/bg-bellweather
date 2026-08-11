@@ -95,9 +95,9 @@ describe("game setup and private projections", () => {
     const initialized = initializeGame(configuration(2, null), zeroRandom);
     initialized.state.rulesetVersion = "8";
 
-    expect(() => replay([initialized])).toThrow("Only ruleset 12 is supported");
+    expect(() => replay([initialized])).toThrow("Only ruleset 13 is supported");
     expect(() => projectGameState(initialized.state, null)).toThrow(
-      "Only ruleset 12 is supported"
+      "Only ruleset 13 is supported"
     );
   });
 
@@ -711,12 +711,12 @@ describe("contest resolution", () => {
     });
   });
 
-  it("applies Many Wings repeated Organise and prevents claiming its bonus twice", () => {
+  it("applies Old Shell Dig In and prevents claiming its bonus twice", () => {
     let state = submitAllOpenings(
       initializeGame(configuration(4, null), zeroRandom).state,
       0,
       { "seat-1": operations({ organise: 2 }) },
-      "many-wings"
+      "old-shell"
     );
     state = readyAll(state);
     let decision = pending(state);
@@ -732,15 +732,10 @@ describe("contest resolution", () => {
           destinationDistrictId: "cloverfield"
         },
         claimBonus: true,
-        repeatChoice: {
-          operation: "organise",
-          sourceDistrictId: "cloverfield",
-          destinationDistrictId: "northreach"
-        }
       }
     });
-    expect(state.support.harbormouth["many-wings"]).toBeUndefined();
-    expect(state.support.northreach["many-wings"]).toBe(1);
+    expect(state.support.harbormouth["old-shell"]).toBe(1);
+    expect(state.support.cloverfield["old-shell"]).toBe(1);
     decision = pending(state);
     expect(() =>
       act(state, {
@@ -751,27 +746,22 @@ describe("contest resolution", () => {
         choice: {
           choice: {
             operation: "organise",
-            sourceDistrictId: "northreach",
-            destinationDistrictId: "crown-road"
+            sourceDistrictId: "cloverfield",
+            destinationDistrictId: "northreach"
           },
-          claimBonus: true,
-          repeatChoice: {
-            operation: "organise",
-            sourceDistrictId: "crown-road",
-            destinationDistrictId: "bellweather-centre"
-          }
+          claimBonus: true
         }
       })
     ).toThrow("already claimed");
   });
 
-  it("resolves Night Parliament's delayed Court after every contest transfer", () => {
+  it("resolves Night Shift after every contest transfer", () => {
     let state = submitAllOpenings(
       initializeGame(configuration(4, null), zeroRandom).state,
       0,
       {
-        "seat-1": operations({ court: 1 }),
-        "seat-2": operations({ rally: 1 })
+        "seat-1": operations({ rally: 1 }),
+        "seat-2": operations({ smear: 1 })
       },
       "night-parliament"
     );
@@ -782,7 +772,7 @@ describe("contest resolution", () => {
       (bid) =>
         bid.ownerSeatId === "seat-2" &&
         bid.kind === "opening" &&
-        bid.operations.rally === 1
+        bid.operations.smear === 1
     )!;
     state.partyOrder = [
       "night-parliament",
@@ -801,11 +791,11 @@ describe("contest resolution", () => {
       type: "resolve_party_operation",
       seatId: decision.seatId,
       decisionId: decision.id,
-      operation: "court",
+      operation: "rally",
       choice: {
         choice: {
-          operation: "court",
-          targetParty: "honeycomb"
+          operation: "rally",
+          districtId: "harbormouth"
         },
         claimBonus: true
       }
@@ -815,9 +805,29 @@ describe("contest resolution", () => {
     expect(decision).toMatchObject({
       kind: "party_operation",
       contestId: laterBid.contestId,
-      legalOperations: ["rally"]
+      legalOperations: ["smear"]
     });
     expect(state.bids[nightBid.id]?.status).toBe("transferred");
+    state = act(state, {
+      type: "resolve_party_operation",
+      seatId: decision.seatId,
+      decisionId: decision.id,
+      operation: "smear",
+      choice: {
+        operation: "smear",
+        districtId: "grand-market",
+        rivalParty: PARTY_IDS.find(
+          (partyId) =>
+            partyId !== laterBid.contestId && partyId !== "night-parliament"
+        )!
+      }
+    });
+    decision = pending(state);
+    expect(decision).toMatchObject({
+      kind: "night_delayed_operation",
+      operation: "rally"
+    });
+    expect(state.bids[laterBid.id]?.status).toBe("transferred");
     state = act(state, {
       type: "resolve_party_operation",
       seatId: decision.seatId,
@@ -825,30 +835,10 @@ describe("contest resolution", () => {
       operation: "rally",
       choice: {
         operation: "rally",
-        districtId: "harbormouth"
+        districtId: "grand-market"
       }
     });
-    decision = pending(state);
-    expect(decision).toMatchObject({
-      kind: "night_delayed_operation",
-      operation: "court"
-    });
-    expect(state.bids[laterBid.id]?.status).toBe("transferred");
-    state = act(state, {
-      type: "resolve_party_operation",
-      seatId: decision.seatId,
-      decisionId: decision.id,
-      operation: "court",
-      choice: {
-        operation: "court",
-        targetParty: "foxglove"
-      }
-    });
-    expect(state.courtSupport["night-parliament"]).toEqual({
-      honeycomb: 1,
-      foxglove: 1
-    });
-    expect(state.coalitionTargets["night-parliament"]).toBe("honeycomb");
+    expect(state.support["grand-market"]["night-parliament"]).toBe(2);
     expect(state.phase.type).toBe("opening");
   });
 

@@ -115,12 +115,12 @@ describe("parties and firms", () => {
     }
   });
 
-  it("describes both Night bonuses with end-of-resolution timing", () => {
+  it("keeps only Night Shift delayed", () => {
     expect(
-      PARTIES_BY_ID["night-parliament"].bonuses.map((bonus) => bonus.effect)
+      PARTIES_BY_ID["night-parliament"].bonuses.map((bonus) => bonus.timing)
     ).toEqual([
-      "After every contest and Revolving Door finishes, the claiming bid resolves one additional Rally baseline.",
-      "After every contest and Revolving Door finishes, the claiming bid resolves one additional Court baseline."
+      "delayed",
+      "immediate"
     ]);
   });
 

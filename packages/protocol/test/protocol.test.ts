@@ -146,6 +146,41 @@ describe("commands", () => {
     ).toBe(true);
   });
 
+  it("accepts ruleset-13 bonus choices and rejects retired bonus fields", () => {
+    const action = (choice: unknown) => ({
+      type: "resolve_party_operation",
+      decisionId: "decision-1",
+      operation: "rally",
+      choice
+    });
+
+    expect(
+      PlayerGameActionSchema.safeParse(
+        action({
+          choice: {
+            operation: "rally",
+            districtId: "harbormouth",
+            bonusDistrictIds: ["cloverfield", "millbank"]
+          },
+          claimBonus: true
+        })
+      ).success
+    ).toBe(true);
+    expect(
+      PlayerGameActionSchema.safeParse(
+        action({
+          choice: { operation: "rally", districtId: "harbormouth" },
+          claimBonus: true,
+          repeatChoice: {
+            operation: "organise",
+            sourceDistrictId: "harbormouth",
+            destinationDistrictId: "cloverfield"
+          }
+        })
+      ).success
+    ).toBe(false);
+  });
+
   it("accepts documented game actions and rejects unknown shapes", () => {
     expect(
       CommandEnvelopeSchema.parse({

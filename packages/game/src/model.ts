@@ -117,7 +117,7 @@ export interface PendingNightDelayedDecision {
   contestId: "night-parliament";
   bidId: BidId;
   claimId: string;
-  operation: "rally" | "court";
+  operation: "rally";
 }
 
 export type PendingDecision =
@@ -131,7 +131,7 @@ export interface DelayedBonusClaim {
   bidId: BidId;
   bidRank: number;
   order: number;
-  operation: "rally" | "court";
+  operation: "rally";
 }
 
 export interface ResolutionPhase {

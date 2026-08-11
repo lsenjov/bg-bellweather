@@ -330,7 +330,11 @@ const RallyChoiceSchema = z
   .object({
     operation: z.literal("rally"),
     districtId: z.string().trim().min(1).max(100),
-    bonusDistrictId: z.string().trim().min(1).max(100).optional()
+    bonusDistrictId: z.string().trim().min(1).max(100).optional(),
+    bonusDistrictIds: z
+      .array(z.string().trim().min(1).max(100))
+      .max(20)
+      .optional()
   })
   .strict();
 const SmearChoiceSchema = z
@@ -338,14 +342,16 @@ const SmearChoiceSchema = z
     operation: z.literal("smear"),
     districtId: z.string().trim().min(1).max(100),
     rivalParty: PartyIdSchema,
-    bonusDistrictId: z.string().trim().min(1).max(100).optional()
+    bonusCourtParty: PartyIdSchema.optional()
   })
   .strict();
 const CourtChoiceSchema = z
   .object({
     operation: z.literal("court"),
     targetParty: PartyIdSchema,
-    bonusDistrictId: z.string().trim().min(1).max(100).optional()
+    bonusDistrictId: z.string().trim().min(1).max(100).optional(),
+    bonusSourceDistrictId: z.string().trim().min(1).max(100).optional(),
+    bonusCourtSourceParty: PartyIdSchema.optional()
   })
   .strict();
 export const OperationChoiceSchema = z.discriminatedUnion("operation", [
@@ -359,8 +365,7 @@ const OperationResolutionChoiceSchema = z.union([
   z
     .object({
       choice: OperationChoiceSchema,
-      claimBonus: z.boolean().optional(),
-      repeatChoice: OrganiseChoiceSchema.optional()
+      claimBonus: z.boolean().optional()
     })
     .strict()
 ]);

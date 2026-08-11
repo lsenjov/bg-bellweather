@@ -29,17 +29,24 @@ export type OperationChoice =
       destinationDistrictId: string;
       sourceDistrictId?: string;
     }
-  | { operation: "rally"; districtId: string; bonusDistrictId?: string }
+  | {
+      operation: "rally";
+      districtId: string;
+      bonusDistrictId?: string;
+      bonusDistrictIds?: string[];
+    }
   | {
       operation: "smear";
       districtId: string;
       rivalParty: Party;
-      bonusDistrictId?: string;
+      bonusCourtParty?: Party;
     }
   | {
       operation: "court";
       targetParty: Party;
       bonusDistrictId?: string;
+      bonusSourceDistrictId?: string;
+      bonusCourtSourceParty?: Party;
     };
 
 export interface NightDelayedClaim {
@@ -47,14 +54,13 @@ export interface NightDelayedClaim {
   ownerId: string;
   bidRank: number;
   order: number;
-  operation: "rally" | "court";
+  operation: "rally";
 }
 
 export interface OperationRequest {
   party: Party;
   choice: OperationChoice;
   claimBonus?: boolean;
-  repeatChoice?: Extract<OperationChoice, { operation: "organise" }>;
   nightClaim?: Omit<NightDelayedClaim, "operation">;
 }
 
@@ -69,7 +75,7 @@ export interface OperationResolution {
 }
 
 export interface OperationLegalityOptions {
-  ignoreOrganiseAdjacency?: boolean;
+  allowCanalNetwork?: boolean;
 }
 
 export interface DelayedResolution {
@@ -83,28 +89,28 @@ export const PARTY_BONUSES: Record<
   Partial<Record<Operation, string>>
 > = {
   honeycomb: {
-    organise: "Leave a Cell Behind",
-    rally: "Swarm"
+    organise: "Waggle Route",
+    court: "Common Cause"
   },
   "old-shell": {
-    smear: "Stonewall",
-    court: "Binding Pact"
+    organise: "Dig In",
+    smear: "Stonewall"
   },
   foxglove: {
-    organise: "Slip Away",
-    smear: "Spin"
+    smear: "Spin",
+    court: "Whisper Network"
   },
   riverworks: {
-    rally: "Public Works",
-    smear: "Undermine"
+    organise: "Canal Network",
+    rally: "Public Works"
   },
   "many-wings": {
-    organise: "Murmuration",
-    court: "Local Chapters"
+    rally: "Scatter the Flock",
+    court: "Joint Campaign"
   },
   "night-parliament": {
-    rally: "Closing Argument",
-    court: "After-Hours Deal"
+    rally: "Night Shift",
+    smear: "Midnight Leak"
   }
 };
 
@@ -119,7 +125,7 @@ export function resolveOperation(
     state,
     request.party,
     request.choice,
-    request.party === "foxglove" &&
+    request.party === "riverworks" &&
       operation === "organise" &&
       request.claimBonus === true
   );
@@ -174,6 +180,13 @@ export function resolveNightDelayedOperations(
           failure: "A matching delayed-operation choice is required"
         };
       }
+      if (!legalNightShiftDistrictIds(state).includes(choice.districtId)) {
+        return {
+          claim,
+          applied: false,
+          failure: "Night Shift requires a least-occupied legal Rally district"
+        };
+      }
       const baseline = applyBaseline(state, "night-parliament", choice, false);
       return { claim, applied: baseline.applied, failure: baseline.failure };
     });
@@ -196,6 +209,19 @@ export function supportCount(state: OperationState, party?: Party): number {
   );
 }
 
+export function legalNightShiftDistrictIds(state: OperationState): string[] {
+  const legal = Object.values(state.districts).filter((district) =>
+    isOperationChoiceLegal(state, "night-parliament", {
+      operation: "rally",
+      districtId: district.id
+    })
+  );
+  const minimum = Math.min(...legal.map(districtTotal));
+  return legal
+    .filter((district) => districtTotal(district) === minimum)
+    .map((district) => district.id);
+}
+
 export function isOperationChoiceLegal(
   initialState: OperationState,
   party: Party,
@@ -206,7 +232,7 @@ export function isOperationChoiceLegal(
     cloneState(initialState),
     party,
     choice,
-    options.ignoreOrganiseAdjacency === true
+    options.allowCanalNetwork === true
   ).applied;
 }
 
@@ -217,8 +243,7 @@ export function isOperationRequestLegal(
   const preparedRequest =
     request.claimBonus === true &&
     request.party === "night-parliament" &&
-    (request.choice.operation === "rally" ||
-      request.choice.operation === "court") &&
+    request.choice.operation === "rally" &&
     request.nightClaim === undefined
       ? {
           ...request,
@@ -307,14 +332,13 @@ interface BaselineResult {
   destinationDistrictId?: string;
   affectedDistrictId?: string;
   rivalParty?: Party;
-  courtTarget?: Party;
 }
 
 function applyBaseline(
   state: OperationState,
   party: Party,
   choice: OperationChoice,
-  ignoreOrganiseAdjacency: boolean
+  allowCanalNetwork: boolean
 ): BaselineResult {
   const wasAbsent = supportCount(state, party) === 0;
   if (choice.operation === "organise") {
@@ -343,8 +367,12 @@ function applyBaseline(
       return failed(wasAbsent, "Organise requires party Support in a different source");
     }
     if (
-      !ignoreOrganiseAdjacency &&
-      !source.neighbors.includes(destination.id)
+      !source.neighbors.includes(destination.id) &&
+      !(
+        allowCanalNetwork &&
+        party === "riverworks" &&
+        canalNetworkConnects(state, source.id, destination.id)
+      )
     ) {
       return failed(wasAbsent, "Organise destination must neighbor the source");
     }
@@ -418,8 +446,7 @@ function applyBaseline(
   return {
     applied: true,
     failure: null,
-    wasAbsent,
-    courtTarget: choice.targetParty
+    wasAbsent
   };
 }
 
@@ -434,18 +461,42 @@ function applyBonus(
 } {
   const { party, choice } = request;
   if (party === "honeycomb" && choice.operation === "organise") {
-    const districtId = baseline.wasAbsent
-      ? baseline.destinationDistrictId
-      : baseline.sourceDistrictId;
-    return addBonusSupport(state, districtId, party, null);
-  }
-  if (party === "honeycomb" && choice.operation === "rally") {
     return addBonusSupport(
       state,
       baseline.destinationDistrictId,
       party,
-      null
+      "Waggle Route requires another free destination spot"
     );
+  }
+  if (party === "honeycomb" && choice.operation === "court") {
+    const source = state.districts[choice.bonusSourceDistrictId ?? ""];
+    const destination = state.districts[choice.bonusDistrictId ?? ""];
+    if (
+      state.coalitionTargets[party] !== choice.targetParty ||
+      source === undefined ||
+      destination === undefined ||
+      source.id === destination.id ||
+      (source.support[party] ?? 0) < 1 ||
+      (destination.support[choice.targetParty] ?? 0) < 1 ||
+      !hasFreeSpot(destination)
+    ) {
+      return bonusFailed(
+        "Common Cause requires Honeycomb's selected Coalition Target, a Honeycomb source, and a distinct free district containing that target's Support"
+      );
+    }
+    removeSupport(source, party);
+    addSupport(destination, party);
+    return bonusApplied();
+  }
+  if (party === "old-shell" && choice.operation === "organise") {
+    return baseline.wasAbsent
+      ? bonusFailed("Dig In cannot be claimed while Old Shell is absent")
+      : addBonusSupport(
+          state,
+          baseline.sourceDistrictId,
+          party,
+          "Dig In requires a free source spot"
+        );
   }
   if (party === "old-shell" && choice.operation === "smear") {
     return removeBonusSupport(
@@ -454,15 +505,6 @@ function applyBonus(
       baseline.rivalParty
     );
   }
-  if (party === "old-shell" && choice.operation === "court") {
-    placeCourtSupport(state, party, baseline.courtTarget!);
-    return bonusApplied();
-  }
-  if (party === "foxglove" && choice.operation === "organise") {
-    return baseline.wasAbsent
-      ? bonusFailed("Slip Away cannot be claimed while Foxglove is absent")
-      : bonusApplied();
-  }
   if (party === "foxglove" && choice.operation === "smear") {
     return addBonusSupport(
       state,
@@ -470,6 +512,27 @@ function applyBonus(
       party,
       null
     );
+  }
+  if (party === "foxglove" && choice.operation === "court") {
+    const sourceParty = choice.bonusCourtSourceParty;
+    if (
+      sourceParty === undefined ||
+      sourceParty === party ||
+      sourceParty === choice.targetParty ||
+      (state.courtSupport[party][sourceParty] ?? 0) < 1
+    ) {
+      return bonusFailed(
+        "Whisper Network requires Foxglove Court Support on a different Court space"
+      );
+    }
+    removeCourtSupport(state, party, sourceParty);
+    placeCourtSupport(state, party, choice.targetParty);
+    return bonusApplied();
+  }
+  if (party === "riverworks" && choice.operation === "organise") {
+    return baseline.wasAbsent
+      ? bonusFailed("Canal Network cannot be claimed while Riverworks is absent")
+      : bonusApplied();
   }
   if (party === "riverworks" && choice.operation === "rally") {
     const source = state.districts[baseline.destinationDistrictId ?? ""];
@@ -483,49 +546,50 @@ function applyBonus(
     }
     return addBonusSupport(state, destination.id, party, null);
   }
-  if (party === "riverworks" && choice.operation === "smear") {
-    const source = state.districts[baseline.affectedDistrictId ?? ""];
-    const destination = state.districts[choice.bonusDistrictId ?? ""];
-    if (
-      source === undefined ||
-      destination === undefined ||
-      !source.neighbors.includes(destination.id)
-    ) {
-      return bonusFailed("Undermine requires a neighboring district");
+  if (party === "many-wings" && choice.operation === "rally") {
+    const source = state.districts[baseline.destinationDistrictId ?? ""];
+    const destinations = choice.bonusDistrictIds ?? [];
+    if (source === undefined) {
+      return bonusFailed("Scatter the Flock requires the Rally district");
     }
-    return removeBonusSupport(state, destination.id, baseline.rivalParty);
-  }
-  if (party === "many-wings" && choice.operation === "organise") {
-    if (request.repeatChoice === undefined) {
-      return bonusFailed("Murmuration requires a second Organise choice");
-    }
-    const repeat = applyBaseline(
-      state,
-      party,
-      request.repeatChoice,
-      false
-    );
-    return repeat.applied ? bonusApplied() : bonusFailed(repeat.failure);
-  }
-  if (party === "many-wings" && choice.operation === "court") {
-    const coalitionTarget = state.coalitionTargets[party];
-    const district = state.districts[choice.bonusDistrictId ?? ""];
+    const eligible = source.neighbors.filter((districtId) => {
+      const district = state.districts[districtId];
+      return district !== undefined && hasFreeSpot(district);
+    });
+    const count = Math.min(source.support[party] ?? 0, eligible.length);
     if (
-      coalitionTarget === null ||
-      district === undefined ||
-      !hasFreeSpot(district) ||
-      (district.support[coalitionTarget] ?? 0) < 1
+      count === 0 ||
+      destinations.length !== count ||
+      new Set(destinations).size !== destinations.length ||
+      destinations.some((districtId) => !eligible.includes(districtId))
     ) {
       return bonusFailed(
-        "Local Chapters requires a current Coalition Target with Support in a free district"
+        "Scatter the Flock requires the maximum number of distinct free neighboring districts"
       );
     }
-    addSupport(district, party);
+    for (const districtId of destinations) {
+      removeSupport(source, party);
+      addSupport(state.districts[districtId]!, party);
+    }
+    return bonusApplied();
+  }
+  if (party === "many-wings" && choice.operation === "court") {
+    const district = state.districts[choice.bonusDistrictId ?? ""];
+    if (
+      district === undefined ||
+      !hasFreeSpot(district) ||
+      (district.support[party] ?? 0) < 1
+    ) {
+      return bonusFailed(
+        "Joint Campaign requires a free district containing Many Wings Support"
+      );
+    }
+    addSupport(district, choice.targetParty);
     return bonusApplied();
   }
   if (
     party === "night-parliament" &&
-    (choice.operation === "rally" || choice.operation === "court")
+    choice.operation === "rally"
   ) {
     if (request.nightClaim === undefined) {
       return bonusFailed("A Night Parliament delayed claim identity is required");
@@ -535,9 +599,25 @@ function applyBonus(
       failure: null,
       delayedClaim: {
         ...request.nightClaim,
-        operation: choice.operation
+        operation: "rally"
       }
     };
+  }
+  if (party === "night-parliament" && choice.operation === "smear") {
+    const rivalParty = baseline.rivalParty;
+    const courtParty = choice.bonusCourtParty;
+    if (
+      rivalParty === undefined ||
+      courtParty === undefined ||
+      (state.courtSupport[rivalParty][courtParty] ?? 0) < 1
+    ) {
+      return bonusFailed(
+        "Midnight Leak requires rival Court Support on the selected Court space"
+      );
+    }
+    removeCourtSupport(state, rivalParty, courtParty);
+    updateCoalitionTarget(state, rivalParty);
+    return bonusApplied();
   }
   return bonusFailed("This party has no matching bonus");
 }
@@ -571,6 +651,31 @@ function removeBonusSupport(
   }
   removeSupport(district, party);
   return bonusApplied();
+}
+
+function canalNetworkConnects(
+  state: OperationState,
+  sourceDistrictId: string,
+  destinationDistrictId: string
+): boolean {
+  const visited = new Set<string>();
+  const pending = [sourceDistrictId];
+  while (pending.length > 0) {
+    const districtId = pending.shift()!;
+    if (visited.has(districtId)) {
+      continue;
+    }
+    visited.add(districtId);
+    const district = state.districts[districtId];
+    if (district === undefined || (district.support.riverworks ?? 0) < 1) {
+      continue;
+    }
+    if (district.neighbors.includes(destinationDistrictId)) {
+      return true;
+    }
+    pending.push(...district.neighbors);
+  }
+  return false;
 }
 
 function bonusApplied() {
@@ -635,6 +740,25 @@ function placeCourtSupport(
 ): void {
   const support = state.courtSupport[party];
   support[targetParty] = (support[targetParty] ?? 0) + 1;
+  updateCoalitionTarget(state, party);
+}
+
+function removeCourtSupport(
+  state: OperationState,
+  party: Party,
+  targetParty: Party
+): void {
+  const support = state.courtSupport[party];
+  const next = (support[targetParty] ?? 0) - 1;
+  if (next <= 0) {
+    delete support[targetParty];
+  } else {
+    support[targetParty] = next;
+  }
+}
+
+function updateCoalitionTarget(state: OperationState, party: Party): void {
+  const support = state.courtSupport[party];
   const ranked = PARTIES.filter((candidate) => candidate !== party)
     .map((candidate) => ({
       party: candidate,

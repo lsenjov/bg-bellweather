@@ -125,14 +125,14 @@ describe("operation baselines", () => {
     ).toBe(false);
     expect(
       isOperationChoiceLegal(
-        initial,
-        "honeycomb",
+        state({ a: { honeycomb: 1 }, b: { riverworks: 1 }, c: { riverworks: 1 } }),
+        "riverworks",
         {
           operation: "organise",
-          sourceDistrictId: "a",
-          destinationDistrictId: "c"
+          sourceDistrictId: "c",
+          destinationDistrictId: "a"
         },
-        { ignoreOrganiseAdjacency: true }
+        { allowCanalNetwork: true }
       )
     ).toBe(true);
     expect(initial.districts.a?.support.honeycomb).toBe(1);
@@ -151,9 +151,17 @@ describe("operation baselines", () => {
       false
     );
     expect(
-      hasLegalOperationChoice(initial, "honeycomb", "organise", {
-        ignoreOrganiseAdjacency: true
-      })
+      hasLegalOperationChoice(
+        state({
+          a: { honeycomb: 4 },
+          b: { riverworks: 1 },
+          c: { riverworks: 1 },
+          d: { "night-parliament": 1, "old-shell": 1 }
+        }),
+        "riverworks",
+        "organise",
+        { allowCanalNetwork: true }
+      )
     ).toBe(true);
     expect(hasLegalOperationChoice(initial, "honeycomb", "rally")).toBe(
       false
@@ -184,11 +192,18 @@ describe("operation baselines", () => {
 
   it("reports complete immediate and delayed bonus request legality", () => {
     expect(
-      isOperationRequestLegal(state({ a: { honeycomb: 4 } }), {
+      isOperationRequestLegal(
+        state({ a: { honeycomb: 1 }, b: { foxglove: 3 } }),
+        {
         party: "honeycomb",
-        choice: { operation: "rally", districtId: "a" },
+        choice: {
+          operation: "organise",
+          sourceDistrictId: "a",
+          destinationDistrictId: "b"
+        },
         claimBonus: true
-      })
+        }
+      )
     ).toBe(false);
     expect(
       isOperationRequestLegal(
@@ -219,14 +234,8 @@ describe("operation baselines", () => {
       isOperationRequestLegal(state({ a: { "many-wings": 1 } }), {
         party: "many-wings",
         choice: {
-          operation: "organise",
-          sourceDistrictId: "a",
-          destinationDistrictId: "b"
-        },
-        repeatChoice: {
-          operation: "organise",
-          sourceDistrictId: "b",
-          destinationDistrictId: "d"
+          operation: "rally",
+          districtId: "a"
         },
         claimBonus: true
       })
@@ -234,7 +243,7 @@ describe("operation baselines", () => {
     expect(
       isOperationRequestLegal(state(), {
         party: "night-parliament",
-        choice: { operation: "court", targetParty: "foxglove" },
+        choice: { operation: "rally", districtId: "d" },
         claimBonus: true
       })
     ).toBe(true);
@@ -248,8 +257,8 @@ describe("all twelve party bonuses", () => {
     ).toHaveLength(12);
   });
 
-  it("applies Honeycomb Leave a Cell Behind and Swarm within capacity", () => {
-    const moved = resolveOperation(state({ a: { honeycomb: 1 } }), {
+  it("applies Honeycomb Waggle Route and Common Cause", () => {
+    const route = resolveOperation(state({ a: { honeycomb: 1 } }), {
       party: "honeycomb",
       choice: {
         operation: "organise",
@@ -258,37 +267,47 @@ describe("all twelve party bonuses", () => {
       },
       claimBonus: true
     });
-    expect(moved.bonusApplied).toBe(true);
-    expect(moved.state.districts.a?.support.honeycomb).toBe(1);
+    expect(route.bonusApplied).toBe(true);
+    expect(route.state.districts.b?.support.honeycomb).toBe(2);
 
-    const recovered = resolveOperation(state(), {
-      party: "honeycomb",
-      choice: { operation: "organise", destinationDistrictId: "b" },
-      claimBonus: true
-    });
-    expect(recovered.state.districts.b?.support.honeycomb).toBe(2);
-
-    const swarm = resolveOperation(state({ a: { honeycomb: 1 } }), {
-      party: "honeycomb",
-      choice: { operation: "rally", districtId: "a" },
-      claimBonus: true
-    });
-    expect(swarm.state.districts.a?.support.honeycomb).toBe(3);
-
-    const noRoomForBonus = resolveOperation(
-      state({ a: { honeycomb: 4 } }),
+    const cause = resolveOperation(
+      state({ a: { honeycomb: 1 }, c: { foxglove: 1 } }),
       {
         party: "honeycomb",
-        choice: { operation: "rally", districtId: "a" },
+        choice: {
+          operation: "court",
+          targetParty: "foxglove",
+          bonusSourceDistrictId: "a",
+          bonusDistrictId: "c"
+        },
         claimBonus: true
       }
     );
-    expect(noRoomForBonus.baselineApplied).toBe(false);
-    expect(noRoomForBonus.bonusApplied).toBe(false);
-    expect(noRoomForBonus.state.districts.a?.support.honeycomb).toBe(4);
+    expect(cause.bonusApplied).toBe(true);
+    expect(cause.state.districts.a?.support.honeycomb).toBeUndefined();
+    expect(cause.state.districts.c?.support.honeycomb).toBe(1);
   });
 
-  it("applies Old Shell Stonewall and Binding Pact", () => {
+  it("applies Old Shell Dig In and Stonewall", () => {
+    const dugIn = resolveOperation(state({ a: { "old-shell": 1 } }), {
+      party: "old-shell",
+      choice: {
+        operation: "organise",
+        sourceDistrictId: "a",
+        destinationDistrictId: "b"
+      },
+      claimBonus: true
+    });
+    expect(dugIn.state.districts.a?.support["old-shell"]).toBe(1);
+
+    expect(
+      resolveOperation(state(), {
+        party: "old-shell",
+        choice: { operation: "organise", destinationDistrictId: "a" },
+        claimBonus: true
+      }).bonusApplied
+    ).toBe(false);
+
     const stonewall = resolveOperation(
       state({ a: { "old-shell": 1, foxglove: 2 } }),
       {
@@ -302,29 +321,9 @@ describe("all twelve party bonuses", () => {
       }
     );
     expect(stonewall.state.districts.a?.support.foxglove).toBeUndefined();
-
-    const pact = resolveOperation(state(), {
-      party: "old-shell",
-      choice: { operation: "court", targetParty: "night-parliament" },
-      claimBonus: true
-    });
-    expect(pact.state.coalitionTargets["old-shell"]).toBe("night-parliament");
-    expect(pact.state.courtSupport["old-shell"]["night-parliament"]).toBe(2);
   });
 
-  it("applies Foxglove Slip Away and Spin", () => {
-    const slip = resolveOperation(state({ a: { foxglove: 1 } }), {
-      party: "foxglove",
-      choice: {
-        operation: "organise",
-        sourceDistrictId: "a",
-        destinationDistrictId: "c"
-      },
-      claimBonus: true
-    });
-    expect(slip.baselineApplied).toBe(true);
-    expect(slip.state.districts.c?.support.foxglove).toBe(1);
-
+  it("applies Foxglove Spin and Whisper Network", () => {
     const spin = resolveOperation(
       state({ a: { foxglove: 1, honeycomb: 1 } }),
       {
@@ -338,9 +337,46 @@ describe("all twelve party bonuses", () => {
       }
     );
     expect(spin.state.districts.a?.support.foxglove).toBe(2);
+
+    const court = state();
+    court.courtSupport.foxglove["old-shell"] = 1;
+    court.coalitionTargets.foxglove = "old-shell";
+    const whisper = resolveOperation(court, {
+      party: "foxglove",
+      choice: {
+        operation: "court",
+        targetParty: "riverworks",
+        bonusCourtSourceParty: "old-shell"
+      },
+      claimBonus: true
+    });
+    expect(whisper.state.courtSupport.foxglove).toEqual({ riverworks: 2 });
+    expect(whisper.state.coalitionTargets.foxglove).toBe("riverworks");
   });
 
-  it("applies Riverworks Public Works and Undermine beyond normal Smear range", () => {
+  it("applies Riverworks Canal Network and Public Works", () => {
+    const canal = resolveOperation(
+      state({ a: { riverworks: 1 }, b: { riverworks: 1 } }),
+      {
+        party: "riverworks",
+        choice: {
+          operation: "organise",
+          sourceDistrictId: "a",
+          destinationDistrictId: "c"
+        },
+        claimBonus: true
+      }
+    );
+    expect(canal.baselineApplied).toBe(true);
+    expect(canal.state.districts.c?.support.riverworks).toBe(1);
+    expect(
+      resolveOperation(state(), {
+        party: "riverworks",
+        choice: { operation: "organise", destinationDistrictId: "a" },
+        claimBonus: true
+      }).bonusApplied
+    ).toBe(false);
+
     const works = resolveOperation(state({ a: { riverworks: 1 } }), {
       party: "riverworks",
       choice: {
@@ -351,44 +387,25 @@ describe("all twelve party bonuses", () => {
       claimBonus: true
     });
     expect(works.state.districts.b?.support.riverworks).toBe(1);
-
-    const undermine = resolveOperation(
-      state({
-        a: { riverworks: 1, foxglove: 1 },
-        b: { foxglove: 1 }
-      }),
-      {
-        party: "riverworks",
-        choice: {
-          operation: "smear",
-          districtId: "a",
-          rivalParty: "foxglove",
-          bonusDistrictId: "b"
-        },
-        claimBonus: true
-      }
-    );
-    expect(undermine.state.districts.a?.support.foxglove).toBeUndefined();
-    expect(undermine.state.districts.b?.support.foxglove).toBeUndefined();
   });
 
-  it("applies Many Wings Murmuration against updated state and Local Chapters", () => {
-    const murmuration = resolveOperation(state(), {
+  it("applies Many Wings Scatter the Flock and Joint Campaign", () => {
+    const scatter = resolveOperation(state({ b: { "many-wings": 2 } }), {
       party: "many-wings",
-      choice: { operation: "organise", destinationDistrictId: "a" },
-      repeatChoice: {
-        operation: "organise",
-        sourceDistrictId: "a",
-        destinationDistrictId: "b"
+      choice: {
+        operation: "rally",
+        districtId: "b",
+        bonusDistrictIds: ["a", "c"]
       },
       claimBonus: true
     });
-    expect(murmuration.bonusApplied).toBe(true);
-    expect(murmuration.state.districts.a?.support["many-wings"]).toBeUndefined();
-    expect(murmuration.state.districts.b?.support["many-wings"]).toBe(1);
+    expect(scatter.bonusApplied).toBe(true);
+    expect(scatter.state.districts.b?.support["many-wings"]).toBe(1);
+    expect(scatter.state.districts.a?.support["many-wings"]).toBe(1);
+    expect(scatter.state.districts.c?.support["many-wings"]).toBe(1);
 
-    const chapters = resolveOperation(
-      state({ c: { foxglove: 1 } }),
+    const campaign = resolveOperation(
+      state({ c: { "many-wings": 1 } }),
       {
         party: "many-wings",
         choice: {
@@ -399,41 +416,19 @@ describe("all twelve party bonuses", () => {
         claimBonus: true
       }
     );
-    expect(chapters.state.districts.c?.support["many-wings"]).toBe(1);
-
-    const tied = state({ c: { riverworks: 1 } });
-    tied.coalitionTargets["many-wings"] = "foxglove";
-    tied.courtSupport["many-wings"] = {
-      foxglove: 1,
-      riverworks: 1
-    };
-    const chaptersForCurrentTarget = resolveOperation(tied, {
-      party: "many-wings",
-      choice: {
-        operation: "court",
-        targetParty: "riverworks",
-        bonusDistrictId: "c"
-      },
-      claimBonus: true
-    });
-    expect(chaptersForCurrentTarget.state.coalitionTargets["many-wings"]).toBe(
-      "riverworks"
-    );
-    expect(chaptersForCurrentTarget.state.districts.c?.support["many-wings"]).toBe(
-      1
-    );
+    expect(campaign.state.districts.c?.support.foxglove).toBe(1);
   });
 
-  it("claims and resolves Night bonuses later in bid-rank order with current choices", () => {
-    const rallyClaim = resolveOperation(state(), {
+  it("claims Night Shift and applies Midnight Leak", () => {
+    const lowClaim = resolveOperation(state(), {
       party: "night-parliament",
       choice: { operation: "rally", districtId: "d" },
       claimBonus: true,
       nightClaim: { id: "low", ownerId: "p2", bidRank: 2, order: 0 }
     }).delayedClaim!;
-    const courtClaim = resolveOperation(state(), {
+    const highClaim = resolveOperation(state(), {
       party: "night-parliament",
-      choice: { operation: "court", targetParty: "foxglove" },
+      choice: { operation: "rally", districtId: "d" },
       claimBonus: true,
       nightClaim: { id: "high", ownerId: "p1", bidRank: 0, order: 0 }
     }).delayedClaim!;
@@ -443,18 +438,50 @@ describe("all twelve party bonuses", () => {
     });
     const delayed = resolveNightDelayedOperations(
       beforeDelay,
-      [rallyClaim, courtClaim],
+      [lowClaim, highClaim],
       {
-        high: { operation: "court", targetParty: "riverworks" },
-        low: { operation: "rally", districtId: "b" }
+        high: { operation: "rally", districtId: "b" },
+        low: { operation: "rally", districtId: "a" }
       }
     );
     expect(delayed.resolutions.map(({ claim }) => claim.id)).toEqual([
       "high",
       "low"
     ]);
-    expect(delayed.state.coalitionTargets["night-parliament"]).toBe("riverworks");
+    expect(delayed.state.districts.a?.support["night-parliament"]).toBe(2);
     expect(delayed.state.districts.b?.support["night-parliament"]).toBe(2);
+
+    const invalidShift = resolveNightDelayedOperations(
+      state({
+        a: { "night-parliament": 1 },
+        b: { "night-parliament": 1, foxglove: 1 }
+      }),
+      [highClaim],
+      { high: { operation: "rally", districtId: "b" } }
+    );
+    expect(invalidShift.resolutions[0]).toMatchObject({
+      applied: false,
+      failure: "Night Shift requires a least-occupied legal Rally district"
+    });
+
+    const leakState = state({ a: { "night-parliament": 1, foxglove: 1 } });
+    leakState.courtSupport.foxglove = { honeycomb: 2, riverworks: 2 };
+    leakState.coalitionTargets.foxglove = "honeycomb";
+    const leak = resolveOperation(leakState, {
+      party: "night-parliament",
+      choice: {
+        operation: "smear",
+        districtId: "a",
+        rivalParty: "foxglove",
+        bonusCourtParty: "honeycomb"
+      },
+      claimBonus: true
+    });
+    expect(leak.state.courtSupport.foxglove).toEqual({
+      honeycomb: 1,
+      riverworks: 2
+    });
+    expect(leak.state.coalitionTargets.foxglove).toBe("riverworks");
   });
 
   it("uses unlimited reserves while respecting printed capacity", () => {

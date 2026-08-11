@@ -15,7 +15,7 @@
           Design archive / 01.2
         </a>
         <h1>Current rules</h1>
-        <p class="meta">Status: pre-prototype. Last updated: 2026-08-11.</p>
+        <p class="meta">Status: pre-prototype. Last updated: 2026-08-12.</p>
       </div>
     </header>
 
@@ -214,72 +214,73 @@
               <tr>
                 <td>Honeycomb Cooperative</td>
                 <td>Organise</td>
-                <td><strong>Leave a Cell Behind:</strong> After moving Support, add one Honeycomb Support to the vacated source spot. If Honeycomb had no Support before the baseline, add a second Honeycomb Support to a free spot in the destination district instead.</td>
+                <td><strong>Waggle Route:</strong> After Organise resolves, add one Honeycomb Support to another free spot in the destination district.</td>
               </tr>
               <tr>
                 <td>Honeycomb Cooperative</td>
-                <td>Rally</td>
-                <td><strong>Swarm:</strong> Add a second Honeycomb Support to another free spot in the Rally district.</td>
+                <td>Court</td>
+                <td><strong>Common Cause:</strong> After Court resolves, if the selected party is Honeycomb’s Coalition Target, move one Honeycomb Support from another district to a free spot in a district containing Support belonging to that party.</td>
+              </tr>
+              <tr>
+                <td>Old Shell Union</td>
+                <td>Organise</td>
+                <td><strong>Dig In:</strong> After a movement Organise resolves, add one Old Shell Support to the vacated source spot. Dig In cannot be claimed when recovering from no Support.</td>
               </tr>
               <tr>
                 <td>Old Shell Union</td>
                 <td>Smear</td>
-                <td><strong>Stonewall:</strong> Remove a second Support belonging to the same rival from the same district.</td>
-              </tr>
-              <tr>
-                <td>Old Shell Union</td>
-                <td>Court</td>
-                <td><strong>Binding Pact:</strong> Place a second Old Shell Support on the same Court space selected for the Court baseline, then update Old Shell’s Coalition Target again.</td>
-              </tr>
-              <tr>
-                <td>Foxglove League</td>
-                <td>Organise</td>
-                <td><strong>Slip Away:</strong> When moving Foxglove Support, choose any free spot on the map instead of a neighboring free spot. If Foxglove had no Support before the baseline, Organise already permits placement in any free spot and Slip Away cannot be claimed.</td>
+                <td><strong>Stonewall:</strong> After Smear removes rival Support, remove a second Support belonging to the same rival from the affected district.</td>
               </tr>
               <tr>
                 <td>Foxglove League</td>
                 <td>Smear</td>
-                <td><strong>Spin:</strong> After removing rival Support, add one Foxglove Support to the vacated spot.</td>
+                <td><strong>Spin:</strong> After Smear removes rival Support, add one Foxglove Support to the vacated spot.</td>
+              </tr>
+              <tr>
+                <td>Foxglove League</td>
+                <td>Court</td>
+                <td><strong>Whisper Network:</strong> After Court resolves, move one Foxglove Court Support from a different Court space to the selected party’s Court space, then update Foxglove’s Coalition Target again.</td>
               </tr>
               <tr>
                 <td>Riverworks Party</td>
-                <td>Rally</td>
-                <td><strong>Public Works:</strong> Add a second Riverworks Support to a free spot in a district neighboring the Rally district.</td>
-              </tr>
-              <tr>
-                <td>Riverworks Party</td>
-                <td>Smear</td>
-                <td><strong>Undermine:</strong> Remove a second Support belonging to the same rival from a district neighboring the first affected district. The second district need not be within Riverworks’ normal Smear range.</td>
-              </tr>
-              <tr>
-                <td>Many Wings Coalition</td>
                 <td>Organise</td>
-                <td><strong>Murmuration:</strong> After Organise resolves, immediately resolve the Organise baseline again using the updated map state. The second resolution may move the same Support again or move a different Support.</td>
+                <td><strong>Canal Network:</strong> Riverworks may Organise to a free district reached from its source through a path whose source and intermediate districts contain Riverworks Support.</td>
+              </tr>
+              <tr>
+                <td>Riverworks Party</td>
+                <td>Rally</td>
+                <td><strong>Public Works:</strong> After Rally resolves, add one Riverworks Support to a free spot in a district neighboring the Rally district.</td>
+              </tr>
+              <tr>
+                <td>Many Wings Coalition</td>
+                <td>Rally</td>
+                <td><strong>Scatter the Flock:</strong> After Rally resolves, move the maximum possible number of Many Wings Support from the Rally district to free spots in neighboring districts, placing no more than one moved Support in each district. The owner chooses that many distinct legal destinations and may empty the Rally district.</td>
               </tr>
               <tr>
                 <td>Many Wings Coalition</td>
                 <td>Court</td>
-                <td><strong>Local Chapters:</strong> After Court resolves, add one Many Wings Support to a free spot in any district containing Support belonging to Many Wings’ current Coalition Target.</td>
+                <td><strong>Joint Campaign:</strong> After Court resolves, add one Support belonging to the selected party to a free spot in a district containing Many Wings Support.</td>
               </tr>
               <tr>
                 <td>Night Parliament</td>
                 <td>Rally</td>
-                <td><strong>Closing Argument:</strong> After every contest and Revolving Door finishes, the claiming bid’s owner resolves one additional Rally baseline.</td>
+                <td><strong>Night Shift:</strong> Claim and mark the bid when Rally resolves. After the final party’s Revolving Door, its owner adds one Night Support to a legal Rally district tied for the fewest total Support, choosing among ties.</td>
               </tr>
               <tr>
                 <td>Night Parliament</td>
-                <td>Court</td>
-                <td><strong>After-Hours Deal:</strong> After every contest and Revolving Door finishes, the claiming bid’s owner resolves one additional Court baseline.</td>
+                <td>Smear</td>
+                <td><strong>Midnight Leak:</strong> After Smear removes rival Support, remove one Court Support belonging to that rival from any Court space, then update that rival’s Coalition Target.</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <p>Slip Away ignores adjacency but not district capacity. Murmuration’s second Organise checks whether Many Wings has Support after the first resolution; a recovery placement therefore makes the second resolution a movement. Spin, Public Works, Local Chapters, and all other effects that add Support require the stated free spot; the matching Support itself is always available.</p>
+        <p>Common Cause moves Support between distinct districts and checks Honeycomb’s Coalition Target after the Court baseline updates it. Canal Network still moves exactly one Support and requires Riverworks Support in the source and every intermediate district; the destination needs only a free spot. Scatter the Flock counts eligible neighboring districts after the Rally baseline and must move the maximum possible number. Waggle Route, Spin, Public Works, Joint Campaign, Night Shift, and all other effects that add Support require the stated free spot; Support supplies remain unlimited.</p>
 
         <p>The Pecking Order ignores operation families and does not use party baselines or bonuses. Every operation card executed there swaps one adjacent pair of party tokens; choose the adjacent pair when that operation card executes.</p>
         <div class="note">
           <p><strong>Superseded:</strong> Earlier rules used party compatibility restrictions, provisional operation families without concrete effects, and the former Foxglove–Riverworks pairing. These versions remain in the <a href="../../archive/rules/party-operation-compatibility-2026-07-28.html">compatibility archive</a>, <a href="../../archive/rules/provisional-operation-families-2026-07-28.html">operation-family archive</a>, and <a href="../../archive/rules/foxglove-riverworks-pairing-2026-07-28.html">pairing archive</a>.</p>
           <p><strong>Superseded:</strong> The direct Coalition Target redirection operation and defensive Binding Pact remain in the <a href="../../archive/rules/direct-coalition-redirection-2026-07-31.html">direct-redirection archive</a>.</p>
+          <p><strong>Superseded:</strong> The complete ruleset-12 bonus matrix remains in the <a href="../../archive/rules/party-bonus-matrix-ruleset-12-2026-08-12.html">party-bonus archive</a>.</p>
         </div>
       </section>
 
@@ -305,8 +306,8 @@
         <p>Resolve the automatic Pecking Order auction first. Rank its active bids from most Leverage to least, but execute bids in reverse rank order, from the lowest active bid to the highest; the highest-Leverage bid therefore acts last. The human player who placed that highest active bid becomes the first opener for the next Campaign Round; move the Early Bird marker beside them. Receiving the bid through the Revolving Door does not transfer this role. If no active bid remains, the first opener and marker do not change. Each operation card swaps one adjacent pair of party tokens, with each change applying before the next card chooses its pair. Bluff cards do nothing. If no active bid remains, the order does not change. The updated order applies immediately and persists across rounds. After the Pecking Order Revolving Door, resolve every party contest in full following the current order.</p>
         <p>Within every contest, rank active bids from most Leverage to least. Bids, not players, occupy ranks. The reverse execution order at the Pecking Order does not change this ranking or its later Revolving Door. At the start of a party contest, uncover both Ready circles on that party’s board; both operation bonuses are available. Each bonus corresponds to one of the party’s favored families and may be applied once during that contest.</p>
         <p>Starting with the highest bid in a party contest, each bid owner executes that bid’s operation cards in any order they choose. Every operation card performs its family’s baseline effect. As a matching operation card executes, its owner may also apply the corresponding party bonus if that bonus is still available and its claim conditions are met; applying it makes the bonus unavailable for the rest of the contest, so cover that bonus’s Ready circle with a marker. Immediate bonuses require both the baseline and bonus effect to resolve. A bid containing both favored families may claim both bonuses. When a bid finishes, any bonus it could not or chose not to claim remains available to lower-ranked bids. Each bid receives its own opportunity, even when one player owns multiple ranks. The family printed on a committed card is fixed, but its owner chooses all legal variable parameters when it executes.</p>
-        <p>Closing Argument and After-Hours Deal are delayed bonuses. Claim either when its matching Night Parliament baseline resolves, then mark the claiming bid; future legality is not required when claiming. Complete Night Parliament’s contest normally, including its Revolving Door, and keep every claim marked while the remaining party contests resolve. After the final contest completes its Revolving Door, resolve the delayed bonus operations from highest claiming bid to lowest, then finish the Campaign Round. One bid that claimed both chooses their order. Check legality when each delayed baseline would resolve. If at least one legal choice exists, its owner chooses legal parameters; an illegal selection must be corrected and does not consume the claim. If no legal choice exists, the delayed baseline fails automatically.</p>
-        <p>Before each bid owner acts, identify its remaining operation families with at least one legal baseline choice against the current board, including Slip Away while that bonus remains available. The owner chooses one such family and legal parameters. An illegal selection must be corrected and does not consume a card. If none of the bid’s remaining operation cards has any legal choice, every remaining operation card in that bid fails automatically and the contest advances. Failed cards cannot be replaced and remain part of their bid for transfer.</p>
+        <p>Night Shift is the only delayed bonus. Claim it when its Night Parliament Rally baseline resolves, then mark the claiming bid; future legality is not required when claiming. Complete Night Parliament’s contest normally, including its Revolving Door, and keep every claim marked while the remaining party contests resolve. After the final contest completes its Revolving Door, resolve Night Shift claims from highest claiming bid to lowest, then finish the Campaign Round. For each claim, find every district where Night Parliament could legally Rally and restrict the choice to those tied for the fewest total Support. An illegal selection must be corrected and does not consume the claim. If no legal Rally district exists, the claim fails automatically.</p>
+        <p>Before each bid owner acts, identify its remaining operation families with at least one legal baseline choice against the current board, including Canal Network routes while that bonus remains available. The owner chooses one such family and legal parameters. An illegal selection must be corrected and does not consume a card. If none of the bid’s remaining operation cards has any legal choice, every remaining operation card in that bid fails automatically and the contest advances. Failed cards cannot be replaced and remain part of their bid for transfer.</p>
         <p>If an earlier effect removes or disables an unresolved contest’s party, that contest still resolves. Its newly illegal operation cards fail, then its active bids transfer normally.</p>
 
         <h3>5. Resolve the Revolving Door</h3>
