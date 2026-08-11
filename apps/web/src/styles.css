@@ -67,7 +67,7 @@ button:disabled { opacity: .45; cursor: not-allowed; transform: none !important;
 .briefing dt { font-family: var(--mono); text-transform: uppercase; font-size: .7rem; }
 .briefing dd { margin: 0; font-weight: 700; }
 .game-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(360px, .7fr); gap: 16px; margin-top: 18px; align-items: start; }
-.map-desk, .contest-desk, .back-channel-desk, .private-folio { padding: clamp(18px, 2.5vw, 34px); }
+.map-desk, .contest-desk, .back-channel-desk, .private-folio, .operation-log-desk { padding: clamp(18px, 2.5vw, 34px); }
 .private-folio { grid-column: 1 / -1; }
 .map-desk { grid-column: 1; }
 .section-heading { display: flex; justify-content: space-between; gap: 20px; align-items: start; border-bottom: 2px solid var(--ink); margin-bottom: 18px; }
@@ -243,6 +243,23 @@ button:disabled { opacity: .45; cursor: not-allowed; transform: none !important;
 .election-agendas { background: color-mix(in srgb, var(--red) 7%, transparent); }
 .election-agenda-record span { font: .56rem var(--mono); text-transform: uppercase; }
 .election-agenda-record strong { overflow-wrap: anywhere; }
+.operation-log-desk { grid-column: 1 / -1; border-top: 8px solid var(--blue); }
+.operation-log-heading { align-items: end; }
+.operation-log-count { padding-bottom: 12px; font: .58rem var(--mono); letter-spacing: .04em; text-transform: uppercase; }
+.operation-log-empty { margin: 0; padding: 18px 0; font-style: italic; }
+.operation-log { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.operation-log-entry { display: grid; grid-template-columns: 68px minmax(0, 1fr); min-width: 0; border: 1px solid var(--ink); background: color-mix(in srgb, var(--blue) 5%, var(--paper)); }
+.operation-log-round { display: grid; place-items: center; padding: 12px 8px; color: var(--paper); background: var(--ink); font: 700 .58rem/1.25 var(--mono); text-align: center; text-transform: uppercase; }
+.operation-log-report { display: grid; gap: 8px; min-width: 0; padding: 11px 13px; }
+.operation-log-filing, .operation-log-outcome { margin: 0; }
+.operation-log-filing { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 10px; border-bottom: 1px solid var(--rule); padding-bottom: 6px; }
+.operation-log-filing strong { font-size: .9rem; }
+.operation-log-filing span, .operation-log-outcome b { font: 700 .56rem/1.4 var(--mono); text-transform: uppercase; }
+.operation-log-outcome { display: grid; gap: 4px; }
+.operation-log-outcome span { overflow-wrap: anywhere; font-size: .78rem; line-height: 1.35; }
+.operation-log-failure { border-color: var(--red); background: color-mix(in srgb, var(--red) 10%, var(--paper)); box-shadow: inset 5px 0 0 var(--red); }
+.operation-log-failure .operation-log-round { background: var(--red); }
+.operation-log-failure .operation-log-outcome b { color: var(--red); }
 .decision-slip { white-space:pre-wrap;background:#fff8e9;border-left:5px solid var(--red);padding:12px;font-size:.7rem;overflow:auto}
 .gift-fields { display: grid; gap: 18px; min-width: 0; margin: 0; padding: 0; border: 0; }
 .gift-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
@@ -279,7 +296,7 @@ footer { display:flex;justify-content:space-between;padding:18px 4px;font:.65rem
   .entry-page { grid-template-columns: 1fr; padding: 40px 20px; }
   .entry-editorial h1 { font-size: clamp(4rem, 15vw, 8rem); }
   .game-grid { grid-template-columns: minmax(0, 1fr); }
-  .map-desk,.contest-desk,.back-channel-desk,.private-folio { grid-column: 1; grid-row: auto; }
+  .map-desk,.contest-desk,.back-channel-desk,.private-folio,.operation-log-desk { grid-column: 1; grid-row: auto; }
   .contest-desk { position: static; max-height: none; overflow-y: visible; }
   .private-folio { grid-template-columns: minmax(210px, .7fr) minmax(0, 1.7fr); }
   .folio-agenda { grid-column: 1 / -1; }
@@ -312,6 +329,7 @@ footer { display:flex;justify-content:space-between;padding:18px 4px;font:.65rem
   .back-channel-grid { grid-template-columns: 1fr; }
   .deal-desk, .chat-desk { padding-inline: 0; }
   .chat-desk { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--ink); border-left: 0; }
+  .operation-log { grid-template-columns: 1fr; }
   .token-fields, .swap-grid { grid-template-columns: 1fr 1fr; }
   .replay-columns { grid-template-columns: 1fr; }
   .front-page-rule { overflow-x:auto; }

@@ -210,7 +210,7 @@ describe("browser play surface", () => {
     ]);
   });
 
-  it("groups consecutive automatic failures and resolves historical filing owners", () => {
+  it("shows spectators successful, grouped, and historical operation results", () => {
     const seats = [
       {
         id: "seat-a",
@@ -314,6 +314,29 @@ describe("browser play surface", () => {
         failed: true
       }
     ]);
+
+    render(
+      <GameDesk
+        view={view}
+        ownSeat={undefined}
+        ownSeatId={undefined}
+        spectator
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    expect(screen.getByRole("heading", { name: "Game log" })).toBeTruthy();
+    const log = screen.getByRole("list", {
+      name: "Operation resolution history"
+    });
+    expect(log.getAttribute("aria-live")).toBe("polite");
+    expect(within(log).getAllByRole("listitem")).toHaveLength(3);
+    expect(within(log).getByText("Added Support in Northreach.")).toBeTruthy();
+    expect(within(log).getByText("2 Rally cards")).toBeTruthy();
+    expect(within(log).getAllByText(`Failed — ${failure}.`)).toHaveLength(2);
+    expect(within(log).getByText("Round 1")).toBeTruthy();
+    expect(within(log).getByText("Ochre")).toBeTruthy();
   });
 
   it("does not cross out an owner's covered cancellation before reveal", () => {

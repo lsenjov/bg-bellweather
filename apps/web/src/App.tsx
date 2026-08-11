@@ -737,6 +737,8 @@ export function GameDesk(props: {
         />
       )}
 
+      <OperationLog view={props.view} />
+
       <section className="back-channel-desk paper-panel">
         <div className="section-heading">
           <div><p className="section-label">Back channel</p><h2>Gifts & table talk</h2></div>
@@ -788,6 +790,51 @@ export function GameDesk(props: {
   );
 }
 
+function OperationLog({ view }: { view: GameView }) {
+  const entries = operationLogEntries(view);
+  const operationCount = view.resolvedOperations?.length ?? 0;
+  return (
+    <section className="operation-log-desk paper-panel" aria-labelledby="operation-log-heading">
+      <div className="section-heading operation-log-heading">
+        <div>
+          <p className="section-label">Resolution wire</p>
+          <h2 id="operation-log-heading">Game log</h2>
+        </div>
+        <span className="operation-log-count">
+          {operationCount} {operationCount === 1 ? "card" : "cards"} · {entries.length} {entries.length === 1 ? "entry" : "entries"}
+        </span>
+      </div>
+      {entries.length === 0 && (
+        <p className="operation-log-empty">No operations have resolved yet.</p>
+      )}
+      <ol
+        className="operation-log"
+        aria-label="Operation resolution history"
+        aria-live="polite"
+      >
+        {entries.map((entry) => (
+          <li
+            className={`operation-log-entry ${entry.failed ? "operation-log-failure" : "operation-log-success"}`}
+            key={entry.key}
+          >
+            <span className="operation-log-round">Round {entry.round}</span>
+            <div className="operation-log-report">
+              <p className="operation-log-filing">
+                <strong>{entry.contestName}</strong>
+                <span>{entry.ownerName}</span>
+              </p>
+              <p className="operation-log-outcome">
+                <b>{entry.count === 1 ? `${entry.operationName} card` : `${entry.count} ${entry.operationName} cards`}</b>
+                <span>{entry.outcome}</span>
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
 export interface OperationLogEntry {
   key: string;
   round: number;
@@ -805,7 +852,7 @@ export function operationLogEntries(view: GameView): OperationLogEntry[] {
     count: number;
     startIndex: number;
   }> = [];
-  for (const [index, operation] of view.resolvedOperations.entries()) {
+  for (const [index, operation] of (view.resolvedOperations ?? []).entries()) {
     const previous = groups.at(-1);
     if (
       previous !== undefined &&
