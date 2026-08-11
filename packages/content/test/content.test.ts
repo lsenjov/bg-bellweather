@@ -14,6 +14,7 @@ import {
   PARTY_IDS,
   SCORING_CARDS,
   SCORING_CARD_IDS,
+  SCORING_CARD_PAIRS,
   SEAT_REFERENCES,
   STANDARD_PLAYER_SETUP,
   SUPPORT_SUPPLY,
@@ -176,6 +177,18 @@ describe("scoring deck", () => {
     expect(SCORING_CARDS).toHaveLength(24);
     expect(SCORING_CARDS.map((card) => card.id)).toEqual(SCORING_CARD_IDS);
     expect(new Set(SCORING_CARD_IDS).size).toBe(24);
+  });
+
+  it("registers every scoring card in one compatible low-player pair", () => {
+    expect(SCORING_CARD_PAIRS.flat()).toEqual(SCORING_CARD_IDS);
+    for (const [firstId, secondId] of SCORING_CARD_PAIRS) {
+      const districts = [firstId, secondId].flatMap((cardId) =>
+        SCORING_CARDS.find((card) => card.id === cardId)!.objectives.map(
+          (objective) => objective.districtId
+        )
+      );
+      expect(new Set(districts).size).toBe(6);
+    }
   });
 
   it("gives each card one non-neighboring objective at each scoring capacity", () => {

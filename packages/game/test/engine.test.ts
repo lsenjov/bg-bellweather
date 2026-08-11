@@ -104,7 +104,7 @@ describe("game setup and private projections", () => {
     );
   });
 
-  it("skips an overlapping candidate when dealing compatible low-player pairs", () => {
+  it("finds a registered companion beneath an incompatible card", () => {
     const prefix = ["SC-01", "SC-07", "SC-02", "SC-03", "SC-04"] as const;
     const hands = dealScoringCards(
       [
@@ -128,7 +128,7 @@ describe("game setup and private projections", () => {
     }
   });
 
-  it("backs up from a greedy dead end when dealing nine compatible pairs", () => {
+  it("completes nine pairs on a shuffle that stranded the former greedy deal", () => {
     const deck = [
       "SC-22", "SC-12", "SC-03", "SC-05", "SC-16", "SC-10",
       "SC-21", "SC-06", "SC-01", "SC-07", "SC-18", "SC-19",

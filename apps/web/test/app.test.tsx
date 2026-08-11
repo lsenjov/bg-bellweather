@@ -643,6 +643,64 @@ describe("browser play surface", () => {
     ).toBeTruthy();
   });
 
+  it("keeps scored agendas in the public archive after the next campaign starts", () => {
+    const seats = [
+      {
+        id: "seat-a",
+        displayName: "Ada",
+        controller: "human",
+        position: 0,
+        firmIds: ["one-fell-swoop"],
+        points: 14,
+        reserve: null,
+        scoringCardIds: null
+      },
+      {
+        id: "seat-b",
+        displayName: "Grace",
+        controller: "human",
+        position: 1,
+        firmIds: ["pairliament"],
+        points: 9,
+        reserve: null,
+        scoringCardIds: null
+      }
+    ] satisfies GameDeskView["seats"];
+    render(
+      <GameDesk
+        view={{
+          ...gameDeskView(seats),
+          round: 5,
+          electionNumber: 1,
+          electionHistory: [{
+            electionNumber: 1,
+            afterRound: 4,
+            scoringCards: [
+              { seatId: "seat-a", scoringCardIds: ["SC-01", "SC-02"] },
+              { seatId: "seat-b", scoringCardIds: ["SC-03", "SC-04"] }
+            ],
+            scores: [
+              { playerId: "seat-a", pointsChange: 4, resultingPoints: 14 },
+              { playerId: "seat-b", pointsChange: -1, resultingPoints: 9 }
+            ]
+          }]
+        }}
+        ownSeat={undefined}
+        ownSeatId={undefined}
+        spectator
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    const archive = screen.getByLabelText("Public Election archive");
+    expect(within(archive).getByText("Election 1")).toBeTruthy();
+    expect(within(archive).getAllByText("Ada")).toHaveLength(2);
+    expect(within(archive).getByText("SC-01 · SC-02")).toBeTruthy();
+    expect(within(archive).getAllByText("Grace")).toHaveLength(2);
+    expect(within(archive).getByText("SC-03 · SC-04")).toBeTruthy();
+  });
+
   it("limits gift selects to the live transferable reserve", () => {
     const ownSeat = {
       id: "seat-a",

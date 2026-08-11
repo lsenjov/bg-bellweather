@@ -10,6 +10,7 @@ import {
   PARTIES_BY_ID,
   RULESET_VERSION,
   SCORING_CARD_IDS,
+  SCORING_CARD_PAIRS,
   SCORING_CARDS_BY_ID,
   STANDARD_PLAYER_SETUP,
   type FirmId,
@@ -1165,21 +1166,12 @@ export function dealScoringCards(
     { length: playerCount },
     (): ScoringCardSlots => [[], [], []]
   );
-  const compatiblePairs = cardsPerPlayer === 2
-    ? findCompatibleScoringPairs(drawPile, playerCount * 3)
-    : null;
-
-  if (cardsPerPlayer === 2 && compatiblePairs === undefined) {
-    throw new GameRuleError(
-      "scoring_deck_empty",
-      "The scoring deck cannot deal enough compatible pairs"
-    );
-  }
 
   for (let electionIndex = 0; electionIndex < 3; electionIndex += 1) {
     for (let playerIndex = 0; playerIndex < playerCount; playerIndex += 1) {
-      const pairIndex = electionIndex * playerCount + playerIndex;
-      const cards = compatiblePairs?.[pairIndex] ?? drawPile.splice(0, 1);
+      const cards = cardsPerPlayer === 2
+        ? drawRegisteredScoringPair(drawPile)
+        : drawPile.splice(0, 1);
       if (cards.length !== cardsPerPlayer) {
         throw new GameRuleError(
           "scoring_deck_empty",
@@ -1193,64 +1185,24 @@ export function dealScoringCards(
   return slots;
 }
 
-function scoringCardsAreCompatible(
-  first: ScoringCardId,
-  second: ScoringCardId
-): boolean {
-  const firstDistricts = new Set(
-    SCORING_CARDS_BY_ID[first].objectives.map(
-      (objective) => objective.districtId
-    )
+function drawRegisteredScoringPair(
+  drawPile: ScoringCardId[]
+): ScoringCardId[] {
+  const first = drawPile.shift();
+  if (first === undefined) {
+    return [];
+  }
+  const pair = SCORING_CARD_PAIRS.find((candidate) =>
+    candidate[0] === first || candidate[1] === first
   );
-  return SCORING_CARDS_BY_ID[second].objectives.every(
-    (objective) => !firstDistricts.has(objective.districtId)
-  );
-}
-
-function findCompatibleScoringPairs(
-  deck: readonly ScoringCardId[],
-  pairCount: number
-): Array<[ScoringCardId, ScoringCardId]> | undefined {
-  const failed = new Set<string>();
-  const search = (
-    available: readonly ScoringCardId[],
-    pairsNeeded: number
-  ): Array<[ScoringCardId, ScoringCardId]> | undefined => {
-    if (pairsNeeded === 0) {
-      return [];
-    }
-    if (available.length < pairsNeeded * 2) {
-      return undefined;
-    }
-    const key = `${pairsNeeded}:${available.join(",")}`;
-    if (failed.has(key)) {
-      return undefined;
-    }
-
-    const [first, ...remaining] = available;
-    for (let index = 0; index < remaining.length; index += 1) {
-      const second = remaining[index]!;
-      if (!scoringCardsAreCompatible(first!, second)) {
-        continue;
-      }
-      const rest = search(
-        [...remaining.slice(0, index), ...remaining.slice(index + 1)],
-        pairsNeeded - 1
-      );
-      if (rest !== undefined) {
-        return [[first!, second], ...rest];
-      }
-    }
-
-    const withoutFirst = search(remaining, pairsNeeded);
-    if (withoutFirst !== undefined) {
-      return withoutFirst;
-    }
-    failed.add(key);
-    return undefined;
-  };
-
-  return search(deck, pairCount);
+  const companion = pair?.find((cardId) => cardId !== first);
+  const companionIndex = companion === undefined
+    ? -1
+    : drawPile.indexOf(companion);
+  if (companionIndex < 0) {
+    return [first];
+  }
+  return [first, ...drawPile.splice(companionIndex, 1)];
 }
 
 function parseOperationRequest(

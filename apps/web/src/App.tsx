@@ -712,8 +712,11 @@ export function GameDesk(props: {
         {props.view.phase !== "resolution" && actionDesk}
       </section>
 
-      {latestElection && (
-        <ElectionDesk election={latestElection} seats={props.view.seats} />
+      {props.view.electionHistory.length > 0 && (
+        <ElectionArchive
+          elections={props.view.electionHistory}
+          seats={props.view.seats}
+        />
       )}
 
       <section className="back-channel-desk paper-panel">
@@ -2655,28 +2658,75 @@ function legalDistrictIdsForTarget(
   return null;
 }
 
-function ElectionDesk(props: {
-  election: Record<string, unknown>;
+function ElectionArchive(props: {
+  elections: Array<Record<string, unknown>>;
   seats: ViewSeat[];
 }) {
-  const scores = Array.isArray(props.election.scores)
-    ? (props.election.scores as Array<Record<string, unknown>>)
-    : [];
   return (
-    <section className="election-desk paper-panel">
+    <section
+      className="election-desk paper-panel"
+      aria-label="Public Election archive"
+    >
       <p className="section-label">Election Day bulletin</p>
-      <h2>Returns after round {String(props.election.afterRound ?? "")}</h2>
-      <div className="election-scores">
-        {scores.map((score) => (
-          <article key={String(score.playerId)}>
-            <strong>
-              {props.seats.find((seat) => seat.id === score.playerId)?.displayName ??
-                "Player"}
-            </strong>
-            <span>{Number(score.pointsChange) >= 0 ? "+" : ""}{String(score.pointsChange)} this election</span>
-            <b>{String(score.resultingPoints)} points</b>
-          </article>
-        ))}
+      <h2>Public returns & revealed agendas</h2>
+      <div className="election-bulletins">
+        {props.elections.map((election, index) => {
+          const electionNumber = Number(election.electionNumber) || index + 1;
+          const scores = Array.isArray(election.scores)
+            ? (election.scores as Array<Record<string, unknown>>)
+            : [];
+          const scoringCards = Array.isArray(election.scoringCards)
+            ? election.scoringCards.filter(isObject)
+            : [];
+          return (
+            <article
+              className="election-bulletin"
+              key={`${electionNumber}:${String(election.afterRound ?? index)}`}
+            >
+              <div className="election-bulletin-heading">
+                <h3>Election {electionNumber}</h3>
+                <span>Returns after round {String(election.afterRound ?? "")}</span>
+              </div>
+              <div className="election-scores">
+                {scores.map((score) => (
+                  <div className="election-score" key={String(score.playerId)}>
+                    <strong>
+                      {props.seats.find((seat) => seat.id === score.playerId)?.displayName ??
+                        "Player"}
+                    </strong>
+                    <span>{Number(score.pointsChange) >= 0 ? "+" : ""}{String(score.pointsChange)} this election</span>
+                    <b>{String(score.resultingPoints)} points</b>
+                  </div>
+                ))}
+              </div>
+              <div
+                className="election-agendas"
+                aria-label={`Election ${electionNumber} revealed agendas`}
+              >
+                {scoringCards.map((entry, entryIndex) => {
+                  const cardIds = Array.isArray(entry.scoringCardIds)
+                    ? entry.scoringCardIds.filter(
+                      (cardId): cardId is string =>
+                        typeof cardId === "string" && cardId in SCORING_CARDS_BY_ID
+                    )
+                    : [];
+                  return (
+                    <div
+                      className="election-agenda-record"
+                      key={`${String(entry.seatId)}:${entryIndex}`}
+                    >
+                      <span>
+                        {props.seats.find((seat) => seat.id === entry.seatId)?.displayName ??
+                          "Player"}
+                      </span>
+                      <strong>{cardIds.join(" · ") || "No recorded agenda"}</strong>
+                    </div>
+                  );
+                })}
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

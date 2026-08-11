@@ -34,6 +34,15 @@ export const SCORING_CARD_IDS = deepFreeze([
 ] as const);
 export type ScoringCardId = (typeof SCORING_CARD_IDS)[number];
 
+export const SCORING_CARD_PAIRS = deepFreeze([
+  ["SC-01", "SC-02"], ["SC-03", "SC-04"],
+  ["SC-05", "SC-06"], ["SC-07", "SC-08"],
+  ["SC-09", "SC-10"], ["SC-11", "SC-12"],
+  ["SC-13", "SC-14"], ["SC-15", "SC-16"],
+  ["SC-17", "SC-18"], ["SC-19", "SC-20"],
+  ["SC-21", "SC-22"], ["SC-23", "SC-24"]
+] as const satisfies readonly (readonly [ScoringCardId, ScoringCardId])[]);
+
 const objective = (
   districtId: DistrictId,
   partyId: PartyId
