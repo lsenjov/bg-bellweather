@@ -104,7 +104,7 @@ describe("game setup and private projections", () => {
     );
   });
 
-  it("discards overlapping second draws and deals compatible low-player pairs", () => {
+  it("skips an overlapping candidate when dealing compatible low-player pairs", () => {
     const prefix = ["SC-01", "SC-07", "SC-02", "SC-03", "SC-04"] as const;
     const hands = dealScoringCards(
       [
@@ -116,10 +116,8 @@ describe("game setup and private projections", () => {
       2
     );
 
-    expect(hands.map((slots) => slots[0])).toEqual([
-      ["SC-01", "SC-02"],
-      ["SC-03", "SC-04"]
-    ]);
+    expect(hands[0]![0]).toEqual(["SC-01", "SC-02"]);
+    expect(new Set(hands.flat(2)).size).toBe(12);
     for (const slot of hands.flat()) {
       const districts = slot.flatMap((cardId) =>
         SCORING_CARDS_BY_ID[cardId].objectives.map(
@@ -130,17 +128,18 @@ describe("game setup and private projections", () => {
     }
   });
 
-  it("recycles rejected second draws when a low-player deal exhausts the draw pile", () => {
+  it("backs up from a greedy dead end when dealing nine compatible pairs", () => {
     const deck = [
-      "SC-22", "SC-03", "SC-09", "SC-10", "SC-16", "SC-02",
-      "SC-08", "SC-13", "SC-23", "SC-15", "SC-19", "SC-04",
-      "SC-05", "SC-18", "SC-06", "SC-07", "SC-12", "SC-21",
-      "SC-20", "SC-01", "SC-24", "SC-11", "SC-14", "SC-17"
+      "SC-22", "SC-12", "SC-03", "SC-05", "SC-16", "SC-10",
+      "SC-21", "SC-06", "SC-01", "SC-07", "SC-18", "SC-19",
+      "SC-14", "SC-08", "SC-23", "SC-17", "SC-02", "SC-13",
+      "SC-11", "SC-15", "SC-20", "SC-24", "SC-04", "SC-09"
     ] as const;
 
     const hands = dealScoringCards(deck, 3);
 
     expect(hands).toHaveLength(3);
+    expect(new Set(hands.flat(2)).size).toBe(18);
     for (const slot of hands.flat()) {
       const districts = slot.flatMap((cardId) =>
         SCORING_CARDS_BY_ID[cardId].objectives.map(

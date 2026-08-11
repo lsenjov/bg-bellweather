@@ -1160,79 +1160,97 @@ export function dealScoringCards(
     throw new GameRuleError("invalid_player_count", "Games require two to six seats");
   }
   const drawPile = [...deck];
-  const discardPile: ScoringCardId[] = [];
   const cardsPerPlayer = playerCount <= 3 ? 2 : 1;
   const slots = Array.from(
     { length: playerCount },
     (): ScoringCardSlots => [[], [], []]
   );
+  const compatiblePairs = cardsPerPlayer === 2
+    ? findCompatibleScoringPairs(drawPile, playerCount * 3)
+    : null;
+
+  if (cardsPerPlayer === 2 && compatiblePairs === undefined) {
+    throw new GameRuleError(
+      "scoring_deck_empty",
+      "The scoring deck cannot deal enough compatible pairs"
+    );
+  }
 
   for (let electionIndex = 0; electionIndex < 3; electionIndex += 1) {
     for (let playerIndex = 0; playerIndex < playerCount; playerIndex += 1) {
-      if (drawPile.length === 0) {
-        drawPile.push(...discardPile.splice(0));
-      }
-      const first = drawPile.shift();
-      if (first === undefined) {
+      const pairIndex = electionIndex * playerCount + playerIndex;
+      const cards = compatiblePairs?.[pairIndex] ?? drawPile.splice(0, 1);
+      if (cards.length !== cardsPerPlayer) {
         throw new GameRuleError(
           "scoring_deck_empty",
           "The scoring deck cannot deal every Election slot"
         );
       }
-      const hand = [first];
-      if (cardsPerPlayer === 2) {
-        const second = drawCompatibleScoringCard(
-          first,
-          drawPile,
-          discardPile
-        );
-        if (second === undefined) {
-          throw new GameRuleError(
-            "scoring_deck_empty",
-            "The scoring deck has no compatible second card"
-          );
-        }
-        hand.push(second);
-      }
-      slots[playerIndex]![electionIndex] = hand;
+      slots[playerIndex]![electionIndex] = [...cards];
     }
   }
 
   return slots;
 }
 
-function drawCompatibleScoringCard(
+function scoringCardsAreCompatible(
   first: ScoringCardId,
-  drawPile: ScoringCardId[],
-  discardPile: ScoringCardId[]
-): ScoringCardId | undefined {
+  second: ScoringCardId
+): boolean {
   const firstDistricts = new Set(
     SCORING_CARDS_BY_ID[first].objectives.map(
       (objective) => objective.districtId
     )
   );
-  const compatible = (cardId: ScoringCardId) =>
-    SCORING_CARDS_BY_ID[cardId].objectives.every(
-      (objective) => !firstDistricts.has(objective.districtId)
-    );
+  return SCORING_CARDS_BY_ID[second].objectives.every(
+    (objective) => !firstDistricts.has(objective.districtId)
+  );
+}
 
-  while (drawPile.length > 0) {
-    const candidate = drawPile.shift()!;
-    if (compatible(candidate)) {
-      return candidate;
+function findCompatibleScoringPairs(
+  deck: readonly ScoringCardId[],
+  pairCount: number
+): Array<[ScoringCardId, ScoringCardId]> | undefined {
+  const failed = new Set<string>();
+  const search = (
+    available: readonly ScoringCardId[],
+    pairsNeeded: number
+  ): Array<[ScoringCardId, ScoringCardId]> | undefined => {
+    if (pairsNeeded === 0) {
+      return [];
     }
-    discardPile.push(candidate);
-  }
+    if (available.length < pairsNeeded * 2) {
+      return undefined;
+    }
+    const key = `${pairsNeeded}:${available.join(",")}`;
+    if (failed.has(key)) {
+      return undefined;
+    }
 
-  const discardedCount = discardPile.length;
-  for (let index = 0; index < discardedCount; index += 1) {
-    const candidate = discardPile.shift()!;
-    if (compatible(candidate)) {
-      return candidate;
+    const [first, ...remaining] = available;
+    for (let index = 0; index < remaining.length; index += 1) {
+      const second = remaining[index]!;
+      if (!scoringCardsAreCompatible(first!, second)) {
+        continue;
+      }
+      const rest = search(
+        [...remaining.slice(0, index), ...remaining.slice(index + 1)],
+        pairsNeeded - 1
+      );
+      if (rest !== undefined) {
+        return [[first!, second], ...rest];
+      }
     }
-    discardPile.push(candidate);
-  }
-  return undefined;
+
+    const withoutFirst = search(remaining, pairsNeeded);
+    if (withoutFirst !== undefined) {
+      return withoutFirst;
+    }
+    failed.add(key);
+    return undefined;
+  };
+
+  return search(deck, pairCount);
 }
 
 function parseOperationRequest(
