@@ -71,6 +71,22 @@ interface ViewSeat {
   scoringCardIds: string[][] | null;
 }
 
+interface ResolvedOperationView {
+  round: number;
+  contestId: string;
+  bidId: string;
+  operation: OperationId;
+  choice: unknown;
+  baselineApplied?: boolean;
+  bonusApplied?: boolean;
+  failure?: string | null;
+}
+
+interface RoundHistoryView {
+  round: number;
+  bids: Record<string, unknown>;
+}
+
 interface GameView {
   playerCount: number;
   round: number;
@@ -86,6 +102,8 @@ interface GameView {
   coalitionTargets: Partial<Record<PartyId, PartyId | null>>;
   contests: Record<string, unknown>;
   bids: Array<Record<string, unknown>>;
+  resolvedOperations: ResolvedOperationView[];
+  roundHistory: RoundHistoryView[];
   readySeatIds: string[];
   pendingDecision: Record<string, unknown> | null;
   counterbidSlots: Array<string | null>;
@@ -768,6 +786,129 @@ export function GameDesk(props: {
       </section>
     </main>
   );
+}
+
+export interface OperationLogEntry {
+  key: string;
+  round: number;
+  contestName: string;
+  ownerName: string;
+  operationName: string;
+  count: number;
+  failed: boolean;
+  outcome: string;
+}
+
+export function operationLogEntries(view: GameView): OperationLogEntry[] {
+  const groups: Array<{
+    operation: ResolvedOperationView;
+    count: number;
+    startIndex: number;
+  }> = [];
+  for (const [index, operation] of view.resolvedOperations.entries()) {
+    const previous = groups.at(-1);
+    if (
+      previous !== undefined &&
+      isAutomaticFailure(previous.operation) &&
+      isAutomaticFailure(operation) &&
+      previous.operation.round === operation.round &&
+      previous.operation.contestId === operation.contestId &&
+      previous.operation.bidId === operation.bidId &&
+      previous.operation.operation === operation.operation &&
+      previous.operation.failure === operation.failure &&
+      previous.operation.bonusApplied === operation.bonusApplied
+    ) {
+      previous.count += 1;
+      continue;
+    }
+    groups.push({ operation, count: 1, startIndex: index });
+  }
+  return groups.map(({ operation, count, startIndex }) => ({
+    key: `${operation.round}:${operation.bidId}:${startIndex}`,
+    round: operation.round,
+    contestName: partyName(operation.contestId),
+    ownerName: operationOwnerName(view, operation),
+    operationName: CARD_FAMILY_LABELS[operation.operation].name,
+    count,
+    failed: operation.failure !== undefined && operation.failure !== null,
+    outcome: operationOutcome(operation)
+  }));
+}
+
+function isAutomaticFailure(operation: ResolvedOperationView): boolean {
+  return operation.choice === null &&
+    operation.baselineApplied === false &&
+    typeof operation.failure === "string";
+}
+
+function operationOwnerName(
+  view: GameView,
+  operation: ResolvedOperationView
+): string {
+  const historicalBid = view.roundHistory
+    .find((record) => record.round === operation.round)
+    ?.bids[operation.bidId];
+  const currentBid = view.bids.find((bid) => bid.id === operation.bidId);
+  const bid = isObject(historicalBid) ? historicalBid : currentBid;
+  const ownerSeatId = isObject(bid) && typeof bid.ownerSeatId === "string"
+    ? bid.ownerSeatId
+    : null;
+  return view.seats.find((seat) => seat.id === ownerSeatId)?.displayName ??
+    "Unattributed filing";
+}
+
+function operationOutcome(operation: ResolvedOperationView): string {
+  const failure = operation.failure;
+  if (typeof failure === "string" && operation.baselineApplied === false) {
+    return `Failed — ${sentence(failure)}`;
+  }
+  const choice = operationChoice(operation.choice);
+  let outcome = "Resolved.";
+  if (operation.contestId === "pecking-order") {
+    outcome = "Shifted the Pecking Order.";
+  } else if (
+    operation.operation === "organise" &&
+    typeof choice?.destinationDistrictId === "string"
+  ) {
+    outcome = typeof choice.sourceDistrictId === "string"
+      ? `Moved Support from ${districtName(choice.sourceDistrictId)} to ${districtName(choice.destinationDistrictId)}.`
+      : `Added Support in ${districtName(choice.destinationDistrictId)}.`;
+  } else if (
+    operation.operation === "rally" &&
+    typeof choice?.districtId === "string"
+  ) {
+    outcome = `Added Support in ${districtName(choice.districtId)}.`;
+  } else if (
+    operation.operation === "smear" &&
+    typeof choice?.districtId === "string" &&
+    typeof choice.rivalParty === "string"
+  ) {
+    outcome = `Removed ${partyName(choice.rivalParty)} Support in ${districtName(choice.districtId)}.`;
+  } else if (
+    operation.operation === "court" &&
+    typeof choice?.targetParty === "string"
+  ) {
+    outcome = `Added Court Support with ${partyName(choice.targetParty)}.`;
+  }
+  if (operation.bonusApplied === true) {
+    outcome += " Party bonus applied.";
+  }
+  return typeof failure === "string"
+    ? `${outcome} Bonus failed — ${sentence(failure)}`
+    : outcome;
+}
+
+function operationChoice(value: unknown): Record<string, unknown> | null {
+  if (!isObject(value)) return null;
+  return isObject(value.choice) ? value.choice : value;
+}
+
+function districtName(id: string): string {
+  return DISTRICTS.find((district) => district.id === id)?.name ?? id;
+}
+
+function sentence(value: string): string {
+  return /[.!?]$/.test(value) ? value : `${value}.`;
 }
 
 const GIFT_KEYS = [
@@ -3366,6 +3507,10 @@ export function extractView(state: ViewerStateEnvelope): GameView | null {
     !isObject(publicGame.courtSupport) ||
     !isObject(publicGame.coalitionTargets) ||
     !isObject(publicGame.contests) ||
+    !Array.isArray(publicGame.resolvedOperations) ||
+    !publicGame.resolvedOperations.every(isResolvedOperationView) ||
+    !Array.isArray(publicGame.roundHistory) ||
+    !publicGame.roundHistory.every(isRoundHistoryView) ||
     !Array.isArray(publicGame.electionHistory) ||
     !Array.isArray(publicGame.chat)
   ) {
@@ -3435,6 +3580,8 @@ export function extractView(state: ViewerStateEnvelope): GameView | null {
     coalitionTargets: publicGame.coalitionTargets as GameView["coalitionTargets"],
     contests,
     bids: [...bidsById.values()],
+    resolvedOperations: publicGame.resolvedOperations as unknown as ResolvedOperationView[],
+    roundHistory: publicGame.roundHistory as unknown as RoundHistoryView[],
     readySeatIds: Array.isArray(phase.readySeatIds)
       ? (phase.readySeatIds as string[])
       : [],
@@ -3449,6 +3596,28 @@ export function extractView(state: ViewerStateEnvelope): GameView | null {
     electionHistory: publicGame.electionHistory as Array<Record<string, unknown>>,
     chat: publicGame.chat as GameView["chat"]
   };
+}
+
+function isResolvedOperationView(value: unknown): value is ResolvedOperationView {
+  return isObject(value) &&
+    typeof value.round === "number" &&
+    typeof value.contestId === "string" &&
+    typeof value.bidId === "string" &&
+    typeof value.operation === "string" &&
+    (OPERATION_IDS as readonly string[]).includes(value.operation) &&
+    (value.failure === undefined ||
+      value.failure === null ||
+      typeof value.failure === "string") &&
+    (value.baselineApplied === undefined ||
+      typeof value.baselineApplied === "boolean") &&
+    (value.bonusApplied === undefined ||
+      typeof value.bonusApplied === "boolean");
+}
+
+function isRoundHistoryView(value: unknown): value is RoundHistoryView {
+  return isObject(value) &&
+    typeof value.round === "number" &&
+    isObject(value.bids);
 }
 
 export function mergePendingDecision(

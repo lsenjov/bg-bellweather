@@ -13,6 +13,7 @@ import {
   GameDesk,
   LobbyDesk,
   mergePendingDecision,
+  operationLogEntries,
   OpeningForm,
   OperationForm,
   orderedContestIds,
@@ -59,6 +60,8 @@ function gameDeskView(seats: GameDeskView["seats"]): GameDeskView {
     coalitionTargets: {},
     contests: {},
     bids: [],
+    resolvedOperations: [],
+    roundHistory: [],
     readySeatIds: [],
     pendingDecision: null,
     counterbidSlots: [],
@@ -157,7 +160,17 @@ describe("browser play surface", () => {
             }
           },
           seats: [],
-          contests: {}
+          contests: {},
+          resolvedOperations: [{
+            round: 1,
+            contestId: "honeycomb",
+            bidId: "bid-1",
+            operation: "rally",
+            choice: null,
+            baselineApplied: false,
+            failure: "No legal choice remained for this operation"
+          }],
+          roundHistory: []
         }
       },
       seatState: {
@@ -192,6 +205,115 @@ describe("browser play surface", () => {
         { operation: "rally", count: 3 }
       ]
     }));
+    expect(view?.resolvedOperations).toEqual([
+      expect.objectContaining({ bidId: "bid-1", operation: "rally" })
+    ]);
+  });
+
+  it("groups consecutive automatic failures and resolves historical filing owners", () => {
+    const seats = [
+      {
+        id: "seat-a",
+        displayName: "Sable",
+        controller: "human",
+        position: 0,
+        firmIds: ["one-fell-swoop"],
+        points: 0,
+        reserve: null,
+        scoringCardIds: null
+      },
+      {
+        id: "seat-b",
+        displayName: "Ochre",
+        controller: "human",
+        position: 1,
+        firmIds: ["pairliament"],
+        points: 0,
+        reserve: null,
+        scoringCardIds: null
+      }
+    ] satisfies GameDeskView["seats"];
+    const failure = "No legal choice remained for this operation";
+    const view = {
+      ...gameDeskView(seats),
+      round: 2,
+      bids: [{ id: "current-bid", ownerSeatId: "seat-a" }],
+      roundHistory: [{
+        round: 1,
+        bids: {
+          "prior-bid": { id: "prior-bid", ownerSeatId: "seat-b" }
+        }
+      }],
+      resolvedOperations: [
+        {
+          round: 2,
+          contestId: "honeycomb",
+          bidId: "current-bid",
+          operation: "rally",
+          choice: { operation: "rally", districtId: "northreach" },
+          baselineApplied: true,
+          failure: null
+        },
+        {
+          round: 2,
+          contestId: "honeycomb",
+          bidId: "current-bid",
+          operation: "rally",
+          choice: null,
+          baselineApplied: false,
+          bonusApplied: false,
+          failure
+        },
+        {
+          round: 2,
+          contestId: "honeycomb",
+          bidId: "current-bid",
+          operation: "rally",
+          choice: null,
+          baselineApplied: false,
+          bonusApplied: false,
+          failure
+        },
+        {
+          round: 1,
+          contestId: "foxglove",
+          bidId: "prior-bid",
+          operation: "smear",
+          choice: null,
+          baselineApplied: false,
+          bonusApplied: false,
+          failure
+        }
+      ]
+    } satisfies GameDeskView;
+
+    expect(operationLogEntries(view)).toMatchObject([
+      {
+        round: 2,
+        contestName: "Honeycomb Cooperative",
+        ownerName: "Sable",
+        operationName: "Rally",
+        count: 1,
+        failed: false,
+        outcome: "Added Support in Northreach."
+      },
+      {
+        round: 2,
+        ownerName: "Sable",
+        operationName: "Rally",
+        count: 2,
+        failed: true,
+        outcome: `Failed — ${failure}.`
+      },
+      {
+        round: 1,
+        contestName: "Foxglove League",
+        ownerName: "Ochre",
+        operationName: "Smear",
+        count: 1,
+        failed: true
+      }
+    ]);
   });
 
   it("does not cross out an owner's covered cancellation before reveal", () => {
@@ -239,7 +361,9 @@ describe("browser play surface", () => {
                 cardCount: 2
               }]
             }
-          }
+          },
+          resolvedOperations: [],
+          roundHistory: []
         }
       },
       seatState: {
@@ -3225,6 +3349,8 @@ function activePublicState(
         courtSupport: {},
         coalitionTargets: {},
         contests: {},
+        resolvedOperations: [],
+        roundHistory: [],
         electionHistory: [],
         chat: [],
         phase: { type: "opening" },
