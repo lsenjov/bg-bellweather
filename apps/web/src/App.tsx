@@ -68,7 +68,7 @@ interface ViewSeat {
     bluff: number;
     operations: Record<OperationId, number>;
   } | null;
-  scoringCardIds: string[] | null;
+  scoringCardIds: string[][] | null;
 }
 
 interface GameView {
@@ -468,12 +468,26 @@ export function GameDesk(props: {
   useEffect(() => {
     setGift((current) => clampGiftDraft(current, giftMaximums));
   }, [giftMaximums]);
-  const scoringCards = (props.ownSeat?.scoringCardIds ?? []).flatMap(
-    (scoringCardId) =>
+  const scoringCardSlots = (props.ownSeat?.scoringCardIds ?? []).map(
+    (slot) => slot.flatMap((scoringCardId) =>
       scoringCardId in SCORING_CARDS_BY_ID
         ? [SCORING_CARDS_BY_ID[scoringCardId as ScoringCardId]]
         : []
+    )
   );
+  const activeAgendaIndex = props.view.phase === "election"
+    ? Math.max(0, props.view.electionNumber - 1)
+    : Math.min(props.view.electionNumber, 2);
+  const activeScoringCards = scoringCardSlots[activeAgendaIndex] ?? [];
+  const agendaStatus = (index: number) => {
+    if (props.view.phase === "complete" || index < activeAgendaIndex) {
+      return "Scored";
+    }
+    if (index === activeAgendaIndex) {
+      return props.view.phase === "election" ? "Revealed" : "Current";
+    }
+    return "Future";
+  };
   const latestElection = props.view.electionHistory.at(-1);
   const revealedObjectives = revealedElectionObjectives(
     props.view.phase,
@@ -481,7 +495,7 @@ export function GameDesk(props: {
   );
   const scoringObjectives = revealedObjectives.length > 0
     ? revealedObjectives
-    : scoringCards.flatMap((card) => card.objectives);
+    : activeScoringCards.flatMap((card) => card.objectives);
   const openingProgress = readOpeningProgress(props.view);
   const activeOpening =
     props.ownSeatId !== undefined &&
@@ -602,9 +616,24 @@ export function GameDesk(props: {
               ))}
             </div>
             <div className="agenda folio-agenda">
-              <span>{scoringCards.length > 1 ? "Hidden election briefs" : "Hidden election brief"}</span>
-              <strong>{scoringCards.length > 0 ? scoringCards.map((card) => card.id).join(" · ") : "Sealed"}</strong>
-              {scoringCards.flatMap((card) => card.objectives).map((objective) => <small key={`${objective.districtId}:${objective.partyId}`}>{objective.districtId} · {PARTIES_BY_ID[objective.partyId].shortName}</small>)}
+              <span>Fixed Election briefs</span>
+              <div className="folio-agenda-slots">
+                {scoringCardSlots.map((cards, index) => (
+                  <section
+                    className={`folio-agenda-slot ${index === activeAgendaIndex ? "folio-agenda-active" : ""}`}
+                    key={index}
+                    aria-label={`Election ${index + 1} agenda, ${agendaStatus(index)}`}
+                  >
+                    <span>Election {index + 1} · {agendaStatus(index)}</span>
+                    <strong>{cards.length > 0 ? cards.map((card) => card.id).join(" · ") : "Sealed"}</strong>
+                    {cards.flatMap((card) => card.objectives).map((objective) => (
+                      <small key={`${objective.districtId}:${objective.partyId}`}>
+                        {objective.districtId} · {PARTIES_BY_ID[objective.partyId].shortName}
+                      </small>
+                    ))}
+                  </section>
+                ))}
+              </div>
             </div>
           </>
         ) : <p className="folio-public-copy">Public information only. Private reserves remain behind the screen.</p>}
@@ -2747,7 +2776,7 @@ function ReplayState({ state }: { state: GameState }) {
       bluff: seat.reserve.bluff,
       operations: { ...seat.reserve.operations }
     },
-    scoringCardIds: [...seat.scoringCardIds]
+    scoringCardIds: seat.scoringCardIds.map((slot) => [...slot])
   }));
   return (
     <div className="replay-state">
@@ -2764,7 +2793,11 @@ function ReplayState({ state }: { state: GameState }) {
             <span>{seat.reserve.leverage} Leverage · {seat.reserve.bluff} Bluff · {OPERATION_IDS.map(
               (operation) => `${seat.reserve.operations[operation]} ${operation}`
             ).join(" · ")}</span>
-            <small>Agenda {seat.scoringCardIds.join(" · ")}</small>
+                <small>
+                  Agendas {seat.scoringCardIds
+                    .map((slot, index) => `E${index + 1} ${slot.join("+")}`)
+                    .join(" · ")}
+                </small>
           </article>
         ))}
       </div>
@@ -3293,8 +3326,12 @@ export function extractView(state: ViewerStateEnvelope): GameView | null {
     (!isObject(privateGame) ||
       !isObject(privateGame.reserve) ||
       !Array.isArray(privateGame.scoringCardIds) ||
+      privateGame.scoringCardIds.length !== 3 ||
       !privateGame.scoringCardIds.every(
-        (cardId) => typeof cardId === "string" && cardId in SCORING_CARDS_BY_ID
+        (slot) => Array.isArray(slot) && slot.every(
+          (cardId) =>
+            typeof cardId === "string" && cardId in SCORING_CARDS_BY_ID
+        )
       ) ||
       !Array.isArray(privateGame.ownBids) ||
       !Array.isArray(privateGame.counterbidSlots))
@@ -3310,7 +3347,7 @@ export function extractView(state: ViewerStateEnvelope): GameView | null {
       reserve: seat.id === viewerSeatId ? privateState.reserve ?? null : null,
       scoringCardIds:
         seat.id === viewerSeatId
-          ? privateState.scoringCardIds as string[]
+          ? privateState.scoringCardIds as string[][]
           : null
     })
   );

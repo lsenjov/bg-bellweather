@@ -135,7 +135,7 @@ describe("browser play surface", () => {
         seats: [],
         spectators: [],
         publicGame: {
-          rulesetVersion: "13",
+          rulesetVersion: "14",
           round: 1,
           electionNumber: 0,
           nextFirstOpenerSeatId: "seat-a",
@@ -168,7 +168,11 @@ describe("browser play surface", () => {
             bluff: 0,
             operations: { organise: 0, rally: 0, smear: 0, court: 0 }
           },
-          scoringCardIds: ["SC-01", "SC-02"],
+          scoringCardIds: [
+            ["SC-01", "SC-02"],
+            ["SC-03", "SC-04"],
+            ["SC-05", "SC-06"]
+          ],
           ownBids: [],
           counterbidSlots: [null, null],
           pendingDecision: {
@@ -208,7 +212,7 @@ describe("browser play surface", () => {
         seats: [],
         spectators: [],
         publicGame: {
-          rulesetVersion: "13",
+          rulesetVersion: "14",
           round: 1,
           electionNumber: 0,
           nextFirstOpenerSeatId: "seat-a",
@@ -246,7 +250,11 @@ describe("browser play surface", () => {
             bluff: 0,
             operations: { organise: 0, rally: 0, smear: 0, court: 0 }
           },
-          scoringCardIds: ["SC-01", "SC-02"],
+          scoringCardIds: [
+            ["SC-01", "SC-02"],
+            ["SC-03", "SC-04"],
+            ["SC-05", "SC-06"]
+          ],
           ownBids: [{
             id: "future-bid",
             contestId: "honeycomb",
@@ -371,7 +379,7 @@ describe("browser play surface", () => {
         },
         seats: [host],
         spectators: [],
-        publicGame: { phase: "lobby", rulesetVersion: "13" }
+        publicGame: { phase: "lobby", rulesetVersion: "14" }
       },
       seatState: { seatId: host.seatId, privateGame: null }
     };
@@ -531,7 +539,7 @@ describe("browser play surface", () => {
     expect(within(target).getByText("Honeycomb")).toBeTruthy();
   });
 
-  it("shows both low-player agendas in the private folio", () => {
+  it("shows all three fixed low-player agendas in the private folio", () => {
     const seat = {
       id: "seat-a",
       displayName: "Ada",
@@ -544,7 +552,11 @@ describe("browser play surface", () => {
         bluff: 8,
         operations: { organise: 4, rally: 8, smear: 4, court: 4 }
       },
-      scoringCardIds: ["SC-01", "SC-02"]
+      scoringCardIds: [
+        ["SC-01", "SC-02"],
+        ["SC-03", "SC-04"],
+        ["SC-05", "SC-06"]
+      ]
     };
     render(
       <GameDesk
@@ -582,8 +594,53 @@ describe("browser play surface", () => {
     );
 
     expect(screen.getByText("SC-01 · SC-02")).toBeTruthy();
+    expect(screen.getByText("SC-03 · SC-04")).toBeTruthy();
+    expect(screen.getByText("SC-05 · SC-06")).toBeTruthy();
+    expect(screen.getByLabelText("Election 1 agenda, Current")).toBeTruthy();
+    expect(screen.getByLabelText("Election 2 agenda, Future")).toBeTruthy();
     expect(screen.getByText(/grand-market · Honeycomb/i)).toBeTruthy();
     expect(screen.getByText(/ironwood · Old Shell/i)).toBeTruthy();
+  });
+
+  it("advances the private map and folio to the next fixed agenda", () => {
+    const seat = {
+      id: "seat-a",
+      displayName: "Ada",
+      controller: "human",
+      position: 0,
+      firmIds: ["one-fell-swoop"],
+      points: 10,
+      reserve: {
+        leverage: 20,
+        bluff: 8,
+        operations: { organise: 4, rally: 8, smear: 4, court: 4 }
+      },
+      scoringCardIds: [
+        ["SC-01", "SC-02"],
+        ["SC-03", "SC-04"],
+        ["SC-05", "SC-06"]
+      ]
+    } satisfies GameDeskSeat;
+    render(
+      <GameDesk
+        view={{
+          ...gameDeskView([seat]),
+          round: 5,
+          electionNumber: 1
+        }}
+        ownSeat={seat}
+        ownSeatId="seat-a"
+        spectator={false}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    expect(screen.getByLabelText("Election 1 agenda, Scored")).toBeTruthy();
+    expect(screen.getByLabelText("Election 2 agenda, Current")).toBeTruthy();
+    expect(
+      screen.getByLabelText(/Ironwood.*private agenda scores Foxglove/i)
+    ).toBeTruthy();
   });
 
   it("limits gift selects to the live transferable reserve", () => {
@@ -599,7 +656,7 @@ describe("browser play surface", () => {
         bluff: 1,
         operations: { organise: 1, rally: 2, smear: 0, court: 1 }
       },
-      scoringCardIds: []
+      scoringCardIds: [[], [], []]
     } satisfies GameDeskSeat;
     const otherSeat = {
       id: "seat-b",
@@ -652,7 +709,7 @@ describe("browser play surface", () => {
         bluff: 1,
         operations: { organise: 1, rally: 2, smear: 0, court: 1 }
       },
-      scoringCardIds: []
+      scoringCardIds: [[], [], []]
     } satisfies GameDeskSeat;
     render(
       <GameDesk
@@ -683,7 +740,7 @@ describe("browser play surface", () => {
         bluff: 1,
         operations: { organise: 1, rally: 2, smear: 0, court: 1 }
       },
-      scoringCardIds: []
+      scoringCardIds: [[], [], []]
     } satisfies GameDeskSeat;
     const otherSeat = {
       id: "seat-b",
@@ -749,7 +806,7 @@ describe("browser play surface", () => {
         bluff: 1,
         operations: { organise: 1, rally: 2, smear: 0, court: 1 }
       },
-      scoringCardIds: []
+      scoringCardIds: [[], [], []]
     } satisfies GameDeskSeat;
     const otherSeat = {
       id: "seat-b",
@@ -796,7 +853,7 @@ describe("browser play surface", () => {
         bluff: 1,
         operations: { organise: 1, rally: 2, smear: 0, court: 1 }
       },
-      scoringCardIds: []
+      scoringCardIds: [[], [], []]
     } satisfies GameDeskSeat;
     const otherSeat = {
       id: "seat-b",
@@ -1245,7 +1302,7 @@ describe("browser play surface", () => {
         bluff: 2,
         operations: { organise: 2, rally: 0, smear: 0, court: 0 }
       },
-      scoringCardIds: []
+      scoringCardIds: [[], [], []]
     };
     render(
       <GameDesk
