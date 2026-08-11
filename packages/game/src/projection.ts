@@ -1,13 +1,13 @@
 import {
   OPERATION_IDS,
-  type OperationId,
-  type ScoringCardId
+  type OperationId
 } from "@bellweather/content";
 import type {
   BidState,
   GameState,
   OperationInventory,
   PendingDecision,
+  ScoringCardSlots,
   SeatId
 } from "./model.js";
 import { GameRuleError } from "./model.js";
@@ -27,7 +27,7 @@ export interface ProjectedSeat {
         operations: OperationInventory;
       }
     | null;
-  scoringCardIds: ScoringCardId[] | null;
+  scoringCardIds: ScoringCardSlots | null;
 }
 
 export interface ProjectedBid {
@@ -88,8 +88,6 @@ export function projectGameState(
     state.phase.type === "resolution" ||
     state.phase.type === "election" ||
     state.phase.type === "complete";
-  const agendasRevealed =
-    state.phase.type === "election" || state.phase.type === "complete";
   const phase = state.phase;
 
   return {
@@ -117,9 +115,14 @@ export function projectGameState(
               }
             : null,
         scoringCardIds:
-          own || agendasRevealed || fullInformation
-            ? [...seat.scoringCardIds]
-            : null
+          own || phase.type === "complete" || fullInformation
+            ? cloneScoringCardSlots(seat.scoringCardIds)
+            : phase.type === "election"
+              ? visibleElectionSlot(
+                  seat.scoringCardIds,
+                  phase.electionNumber
+                )
+              : null
       };
     }),
     partyOrder: [...state.partyOrder],
@@ -140,6 +143,21 @@ export function projectGameState(
     roundHistory: structuredClone(state.roundHistory),
     electionHistory: structuredClone(state.electionHistory)
   };
+}
+
+function cloneScoringCardSlots(
+  slots: ScoringCardSlots
+): ScoringCardSlots {
+  return slots.map((slot) => [...slot]) as ScoringCardSlots;
+}
+
+function visibleElectionSlot(
+  slots: ScoringCardSlots,
+  electionNumber: 1 | 2 | 3
+): ScoringCardSlots {
+  const visible: ScoringCardSlots = [[], [], []];
+  visible[electionNumber - 1] = [...slots[electionNumber - 1]!];
+  return visible;
 }
 
 function projectBid(

@@ -1076,7 +1076,7 @@ describe("game server", () => {
       seatState: {
         privateGame: {
           reserve: unknown;
-          scoringCardIds: string[];
+          scoringCardIds: string[][];
         };
       };
       publicState: {
@@ -1104,7 +1104,11 @@ describe("game server", () => {
       "night-parliament": {}
     });
     expect(active.seatState.privateGame).toMatchObject({
-      scoringCardIds: [expect.any(String), expect.any(String)],
+      scoringCardIds: [
+        [expect.any(String), expect.any(String)],
+        [expect.any(String), expect.any(String)],
+        [expect.any(String), expect.any(String)]
+      ],
       reserve: {
         leverage: 20,
         bluff: 8,

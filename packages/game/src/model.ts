@@ -11,6 +11,11 @@ export type ContestId = PartyId | "pecking-order";
 export type BidId = string;
 
 export type OperationInventory = Record<OperationId, number>;
+export type ScoringCardSlots = [
+  ScoringCardId[],
+  ScoringCardId[],
+  ScoringCardId[]
+];
 
 export interface ResourcePool {
   leverage: number;
@@ -34,7 +39,7 @@ export interface SeatState extends SeatConfiguration {
   position: number;
   firmIds: FirmId[];
   reserve: ResourcePool;
-  scoringCardIds: ScoringCardId[];
+  scoringCardIds: ScoringCardSlots;
 }
 
 export interface BidPackage {
@@ -210,7 +215,6 @@ export interface GameState {
   support: Record<DistrictId, Partial<Record<PartyId, number>>>;
   courtSupport: Record<PartyId, Partial<Record<PartyId, number>>>;
   coalitionTargets: Record<PartyId, PartyId | null>;
-  scoringDecks: ScoringCardId[][];
   contests: Partial<Record<ContestId, ContestState>>;
   bids: Record<BidId, BidState>;
   counterbidSlots: Record<SeatId, Array<BidId | null>>;

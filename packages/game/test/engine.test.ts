@@ -55,7 +55,11 @@ describe("game setup and private projections", () => {
       );
       expect(
         state.seats.every(
-          (seat) => seat.scoringCardIds.length === (playerCount <= 3 ? 2 : 1)
+          (seat) =>
+            seat.scoringCardIds.length === 3 &&
+            seat.scoringCardIds.every(
+              (slot) => slot.length === (playerCount <= 3 ? 2 : 1)
+            )
         )
       ).toBe(true);
       expect(
@@ -79,12 +83,11 @@ describe("game setup and private projections", () => {
     });
     expect(state.partyOrder).toHaveLength(6);
     expect(new Set(state.partyOrder).size).toBe(6);
-    expect(state.scoringDecks).toHaveLength(2);
-    expect(
-      state.scoringDecks.every(
-        (deck) => deck.length === 24 && new Set(deck).size === 24
-      )
-    ).toBe(true);
+    const dealtScoringCards = state.seats.flatMap(
+      (seat) => seat.scoringCardIds.flat()
+    );
+    expect(dealtScoringCards).toHaveLength(12);
+    expect(new Set(dealtScoringCards).size).toBe(12);
     expect(state.support["harbormouth"]).toEqual(
       Object.fromEntries(PARTY_IDS.map((party) => [party, 1]))
     );
@@ -95,24 +98,30 @@ describe("game setup and private projections", () => {
     const initialized = initializeGame(configuration(2, null), zeroRandom);
     initialized.state.rulesetVersion = "8";
 
-    expect(() => replay([initialized])).toThrow("Only ruleset 13 is supported");
+    expect(() => replay([initialized])).toThrow("Only ruleset 14 is supported");
     expect(() => projectGameState(initialized.state, null)).toThrow(
-      "Only ruleset 13 is supported"
+      "Only ruleset 14 is supported"
     );
   });
 
   it("discards overlapping second draws and deals compatible low-player pairs", () => {
+    const prefix = ["SC-01", "SC-07", "SC-02", "SC-03", "SC-04"] as const;
     const hands = dealScoringCards(
-      ["SC-01", "SC-07", "SC-02", "SC-03", "SC-04"],
+      [
+        ...prefix,
+        ...Object.keys(SCORING_CARDS_BY_ID).filter(
+          (cardId) => !prefix.includes(cardId as (typeof prefix)[number])
+        )
+      ] as Array<keyof typeof SCORING_CARDS_BY_ID>,
       2
     );
 
-    expect(hands).toEqual([
+    expect(hands.map((slots) => slots[0])).toEqual([
       ["SC-01", "SC-02"],
       ["SC-03", "SC-04"]
     ]);
-    for (const hand of hands) {
-      const districts = hand.flatMap((cardId) =>
+    for (const slot of hands.flat()) {
+      const districts = slot.flatMap((cardId) =>
         SCORING_CARDS_BY_ID[cardId].objectives.map(
           (objective) => objective.districtId
         )
@@ -132,8 +141,8 @@ describe("game setup and private projections", () => {
     const hands = dealScoringCards(deck, 3);
 
     expect(hands).toHaveLength(3);
-    for (const hand of hands) {
-      const districts = hand.flatMap((cardId) =>
+    for (const slot of hands.flat()) {
+      const districts = slot.flatMap((cardId) =>
         SCORING_CARDS_BY_ID[cardId].objectives.map(
           (objective) => objective.districtId
         )
@@ -143,14 +152,18 @@ describe("game setup and private projections", () => {
   });
 
   it.each([4, 5, 6])(
-    "retains one scoring card at %i players",
+    "deals three one-card Election slots at %i players",
     (playerCount) => {
       const hands = dealScoringCards(
         Object.keys(SCORING_CARDS_BY_ID) as Array<keyof typeof SCORING_CARDS_BY_ID>,
         playerCount
       );
       expect(hands).toHaveLength(playerCount);
-      expect(hands.every((hand) => hand.length === 1)).toBe(true);
+      expect(
+        hands.every(
+          (slots) => slots.length === 3 && slots.every((slot) => slot.length === 1)
+        )
+      ).toBe(true);
     }
   );
 
@@ -158,7 +171,7 @@ describe("game setup and private projections", () => {
     let state = initializeGame(configuration(2, null), zeroRandom).state;
     const scoredDistrictIds = new Set(
       state.seats.flatMap((seat) =>
-        seat.scoringCardIds.flatMap((cardId) =>
+        seat.scoringCardIds[0].flatMap((cardId) =>
           SCORING_CARDS_BY_ID[cardId].objectives.map(
             (objective) => objective.districtId
           )
@@ -244,7 +257,10 @@ describe("game setup and private projections", () => {
     expect(owner.seats[0]?.reserve).not.toBeNull();
     expect(owner.seats[1]?.reserve).toBeNull();
     expect(opponent.seats[0]?.scoringCardIds).toBeNull();
-    expect(owner.seats[0]?.scoringCardIds).toHaveLength(2);
+    expect(owner.seats[0]?.scoringCardIds).toHaveLength(3);
+    expect(
+      owner.seats[0]?.scoringCardIds?.every((slot) => slot.length === 2)
+    ).toBe(true);
     expect(owner.bids.find((bid) => bid.id === counterId)?.leverage).toBe(3);
     expect(opponent.bids.find((bid) => bid.id === counterId)).toMatchObject({
       contestId: PARTY_IDS[0],
@@ -263,6 +279,30 @@ describe("game setup and private projections", () => {
     });
     expect(() => projectGameState(state, "seat-1", true)).toThrow(
       "Full information"
+    );
+  });
+
+  it("reveals only the current Election slot to other seats", () => {
+    const state = initializeGame(configuration(4, null), zeroRandom).state;
+    state.round = 8;
+    state.phase = {
+      type: "election",
+      electionNumber: 2,
+      afterRound: 8,
+      resultsRecorded: false,
+      readySeatIds: []
+    };
+
+    const ownerSlots = state.seats[0]!.scoringCardIds;
+    const projected = projectGameState(state, "seat-2");
+
+    expect(projected.seats[0]!.scoringCardIds).toEqual([
+      [],
+      ownerSlots[1],
+      []
+    ]);
+    expect(projected.seats[1]!.scoringCardIds).toEqual(
+      state.seats[1]!.scoringCardIds
     );
   });
 });
@@ -1109,6 +1149,9 @@ describe("social actions, elections, and replay", () => {
   it("plays twelve rounds, computes all three Elections from recorded randomness, and replays exactly", () => {
     const events: GameEvent[] = [initializeGame(configuration(2, null), zeroRandom)];
     let state = replay(events);
+    const initialScoringCards = state.seats.map((seat) =>
+      structuredClone(seat.scoringCardIds)
+    );
     let now = 0;
     let finalGiftMade = false;
 
@@ -1192,6 +1235,17 @@ describe("social actions, elections, and replay", () => {
         (entry) => entry.scoringCardIds.length === 2
       )
     ).toBe(true);
+    expect(state.seats.map((seat) => seat.scoringCardIds)).toEqual(
+      initialScoringCards
+    );
+    for (const [electionIndex, election] of state.electionHistory.entries()) {
+      expect(election.scoringCards).toEqual(
+        state.seats.map((seat, seatIndex) => ({
+          seatId: seat.id,
+          scoringCardIds: initialScoringCards[seatIndex]![electionIndex]
+        }))
+      );
+    }
     expect(Object.keys(state.electionHistory[0]?.draws ?? {}).length).toBeGreaterThan(0);
     expect(state.phase.winnerSeatIds.length).toBeGreaterThan(0);
     expect(state.electionHistory.at(-1)?.winnerSeatIds).toEqual(
