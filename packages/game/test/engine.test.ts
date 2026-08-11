@@ -2,6 +2,7 @@ import {
   DISTRICTS,
   DISTRICTS_BY_ID,
   PARTY_IDS,
+  SCORING_CARD_PAIRS,
   SCORING_CARDS_BY_ID,
   type OperationId,
   type PartyId
@@ -104,19 +105,16 @@ describe("game setup and private projections", () => {
     );
   });
 
-  it("finds a registered companion beneath an incompatible card", () => {
-    const prefix = ["SC-01", "SC-07", "SC-02", "SC-03", "SC-04"] as const;
-    const hands = dealScoringCards(
-      [
-        ...prefix,
-        ...Object.keys(SCORING_CARDS_BY_ID).filter(
-          (cardId) => !prefix.includes(cardId as (typeof prefix)[number])
-        )
-      ] as Array<keyof typeof SCORING_CARDS_BY_ID>,
-      2
-    );
+  it("deals low-player packets in their shuffled registered-pair order", () => {
+    const deck = [
+      SCORING_CARD_PAIRS[3],
+      SCORING_CARD_PAIRS[0],
+      ...SCORING_CARD_PAIRS.filter((_, index) => index !== 3 && index !== 0)
+    ].flat();
+    const hands = dealScoringCards(deck, 2);
 
-    expect(hands[0]![0]).toEqual(["SC-01", "SC-02"]);
+    expect(hands[0]![0]).toEqual(["SC-07", "SC-08"]);
+    expect(hands[1]![0]).toEqual(["SC-01", "SC-02"]);
     expect(new Set(hands.flat(2)).size).toBe(12);
     for (const slot of hands.flat()) {
       const districts = slot.flatMap((cardId) =>
@@ -128,13 +126,8 @@ describe("game setup and private projections", () => {
     }
   });
 
-  it("completes nine pairs on a shuffle that stranded the former greedy deal", () => {
-    const deck = [
-      "SC-22", "SC-12", "SC-03", "SC-05", "SC-16", "SC-10",
-      "SC-21", "SC-06", "SC-01", "SC-07", "SC-18", "SC-19",
-      "SC-14", "SC-08", "SC-23", "SC-17", "SC-02", "SC-13",
-      "SC-11", "SC-15", "SC-20", "SC-24", "SC-04", "SC-09"
-    ] as const;
+  it("completes nine registered pairs from one packet-deck shuffle", () => {
+    const deck = [...SCORING_CARD_PAIRS].reverse().flat();
 
     const hands = dealScoringCards(deck, 3);
 
@@ -148,6 +141,13 @@ describe("game setup and private projections", () => {
       );
       expect(new Set(districts).size).toBe(6);
     }
+  });
+
+  it("rejects a low-player deck whose registered packets were separated", () => {
+    expect(() => dealScoringCards(
+      ["SC-01", "SC-03", ...SCORING_CARD_PAIRS.slice(2).flat()],
+      2
+    )).toThrow("must be arranged as registered pairs");
   });
 
   it.each([4, 5, 6])(

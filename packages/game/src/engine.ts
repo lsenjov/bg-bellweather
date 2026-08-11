@@ -69,8 +69,11 @@ export function initializeGame(
       ? DOUBLED_PLAYER_SETUP
       : STANDARD_PLAYER_SETUP;
   const partyOrder = shuffle([...PARTY_IDS], random);
+  const scoringDeck = configuration.seats.length <= 3
+    ? shuffle([...SCORING_CARD_PAIRS], random).flatMap((pair) => [...pair])
+    : shuffle([...SCORING_CARD_IDS], random);
   const scoringCards = dealScoringCards(
-    shuffle([...SCORING_CARD_IDS], random),
+    scoringDeck,
     configuration.seats.length
   );
   const firstOpenerIndex = random.integer(configuration.seats.length);
@@ -1169,13 +1172,17 @@ export function dealScoringCards(
 
   for (let electionIndex = 0; electionIndex < 3; electionIndex += 1) {
     for (let playerIndex = 0; playerIndex < playerCount; playerIndex += 1) {
-      const cards = cardsPerPlayer === 2
-        ? drawRegisteredScoringPair(drawPile)
-        : drawPile.splice(0, 1);
+      const cards = drawPile.splice(0, cardsPerPlayer);
       if (cards.length !== cardsPerPlayer) {
         throw new GameRuleError(
           "scoring_deck_empty",
           "The scoring deck cannot deal every Election slot"
+        );
+      }
+      if (cardsPerPlayer === 2 && !isRegisteredScoringPair(cards)) {
+        throw new GameRuleError(
+          "invalid_scoring_pair",
+          "Low-player scoring cards must be arranged as registered pairs"
         );
       }
       slots[playerIndex]![electionIndex] = [...cards];
@@ -1185,24 +1192,13 @@ export function dealScoringCards(
   return slots;
 }
 
-function drawRegisteredScoringPair(
-  drawPile: ScoringCardId[]
-): ScoringCardId[] {
-  const first = drawPile.shift();
-  if (first === undefined) {
-    return [];
-  }
-  const pair = SCORING_CARD_PAIRS.find((candidate) =>
-    candidate[0] === first || candidate[1] === first
+function isRegisteredScoringPair(
+  cards: readonly ScoringCardId[]
+): boolean {
+  return cards.length === 2 && SCORING_CARD_PAIRS.some((pair) =>
+    (pair[0] === cards[0] && pair[1] === cards[1]) ||
+    (pair[0] === cards[1] && pair[1] === cards[0])
   );
-  const companion = pair?.find((cardId) => cardId !== first);
-  const companionIndex = companion === undefined
-    ? -1
-    : drawPile.indexOf(companion);
-  if (companionIndex < 0) {
-    return [first];
-  }
-  return [first, ...drawPile.splice(companionIndex, 1)];
 }
 
 function parseOperationRequest(
