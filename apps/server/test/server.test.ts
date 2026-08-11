@@ -1,7 +1,7 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
-import { PARTY_IDS } from "@bellweather/content";
+import { PARTY_IDS, RULESET_VERSION } from "@bellweather/content";
 import { executeAction, type GameState } from "@bellweather/game";
 import { afterEach, describe, expect, it } from "vitest";
 import WebSocket from "ws";
@@ -516,8 +516,8 @@ describe("game server", () => {
     });
 
     app.store.database
-      .prepare("UPDATE games SET ruleset_version = '12' WHERE id = ?")
-      .run(host.session.gameId);
+      .prepare("UPDATE games SET ruleset_version = ? WHERE id = ?")
+      .run(String(RULESET_VERSION), host.session.gameId);
     await sendCommand(baseUrl, host.session, 2, "start-current", {
       type: "start_game"
     });
@@ -537,14 +537,14 @@ describe("game server", () => {
     });
 
     app.store.database
-      .prepare("UPDATE games SET ruleset_version = '12' WHERE id = ?")
-      .run(host.session.gameId);
+      .prepare("UPDATE games SET ruleset_version = ? WHERE id = ?")
+      .run(String(RULESET_VERSION), host.session.gameId);
     app.store.database
       .prepare("UPDATE snapshots SET ruleset_version = '6' WHERE game_id = ?")
       .run(host.session.gameId);
 
     expect(() => app.store.loadEngineState(host.session.gameId)).toThrow(
-      "Only ruleset 12 is supported"
+      `Only ruleset ${RULESET_VERSION} is supported`
     );
     const retry = await jsonRequest(
       baseUrl,

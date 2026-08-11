@@ -27,7 +27,7 @@
             <p class="party-number">Party 01</p>
             <h2 class="party-name" id="honeycomb-title"><span>Honeycomb</span><span>Cooperative</span></h2>
             <p class="animals">Bees</p>
-            <div class="favored"><span>Organise</span><span>Rally</span></div>
+            <div class="favored"><span>Organise</span><span>Court</span></div>
             <div class="party-state">
               <p><span class="state-kicker">Coalition</span><br>Reciprocal coalition targets only.</p>
             </div>
@@ -36,15 +36,15 @@
           <section class="bonus" aria-labelledby="honeycomb-organise">
             <span class="cover-spot" aria-label="Cover after use">Ready</span>
             <span class="bonus-family">Organise bonus</span>
-            <h3 id="honeycomb-organise">Leave a Cell Behind</h3>
-            <p class="bonus-text">After moving Support, add one Honeycomb Support to the vacated source spot. If Honeycomb had no Support before the baseline, add a second Honeycomb Support to a free spot in the destination district instead.</p>
+            <h3 id="honeycomb-organise">Waggle Route</h3>
+            <p class="bonus-text">After Organise resolves, add one Honeycomb Support to another free spot in the destination district.</p>
           </section>
 
-          <section class="bonus" aria-labelledby="honeycomb-rally">
+          <section class="bonus" aria-labelledby="honeycomb-court">
             <span class="cover-spot" aria-label="Cover after use">Ready</span>
-            <span class="bonus-family">Rally bonus</span>
-            <h3 id="honeycomb-rally">Swarm</h3>
-            <p class="bonus-text">Add a second Honeycomb Support to another free spot in the Rally district.</p>
+            <span class="bonus-family">Court bonus</span>
+            <h3 id="honeycomb-court">Common Cause</h3>
+            <p class="bonus-text">After Court, if the selected party is Honeycomb’s Coalition Target, move one Honeycomb Support from another district to a free district containing that party.</p>
           </section>
 
           <section class="opening-bid" aria-label="Honeycomb Cooperative opening bid area">
@@ -79,24 +79,24 @@
             <p class="party-number">Party 02</p>
             <h2 class="party-name" id="old-shell-title"><span>Old Shell</span><span>Union</span></h2>
             <p class="animals">Tortoises</p>
-            <div class="favored"><span>Smear</span><span>Court</span></div>
+            <div class="favored"><span>Organise</span><span>Smear</span></div>
             <div class="party-state">
               <p><span class="state-kicker">Coalition</span><br>Reciprocal Coalition Targets only.</p>
             </div>
+          </section>
+
+          <section class="bonus" aria-labelledby="old-shell-organise">
+            <span class="cover-spot" aria-label="Cover after use">Ready</span>
+            <span class="bonus-family">Organise bonus</span>
+            <h3 id="old-shell-organise">Dig In</h3>
+            <p class="bonus-text">After a movement Organise, add one Old Shell Support to the vacated source spot. Cannot be used when recovering from no Support.</p>
           </section>
 
           <section class="bonus" aria-labelledby="old-shell-smear">
             <span class="cover-spot" aria-label="Cover after use">Ready</span>
             <span class="bonus-family">Smear bonus</span>
             <h3 id="old-shell-smear">Stonewall</h3>
-            <p class="bonus-text">Remove a second Support belonging to the same rival from the same district.</p>
-          </section>
-
-          <section class="bonus" aria-labelledby="old-shell-court">
-            <span class="cover-spot" aria-label="Cover after use">Ready</span>
-            <span class="bonus-family">Court bonus</span>
-            <h3 id="old-shell-court">Binding Pact</h3>
-            <p class="bonus-text">Place a second Old Shell Support on the same Court space selected for the Court baseline, then update Old Shell’s Coalition Target again.</p>
+            <p class="bonus-text">After Smear removes rival Support, remove a second Support belonging to the same rival from the affected district.</p>
           </section>
 
           <section class="opening-bid" aria-label="Old Shell Union opening bid area">
@@ -133,24 +133,24 @@
             <p class="party-number">Party 03</p>
             <h2 class="party-name" id="foxglove-title"><span>Foxglove</span><span>League</span></h2>
             <p class="animals">Foxes</p>
-            <div class="favored"><span>Organise</span><span>Smear</span></div>
+            <div class="favored"><span>Smear</span><span>Court</span></div>
             <div class="party-state">
               <p><span class="state-kicker">Coalition</span><br>Reciprocal coalition targets only.</p>
             </div>
-          </section>
-
-          <section class="bonus" aria-labelledby="foxglove-organise">
-            <span class="cover-spot" aria-label="Cover after use">Ready</span>
-            <span class="bonus-family">Organise bonus</span>
-            <h3 id="foxglove-organise">Slip Away</h3>
-            <p class="bonus-text">When moving Foxglove Support, choose any free spot on the map instead of a neighboring free spot. If Foxglove had no Support before the baseline, Organise already permits placement in any free spot and Slip Away cannot be claimed.</p>
           </section>
 
           <section class="bonus" aria-labelledby="foxglove-smear">
             <span class="cover-spot" aria-label="Cover after use">Ready</span>
             <span class="bonus-family">Smear bonus</span>
             <h3 id="foxglove-smear">Spin</h3>
-            <p class="bonus-text">After removing rival Support, add one Foxglove Support to the vacated spot.</p>
+            <p class="bonus-text">After Smear removes rival Support, add one Foxglove Support to the vacated spot.</p>
+          </section>
+
+          <section class="bonus" aria-labelledby="foxglove-court">
+            <span class="cover-spot" aria-label="Cover after use">Ready</span>
+            <span class="bonus-family">Court bonus</span>
+            <h3 id="foxglove-court">Whisper Network</h3>
+            <p class="bonus-text">After Court, move one Foxglove Court Support from a different space to the selected party’s space, then update Foxglove’s target again.</p>
           </section>
 
           <section class="opening-bid" aria-label="Foxglove League opening bid area">
@@ -185,24 +185,24 @@
             <p class="party-number">Party 04</p>
             <h2 class="party-name" id="riverworks-title"><span>Riverworks</span><span>Party</span></h2>
             <p class="animals">Beavers</p>
-            <div class="favored"><span>Rally</span><span>Smear</span></div>
+            <div class="favored"><span>Organise</span><span>Rally</span></div>
             <div class="party-state">
               <p><span class="state-kicker">Coalition</span><br>Reciprocal coalition targets only.</p>
             </div>
+          </section>
+
+          <section class="bonus" aria-labelledby="riverworks-organise">
+            <span class="cover-spot" aria-label="Cover after use">Ready</span>
+            <span class="bonus-family">Organise bonus</span>
+            <h3 id="riverworks-organise">Canal Network</h3>
+            <p class="bonus-text">Organise to a free district reached through a path whose source and intermediate districts contain Riverworks Support.</p>
           </section>
 
           <section class="bonus" aria-labelledby="riverworks-rally">
             <span class="cover-spot" aria-label="Cover after use">Ready</span>
             <span class="bonus-family">Rally bonus</span>
             <h3 id="riverworks-rally">Public Works</h3>
-            <p class="bonus-text">Add a second Riverworks Support to a free spot in a district neighboring the Rally district.</p>
-          </section>
-
-          <section class="bonus" aria-labelledby="riverworks-smear">
-            <span class="cover-spot" aria-label="Cover after use">Ready</span>
-            <span class="bonus-family">Smear bonus</span>
-            <h3 id="riverworks-smear">Undermine</h3>
-            <p class="bonus-text">Remove a second Support belonging to the same rival from a district neighboring the first affected district. The second district need not be within Riverworks’ normal Smear range.</p>
+            <p class="bonus-text">After Rally, add one Riverworks Support to a free spot in a district neighboring the Rally district.</p>
           </section>
 
           <section class="opening-bid" aria-label="Riverworks Party opening bid area">
@@ -239,24 +239,24 @@
             <p class="party-number">Party 05</p>
             <h2 class="party-name" id="many-wings-title"><span>Many Wings</span><span>Coalition</span></h2>
             <p class="animals">Starlings</p>
-            <div class="favored"><span>Organise</span><span>Court</span></div>
+            <div class="favored"><span>Rally</span><span>Court</span></div>
             <div class="party-state">
               <p><span class="state-kicker">Coalition</span><br>Reciprocal coalition targets only.</p>
             </div>
           </section>
 
-          <section class="bonus" aria-labelledby="many-wings-organise">
+          <section class="bonus" aria-labelledby="many-wings-rally">
             <span class="cover-spot" aria-label="Cover after use">Ready</span>
-            <span class="bonus-family">Organise bonus</span>
-            <h3 id="many-wings-organise">Murmuration</h3>
-            <p class="bonus-text">After Organise resolves, immediately resolve the Organise baseline again using the updated map state. The second resolution may move the same Support again or move a different Support.</p>
+            <span class="bonus-family">Rally bonus</span>
+            <h3 id="many-wings-rally">Scatter the Flock</h3>
+            <p class="bonus-text">After Rally, move the maximum possible Many Wings Support to distinct neighboring districts with free spots. The Rally district may empty.</p>
           </section>
 
           <section class="bonus" aria-labelledby="many-wings-court">
             <span class="cover-spot" aria-label="Cover after use">Ready</span>
             <span class="bonus-family">Court bonus</span>
-            <h3 id="many-wings-court">Local Chapters</h3>
-            <p class="bonus-text">After Court resolves, add one Many Wings Support to a free spot in a district containing Support belonging to its current Coalition Target.</p>
+            <h3 id="many-wings-court">Joint Campaign</h3>
+            <p class="bonus-text">After Court, add one Support belonging to the selected party to a free spot in a district containing Many Wings Support.</p>
           </section>
 
           <section class="opening-bid" aria-label="Many Wings Coalition opening bid area">
@@ -291,25 +291,25 @@
             <p class="party-number">Party 06</p>
             <h2 class="party-name" id="night-title"><span>Night</span><span>Parliament</span></h2>
             <p class="animals">Owls</p>
-            <div class="favored"><span>Rally</span><span>Court</span></div>
+            <div class="favored"><span>Rally</span><span>Smear</span></div>
             <div class="party-state">
               <span class="state-marker">Bid</span>
-              <p><span class="state-kicker">Delayed</span><br>Mark each claiming bid.</p>
+              <p><span class="state-kicker">Night Shift</span><br>Mark its claiming bid.</p>
             </div>
           </section>
 
           <section class="bonus" aria-labelledby="night-rally">
             <span class="cover-spot" aria-label="Cover after use">Ready</span>
             <span class="bonus-family">Rally bonus</span>
-            <h3 id="night-rally">Closing Argument</h3>
-            <p class="bonus-text">After every contest and Revolving Door finishes, the claiming bid’s owner resolves one additional Rally baseline. Mark the claiming bid until this resolves.</p>
+            <h3 id="night-rally">Night Shift</h3>
+            <p class="bonus-text">After the final Revolving Door, add one Night Support to a least-occupied legal Rally district. Mark the claiming bid until this resolves.</p>
           </section>
 
-          <section class="bonus" aria-labelledby="night-court">
+          <section class="bonus" aria-labelledby="night-smear">
             <span class="cover-spot" aria-label="Cover after use">Ready</span>
-            <span class="bonus-family">Court bonus</span>
-            <h3 id="night-court">After-Hours Deal</h3>
-            <p class="bonus-text">After every contest and Revolving Door finishes, the claiming bid’s owner resolves one additional Court baseline. Mark the claiming bid until this resolves.</p>
+            <span class="bonus-family">Smear bonus</span>
+            <h3 id="night-smear">Midnight Leak</h3>
+            <p class="bonus-text">After Smear, remove one Court Support belonging to that rival from any Court space, then update that rival’s target.</p>
           </section>
 
           <section class="opening-bid" aria-label="Night Parliament opening bid area">

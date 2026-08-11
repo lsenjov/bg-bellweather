@@ -252,7 +252,8 @@ async function takeTurn(
     const choice = chooseOperation(
       operation,
       partyId,
-      objectValue(game["support"])
+      objectValue(game["support"]),
+      pending["kind"] === "night_delayed_operation"
     );
     if (choice !== null) {
       await command(client, session.gameId, publicState.version, {
@@ -271,7 +272,8 @@ async function takeTurn(
 function chooseOperation(
   operation: OperationId,
   partyId: PartyId,
-  rawSupport: Record<string, unknown>
+  rawSupport: Record<string, unknown>,
+  nightShift = false
 ): OperationChoice | null {
   const support = Object.fromEntries(
     DISTRICTS.map((district) => [
@@ -315,11 +317,17 @@ function chooseOperation(
     const partyPresent = DISTRICTS.some((district) =>
       present(district.id, partyId)
     );
-    const district = DISTRICTS.find(
+    const legalDistricts = DISTRICTS.filter(
       (candidate) =>
         free(candidate.id) &&
         (!partyPresent || present(candidate.id, partyId))
     );
+    const minimum = Math.min(
+      ...legalDistricts.map((candidate) => occupied(candidate.id))
+    );
+    const district = nightShift
+      ? legalDistricts.find((candidate) => occupied(candidate.id) === minimum)
+      : legalDistricts[0];
     return district === undefined
       ? null
       : { operation, districtId: district.id };

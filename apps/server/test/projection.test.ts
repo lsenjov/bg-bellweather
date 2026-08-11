@@ -37,7 +37,7 @@ describe("resolution filing projection", () => {
       contestId: "night-parliament",
       bidId: "zero-operation-bid",
       claimId: "claim-1",
-      operation: "court"
+      operation: "rally"
     };
 
     expect(publicResolutionFilingProgress(state, state.phase)).toEqual({
@@ -47,7 +47,7 @@ describe("resolution filing projection", () => {
     });
     expect(
       projectedPendingDecision(publicEngineState(state)).availableOperations
-    ).toEqual([{ operation: "court", count: 1 }]);
+    ).toEqual([{ operation: "rally", count: 1 }]);
   });
 
   it("shows every contest complete while a final Night operation is pending", () => {
@@ -85,7 +85,7 @@ describe("resolution filing projection", () => {
       contestId: "night-parliament",
       bidId: "night-bid",
       claimId: "claim-final",
-      operation: "court"
+      operation: "rally"
     };
     state.phase.delayedBonusClaims = [
       {
@@ -94,7 +94,7 @@ describe("resolution filing projection", () => {
         bidId: "night-bid",
         bidRank: 0,
         order: 0,
-        operation: "court"
+        operation: "rally"
       },
       {
         id: "claim-next",

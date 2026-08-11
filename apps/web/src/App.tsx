@@ -25,6 +25,7 @@ import {
 import {
   isOperationChoiceLegal,
   isOperationRequestLegal,
+  legalNightShiftDistrictIds,
   openingTurnSeatIds,
   replay as replayGame,
   supportCount,
@@ -801,9 +802,8 @@ type DistrictMapTarget =
   | "source"
   | "destination"
   | "district"
-  | "bonus"
-  | "repeat-source"
-  | "repeat-destination";
+  | "bonus-source"
+  | "bonus";
 
 interface ResolutionMapSummary {
   decisionId: string;
@@ -1776,9 +1776,13 @@ function CurrentOperationForm(props: {
   const [targetParty, setTargetParty] =
     useState<PartyId>(defaultOtherParty);
   const [bonusDistrictId, setBonusDistrictId] = useState("");
+  const [bonusSourceDistrictId, setBonusSourceDistrictId] = useState("");
+  const [bonusDistrictIds, setBonusDistrictIds] = useState<string[]>([]);
+  const [bonusCourtParty, setBonusCourtParty] =
+    useState<PartyId>(defaultOtherParty);
+  const [bonusCourtSourceParty, setBonusCourtSourceParty] =
+    useState<PartyId>(defaultOtherParty);
   const [claimBonus, setClaimBonus] = useState(false);
-  const [repeatSource, setRepeatSource] = useState("");
-  const [repeatDestination, setRepeatDestination] = useState("");
   const [activeMapTarget, setActiveMapTarget] =
     useState<DistrictMapTarget | null>(
       selectedOperation === "organise"
@@ -1800,20 +1804,29 @@ function CurrentOperationForm(props: {
   const claimingBonus = claimBonus && bonusAvailable;
   const bonusNeedsDistrict =
     claimingBonus &&
-    (partyId === "riverworks" ||
+    ((partyId === "honeycomb" && selectedOperation === "court") ||
+      (partyId === "riverworks" && selectedOperation === "rally") ||
       (partyId === "many-wings" && selectedOperation === "court"));
-  const repeatsOrganise =
+  const bonusNeedsSourceDistrict =
     claimingBonus &&
-    partyId === "many-wings" &&
-    selectedOperation === "organise";
+    partyId === "honeycomb" &&
+    selectedOperation === "court";
+  const scattersFlock =
+    claimingBonus && partyId === "many-wings" && selectedOperation === "rally";
+  const movesCourtSupport =
+    claimingBonus && partyId === "foxglove" && selectedOperation === "court";
+  const removesCourtSupport =
+    claimingBonus &&
+    partyId === "night-parliament" &&
+    selectedOperation === "smear";
   const operationState = useMemo(
     () => operationStateFromView(props.view),
     [props.view.support, props.view.courtSupport, props.view.coalitionTargets]
   );
   const organiseNeedsSource = supportCount(operationState, partyId) > 0;
-  const ignoreOrganiseAdjacency =
+  const allowCanalNetwork =
     claimingBonus &&
-    partyId === "foxglove" &&
+    partyId === "riverworks" &&
     selectedOperation === "organise";
   const districtSelections: Partial<Record<DistrictMapTarget, string>> = {
     ...(selectedOperation === "organise" && sourceDistrictId
@@ -1829,11 +1842,8 @@ function CurrentOperationForm(props: {
     ...(bonusNeedsDistrict && bonusDistrictId
       ? { bonus: bonusDistrictId }
       : {}),
-    ...(repeatsOrganise && repeatSource
-      ? { "repeat-source": repeatSource }
-      : {}),
-    ...(repeatsOrganise && repeatDestination
-      ? { "repeat-destination": repeatDestination }
+    ...(bonusNeedsSourceDistrict && bonusSourceDistrictId
+      ? { "bonus-source": bonusSourceDistrictId }
       : {})
   };
   const relevantMapTargets: DistrictMapTarget[] = [
@@ -1842,10 +1852,8 @@ function CurrentOperationForm(props: {
       : selectedOperation === "rally" || selectedOperation === "smear"
         ? (["district"] as DistrictMapTarget[])
         : []),
+    ...(bonusNeedsSourceDistrict ? (["bonus-source"] as DistrictMapTarget[]) : []),
     ...(bonusNeedsDistrict ? (["bonus"] as DistrictMapTarget[]) : []),
-    ...(repeatsOrganise
-      ? (["repeat-source", "repeat-destination"] as DistrictMapTarget[])
-      : [])
   ];
   const requiredMapTargets: DistrictMapTarget[] = [
     ...(selectedOperation === "organise"
@@ -1856,10 +1864,8 @@ function CurrentOperationForm(props: {
       : selectedOperation === "rally" || selectedOperation === "smear"
         ? (["district"] as DistrictMapTarget[])
         : []),
+    ...(bonusNeedsSourceDistrict ? (["bonus-source"] as DistrictMapTarget[]) : []),
     ...(bonusNeedsDistrict ? (["bonus"] as DistrictMapTarget[]) : []),
-    ...(repeatsOrganise
-      ? (["repeat-source", "repeat-destination"] as DistrictMapTarget[])
-      : [])
   ];
   const missingRequiredMapTarget = requiredMapTargets.find(
     (target) => districtSelections[target] === undefined
@@ -1875,41 +1881,38 @@ function CurrentOperationForm(props: {
         ? {
             operation: selectedOperation,
             districtId,
-            ...(bonusNeedsDistrict ? { bonusDistrictId } : {})
+            ...(bonusNeedsDistrict ? { bonusDistrictId } : {}),
+            ...(scattersFlock ? { bonusDistrictIds } : {})
           }
         : selectedOperation === "smear"
           ? {
               operation: selectedOperation,
               districtId,
               rivalParty,
-              ...(bonusNeedsDistrict ? { bonusDistrictId } : {})
+              ...(removesCourtSupport ? { bonusCourtParty } : {})
             }
           : {
               operation: selectedOperation,
               targetParty,
-              ...(bonusNeedsDistrict ? { bonusDistrictId } : {})
+              ...(bonusNeedsDistrict ? { bonusDistrictId } : {}),
+              ...(bonusNeedsSourceDistrict ? { bonusSourceDistrictId } : {}),
+              ...(movesCourtSupport ? { bonusCourtSourceParty } : {})
             };
-  const baselineChoiceLegal = isOperationChoiceLegal(
-    operationState,
-    partyId,
-    choice as EngineOperationChoice,
-    { ignoreOrganiseAdjacency }
-  );
+  const baselineChoiceLegal = delayed
+    ? selectedOperation === "rally" &&
+      legalNightShiftDistrictIds(operationState).includes(districtId)
+    : isOperationChoiceLegal(
+        operationState,
+        partyId,
+        choice as EngineOperationChoice,
+        { allowCanalNetwork }
+      );
   const engineRequest: EngineOperationRequest = {
     party: partyId,
     choice: choice as EngineOperationChoice,
     ...(claimingBonus
       ? {
-          claimBonus: true,
-          ...(repeatsOrganise
-            ? {
-                repeatChoice: {
-                  operation: "organise" as const,
-                  destinationDistrictId: repeatDestination,
-                  ...(repeatSource ? { sourceDistrictId: repeatSource } : {})
-                }
-              }
-            : {})
+          claimBonus: true
         }
       : {})
   };
@@ -1917,16 +1920,55 @@ function CurrentOperationForm(props: {
     operationState,
     engineRequest
   );
-  const bonusDistrictIds = useMemo(
+  const bonusSourceDistrictIds = useMemo(
+    () => bonusNeedsSourceDistrict
+      ? DISTRICTS.filter((source) =>
+          DISTRICTS.some((destination) =>
+            (bonusDistrictId === "" || bonusDistrictId === destination.id) &&
+            isOperationRequestLegal(operationState, {
+              ...engineRequest,
+              choice: {
+                ...engineRequest.choice,
+                bonusSourceDistrictId: source.id,
+                bonusDistrictId: destination.id
+              } as EngineOperationChoice
+            })
+          )
+        ).map((district) => district.id)
+      : null,
+    [
+      operationState,
+      partyId,
+      selectedOperation,
+      districtId,
+      sourceDistrictId,
+      targetParty,
+      claimingBonus,
+      bonusNeedsSourceDistrict,
+      bonusDistrictId
+    ]
+  );
+  const bonusDestinationDistrictIds = useMemo(
     () => bonusNeedsDistrict
-      ? DISTRICTS.filter((district) =>
-          isOperationRequestLegal(operationState, {
-            ...engineRequest,
-            choice: {
-              ...engineRequest.choice,
-              bonusDistrictId: district.id
-            } as EngineOperationChoice
-          })
+      ? DISTRICTS.filter((destination) =>
+          bonusNeedsSourceDistrict && bonusSourceDistrictId === ""
+            ? DISTRICTS.some((source) =>
+                isOperationRequestLegal(operationState, {
+                  ...engineRequest,
+                  choice: {
+                    ...engineRequest.choice,
+                    bonusSourceDistrictId: source.id,
+                    bonusDistrictId: destination.id
+                  } as EngineOperationChoice
+                })
+              )
+            : isOperationRequestLegal(operationState, {
+                ...engineRequest,
+                choice: {
+                  ...engineRequest.choice,
+                  bonusDistrictId: destination.id
+                } as EngineOperationChoice
+              })
         ).map((district) => district.id)
       : null,
     [
@@ -1939,69 +1981,39 @@ function CurrentOperationForm(props: {
       targetParty,
       claimingBonus,
       bonusNeedsDistrict,
-      repeatsOrganise,
-      repeatSource,
-      repeatDestination
+      bonusNeedsSourceDistrict,
+      bonusSourceDistrictId
     ]
   );
-  const repeatSourceDistrictIds = useMemo(
-    () => repeatsOrganise
-      ? DISTRICTS.filter((source) =>
-          DISTRICTS.some((destination) =>
-            (repeatDestination === "" || repeatDestination === destination.id) &&
-            isOperationRequestLegal(operationState, {
-              ...engineRequest,
-              repeatChoice: {
-                operation: "organise",
-                sourceDistrictId: source.id,
-                destinationDistrictId: destination.id
-              }
-            })
-          )
-        ).map((district) => district.id)
-      : null,
-    [
-      operationState,
-      partyId,
-      selectedOperation,
-      districtId,
-      sourceDistrictId,
-      claimingBonus,
-      repeatsOrganise,
-      repeatDestination
-    ]
+  const scatterDestinationIds = useMemo(
+    () => {
+      if (!scattersFlock) return [];
+      const source = operationState.districts[districtId];
+      if (source === undefined) return [];
+      return source.neighbors.filter((candidateId) => {
+        const candidate = operationState.districts[candidateId];
+        return candidate !== undefined &&
+          Object.values(candidate.support).reduce(
+            (total, count) => total + (count ?? 0),
+            0
+          ) < candidate.capacity;
+      });
+    },
+    [operationState, districtId, scattersFlock]
   );
-  const repeatDestinationDistrictIds = useMemo(
-    () => repeatsOrganise
-      ? DISTRICTS.filter((destination) =>
-          isOperationRequestLegal(operationState, {
-            ...engineRequest,
-            repeatChoice: {
-              operation: "organise",
-              destinationDistrictId: destination.id,
-              ...(repeatSource ? { sourceDistrictId: repeatSource } : {})
-            }
-          })
-        ).map((district) => district.id)
-      : null,
-    [
-      operationState,
-      partyId,
-      selectedOperation,
-      districtId,
-      sourceDistrictId,
-      claimingBonus,
-      repeatsOrganise,
-      repeatSource
-    ]
-  );
+  const scatterRequiredCount = scattersFlock
+    ? Math.min(
+        (operationState.districts[districtId]?.support["many-wings"] ?? 0) + 1,
+        scatterDestinationIds.length
+      )
+    : 0;
   const selectableDistrictIds = useMemo(
-    () => activeMapTarget === "bonus"
-      ? bonusDistrictIds
-      : activeMapTarget === "repeat-source"
-        ? repeatSourceDistrictIds
-        : activeMapTarget === "repeat-destination"
-          ? repeatDestinationDistrictIds
+    () => activeMapTarget === "bonus-source"
+      ? bonusSourceDistrictIds
+      : activeMapTarget === "bonus"
+        ? bonusDestinationDistrictIds
+        : activeMapTarget === "district" && delayed
+          ? legalNightShiftDistrictIds(operationState)
           : legalDistrictIdsForTarget(
               operationState,
               partyId,
@@ -2011,7 +2023,7 @@ function CurrentOperationForm(props: {
                 sourceDistrictId,
                 destinationDistrictId: districtId,
                 rivalParty,
-                ignoreOrganiseAdjacency
+                allowCanalNetwork
               }
             ),
     [
@@ -2022,12 +2034,25 @@ function CurrentOperationForm(props: {
       sourceDistrictId,
       districtId,
       rivalParty,
-      ignoreOrganiseAdjacency,
-      bonusDistrictIds,
-      repeatSourceDistrictIds,
-      repeatDestinationDistrictIds
+      allowCanalNetwork,
+      delayed,
+      bonusSourceDistrictIds,
+      bonusDestinationDistrictIds
     ]
   );
+  const movableCourtSourceParties = PARTIES.map((candidate) => candidate.id)
+    .filter(
+      (candidate) =>
+        candidate !== partyId &&
+        candidate !== targetParty &&
+        (operationState.courtSupport[partyId]?.[candidate] ?? 0) > 0
+    );
+  const removableCourtParties = PARTIES.map((candidate) => candidate.id)
+    .filter(
+      (candidate) =>
+        candidate !== rivalParty &&
+        (operationState.courtSupport[rivalParty]?.[candidate] ?? 0) > 0
+    );
 
   useEffect(() => {
     if (operation !== selectedOperation) {
@@ -2040,6 +2065,39 @@ function CurrentOperationForm(props: {
       setClaimBonus(false);
     }
   }, [claimBonus, bonusAvailable]);
+
+  useEffect(() => {
+    setBonusDistrictIds((current) => {
+      if (!scattersFlock) return current.length === 0 ? current : [];
+      const next = current
+        .filter((district) => scatterDestinationIds.includes(district))
+        .slice(0, scatterRequiredCount);
+      return next.length === current.length &&
+        next.every((district, index) => district === current[index])
+        ? current
+        : next;
+    });
+  }, [scattersFlock, scatterDestinationIds, scatterRequiredCount]);
+
+  useEffect(() => {
+    if (
+      movesCourtSupport &&
+      !movableCourtSourceParties.includes(bonusCourtSourceParty)
+    ) {
+      setBonusCourtSourceParty(
+        movableCourtSourceParties[0] ?? defaultOtherParty
+      );
+    }
+  }, [movesCourtSupport, movableCourtSourceParties, bonusCourtSourceParty]);
+
+  useEffect(() => {
+    if (
+      removesCourtSupport &&
+      !removableCourtParties.includes(bonusCourtParty)
+    ) {
+      setBonusCourtParty(removableCourtParties[0] ?? defaultOtherParty);
+    }
+  }, [removesCourtSupport, removableCourtParties, bonusCourtParty]);
 
   useEffect(() => {
     setActiveMapTarget((current) => {
@@ -2068,11 +2126,10 @@ function CurrentOperationForm(props: {
     selectedOperation,
     sourceDistrictId,
     districtId,
+    bonusSourceDistrictId,
     bonusDistrictId,
-    repeatSource,
-    repeatDestination,
+    bonusNeedsSourceDistrict,
     bonusNeedsDistrict,
-    repeatsOrganise,
     organiseNeedsSource,
     missingRequiredMapTarget
   ]);
@@ -2100,10 +2157,8 @@ function CurrentOperationForm(props: {
       setDistrictId(intent.value);
     } else if (activeMapTarget === "bonus") {
       setBonusDistrictId(intent.value);
-    } else if (activeMapTarget === "repeat-source") {
-      setRepeatSource(intent.value);
     } else {
-      setRepeatDestination(intent.value);
+      setBonusSourceDistrictId(intent.value);
     }
   }, [props.resolutionDistrictIntent]);
 
@@ -2120,11 +2175,10 @@ function CurrentOperationForm(props: {
     selectedOperation,
     sourceDistrictId,
     districtId,
+    bonusSourceDistrictId,
     bonusDistrictId,
-    repeatSource,
-    repeatDestination,
+    bonusNeedsSourceDistrict,
     bonusNeedsDistrict,
-    repeatsOrganise,
     selectableDistrictIds,
     props.onResolutionMapStateChange
   ]);
@@ -2142,16 +2196,7 @@ function CurrentOperationForm(props: {
     claimingBonus
       ? {
           choice,
-          claimBonus: true,
-          ...(repeatsOrganise
-            ? {
-                repeatChoice: {
-                  operation: "organise",
-                  destinationDistrictId: repeatDestination,
-                  ...(repeatSource ? { sourceDistrictId: repeatSource } : {})
-                }
-              }
-            : {})
+          claimBonus: true
         }
       : choice;
 
@@ -2220,7 +2265,7 @@ function CurrentOperationForm(props: {
                 sourceDistrictId,
                 destinationDistrictId: districtId,
                 rivalParty,
-                ignoreOrganiseAdjacency
+                allowCanalNetwork
               }
             ) ?? []}
             onArmMapTarget={setActiveMapTarget}
@@ -2240,7 +2285,7 @@ function CurrentOperationForm(props: {
                 sourceDistrictId,
                 destinationDistrictId: districtId,
                 rivalParty,
-                ignoreOrganiseAdjacency
+                allowCanalNetwork
               }
             ) ?? []}
             onArmMapTarget={setActiveMapTarget}
@@ -2254,18 +2299,20 @@ function CurrentOperationForm(props: {
           value={districtId}
           mapTarget="district"
           activeMapTarget={activeMapTarget}
-          availableDistrictIds={legalDistrictIdsForTarget(
-            operationState,
-            partyId,
-            selectedOperation,
-            "district",
-            {
-              sourceDistrictId,
-              destinationDistrictId: districtId,
-              rivalParty,
-              ignoreOrganiseAdjacency
-            }
-          ) ?? []}
+          availableDistrictIds={delayed
+            ? legalNightShiftDistrictIds(operationState)
+            : legalDistrictIdsForTarget(
+                operationState,
+                partyId,
+                selectedOperation,
+                "district",
+                {
+                  sourceDistrictId,
+                  destinationDistrictId: districtId,
+                  rivalParty,
+                  allowCanalNetwork
+                }
+              ) ?? []}
           onArmMapTarget={setActiveMapTarget}
           onChange={(value) => changeDistrict("district", setDistrictId, value)}
         />
@@ -2311,39 +2358,78 @@ function CurrentOperationForm(props: {
           {matchingBonus.name} has already been claimed in this contest.
         </p>
       )}
+      {bonusNeedsSourceDistrict && (
+        <DistrictSelect
+          label="Bonus source district"
+          value={bonusSourceDistrictId}
+          availableDistrictIds={bonusSourceDistrictIds ?? []}
+          mapTarget="bonus-source"
+          activeMapTarget={activeMapTarget}
+          onArmMapTarget={setActiveMapTarget}
+          onChange={(value) =>
+            changeDistrict("bonus-source", setBonusSourceDistrictId, value)
+          }
+        />
+      )}
       {bonusNeedsDistrict && (
-          <DistrictSelect
-            label="Bonus district"
-            value={bonusDistrictId}
-            availableDistrictIds={bonusDistrictIds ?? []}
-            mapTarget="bonus"
-            activeMapTarget={activeMapTarget}
-            onArmMapTarget={setActiveMapTarget}
-            onChange={(value) => changeDistrict("bonus", setBonusDistrictId, value)}
-          />
-        )}
-      {repeatsOrganise && (
+        <DistrictSelect
+          label="Bonus destination district"
+          value={bonusDistrictId}
+          availableDistrictIds={bonusDestinationDistrictIds ?? []}
+          mapTarget="bonus"
+          activeMapTarget={activeMapTarget}
+          onArmMapTarget={setActiveMapTarget}
+          onChange={(value) => changeDistrict("bonus", setBonusDistrictId, value)}
+        />
+      )}
+      {scattersFlock && (
         <fieldset>
-          <legend>Murmuration’s second Organise</legend>
-          <DistrictSelect
-            label="Second source"
-            value={repeatSource}
-            availableDistrictIds={repeatSourceDistrictIds ?? []}
-            mapTarget="repeat-source"
-            activeMapTarget={activeMapTarget}
-            onArmMapTarget={setActiveMapTarget}
-            onChange={(value) => changeDistrict("repeat-source", setRepeatSource, value)}
-          />
-          <DistrictSelect
-            label="Second destination"
-            value={repeatDestination}
-            availableDistrictIds={repeatDestinationDistrictIds ?? []}
-            mapTarget="repeat-destination"
-            activeMapTarget={activeMapTarget}
-            onArmMapTarget={setActiveMapTarget}
-            onChange={(value) => changeDistrict("repeat-destination", setRepeatDestination, value)}
-          />
+          <legend>
+            Scatter destinations ({bonusDistrictIds.length}/{scatterRequiredCount})
+          </legend>
+          {scatterDestinationIds.map((candidateId) => (
+            <label className="check-line" key={candidateId}>
+              <input
+                type="checkbox"
+                checked={bonusDistrictIds.includes(candidateId)}
+                disabled={
+                  !bonusDistrictIds.includes(candidateId) &&
+                  bonusDistrictIds.length >= scatterRequiredCount
+                }
+                onChange={(event) =>
+                  setBonusDistrictIds((current) =>
+                    event.target.checked
+                      ? [...current, candidateId]
+                      : current.filter((district) => district !== candidateId)
+                  )
+                }
+              />
+              {DISTRICTS.find((district) => district.id === candidateId)?.name}
+            </label>
+          ))}
         </fieldset>
+      )}
+      {movesCourtSupport && (
+        <PartySelect
+          label="Move Court Support from"
+          value={bonusCourtSourceParty}
+          excludes={[partyId, targetParty]}
+          disabledValues={PARTIES.map((candidate) => candidate.id).filter(
+            (candidate) => !movableCourtSourceParties.includes(candidate)
+          )}
+          onChange={setBonusCourtSourceParty}
+        />
+      )}
+      {removesCourtSupport && (
+        <PartySelect
+          label="Remove rival Court Support from"
+          value={bonusCourtParty}
+          excludes={[rivalParty]}
+          disabledValues={PARTIES.map((candidate) => candidate.id).filter(
+            (candidate) => !removableCourtParties.includes(candidate)
+          )}
+          onChange={setBonusCourtParty}
+        />
       )}
       <button
         className="ink-button"
@@ -2483,7 +2569,7 @@ function legalDistrictIdsForTarget(
     sourceDistrictId: string;
     destinationDistrictId: string;
     rivalParty: PartyId;
-    ignoreOrganiseAdjacency: boolean;
+    allowCanalNetwork: boolean;
   }
 ): string[] | null {
   if (operation === "organise" && target === "source") {
@@ -2499,7 +2585,7 @@ function legalDistrictIdsForTarget(
             sourceDistrictId: source.id,
             destinationDistrictId: destination.id
           },
-          { ignoreOrganiseAdjacency: selection.ignoreOrganiseAdjacency }
+          { allowCanalNetwork: selection.allowCanalNetwork }
         )
       )
     ).map((district) => district.id);
@@ -2516,7 +2602,7 @@ function legalDistrictIdsForTarget(
             ? { sourceDistrictId: selection.sourceDistrictId }
             : {})
         },
-        { ignoreOrganiseAdjacency: selection.ignoreOrganiseAdjacency }
+        { allowCanalNetwork: selection.allowCanalNetwork }
       )
     ).map((district) => district.id);
   }
@@ -2792,9 +2878,8 @@ const DISTRICT_MAP_TARGET_LABELS: Record<DistrictMapTarget, string> = {
   source: "source",
   destination: "destination",
   district: "operation district",
-  bonus: "bonus district",
-  "repeat-source": "second source",
-  "repeat-destination": "second destination"
+  "bonus-source": "bonus source",
+  bonus: "bonus destination"
 };
 
 export function DistrictMap({

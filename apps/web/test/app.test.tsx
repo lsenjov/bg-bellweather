@@ -135,7 +135,7 @@ describe("browser play surface", () => {
         seats: [],
         spectators: [],
         publicGame: {
-          rulesetVersion: "12",
+          rulesetVersion: "13",
           round: 1,
           electionNumber: 0,
           nextFirstOpenerSeatId: "seat-a",
@@ -208,7 +208,7 @@ describe("browser play surface", () => {
         seats: [],
         spectators: [],
         publicGame: {
-          rulesetVersion: "12",
+          rulesetVersion: "13",
           round: 1,
           electionNumber: 0,
           nextFirstOpenerSeatId: "seat-a",
@@ -371,7 +371,7 @@ describe("browser play surface", () => {
         },
         seats: [host],
         spectators: [],
-        publicGame: { phase: "lobby", rulesetVersion: "12" }
+        publicGame: { phase: "lobby", rulesetVersion: "13" }
       },
       seatState: { seatId: host.seatId, privateGame: null }
     };
@@ -2460,7 +2460,10 @@ describe("browser play surface", () => {
       <OperationForm
         key="honeycomb"
         view={{
-          support: { harbormouth: { honeycomb: 5 } },
+          support: {
+            harbormouth: { honeycomb: 1 },
+            millbank: { foxglove: 3 }
+          },
           courtSupport: {},
           coalitionTargets: {}
         } as never}
@@ -2470,18 +2473,23 @@ describe("browser play surface", () => {
           kind: "party_operation",
           contestId: "honeycomb",
           partyId: "honeycomb",
-          availableBonusOperations: ["rally"],
-          availableOperations: [{ operation: "rally", count: 1 }]
+          availableBonusOperations: ["organise"],
+          availableOperations: [{ operation: "organise", count: 1 }]
         }}
         decisionId="decision-1"
         onCommand={onCommand}
       />
     );
     const form = within(container);
-    fireEvent.change(form.getByLabelText("District"), {
+    fireEvent.change(form.getByLabelText("Source district (required)"), {
       target: { value: "harbormouth" }
     });
-    fireEvent.click(form.getByRole("checkbox", { name: /claim swarm/i }));
+    fireEvent.change(form.getByLabelText("Destination district"), {
+      target: { value: "millbank" }
+    });
+    fireEvent.click(
+      form.getByRole("checkbox", { name: /claim waggle route/i })
+    );
     expect(
       (form.getByRole("button", { name: /resolve operation/i }) as HTMLButtonElement)
         .disabled
@@ -2547,7 +2555,7 @@ describe("browser play surface", () => {
       form.getByRole("checkbox", { name: /claim public works/i })
     );
     const bonusDistrict = form.getByLabelText(
-      "Bonus district"
+      "Bonus destination district"
     ) as HTMLSelectElement;
     expect(
       [...bonusDistrict.options].find((option) => option.value === "northreach")
@@ -2564,7 +2572,7 @@ describe("browser play surface", () => {
     ).toBe(true);
   });
 
-  it("requires legal source and destination choices for Murmuration", () => {
+  it("requires every Scatter the Flock destination", () => {
     const onCommand = vi.fn(async () => undefined);
     const { container } = render(
       <OperationForm
@@ -2579,51 +2587,238 @@ describe("browser play surface", () => {
           kind: "party_operation",
           contestId: "many-wings",
           partyId: "many-wings",
-          availableBonusOperations: ["organise"],
-          availableOperations: [{ operation: "organise", count: 1 }]
+          availableBonusOperations: ["rally"],
+          availableOperations: [{ operation: "rally", count: 1 }]
         }}
         decisionId="decision-1"
         onCommand={onCommand}
       />
     );
     const form = within(container);
-    fireEvent.change(form.getByLabelText("Source district (required)"), {
+    fireEvent.change(form.getByLabelText("District"), {
       target: { value: "harbormouth" }
     });
-    fireEvent.change(form.getByLabelText("Destination district"), {
-      target: { value: "millbank" }
-    });
     fireEvent.click(
-      form.getByRole("checkbox", { name: /claim murmuration/i })
+      form.getByRole("checkbox", { name: /claim scatter the flock/i })
     );
-    const repeatSource = form.getByLabelText(
-      "Second source"
-    ) as HTMLSelectElement;
-    expect(
-      [...repeatSource.options].find((option) => option.value === "harbormouth")
-        ?.disabled
-    ).toBe(true);
-    expect(
-      [...repeatSource.options].find((option) => option.value === "millbank")
-        ?.disabled
-    ).toBe(false);
-    fireEvent.change(repeatSource, { target: { value: "millbank" } });
-    const repeatDestination = form.getByLabelText(
-      "Second destination"
-    ) as HTMLSelectElement;
-    expect(
-      [...repeatDestination.options].find(
-        (option) => option.value === "northreach"
-      )?.disabled
-    ).toBe(true);
-    expect(
-      [...repeatDestination.options].find((option) => option.value === "reedwater")
-        ?.disabled
-    ).toBe(false);
-    fireEvent.change(repeatDestination, { target: { value: "reedwater" } });
     expect(
       (form.getByRole("button", { name: /resolve operation/i }) as HTMLButtonElement)
         .disabled
+    ).toBe(true);
+    fireEvent.click(form.getByRole("checkbox", { name: "Cloverfield" }));
+    fireEvent.click(form.getByRole("checkbox", { name: "Millbank" }));
+    expect(
+      (form.getByRole("button", { name: /resolve operation/i }) as HTMLButtonElement)
+        .disabled
+    ).toBe(false);
+  });
+
+  it("submits Common Cause source and destination choices", async () => {
+    const onCommand = vi.fn(async () => undefined);
+    const { container } = render(
+      <OperationForm
+        view={{
+          support: {
+            harbormouth: { honeycomb: 1 },
+            millbank: { foxglove: 1 }
+          },
+          courtSupport: {},
+          coalitionTargets: {}
+        } as never}
+        busy={false}
+        decision={{
+          id: "decision-1",
+          kind: "party_operation",
+          contestId: "honeycomb",
+          partyId: "honeycomb",
+          availableBonusOperations: ["court"],
+          availableOperations: [{ operation: "court", count: 1 }]
+        }}
+        decisionId="decision-1"
+        onCommand={onCommand}
+      />
+    );
+    const form = within(container);
+    fireEvent.change(form.getByLabelText("Court space"), {
+      target: { value: "foxglove" }
+    });
+    fireEvent.click(
+      form.getByRole("checkbox", { name: /claim common cause/i })
+    );
+    fireEvent.change(form.getByLabelText("Bonus source district"), {
+      target: { value: "harbormouth" }
+    });
+    fireEvent.change(form.getByLabelText("Bonus destination district"), {
+      target: { value: "millbank" }
+    });
+    fireEvent.click(form.getByRole("button", { name: /resolve operation/i }));
+
+    await waitFor(() => expect(onCommand).toHaveBeenCalledTimes(1));
+    expect(onCommand).toHaveBeenCalledWith({
+      type: "game_action",
+      action: {
+        type: "resolve_party_operation",
+        decisionId: "decision-1",
+        operation: "court",
+        choice: {
+          choice: {
+            operation: "court",
+            targetParty: "foxglove",
+            bonusDistrictId: "millbank",
+            bonusSourceDistrictId: "harbormouth"
+          },
+          claimBonus: true
+        }
+      }
+    });
+  });
+
+  it("opens Canal Network destinations along supported routes", () => {
+    const { container } = render(
+      <OperationForm
+        view={{
+          support: {
+            harbormouth: { riverworks: 1 },
+            millbank: { riverworks: 1 }
+          },
+          courtSupport: {},
+          coalitionTargets: {}
+        } as never}
+        busy={false}
+        decision={{
+          id: "decision-1",
+          kind: "party_operation",
+          contestId: "riverworks",
+          partyId: "riverworks",
+          availableBonusOperations: ["organise"],
+          availableOperations: [{ operation: "organise", count: 1 }]
+        }}
+        decisionId="decision-1"
+        onCommand={vi.fn(async () => undefined)}
+      />
+    );
+    const form = within(container);
+    fireEvent.change(form.getByLabelText("Source district (required)"), {
+      target: { value: "harbormouth" }
+    });
+    const destination = form.getByLabelText(
+      "Destination district"
+    ) as HTMLSelectElement;
+    expect(
+      [...destination.options].find((option) => option.value === "reedwater")
+        ?.disabled
+    ).toBe(true);
+    fireEvent.click(
+      form.getByRole("checkbox", { name: /claim canal network/i })
+    );
+    expect(
+      [...destination.options].find((option) => option.value === "reedwater")
+        ?.disabled
+    ).toBe(false);
+  });
+
+  it("collects Court-space choices for Whisper Network and Midnight Leak", async () => {
+    const onCommand = vi.fn(async () => undefined);
+    const { container, rerender } = render(
+      <OperationForm
+        key="foxglove"
+        view={{
+          support: {},
+          courtSupport: { foxglove: { "old-shell": 1 } },
+          coalitionTargets: { foxglove: "old-shell" }
+        } as never}
+        busy={false}
+        decision={{
+          id: "decision-1",
+          kind: "party_operation",
+          contestId: "foxglove",
+          partyId: "foxglove",
+          availableBonusOperations: ["court"],
+          availableOperations: [{ operation: "court", count: 1 }]
+        }}
+        decisionId="decision-1"
+        onCommand={onCommand}
+      />
+    );
+    const form = within(container);
+    fireEvent.click(
+      form.getByRole("checkbox", { name: /claim whisper network/i })
+    );
+    const courtSource = form.getByLabelText(
+      "Move Court Support from"
+    ) as HTMLSelectElement;
+    await waitFor(() => expect(courtSource.value).toBe("old-shell"));
+
+    rerender(
+      <OperationForm
+        key="night"
+        view={{
+          support: { harbormouth: { "night-parliament": 1, foxglove: 1 } },
+          courtSupport: { foxglove: { honeycomb: 1 } },
+          coalitionTargets: { foxglove: "honeycomb" }
+        } as never}
+        busy={false}
+        decision={{
+          id: "decision-2",
+          kind: "party_operation",
+          contestId: "night-parliament",
+          partyId: "night-parliament",
+          availableBonusOperations: ["smear"],
+          availableOperations: [{ operation: "smear", count: 1 }]
+        }}
+        decisionId="decision-2"
+        onCommand={onCommand}
+      />
+    );
+    fireEvent.change(form.getByLabelText("District"), {
+      target: { value: "harbormouth" }
+    });
+    fireEvent.change(form.getByLabelText("Rival party"), {
+      target: { value: "foxglove" }
+    });
+    fireEvent.click(
+      form.getByRole("checkbox", { name: /claim midnight leak/i })
+    );
+    const courtTarget = form.getByLabelText(
+      "Remove rival Court Support from"
+    ) as HTMLSelectElement;
+    await waitFor(() => expect(courtTarget.value).toBe("honeycomb"));
+  });
+
+  it("limits Night Shift to least-occupied legal Rally districts", () => {
+    const { container } = render(
+      <OperationForm
+        view={{
+          support: {
+            harbormouth: { "night-parliament": 1, foxglove: 1 },
+            millbank: { "night-parliament": 1 }
+          },
+          courtSupport: {},
+          coalitionTargets: {}
+        } as never}
+        busy={false}
+        decision={{
+          id: "decision-1",
+          kind: "night_delayed_operation",
+          contestId: "night-parliament",
+          partyId: "night-parliament",
+          operation: "rally",
+          availableOperations: [{ operation: "rally", count: 1 }]
+        }}
+        decisionId="decision-1"
+        onCommand={vi.fn(async () => undefined)}
+      />
+    );
+    const district = within(container).getByLabelText(
+      "District"
+    ) as HTMLSelectElement;
+    expect(
+      [...district.options].find((option) => option.value === "harbormouth")
+        ?.disabled
+    ).toBe(true);
+    expect(
+      [...district.options].find((option) => option.value === "millbank")
+        ?.disabled
     ).toBe(false);
   });
 
@@ -2647,7 +2842,7 @@ describe("browser play surface", () => {
     };
     const { container, rerender } = render(<OperationForm {...baseProps} />);
     const form = within(container);
-    const bonus = form.getByRole("checkbox", { name: /claim leave a cell behind/i });
+    const bonus = form.getByRole("checkbox", { name: /claim waggle route/i });
 
     fireEvent.click(bonus);
     expect((bonus as HTMLInputElement).checked).toBe(true);
@@ -2659,8 +2854,8 @@ describe("browser play surface", () => {
       />
     );
 
-    expect(form.queryByRole("checkbox", { name: /claim leave a cell behind/i })).toBeNull();
-    expect(form.getByText(/leave a cell behind has already been claimed/i)).toBeTruthy();
+    expect(form.queryByRole("checkbox", { name: /claim waggle route/i })).toBeNull();
+    expect(form.getByText(/waggle route has already been claimed/i)).toBeTruthy();
     fireEvent.change(form.getByLabelText("Destination district"), {
       target: { value: "harbormouth" }
     });
