@@ -68,11 +68,12 @@ main {
   width: 210mm;
   height: 297mm;
   flex: 0 0 auto;
-  grid-template-rows: repeat(2, 140mm);
+  grid-template-rows: repeat(2, 120mm);
   gap: 7mm;
-  padding: 5mm;
+  padding: 15mm 5mm;
   background: #fff;
   box-shadow: 0 10px 35px rgb(0 0 0 / 35%);
+  align-content: space-between;
 }
 
 .firm-board {
@@ -83,9 +84,9 @@ main {
   position: relative;
   display: grid;
   width: 200mm;
-  height: 140mm;
-  grid-template-columns: 45mm 40mm 101mm;
-  grid-template-rows: 61mm 68mm;
+  height: 120mm;
+  grid-template-columns: 43mm 72mm 71mm;
+  grid-template-rows: 61mm 48mm;
   gap: 3mm;
   padding: 4mm;
   overflow: hidden;
@@ -213,7 +214,7 @@ main {
 .firm-index,
 .identity-kicker,
 .panel-kicker,
-.agenda-label,
+.agenda-slot > span,
 .operation-name {
   font: 800 5.7pt/1.1 var(--mono);
   letter-spacing: 0.1em;
@@ -252,51 +253,100 @@ main {
   font: 750 6.3pt/1.3 var(--body);
 }
 
-.agenda {
+.agenda-rack {
   position: relative;
-  display: flex;
-  width: 40mm;
+  width: 72mm;
   height: 61mm;
   grid-column: 2;
   grid-row: 1;
-  padding: 3mm;
+}
+
+.agenda-slots {
+  position: relative;
+  height: 61mm;
+}
+
+.agenda-slot {
+  position: absolute;
+  top: 0;
+  display: flex;
+  width: 40mm;
+  height: 61mm;
+  padding: 2.5mm;
   overflow: hidden;
   border: 0.5mm solid var(--ink);
   background:
     linear-gradient(135deg, transparent 0 47%, rgb(23 23 19 / 5%) 48% 52%, transparent 53%),
     var(--paper);
+  box-shadow: -1.2mm 0 0 rgb(23 23 19 / 12%);
   flex-direction: column;
 }
 
-.agenda::before {
+.agenda-slot::before {
   position: absolute;
-  inset: 2mm;
-  border: 0.45mm dashed var(--detail);
+  inset: 1.6mm;
+  border: 0.4mm dashed var(--detail);
   content: "";
 }
 
-.agenda-label {
+.agenda-slot > * {
   position: relative;
-  color: var(--detail);
 }
 
-.agenda strong {
-  position: relative;
-  max-width: 29mm;
+.agenda-slot > span {
+  width: 10mm;
+  padding: 0.8mm 1mm;
+  color: var(--paper-bright);
+  background: var(--detail);
+  text-align: center;
+}
+
+.agenda-slot strong {
+  max-width: 28mm;
   margin: auto;
-  font: 800 12pt/0.95 var(--display);
+  font: 800 11pt/0.95 var(--display);
   letter-spacing: -0.03em;
   text-align: center;
 }
 
-.agenda small {
-  position: relative;
+.agenda-slot small {
   padding: 0 1mm;
   background: var(--paper);
   margin-top: auto;
-  font: 750 5.3pt/1.25 var(--body);
+  font: 750 4.8pt/1.2 var(--body);
   align-self: center;
   text-align: center;
+}
+
+.agenda-one strong,
+.agenda-two strong {
+  margin: 3mm 0 0 1.2mm;
+  align-self: flex-start;
+  font: 800 6.5pt/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transform: rotate(180deg);
+  writing-mode: vertical-rl;
+}
+
+.agenda-one small,
+.agenda-two small {
+  display: none;
+}
+
+.agenda-one {
+  left: 0;
+  z-index: 1;
+}
+
+.agenda-two {
+  left: 14mm;
+  z-index: 2;
+}
+
+.agenda-three {
+  left: 28mm;
+  z-index: 3;
 }
 
 .panel-kicker {
