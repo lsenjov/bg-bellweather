@@ -792,7 +792,6 @@ export function GameDesk(props: {
 
 function OperationLog({ view }: { view: GameView }) {
   const entries = operationLogEntries(view);
-  const operationCount = view.resolvedOperations?.length ?? 0;
   return (
     <section className="operation-log-desk paper-panel" aria-labelledby="operation-log-heading">
       <div className="section-heading operation-log-heading">
@@ -801,7 +800,7 @@ function OperationLog({ view }: { view: GameView }) {
           <h2 id="operation-log-heading">Game log</h2>
         </div>
         <span className="operation-log-count">
-          {operationCount} {operationCount === 1 ? "card" : "cards"} · {entries.length} {entries.length === 1 ? "entry" : "entries"}
+          {entries.length} {entries.length === 1 ? "entry" : "entries"} on record
         </span>
       </div>
       {entries.length === 0 && (
@@ -824,7 +823,7 @@ function OperationLog({ view }: { view: GameView }) {
                 <span>{entry.ownerName}</span>
               </p>
               <p className="operation-log-outcome">
-                <b>{entry.count === 1 ? `${entry.operationName} card` : `${entry.count} ${entry.operationName} cards`}</b>
+                <b>{entry.subject}</b>
                 <span>{entry.outcome}</span>
               </p>
             </div>
@@ -841,6 +840,7 @@ export interface OperationLogEntry {
   contestName: string;
   ownerName: string;
   operationName: string;
+  subject: string;
   count: number;
   failed: boolean;
   outcome: string;
@@ -876,6 +876,7 @@ export function operationLogEntries(view: GameView): OperationLogEntry[] {
     contestName: partyName(operation.contestId),
     ownerName: operationOwnerName(view, operation),
     operationName: CARD_FAMILY_LABELS[operation.operation].name,
+    subject: operationSubject(operation, count),
     count,
     failed: operation.failure !== undefined && operation.failure !== null,
     outcome: operationOutcome(operation)
@@ -886,6 +887,35 @@ function isAutomaticFailure(operation: ResolvedOperationView): boolean {
   return operation.choice === null &&
     operation.baselineApplied === false &&
     typeof operation.failure === "string";
+}
+
+function operationSubject(
+  operation: ResolvedOperationView,
+  count: number
+): string {
+  if (isNightShiftResolution(operation)) {
+    return count === 1 ? "Night Shift bonus" : `${count} Night Shift bonuses`;
+  }
+  const operationName = CARD_FAMILY_LABELS[operation.operation].name;
+  return count === 1
+    ? `${operationName} card`
+    : `${count} ${operationName} cards`;
+}
+
+function isNightShiftClaim(operation: ResolvedOperationView): boolean {
+  return operation.contestId === "night-parliament" &&
+    operation.operation === "rally" &&
+    operation.bonusApplied === true &&
+    isObject(operation.choice) &&
+    operation.choice.claimBonus === true &&
+    isObject(operation.choice.choice);
+}
+
+function isNightShiftResolution(operation: ResolvedOperationView): boolean {
+  return operation.contestId === "night-parliament" &&
+    operation.operation === "rally" &&
+    operation.bonusApplied === true &&
+    !isNightShiftClaim(operation);
 }
 
 function operationOwnerName(
@@ -937,7 +967,12 @@ function operationOutcome(operation: ResolvedOperationView): string {
   ) {
     outcome = `Added Court Support with ${partyName(choice.targetParty)}.`;
   }
-  if (operation.bonusApplied === true) {
+  if (isNightShiftClaim(operation)) {
+    outcome += " Night Shift scheduled.";
+  } else if (
+    operation.bonusApplied === true &&
+    !isNightShiftResolution(operation)
+  ) {
     outcome += " Party bonus applied.";
   }
   return typeof failure === "string"

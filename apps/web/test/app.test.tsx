@@ -339,6 +339,64 @@ describe("browser play surface", () => {
     expect(within(log).getByText("Ochre")).toBeTruthy();
   });
 
+  it("distinguishes a Night Shift claim from its delayed resolution", () => {
+    const failure = "No legal choice remained for the delayed operation";
+    const view = {
+      ...gameDeskView([]),
+      resolvedOperations: [
+        {
+          round: 1,
+          contestId: "night-parliament",
+          bidId: "night-bid",
+          operation: "rally",
+          choice: {
+            choice: { operation: "rally", districtId: "northreach" },
+            claimBonus: true
+          },
+          baselineApplied: true,
+          bonusApplied: true,
+          failure: null
+        },
+        {
+          round: 1,
+          contestId: "night-parliament",
+          bidId: "night-bid",
+          operation: "rally",
+          choice: { operation: "rally", districtId: "cloverfield" },
+          baselineApplied: true,
+          bonusApplied: true,
+          failure: null
+        },
+        {
+          round: 1,
+          contestId: "night-parliament",
+          bidId: "night-bid",
+          operation: "rally",
+          choice: null,
+          baselineApplied: false,
+          bonusApplied: true,
+          failure
+        }
+      ]
+    } satisfies GameDeskView;
+
+    expect(operationLogEntries(view)).toMatchObject([
+      {
+        subject: "Rally card",
+        outcome: "Added Support in Northreach. Night Shift scheduled."
+      },
+      {
+        subject: "Night Shift bonus",
+        outcome: "Added Support in Cloverfield."
+      },
+      {
+        subject: "Night Shift bonus",
+        failed: true,
+        outcome: `Failed — ${failure}.`
+      }
+    ]);
+  });
+
   it("does not cross out an owner's covered cancellation before reveal", () => {
     const state = {
       scope: "seat",

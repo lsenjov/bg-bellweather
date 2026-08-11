@@ -255,6 +255,7 @@ button:disabled { opacity: .45; cursor: not-allowed; transform: none !important;
 .operation-log-filing { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 10px; border-bottom: 1px solid var(--rule); padding-bottom: 6px; }
 .operation-log-filing strong { font-size: .9rem; }
 .operation-log-filing span, .operation-log-outcome b { font: 700 .56rem/1.4 var(--mono); text-transform: uppercase; }
+.operation-log-filing span { min-width: 0; overflow-wrap: anywhere; }
 .operation-log-outcome { display: grid; gap: 4px; }
 .operation-log-outcome span { overflow-wrap: anywhere; font-size: .78rem; line-height: 1.35; }
 .operation-log-failure { border-color: var(--red); background: color-mix(in srgb, var(--red) 10%, var(--paper)); box-shadow: inset 5px 0 0 var(--red); }
