@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Invalidated four-player Bellweather ruleset-14 API playtest on 12 August 2026.">
+    <title>Constrained Ruleset-14 API Playtest — Bellweather</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../../index.html">
+          <span class="brand-mark" aria-hidden="true">LB</span>
+          Design archive / playtest session
+        </a>
+        <h1>Constrained ruleset-14 API playtest</h1>
+        <p class="meta">Completed mechanically, invalidated as an unrestricted playtest by facilitator pacing instructions.</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../index.html">Index</a><span>/</span><a href="../playtest-guide.html">Playtesting</a><span>/</span>Constrained ruleset-14 API playtest</nav>
+
+      <section>
+        <h2>Session</h2>
+        <div class="table-wrap" role="region" aria-label="Playtest session details" tabindex="0">
+          <table>
+            <tbody>
+              <tr><th>Date</th><td>12 August 2026</td></tr>
+              <tr><th>Rules version</th><td>14</td></tr>
+              <tr><th>Players</th><td>Aster-14, Cobalt-14, Ember-14, and Briar-14; API-controlled</td></tr>
+              <tr><th>Configuration</th><td>Counterbid timer off; spectators allowed</td></tr>
+              <tr><th>Game</th><td>PXT92JLL; completed at version 239 with 239 replay events</td></tr>
+              <tr><th>Duration</th><td>33 minutes 41 seconds</td></tr>
+              <tr><th>Status</th><td><strong>Invalid for unrestricted final-period and final-score evidence</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Results</h2>
+        <div class="table-wrap" role="region" aria-label="Election and final results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Election 1</th><th>Election 2</th><th>Election 3</th><th>Final</th></tr></thead>
+            <tbody>
+              <tr><td>Ember-14</td><td>SC-08: 3 − 1 = +2</td><td>SC-09: 3 + 3 = +6</td><td>SC-21: 4 + 1 = +5</td><td>18</td></tr>
+              <tr><td>Aster-14</td><td>SC-11: 1 + 1 = +2</td><td>SC-20: 0 + 3 = +3</td><td>SC-13: 0 + 3 = +3</td><td>13</td></tr>
+              <tr><td>Cobalt-14</td><td>SC-23: 2 − 3 = −1</td><td>SC-05: 3 + 0 = +3</td><td>SC-14: 1 + 3 = +4</td><td>11</td></tr>
+              <tr><td>Briar-14</td><td>SC-03: 0 + 1 = +1</td><td>SC-10: 0 + 3 = +3</td><td>SC-18: 1 − 3 = −2</td><td>7</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The engine completed all twelve rounds and three Elections correctly. These scores describe what happened under the imposed constraints; they are not evidence for unrestricted balance or final-period strategy.</p>
+      </section>
+
+      <section>
+        <h2>Invalidating intervention</h2>
+        <ol>
+          <li>The strategic agents needed repeated prompting while they considered counterbids and operation choices.</li>
+          <li>The facilitator incorrectly prioritized wall-clock completion over preserving player agency.</li>
+          <li>Counterbids were first limited to one purposeful bid, then forbidden for rounds 9–12. Opening operation bundles were also capped for pacing.</li>
+          <li>Those instructions reduced denial, exact-value cancellation, Revolving Door transfers, and opportunities to recover operation families.</li>
+          <li>Ember's last Organise left in a round-5 Foxglove opening transferred to Cobalt. Because later counterbidding was curtailed, Ember never recovered Organise and could not pursue the Canal Ward objective on the known final agenda.</li>
+        </ol>
+        <p>The final-period resource distribution and final result therefore cannot be separated from facilitator interference. The correct response to a slow timerless playtest is to wait, improve autonomous orchestration between sessions, or stop and label the session incomplete—not to change legal player behavior during the game.</p>
+      </section>
+
+      <section>
+        <h2>Valid observations retained</h2>
+        <ul>
+          <li>Fixed agenda slots supported deliberate multi-round routes before the pacing intervention.</li>
+          <li>Foxglove's Spin repeatedly combined denial, conversion, and movement; it merits unrestricted comparison.</li>
+          <li>A Foxglove–Many Wings reciprocal coalition formed in round 1, persisted across Elections, and contributed to scoring.</li>
+          <li>Night Shift correctly created a delayed post-Revolving-Door Rally decision. The API projection required the client to infer the least-occupied legal district.</li>
+          <li>The live projection advertised unfavoured legal operations under <code>availableBonusOperations</code>; the engine then rejects a bonus claim for such an operation. This is misleading API data and is independent of the pacing intervention.</li>
+          <li>All three Elections recorded fifteen non-Centre district draws and no Bellweather Centre draw.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Facilitation rule for the replacement test</h2>
+        <p>No facilitator instruction may limit bids, operation cards, legal choices, deliberation, negotiation, or duration. Subagents may parallelize simultaneous work, but speed is an orchestration benefit only; it is never a reason to alter the game. If a player stalls, restore its ability to act or mark the session incomplete.</p>
+        <p>The <a href="2026-08-12-ruleset-14-unrestricted-playtest.html">unrestricted replacement game</a> followed this rule through all twelve rounds.</p>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <div class="page-footer-inner">
+        <a href="../playtest-guide.html">Back to playtest guide →</a>
+        <span class="stamp">Completed mechanically / invalidated analytically</span>
+      </div>
+    </footer>
+  </body>
+</html>

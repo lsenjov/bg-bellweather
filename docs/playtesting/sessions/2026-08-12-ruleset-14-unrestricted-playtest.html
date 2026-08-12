@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Unrestricted four-player Bellweather ruleset-14 API playtest on 12 August 2026.">
+    <title>Unrestricted Ruleset-14 API Playtest — Bellweather</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../../index.html">
+          <span class="brand-mark" aria-hidden="true">LB</span>
+          Design archive / playtest session
+        </a>
+        <h1>Unrestricted ruleset-14 API playtest</h1>
+        <p class="meta">A complete timerless game with four strategic API-controlled players and no pacing constraints.</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../index.html">Index</a><span>/</span><a href="../playtest-guide.html">Playtesting</a><span>/</span>Unrestricted ruleset-14 API playtest</nav>
+
+      <section>
+        <h2>Session</h2>
+        <div class="table-wrap" role="region" aria-label="Playtest session details" tabindex="0">
+          <table>
+            <tbody>
+              <tr><th>Date</th><td>12 August 2026</td></tr>
+              <tr><th>Rules version</th><td>14</td></tr>
+              <tr><th>Players</th><td>Harbor-14R, Northstar-14R, Rook-14R, and Quill-14R; one human observer</td></tr>
+              <tr><th>Configuration</th><td>Counterbid timer off; spectators allowed; game API only</td></tr>
+              <tr><th>Game</th><td>KHYZ8PYH / 0e41fc7d-c574-43af-8f98-81a39f4eba9c</td></tr>
+              <tr><th>Duration</th><td>1 hour 27 minutes 46 seconds from lobby creation to completion; 412 replay events</td></tr>
+              <tr><th>Replacement test</th><td><a href="2026-08-12-ruleset-14-constrained-playtest.html">Constrained ruleset-14 game</a></td></tr>
+              <tr><th>Main question</th><td>What happens when four strategic players retain full control of every opening, counterbid, operation, and deliberation period through all twelve rounds?</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Method</h2>
+        <p>Each player knew one fixed scoring card for each Election from the start and pursued its own strategy. The facilitator did not cap bid size, counterbid count, operation bundles, legal choices, or deliberation time. A stalled controller received only a state reminder or process recovery; no reminder prescribed a move. Players continued counterbidding through rounds 9–12, including zero-Leverage operation-only bids, and every pending operation was resolved or failed only under the engine's normal legality rules. The replay contains 97 non-null counterbid submissions for 96 available slots: all four players filled both slots in all twelve rounds, with one later slot update.</p>
+        <p>This makes the full result suitable as strategic playtest evidence. It remains one four-player agent game with one agenda and seat assignment, so balance conclusions are provisional.</p>
+      </section>
+
+      <section>
+        <h2>Election 1</h2>
+        <div class="table-wrap" role="region" aria-label="Election 1 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Change</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>Harbor-14R</td><td>SC-08</td><td>3</td><td>-2</td><td>+1</td><td>6</td></tr>
+              <tr><td>Northstar-14R</td><td>SC-16</td><td>2</td><td>-2</td><td>0</td><td>5</td></tr>
+              <tr><td>Rook-14R</td><td>SC-22</td><td>4</td><td>+1</td><td>+5</td><td>10</td></tr>
+              <tr><td>Quill-14R</td><td>SC-17</td><td>6</td><td>-2</td><td>+4</td><td>9</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul>
+          <li>Rook led by building Riverworks in Ironwood, Old Shell in Red Orchard, and Foxglove in Reedwater for a four-point base.</li>
+          <li>Quill deliberately formed a reciprocal Old Shell–Many Wings coalition. Coalition Support contributed materially to the six-point base at Grand Market, Mossfield, and Canal Ward.</li>
+          <li>Every one of the fifteen non-Centre districts received an Election draw record. Bellweather Centre did not.</li>
+          <li>The relative-seat modifiers compressed both Harbor and Northstar by two points and Quill by two, while Rook gained one.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Election 2</h2>
+        <div class="table-wrap" role="region" aria-label="Election 2 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Change</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>Harbor-14R</td><td>SC-04</td><td>3</td><td>0</td><td>+3</td><td>9</td></tr>
+              <tr><td>Northstar-14R</td><td>SC-03</td><td>3</td><td>-1</td><td>+2</td><td>7</td></tr>
+              <tr><td>Rook-14R</td><td>SC-20</td><td>3</td><td>0</td><td>+3</td><td>13</td></tr>
+              <tr><td>Quill-14R</td><td>SC-01</td><td>4</td><td>0</td><td>+4</td><td>13</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul>
+          <li>Harbor recovered Organise through normal Revolving Door transfers and used Riverworks to consolidate Harbormouth. This is the resource-recovery behavior the constrained game removed.</li>
+          <li>Quill moved Foxglove from Canal Ward into Bellweather Centre in round 5, then from the Centre into Old Quarter in round 6. The route produced one of SC-01's four base points and directly demonstrated the Centre as a useful jumping-off point.</li>
+          <li>Rook's fixed SC-20 plan paid across multiple Elections: Old Shell at Grand Market and Night Parliament at Millbank produced all three base points.</li>
+          <li>Two Many Wings Court operations tied its prior Court leader rather than restoring the expected coalition. The incumbent Coalition Target correctly remained Night Parliament. This was a player-state inference error, not an engine error.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Election 3 and final result</h2>
+        <div class="table-wrap" role="region" aria-label="Election 3 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Change</th><th>Final</th></tr></thead>
+            <tbody>
+              <tr><td>Harbor-14R</td><td>SC-06</td><td>3</td><td>+1</td><td>+4</td><td>13</td></tr>
+              <tr><td>Northstar-14R</td><td>SC-10</td><td>2</td><td>+2</td><td>+4</td><td>11</td></tr>
+              <tr><td>Rook-14R</td><td>SC-02</td><td>1</td><td>-1</td><td>0</td><td>13</td></tr>
+              <tr><td>Quill-14R</td><td>SC-14</td><td>3</td><td>+1</td><td>+4</td><td>17 — winner</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ol>
+          <li>Quill-14R — 17</li>
+          <li>Harbor-14R and Rook-14R — 13</li>
+          <li>Northstar-14R — 11</li>
+        </ol>
+        <ul>
+          <li>Quill won on three Old Shell draws at Grand Market plus a +1 modifier. The Many Wings objective at Millbank drew empty, and the Night Parliament objective at Westgate drew Old Shell.</li>
+          <li>Harbor's Honeycomb at High Pastures and Many Wings at Crown Road provided the three-point base. Harbor's final Many Wings package contained seventeen cards and was resolved without a pacing cap.</li>
+          <li>Rook's long-term Old Shell investment in Ironwood produced one base point, but the -1 modifier erased it. Planned Foxglove at Millbank and Riverworks at Westgate did not survive the final-period map.</li>
+          <li>Bellweather Centre ended full with three Many Wings Support and remained untouched by Election 3. This confirms non-empty Centre preservation and demonstrates its potential to become a movement blocker; a later round would be needed to observe the blocking consequence directly.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>End-of-game findings</h2>
+        <ul>
+          <li><strong>Counterbidding remained central:</strong> all players continued active counterbidding in the final period. Zero-Leverage operation-only counterbids were strategically useful for transfer position and resource recovery.</li>
+          <li><strong>Operation starvation was not universal in this session:</strong> final reserves still contained mixed operation families, including three Organise for Northstar. The constrained game's Ember-specific drought is invalid as systemic evidence because facilitator restrictions curtailed its counterbid-based recovery opportunities.</li>
+          <li><strong>Fixed agendas created long-horizon play:</strong> players built routes and party positions several Elections ahead, while whole-map thinning and Smear made those plans contestable.</li>
+          <li><strong>Coalitions mattered:</strong> reciprocal Court targets altered scoring, and ties preserving an incumbent target made coalition restoration less automatic than raw Court counts suggested.</li>
+          <li><strong>Centre has both promised roles:</strong> the Canal Ward–Centre–Old Quarter route scored at Election 2, while three persistent Many Wings Support filled the Centre at game end.</li>
+          <li><strong>Large packages are real friction:</strong> ten-to-seventeen-card bundles lengthened resolution and required careful per-card state refreshes, but exposed genuine resource concentration that a cap would have hidden.</li>
+          <li><strong>Party bonus availability is contest-wide:</strong> a higher bid can consume a favored bonus before later bids act. Clients and agents must not treat bonus readiness as bid-local.</li>
+          <li><strong>Canonical state must be reread after each card:</strong> one player twice inferred that a bundle had completed when legal cards remained. The API state was correct and allowed continuation.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>API observations</h2>
+        <ul>
+          <li>The public projection can list unfavoured operation families under <code>availableBonusOperations</code>, even though the engine correctly rejects those bonus claims. The field should reflect actual claim legality.</li>
+          <li>Night Shift exposes a pending delayed operation but does not project the least-occupied legal district list, leaving every client to derive it from the map.</li>
+          <li>Rejected operation parameters preserved the pending decision for a corrected retry. Version conflicts were also recoverable by rereading state.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Facilitation learning confirmed</h2>
+        <p>Subagents are useful only when parallel work improves orchestration. A playtest with no time limit must optimize for valid decisions, not wall-clock speed. Never instruct a player to skip counterbids, cap a legal bundle, shorten deliberation, or choose a move for pacing. If a controller stalls, restore the controller, provide a neutral state reminder, wait, or mark the session incomplete.</p>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <div class="page-footer-inner">
+        <a href="../playtest-guide.html">Back to playtest guide →</a>
+        <span class="stamp">Completed — Quill-14R won with 17</span>
+      </div>
+    </footer>
+  </body>
+</html>
