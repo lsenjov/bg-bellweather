@@ -5,6 +5,7 @@ import {
   recordElectionDraws,
   retainElectionSupport,
   relativeSeatIndex,
+  scoreCapital,
   scoreCard,
   scoreElectionDay,
   toElectionScoringCard,
@@ -126,6 +127,8 @@ describe("Election Day scoring", () => {
         playerId: "p1",
         baseDistrictScore: 0,
         seatModifier: 0,
+        capitalMatches: 0,
+        capitalScore: 0,
         pointsChange: 0,
         resultingPoints: -2
       },
@@ -133,6 +136,8 @@ describe("Election Day scoring", () => {
         playerId: "p2",
         baseDistrictScore: 3,
         seatModifier: 0,
+        capitalMatches: 0,
+        capitalScore: 0,
         pointsChange: 3,
         resultingPoints: 4
       }
@@ -211,6 +216,34 @@ describe("Election Day scoring", () => {
       ])
     ).toEqual(["b", "c"]);
   });
+
+  it("scores exact Capital parties at 0, 0, 1, and 3 points", () => {
+    const capitalCard = card("capital", [
+      ["six", "honeycomb"],
+      ["four", "foxglove"],
+      ["two", "riverworks"]
+    ]);
+    expect(scoreCapital(capitalCard, district("bellweather-centre", 3, {}))).toEqual({
+      matches: 0,
+      score: 0
+    });
+    expect(scoreCapital(
+      capitalCard,
+      district("bellweather-centre", 3, { honeycomb: 2 })
+    )).toEqual({ matches: 1, score: 0 });
+    expect(scoreCapital(
+      capitalCard,
+      district("bellweather-centre", 3, { honeycomb: 1, foxglove: 1 })
+    )).toEqual({ matches: 2, score: 1 });
+    expect(scoreCapital(
+      capitalCard,
+      district("bellweather-centre", 3, {
+        honeycomb: 1,
+        foxglove: 1,
+        riverworks: 1
+      })
+    )).toEqual({ matches: 3, score: 3 });
+  });
 });
 
 function referencedCard(
@@ -244,11 +277,13 @@ function player(
   points: number,
   scoringCards: ScoringCard | ScoringCard[]
 ): ElectionPlayer {
+  const cards = Array.isArray(scoringCards) ? scoringCards : [scoringCards];
   return {
     id,
     position: Number.parseInt(id.replace(/\D/g, ""), 10) - 1,
     points,
-    cards: Array.isArray(scoringCards) ? scoringCards : [scoringCards]
+    cards,
+    capitalCard: cards[0]!
   };
 }
 
@@ -263,7 +298,14 @@ function district(
 function electionState(
   districts: Record<string, DistrictState>
 ): Pick<OperationState, "districts" | "coalitionTargets"> {
-  return { districts, coalitionTargets: emptyCoalitionTargets() };
+  return {
+    districts: {
+      ...districts,
+      "bellweather-centre": districts["bellweather-centre"] ??
+        district("bellweather-centre", 3, {})
+    },
+    coalitionTargets: emptyCoalitionTargets()
+  };
 }
 
 function emptyCoalitionTargets(): Record<Party, Party | null> {

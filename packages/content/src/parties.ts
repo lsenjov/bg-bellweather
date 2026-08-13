@@ -22,7 +22,7 @@ export interface PartyBonus {
   readonly operation: OperationId;
   readonly name: string;
   readonly effect: string;
-  readonly timing: "immediate" | "delayed";
+  readonly timing: "immediate";
 }
 
 export interface PartyDefinition {
@@ -167,8 +167,8 @@ export const PARTIES = deepFreeze([
         operation: "rally",
         name: "Night Shift",
         effect:
-          "After every contest and Revolving Door finishes, add one Night Support to a legal Rally district tied for the fewest total Support.",
-        timing: "delayed"
+          "After Rally resolves, add one more Night Support to a free spot in the Rally district.",
+        timing: "immediate"
       },
       {
         operation: "smear",

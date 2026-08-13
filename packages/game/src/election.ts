@@ -27,6 +27,7 @@ export interface ElectionPlayer {
   position: number;
   points: number;
   cards: ScoringCard[];
+  capitalCard: ScoringCard;
 }
 
 export interface RecordedDistrictDraw {
@@ -38,6 +39,8 @@ export interface ElectionScore {
   playerId: string;
   baseDistrictScore: number;
   seatModifier: number;
+  capitalMatches: number;
+  capitalScore: number;
   pointsChange: number;
   resultingPoints: number;
 }
@@ -151,11 +154,17 @@ export function scoreElectionDay(input: {
             singleScoringCard(player).negativeSeat,
             baseScores
           );
-    const pointsChange = baseDistrictScore + seatModifier;
+    const { matches: capitalMatches, score: capitalScore } = scoreCapital(
+      player.capitalCard,
+      input.state.districts["bellweather-centre"]
+    );
+    const pointsChange = baseDistrictScore + seatModifier + capitalScore;
     return {
       playerId: player.id,
       baseDistrictScore,
       seatModifier,
+      capitalMatches,
+      capitalScore,
       pointsChange,
       resultingPoints: player.points + pointsChange
     };
@@ -170,6 +179,23 @@ export function scoreElectionDay(input: {
     scores,
     players: scoredPlayers,
     winnerIds: input.finalElection ? determineWinners(scoredPlayers) : []
+  };
+}
+
+export function scoreCapital(
+  card: ScoringCard,
+  capital: DistrictState | undefined
+): { matches: number; score: number } {
+  if (capital === undefined) {
+    throw new Error("Bellweather Centre is required for Capital scoring");
+  }
+  const parties = new Set(card.objectives.map((objective) => objective.party));
+  const matches = [...parties].filter(
+    (party) => (capital.support[party] ?? 0) > 0
+  ).length;
+  return {
+    matches,
+    score: matches === 3 ? 3 : matches === 2 ? 1 : 0
   };
 }
 

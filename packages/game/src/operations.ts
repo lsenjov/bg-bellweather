@@ -49,19 +49,10 @@ export type OperationChoice =
       bonusCourtSourceParty?: Party;
     };
 
-export interface NightDelayedClaim {
-  id: string;
-  ownerId: string;
-  bidRank: number;
-  order: number;
-  operation: "rally";
-}
-
 export interface OperationRequest {
   party: Party;
   choice: OperationChoice;
   claimBonus?: boolean;
-  nightClaim?: Omit<NightDelayedClaim, "operation">;
 }
 
 export interface OperationResolution {
@@ -69,19 +60,12 @@ export interface OperationResolution {
   baselineApplied: boolean;
   bonusApplied: boolean;
   bonusName: string | null;
-  delayedClaim: NightDelayedClaim | null;
   failure: string | null;
   bonusFailure: string | null;
 }
 
 export interface OperationLegalityOptions {
   allowCanalNetwork?: boolean;
-}
-
-export interface DelayedResolution {
-  claim: NightDelayedClaim;
-  applied: boolean;
-  failure: string | null;
 }
 
 export const PARTY_BONUSES: Record<
@@ -131,10 +115,10 @@ export function resolveOperation(
   );
 
   if (!baseline.applied) {
-    return result(state, false, false, bonusName, null, baseline.failure, null);
+    return result(state, false, false, bonusName, baseline.failure, null);
   }
   if (request.claimBonus !== true || bonusName === null) {
-    return result(state, true, false, bonusName, null, null, null);
+    return result(state, true, false, bonusName, null, null);
   }
 
   const bonus = applyBonus(state, request, baseline);
@@ -144,7 +128,6 @@ export function resolveOperation(
       false,
       false,
       bonusName,
-      null,
       "The claimed immediate bonus cannot resolve",
       bonus.failure
     );
@@ -154,44 +137,9 @@ export function resolveOperation(
     true,
     bonus.applied,
     bonusName,
-    bonus.delayedClaim,
     null,
     bonus.failure
   );
-}
-
-export function resolveNightDelayedOperations(
-  initialState: OperationState,
-  claims: readonly NightDelayedClaim[],
-  choices: Readonly<Record<string, OperationChoice>>
-): {
-  state: OperationState;
-  resolutions: DelayedResolution[];
-} {
-  const state = cloneState(initialState);
-  const resolutions = [...claims]
-    .sort((left, right) => left.bidRank - right.bidRank || left.order - right.order)
-    .map((claim): DelayedResolution => {
-      const choice = choices[claim.id];
-      if (choice === undefined || choice.operation !== claim.operation) {
-        return {
-          claim,
-          applied: false,
-          failure: "A matching delayed-operation choice is required"
-        };
-      }
-      if (!legalNightShiftDistrictIds(state).includes(choice.districtId)) {
-        return {
-          claim,
-          applied: false,
-          failure: "Night Shift requires a least-occupied legal Rally district"
-        };
-      }
-      const baseline = applyBaseline(state, "night-parliament", choice, false);
-      return { claim, applied: baseline.applied, failure: baseline.failure };
-    });
-
-  return { state, resolutions };
 }
 
 export function supportCount(state: OperationState, party?: Party): number {
@@ -207,19 +155,6 @@ export function supportCount(state: OperationState, party?: Party): number {
         : (district.support[party] ?? 0)),
     0
   );
-}
-
-export function legalNightShiftDistrictIds(state: OperationState): string[] {
-  const legal = Object.values(state.districts).filter((district) =>
-    isOperationChoiceLegal(state, "night-parliament", {
-      operation: "rally",
-      districtId: district.id
-    })
-  );
-  const minimum = Math.min(...legal.map(districtTotal));
-  return legal
-    .filter((district) => districtTotal(district) === minimum)
-    .map((district) => district.id);
 }
 
 export function isOperationChoiceLegal(
@@ -240,27 +175,10 @@ export function isOperationRequestLegal(
   initialState: OperationState,
   request: OperationRequest
 ): boolean {
-  const preparedRequest =
-    request.claimBonus === true &&
-    request.party === "night-parliament" &&
-    request.choice.operation === "rally" &&
-    request.nightClaim === undefined
-      ? {
-          ...request,
-          nightClaim: {
-            id: "legality-check",
-            ownerId: "legality-check",
-            bidRank: 0,
-            order: 0
-          }
-        }
-      : request;
-  const resolution = resolveOperation(initialState, preparedRequest);
+  const resolution = resolveOperation(initialState, request);
   return (
     resolution.baselineApplied &&
-    (request.claimBonus !== true ||
-      resolution.bonusApplied ||
-      resolution.delayedClaim !== null)
+    (request.claimBonus !== true || resolution.bonusApplied)
   );
 }
 
@@ -457,7 +375,6 @@ function applyBonus(
 ): {
   applied: boolean;
   failure: string | null;
-  delayedClaim: NightDelayedClaim | null;
 } {
   const { party, choice } = request;
   if (party === "honeycomb" && choice.operation === "organise") {
@@ -591,17 +508,12 @@ function applyBonus(
     party === "night-parliament" &&
     choice.operation === "rally"
   ) {
-    if (request.nightClaim === undefined) {
-      return bonusFailed("A Night Parliament delayed claim identity is required");
-    }
-    return {
-      applied: true,
-      failure: null,
-      delayedClaim: {
-        ...request.nightClaim,
-        operation: "rally"
-      }
-    };
+    return addBonusSupport(
+      state,
+      baseline.destinationDistrictId,
+      party,
+      "Night Shift requires another free spot in the Rally district"
+    );
   }
   if (party === "night-parliament" && choice.operation === "smear") {
     const rivalParty = baseline.rivalParty;
@@ -679,14 +591,13 @@ function canalNetworkConnects(
 }
 
 function bonusApplied() {
-  return { applied: true, failure: null, delayedClaim: null };
+  return { applied: true, failure: null };
 }
 
 function bonusFailed(failure: string | null) {
   return {
     applied: false,
-    failure: failure ?? "The bonus is illegal",
-    delayedClaim: null
+    failure: failure ?? "The bonus is illegal"
   };
 }
 
@@ -695,7 +606,6 @@ function result(
   baselineApplied: boolean,
   bonusAppliedValue: boolean,
   bonusName: string | null,
-  delayedClaim: NightDelayedClaim | null,
   failure: string | null,
   bonusFailure: string | null
 ): OperationResolution {
@@ -704,7 +614,6 @@ function result(
     baselineApplied,
     bonusApplied: bonusAppliedValue,
     bonusName,
-    delayedClaim,
     failure,
     bonusFailure
   };

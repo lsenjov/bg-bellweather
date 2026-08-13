@@ -1,17 +1,11 @@
-import {
-  OPERATION_IDS,
-  type OperationId
-} from "@bellweather/content";
 import type {
-  BidState,
   GameState,
   OperationInventory,
-  PendingDecision,
   ScoringCardSlots,
   SeatId
 } from "./model.js";
+import { assertCurrentRuleset, operationCount } from "./engine.js";
 import { GameRuleError } from "./model.js";
-import { assertCurrentRuleset } from "./engine.js";
 
 export interface ProjectedSeat {
   id: SeatId;
@@ -20,48 +14,31 @@ export interface ProjectedSeat {
   position: number;
   firmIds: readonly string[];
   points: number;
-  reserve:
-    | {
-        leverage: number;
-        bluff: number;
-        operations: OperationInventory;
-      }
-    | null;
-  scoringCardIds: ScoringCardSlots | null;
-}
-
-export interface ProjectedBid {
-  id: string;
-  contestId: string;
-  ownerSeatId: SeatId;
-  firmId: string;
-  kind: "opening" | "counterbid";
-  status: BidState["status"];
-  cardCount: number;
-  leverage: number | null;
-  bluff: number | null;
-  operationCount: number | null;
+  collectionCounters: number;
+  collectionCounterLimit: number;
+  handCount: number;
+  newYearCardCount: number;
   operations: OperationInventory | null;
+  newYearOperations: OperationInventory | null;
+  scoringCardIds: ScoringCardSlots | null;
 }
 
 export interface GameView {
   rulesetVersion: string;
-  round: number;
+  year: number;
   electionNumber: number;
   phase: GameState["phase"]["type"];
-  deadlineAt: number | null;
-  nextFirstOpenerSeatId: SeatId;
+  phaseData: GameState["phase"];
+  earlyBirdSeatId: SeatId;
   seats: ProjectedSeat[];
-  partyOrder: GameState["partyOrder"];
+  parties: GameState["parties"];
   support: GameState["support"];
   courtSupport: GameState["courtSupport"];
   coalitionTargets: GameState["coalitionTargets"];
-  contests: GameState["contests"];
-  bids: ProjectedBid[];
-  readySeatIds: SeatId[];
-  pendingDecision: PendingDecision | null;
+  lobbyActions: GameState["lobbyActions"];
+  resolvedOperations: GameState["resolvedOperations"];
   chat: GameState["chat"];
-  roundHistory: GameState["roundHistory"];
+  yearHistory: GameState["yearHistory"];
   electionHistory: GameState["electionHistory"];
 }
 
@@ -81,115 +58,65 @@ export function projectGameState(
     viewerSeatId !== null &&
     !state.seats.some((seat) => seat.id === viewerSeatId)
   ) {
-    throw new GameRuleError("unknown_seat", "Seat does not exist");
+    throw new GameRuleError("unknown_seat", "The player seat does not exist");
   }
-
-  const allRevealed =
-    state.phase.type === "resolution" ||
-    state.phase.type === "election" ||
-    state.phase.type === "complete";
-  const phase = state.phase;
 
   return {
     rulesetVersion: state.rulesetVersion,
-    round: state.round,
+    year: state.year,
     electionNumber: state.electionNumber,
-    phase: phase.type,
-    deadlineAt: phase.type === "counterbidding" ? phase.deadlineAt : null,
-    nextFirstOpenerSeatId: state.nextFirstOpenerSeatId,
+    phase: state.phase.type,
+    phaseData: structuredClone(state.phase),
+    earlyBirdSeatId: state.earlyBirdSeatId,
     seats: state.seats.map((seat) => {
-      const own = viewerSeatId === seat.id;
+      const privateInformation = viewerSeatId === seat.id || fullInformation;
       return {
         id: seat.id,
         displayName: seat.displayName,
         controller: seat.controller,
         position: seat.position,
-        firmIds: seat.firmIds,
-        points: seat.reserve.points,
-        reserve:
-          own || fullInformation
-            ? {
-                leverage: seat.reserve.leverage,
-                bluff: seat.reserve.bluff,
-                operations: { ...seat.reserve.operations }
-              }
-            : null,
-        scoringCardIds:
-          own || phase.type === "complete" || fullInformation
-            ? cloneScoringCardSlots(seat.scoringCardIds)
-            : phase.type === "election"
-              ? visibleElectionSlot(
-                  seat.scoringCardIds,
-                  phase.electionNumber
-                )
-              : null
+        firmIds: [...seat.firmIds],
+        points: seat.points,
+        collectionCounters: seat.collectionCounters,
+        collectionCounterLimit: seat.collectionCounterLimit,
+        handCount: operationCount(seat.operations),
+        newYearCardCount: operationCount(seat.newYearOperations),
+        operations: privateInformation ? { ...seat.operations } : null,
+        newYearOperations: privateInformation
+          ? { ...seat.newYearOperations }
+          : null,
+        scoringCardIds: privateInformation || state.phase.type === "complete"
+          ? cloneScoringCardSlots(seat.scoringCardIds)
+          : visibleScoringCardSlots(state, seat.scoringCardIds)
       };
     }),
-    partyOrder: [...state.partyOrder],
+    parties: structuredClone(state.parties),
     support: structuredClone(state.support),
     courtSupport: structuredClone(state.courtSupport),
     coalitionTargets: { ...state.coalitionTargets },
-    contests: structuredClone(state.contests),
-    bids: Object.values(state.bids).map((bid) =>
-      projectBid(bid, viewerSeatId, allRevealed || fullInformation)
-    ),
-    readySeatIds:
-      phase.type === "counterbidding" ? [...phase.readySeatIds] : [],
-    pendingDecision:
-      phase.type === "resolution"
-        ? structuredClone(phase.pendingDecision)
-        : null,
+    lobbyActions: structuredClone(state.lobbyActions),
+    resolvedOperations: structuredClone(state.resolvedOperations),
     chat: structuredClone(state.chat),
-    roundHistory: structuredClone(state.roundHistory),
+    yearHistory: structuredClone(state.yearHistory),
     electionHistory: structuredClone(state.electionHistory)
   };
 }
 
-function cloneScoringCardSlots(
+function visibleScoringCardSlots(
+  state: GameState,
   slots: ScoringCardSlots
-): ScoringCardSlots {
+): ScoringCardSlots | null {
+  const visibleThrough = state.phase.type === "election"
+    ? state.phase.electionNumber
+    : state.electionNumber;
+  if (visibleThrough === 0) {
+    return null;
+  }
+  return slots.map((slot, index) =>
+    index < visibleThrough ? [...slot] : []
+  ) as ScoringCardSlots;
+}
+
+function cloneScoringCardSlots(slots: ScoringCardSlots): ScoringCardSlots {
   return slots.map((slot) => [...slot]) as ScoringCardSlots;
-}
-
-function visibleElectionSlot(
-  slots: ScoringCardSlots,
-  electionNumber: 1 | 2 | 3
-): ScoringCardSlots {
-  const visible: ScoringCardSlots = [[], [], []];
-  visible[electionNumber - 1] = [...slots[electionNumber - 1]!];
-  return visible;
-}
-
-function projectBid(
-  bid: BidState,
-  viewerSeatId: SeatId | null,
-  allRevealed: boolean
-): ProjectedBid {
-  const own = bid.ownerSeatId === viewerSeatId;
-  return {
-    id: bid.id,
-    contestId: bid.contestId,
-    ownerSeatId: bid.ownerSeatId,
-    firmId: bid.firmId,
-    kind: bid.kind,
-    status: bid.status,
-    cardCount: bidCardCount(bid),
-    leverage: own || bid.kind === "opening" || allRevealed ? bid.leverage : null,
-    bluff: own || allRevealed ? bid.bluff : null,
-    operationCount: own || allRevealed ? operationCount(bid.operations) : null,
-    operations: own || allRevealed ? { ...bid.operations } : null
-  };
-}
-
-export function bidCardCount(
-  bid: Pick<BidState, "leverage" | "bluff" | "operations">
-): number {
-  return bid.leverage + bid.bluff + operationCount(bid.operations);
-}
-
-function operationCount(operations: Record<OperationId, number>): number {
-  return OPERATION_IDS.reduce(
-    (total, operation) => total + operations[operation],
-    0
-  );
 }

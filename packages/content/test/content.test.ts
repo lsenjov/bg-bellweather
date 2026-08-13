@@ -4,7 +4,7 @@ import {
   DISTRICTS_BY_ID,
   DISTRICT_IDS,
   DOUBLED_PLAYER_SETUP,
-  ELECTION_ROUNDS,
+  ELECTION_YEARS,
   FIRMS,
   FIRM_IDS,
   INITIAL_SUPPORT_DISTRICTS,
@@ -116,11 +116,11 @@ describe("parties and firms", () => {
     }
   });
 
-  it("keeps only Night Shift delayed", () => {
+  it("makes every party bonus immediate", () => {
     expect(
       PARTIES_BY_ID["night-parliament"].bonuses.map((bonus) => bonus.timing)
     ).toEqual([
-      "delayed",
+      "immediate",
       "immediate"
     ]);
   });
@@ -273,25 +273,16 @@ describe("setup constants", () => {
     expect(Object.isFrozen(STANDARD_PLAYER_SETUP.operations)).toBe(true);
   });
 
-  it("doubles every player resource and bid allowance at two or three players", () => {
+  it("doubles firms, Operations, points, and Collection counters at two or three players", () => {
     expect(STANDARD_PLAYER_SETUP.operations.court).toBe(2);
     expect(DOUBLED_PLAYER_SETUP.firms).toBe(
       STANDARD_PLAYER_SETUP.firms * 2
     );
-    expect(DOUBLED_PLAYER_SETUP.leverage).toBe(
-      STANDARD_PLAYER_SETUP.leverage * 2
-    );
     expect(DOUBLED_PLAYER_SETUP.points).toBe(
       STANDARD_PLAYER_SETUP.points * 2
     );
-    expect(DOUBLED_PLAYER_SETUP.openingBids).toBe(
-      STANDARD_PLAYER_SETUP.openingBids * 2
-    );
-    expect(DOUBLED_PLAYER_SETUP.identityCards).toBe(
-      STANDARD_PLAYER_SETUP.identityCards * 2
-    );
-    expect(DOUBLED_PLAYER_SETUP.counterbidSlots).toBe(
-      STANDARD_PLAYER_SETUP.counterbidSlots * 2
+    expect(DOUBLED_PLAYER_SETUP.collectionCounters).toBe(
+      STANDARD_PLAYER_SETUP.collectionCounters * 2
     );
     for (const operation of OPERATION_IDS) {
       expect(DOUBLED_PLAYER_SETUP.operations[operation]).toBe(
@@ -313,8 +304,8 @@ describe("setup constants", () => {
     expect(PARTIES.length * INITIAL_SUPPORT_DISTRICTS.length).toBe(18);
   });
 
-  it("holds elections after rounds 4, 8, and 12", () => {
-    expect(ELECTION_ROUNDS).toEqual([4, 8, 12]);
+  it("holds elections after years 4, 8, and 12", () => {
+    expect(ELECTION_YEARS).toEqual([4, 8, 12]);
   });
 });
 

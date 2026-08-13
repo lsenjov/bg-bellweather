@@ -5,7 +5,6 @@ import {
   isOperationRequestLegal,
   PARTY_BONUSES,
   PARTIES,
-  resolveNightDelayedOperations,
   resolveOperation,
   supportCount,
   type OperationState,
@@ -190,7 +189,7 @@ describe("operation baselines", () => {
     );
   });
 
-  it("reports complete immediate and delayed bonus request legality", () => {
+  it("reports complete immediate bonus request legality", () => {
     expect(
       isOperationRequestLegal(
         state({ a: { honeycomb: 1 }, b: { foxglove: 3 } }),
@@ -241,9 +240,9 @@ describe("operation baselines", () => {
       })
     ).toBe(false);
     expect(
-      isOperationRequestLegal(state(), {
+      isOperationRequestLegal(state({ a: { "night-parliament": 1 } }), {
         party: "night-parliament",
-        choice: { operation: "rally", districtId: "d" },
+        choice: { operation: "rally", districtId: "a" },
         claimBonus: true
       })
     ).toBe(true);
@@ -419,50 +418,14 @@ describe("all twelve party bonuses", () => {
     expect(campaign.state.districts.c?.support.foxglove).toBe(1);
   });
 
-  it("claims Night Shift and applies Midnight Leak", () => {
-    const lowClaim = resolveOperation(state(), {
+  it("applies immediate Night Shift and Midnight Leak", () => {
+    const shift = resolveOperation(state({ a: { "night-parliament": 1 } }), {
       party: "night-parliament",
-      choice: { operation: "rally", districtId: "d" },
-      claimBonus: true,
-      nightClaim: { id: "low", ownerId: "p2", bidRank: 2, order: 0 }
-    }).delayedClaim!;
-    const highClaim = resolveOperation(state(), {
-      party: "night-parliament",
-      choice: { operation: "rally", districtId: "d" },
-      claimBonus: true,
-      nightClaim: { id: "high", ownerId: "p1", bidRank: 0, order: 0 }
-    }).delayedClaim!;
-    const beforeDelay = state({
-      a: { "night-parliament": 1 },
-      b: { "night-parliament": 1 }
+      choice: { operation: "rally", districtId: "a" },
+      claimBonus: true
     });
-    const delayed = resolveNightDelayedOperations(
-      beforeDelay,
-      [lowClaim, highClaim],
-      {
-        high: { operation: "rally", districtId: "b" },
-        low: { operation: "rally", districtId: "a" }
-      }
-    );
-    expect(delayed.resolutions.map(({ claim }) => claim.id)).toEqual([
-      "high",
-      "low"
-    ]);
-    expect(delayed.state.districts.a?.support["night-parliament"]).toBe(2);
-    expect(delayed.state.districts.b?.support["night-parliament"]).toBe(2);
-
-    const invalidShift = resolveNightDelayedOperations(
-      state({
-        a: { "night-parliament": 1 },
-        b: { "night-parliament": 1, foxglove: 1 }
-      }),
-      [highClaim],
-      { high: { operation: "rally", districtId: "b" } }
-    );
-    expect(invalidShift.resolutions[0]).toMatchObject({
-      applied: false,
-      failure: "Night Shift requires a least-occupied legal Rally district"
-    });
+    expect(shift.bonusApplied).toBe(true);
+    expect(shift.state.districts.a?.support["night-parliament"]).toBe(3);
 
     const leakState = state({ a: { "night-parliament": 1, foxglove: 1 } });
     leakState.courtSupport.foxglove = { honeycomb: 2, riverworks: 2 };

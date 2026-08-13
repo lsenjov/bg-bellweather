@@ -7,22 +7,12 @@ import type {
 } from "@bellweather/content";
 
 export type SeatId = string;
-export type ContestId = PartyId | "pecking-order";
-export type BidId = string;
-
 export type OperationInventory = Record<OperationId, number>;
 export type ScoringCardSlots = [
   ScoringCardId[],
   ScoringCardId[],
   ScoringCardId[]
 ];
-
-export interface ResourcePool {
-  leverage: number;
-  bluff: number;
-  operations: OperationInventory;
-  points: number;
-}
 
 export interface SeatConfiguration {
   id: SeatId;
@@ -32,38 +22,26 @@ export interface SeatConfiguration {
 
 export interface GameConfiguration {
   seats: readonly SeatConfiguration[];
-  counterbidTimerSeconds: number | null;
 }
 
 export interface SeatState extends SeatConfiguration {
   position: number;
   firmIds: FirmId[];
-  reserve: ResourcePool;
+  operations: OperationInventory;
+  newYearOperations: OperationInventory;
+  collectionCounters: number;
+  collectionCounterLimit: number;
+  points: number;
   scoringCardIds: ScoringCardSlots;
 }
 
-export interface BidPackage {
-  leverage: number;
-  bluff: number;
-  operations: OperationInventory;
-}
-
-export interface BidState extends BidPackage {
-  id: BidId;
-  contestId: ContestId;
-  ownerSeatId: SeatId;
+export interface PartyYearState {
+  partyId: PartyId;
   firmId: FirmId;
-  kind: "opening" | "counterbid";
-  slotIndex: number | null;
-  status: "active" | "cancelled" | "transferred";
-  transferredToSeatId: SeatId | null;
-}
-
-export interface ContestState {
-  id: ContestId;
-  targetPartyId: PartyId | null;
-  openingBidId: BidId | null;
-  bidIds: BidId[];
+  ownerSeatId: SeatId;
+  status: "open" | "closed";
+  operations: OperationInventory;
+  claimedBonuses: OperationId[];
 }
 
 export interface ChatMessage {
@@ -73,15 +51,32 @@ export interface ChatMessage {
   sentAt: number;
 }
 
-export interface ResolvedOperation {
-  round: number;
-  contestId: ContestId;
-  bidId: BidId;
+export interface OperationPlayInput {
   operation: OperationId;
   choice: unknown;
-  baselineApplied?: boolean;
-  bonusApplied?: boolean;
-  failure?: string | null;
+  claimBonus?: boolean;
+}
+
+export interface ResolvedOperation {
+  year: number;
+  turn: number;
+  seatId: SeatId;
+  partyId: PartyId;
+  operation: OperationId;
+  choice: unknown;
+  bonusApplied: boolean;
+  bonusName: string | null;
+}
+
+export interface LobbyActionRecord {
+  id: string;
+  year: number;
+  turn: number;
+  seatId: SeatId;
+  type: "operate" | "collect" | "close" | "pass";
+  partyId: PartyId | null;
+  operationCount: number;
+  cardCount: number;
 }
 
 export interface OpeningPhase {
@@ -90,73 +85,18 @@ export interface OpeningPhase {
   turnIndex: number;
 }
 
-export interface CounterbidPhase {
-  type: "counterbidding";
-  deadlineAt: number | null;
-  readySeatIds: SeatId[];
-}
-
-export interface PendingPeckingDecision {
-  id: string;
-  kind: "pecking_swap";
-  seatId: SeatId;
-  contestId: "pecking-order";
-  bidId: BidId;
-  adjacentIndexes: number[];
-}
-
-export interface PendingPartyOperationDecision {
-  id: string;
-  kind: "party_operation";
-  seatId: SeatId;
-  contestId: PartyId;
-  bidId: BidId;
-  partyId: PartyId;
-  legalOperations: OperationId[];
-}
-
-export interface PendingNightDelayedDecision {
-  id: string;
-  kind: "night_delayed_operation";
-  seatId: SeatId;
-  contestId: "night-parliament";
-  bidId: BidId;
-  claimId: string;
-  operation: "rally";
-}
-
-export type PendingDecision =
-  | PendingPeckingDecision
-  | PendingPartyOperationDecision
-  | PendingNightDelayedDecision;
-
-export interface DelayedBonusClaim {
-  id: string;
-  ownerId: SeatId;
-  bidId: BidId;
-  bidRank: number;
-  order: number;
-  operation: "rally";
-}
-
-export interface ResolutionPhase {
-  type: "resolution";
-  contestOrder: ContestId[];
-  contestIndex: number;
-  contestPrepared: boolean;
-  executionBidIds: BidId[];
-  bidIndex: number;
-  remainingOperations: Record<BidId, OperationInventory>;
-  pendingDecision: PendingDecision | null;
-  claimedBonuses: OperationId[];
-  delayedBonusClaims: DelayedBonusClaim[];
-  delayedClaimIndex: number;
+export interface LobbyPhase {
+  type: "lobby";
+  activeSeatId: SeatId;
+  turn: number;
+  turnsTaken: Record<SeatId, number>;
+  consecutivePasses: number;
 }
 
 export interface ElectionPhase {
   type: "election";
   electionNumber: 1 | 2 | 3;
-  afterRound: 4 | 8 | 12;
+  afterYear: 4 | 8 | 12;
   resultsRecorded: boolean;
   readySeatIds: SeatId[];
 }
@@ -168,10 +108,11 @@ export interface CompletePhase {
 
 export interface ElectionRecord {
   electionNumber: 1 | 2 | 3;
-  afterRound: 4 | 8 | 12;
+  afterYear: 4 | 8 | 12;
   scoringCards: Array<{
     seatId: SeatId;
     scoringCardIds: ScoringCardId[];
+    capitalCardId: ScoringCardId;
   }>;
   draws: Record<
     string,
@@ -184,103 +125,75 @@ export interface ElectionRecord {
     playerId: SeatId;
     baseDistrictScore: number;
     seatModifier: number;
+    capitalMatches: number;
+    capitalScore: number;
     pointsChange: number;
     resultingPoints: number;
   }>;
   winnerSeatIds: SeatId[];
 }
 
-export interface RoundRecord {
-  round: number;
-  partyOrder: PartyId[];
-  contests: Partial<Record<ContestId, ContestState>>;
-  bids: Record<BidId, BidState>;
-  resolvedOperations: ResolvedOperation[];
+export interface YearRecord {
+  year: number;
+  earlyBirdSeatId: SeatId;
+  endedBySeatId: SeatId;
+  endReason: "passes" | "majority_closed";
+  parties: Partial<Record<PartyId, PartyYearState>>;
+  actions: LobbyActionRecord[];
+  operations: ResolvedOperation[];
 }
 
 export type GamePhase =
   | OpeningPhase
-  | CounterbidPhase
-  | ResolutionPhase
+  | LobbyPhase
   | ElectionPhase
   | CompletePhase;
 
 export interface GameState {
   rulesetVersion: string;
-  round: number;
+  year: number;
   electionNumber: number;
-  nextFirstOpenerSeatId: SeatId;
+  earlyBirdSeatId: SeatId;
   seats: SeatState[];
-  partyOrder: PartyId[];
+  parties: Partial<Record<PartyId, PartyYearState>>;
   support: Record<DistrictId, Partial<Record<PartyId, number>>>;
   courtSupport: Record<PartyId, Partial<Record<PartyId, number>>>;
   coalitionTargets: Record<PartyId, PartyId | null>;
-  contests: Partial<Record<ContestId, ContestState>>;
-  bids: Record<BidId, BidState>;
-  counterbidSlots: Record<SeatId, Array<BidId | null>>;
   chat: ChatMessage[];
+  lobbyActions: LobbyActionRecord[];
   resolvedOperations: ResolvedOperation[];
-  roundHistory: RoundRecord[];
+  yearHistory: YearRecord[];
   electionHistory: ElectionRecord[];
   phase: GamePhase;
   nextEntitySequence: number;
-  configuration: {
-    counterbidTimerSeconds: number | null;
-  };
-}
-
-export interface OpeningBidInput {
-  firmId: FirmId;
-  partyId: PartyId;
-  leverage: number;
-  bluff: number;
-  operations: OperationInventory;
-}
-
-export interface CounterbidInput {
-  contestId: ContestId;
-  firmId: FirmId;
-  leverage: number;
-  bluff: number;
-  operations: OperationInventory;
 }
 
 export type GameAction =
   | {
-      type: "submit_openings";
+      type: "open_party";
       seatId: SeatId;
-      openings: OpeningBidInput[];
-      now: number;
+      firmId: FirmId;
+      partyId: PartyId;
     }
   | {
-      type: "set_counterbid";
+      type: "operate";
       seatId: SeatId;
-      slotIndex: number;
-      bid: CounterbidInput | null;
-      now: number;
+      partyId: PartyId;
+      plays: OperationPlayInput[];
     }
   | {
-      type: "set_counterbid_ready";
+      type: "collect";
       seatId: SeatId;
-      ready: boolean;
-      now: number;
+      partyId: PartyId;
     }
   | {
-      type: "expire_counterbids";
-      now: number;
+      type: "close";
+      seatId: SeatId;
+      partyId: PartyId;
     }
   | {
-      type: "resolve_pecking_swap";
+      type: "pass";
       seatId: SeatId;
-      decisionId: string;
-      adjacentIndex: number;
-    }
-  | {
-      type: "resolve_party_operation";
-      seatId: SeatId;
-      decisionId: string;
-      operation: OperationId;
-      choice: unknown;
     }
   | {
       type: "complete_election";
@@ -296,12 +209,6 @@ export type GameAction =
       seatId: SeatId;
       text: string;
       now: number;
-    }
-  | {
-      type: "give_resources";
-      seatId: SeatId;
-      recipientSeatId: SeatId;
-      resources: ResourcePool;
     };
 
 export interface GameInitializedEvent {
