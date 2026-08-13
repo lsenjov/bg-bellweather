@@ -18,3 +18,11 @@ Replace the first topology study with five new connection maps: one Civic Hub va
 1. Define and validate five new asymmetric graphs, including the constrained Civic Hub variant.
 2. Update the study presentation, interaction semantics, mobile treatment, and scoring-card compatibility summary.
 3. Run repository and browser checks, then obtain a fresh code review and resolve every high or medium issue.
+
+## Verification
+
+- `npm run check` passes: typechecking, 192 tests, documentation checks, and production builds.
+- Every option contains all sixteen districts, preserves the 57-Support capacity distribution, has eighteen unique connections, and is connected.
+- Capital Corridors uses three distinct Cap 6 → Cap 2 → Cap 2 → Bellweather Centre paths and uses every Cap 2 district once.
+- Browser checks found no node collisions, out-of-bounds nodes, or concealed edges at desktop and narrow widths.
+- The final independent review reported no high-, medium-, or low-severity issues.
