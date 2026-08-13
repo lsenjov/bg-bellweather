@@ -471,11 +471,7 @@ function finishYear(
     seat.newYearOperations = emptyOperationInventory();
     seat.collectionCounters = seat.collectionCounterLimit;
   }
-  for (const party of Object.values(state.parties)) {
-    if (party !== undefined) {
-      party.claimedBonuses = [];
-    }
-  }
+  state.parties = {};
   state.earlyBirdSeatId = endedBySeatId;
   if ((ELECTION_YEARS as readonly number[]).includes(state.year)) {
     state.phase = {

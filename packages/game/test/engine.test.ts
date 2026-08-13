@@ -336,6 +336,7 @@ describe("cleanup, Elections, visibility, and replay", () => {
     expect(collectorAfter.collectionCounters).toBe(2);
     expect(collectorAfter.operations.organise).toBe(3);
     expect(state.courtSupport.honeycomb.foxglove).toBe(2);
+    expect(state.parties).toEqual({});
 
     state = act(state, createElectionAction(state, zeroRandom));
     expect(state.courtSupport.honeycomb).toEqual({});
