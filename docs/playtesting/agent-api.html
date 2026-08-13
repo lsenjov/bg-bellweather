@@ -74,7 +74,8 @@ npm run dev</code></pre>
             <thead><tr><th>Action</th><th>Required payload</th></tr></thead>
             <tbody>
               <tr><td><code>open_party</code></td><td><code>firmId</code> and an unopened <code>partyId</code>. Submit only while the projected opening cursor names the seat.</td></tr>
-              <tr><td><code>operate</code></td><td><code>partyId</code> and <code>plays</code>, an ordered array of one to three Operation plays. Each play contains a matching <code>operation</code> and <code>choice</code>; at most one play may set <code>claimBonus: true</code>.</td></tr>
+              <tr><td><code>operate</code></td><td><code>partyId</code> and one <code>play</code> containing a matching <code>operation</code> and <code>choice</code>. The card resolves immediately. A second or third <code>operate</code> must use the same party, and only one play in the complete sequence may set <code>claimBonus: true</code>. The third card ends the action automatically.</td></tr>
+              <tr><td><code>finish_operate</code></td><td>No additional fields. Submit after the first or second resolved card to finish the sequence and pass play clockwise.</td></tr>
               <tr><td><code>collect</code></td><td><code>partyId</code> for an open party with a nonempty pile. The engine spends one Collection counter.</td></tr>
               <tr><td><code>close</code></td><td><code>partyId</code> for an open party whose Firm marker belongs to the acting player. Illegal on that player’s first Lobby turn of the year.</td></tr>
               <tr><td><code>pass</code></td><td>No additional fields.</td></tr>
@@ -83,27 +84,25 @@ npm run dev</code></pre>
           </table>
         </div>
 
-        <p>Operation choices follow the selected family. Organise uses <code>destinationDistrictId</code> and optional <code>sourceDistrictId</code>; Rally uses <code>districtId</code>; Smear uses <code>districtId</code> and <code>rivalParty</code>; Court uses <code>targetParty</code>. Bonus-dependent optional fields are <code>bonusDistrictId</code>, <code>bonusDistrictIds</code>, <code>bonusCourtParty</code>, <code>bonusSourceDistrictId</code>, and <code>bonusCourtSourceParty</code>. Resolve each play against the state created by the preceding play.</p>
+        <p>Operation choices follow the selected family. Organise uses <code>destinationDistrictId</code> and optional <code>sourceDistrictId</code>; Rally uses <code>districtId</code>; Smear uses <code>districtId</code> and <code>rivalParty</code>; Court uses <code>targetParty</code>. Bonus-dependent optional fields are <code>bonusDistrictId</code>, <code>bonusDistrictIds</code>, <code>bonusCourtParty</code>, <code>bonusSourceDistrictId</code>, and <code>bonusCourtSourceParty</code>. Refetch after each accepted play so the next choice uses the resulting state.</p>
         <pre><code>{
   "type": "operate",
   "partyId": "night-parliament",
-  "plays": [
-    {
+  "play": {
+    "operation": "rally",
+    "choice": {
       "operation": "rally",
-      "choice": {
-        "operation": "rally",
-        "districtId": "harbormouth"
-      },
-      "claimBonus": true
-    }
-  ]
+      "districtId": "harbormouth"
+    },
+    "claimBonus": true
+  }
 }</code></pre>
         <p>An illegal choice returns <code>illegal_action</code> without consuming a turn or card. Refetch state after a version conflict or another seat’s action.</p>
       </section>
 
       <section>
         <h2>Phase and visibility</h2>
-        <p><code>publicGame.phase</code> is <code>opening</code>, <code>lobby</code>, <code>election</code>, or <code>complete</code>; <code>phaseData</code> carries the phase cursor. During Openings, <code>turnSeatIds</code> contains ABBA, ABCCBA, or the single clockwise orbit and may repeat a seat. During the Lobby, <code>activeSeatId</code> identifies the only acting seat.</p>
+        <p><code>publicGame.phase</code> is <code>opening</code>, <code>lobby</code>, <code>election</code>, or <code>complete</code>; <code>phaseData</code> carries the phase cursor. During Openings, <code>turnSeatIds</code> contains ABBA, ABCCBA, or the single clockwise orbit and may repeat a seat. During the Lobby, <code>activeSeatId</code> identifies the only acting seat. A non-null <code>inProgressOperate</code> gives the locked <code>partyId</code>, resolved <code>operationCount</code>, and whether the sequence has <code>bonusClaimed</code>; the active seat must either continue that Operate action or finish it.</p>
         <p>Public state includes the year, Election number, Early Bird, public seat totals, party status and piles, Support, Court Support, Coalition Targets, Lobby actions, resolved Operations, year history, Election history, and chat. Opponents’ exact hands and New Year areas are hidden but their card counts are public. A seat projection adds that seat’s exact Operation inventories and all three ordered scoring slots. Previously revealed scoring slots remain public; future slots remain concealed.</p>
         <p>After the game ends, every authenticated participant may fetch the complete event history and canonical final state. Random setup and Election draws are recorded, so replay never rerolls.</p>
       </section>
