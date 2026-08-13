@@ -3,7 +3,6 @@ export type Controller = "human" | "agent";
 
 export interface GameSettings {
   playerCapacity: number;
-  counterbidTimerSeconds: number | null;
   allowSpectators: boolean;
 }
 

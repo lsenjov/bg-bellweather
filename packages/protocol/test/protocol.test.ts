@@ -2,10 +2,8 @@ import { describe, expect, expectTypeOf, it } from "vitest";
 import {
   CommandEnvelopeSchema,
   ClientWebSocketFrameSchema,
-  CounterbidTimerSettingsSchema,
   CreateLobbyRequestSchema,
   GameIdSchema,
-  GiveResourcesCommandSchema,
   PlayerGameActionSchema,
   ProjectedEventEnvelopeSchema,
   ServerWebSocketFrameSchema,
@@ -27,12 +25,11 @@ const publicState = {
   lifecycle: "active",
   configuration: {
     playerCount: 4,
-    counterbidTimer: { mode: "countdown", durationSeconds: 90 },
     allowSpectators: true
   },
   seats: [],
   spectators: [],
-  publicGame: { phase: "counterbidding" }
+  publicGame: { phase: "lobby" }
 };
 
 describe("protocol primitives", () => {
@@ -43,31 +40,12 @@ describe("protocol primitives", () => {
     expect(GameIdSchema.safeParse("game-1").success).toBe(false);
   });
 
-  it("accepts only explicit timer modes and bounded durations", () => {
-    expect(CounterbidTimerSettingsSchema.parse({ mode: "off" })).toEqual({
-      mode: "off"
-    });
-    expect(
-      CounterbidTimerSettingsSchema.safeParse({
-        mode: "countdown",
-        durationSeconds: 4
-      }).success
-    ).toBe(false);
-    expect(
-      CounterbidTimerSettingsSchema.safeParse({
-        mode: "off",
-        durationSeconds: 90
-      }).success
-    ).toBe(false);
-  });
-
   it("rejects unknown request fields", () => {
     expect(
       CreateLobbyRequestSchema.safeParse({
         displayName: "Ada",
         controller: "human",
         configuration: {
-          counterbidTimer: { mode: "off" },
           allowSpectators: true
         },
         admin: true
@@ -81,12 +59,10 @@ describe("protocol primitives", () => {
         displayName: "Ada",
         controller: "human",
         configuration: {
-          counterbidTimer: { mode: "off" },
           allowSpectators: true
         }
       }).configuration
     ).toEqual({
-      counterbidTimer: { mode: "off" },
       allowSpectators: true
     });
     expect(
@@ -95,7 +71,6 @@ describe("protocol primitives", () => {
         controller: "human",
         configuration: {
           playerCount: 4,
-          counterbidTimer: { mode: "off" },
           allowSpectators: true
         }
       }).success
@@ -104,80 +79,86 @@ describe("protocol primitives", () => {
 });
 
 describe("commands", () => {
-  it("accepts at most one opening per action", () => {
-    const opening = {
-      firmId: "one-fell-swoop",
-      partyId: "honeycomb",
-      leverage: 1,
-      bluff: 0,
-      operations: { organise: 0, rally: 0, smear: 0, court: 0 }
-    };
-
+  it("accepts one firm and party for an opening", () => {
     expect(
       PlayerGameActionSchema.safeParse({
-        type: "submit_openings",
-        openings: [opening]
+        type: "open_party",
+        firmId: "one-fell-swoop",
+        partyId: "honeycomb"
       }).success
     ).toBe(true);
     expect(
       PlayerGameActionSchema.safeParse({
-        type: "submit_openings",
-        openings: [opening, { ...opening, partyId: "foxglove" }]
+        type: "open_party",
+        firmId: "one-fell-swoop",
+        partyId: "honeycomb",
+        leverage: 1
       }).success
     ).toBe(false);
   });
 
-  it("requires a non-empty atomic gift", () => {
-    const emptyGift = {
-      type: "give_resources",
-      recipientSeatId: seatId,
-      leverage: 0,
-      bluff: 0,
-      operations: { organise: 0, rally: 0, smear: 0, court: 0 },
-      points: 0
+  it("accepts one to three ordered Operation plays", () => {
+    const play = {
+      operation: "rally",
+      choice: { operation: "rally", districtId: "harbormouth" },
+      claimBonus: true
     };
-
-    expect(GiveResourcesCommandSchema.safeParse(emptyGift).success).toBe(false);
     expect(
-      GiveResourcesCommandSchema.safeParse({ ...emptyGift, points: 1 }).success
+      PlayerGameActionSchema.safeParse({
+        type: "operate",
+        partyId: "night-parliament",
+        plays: [
+          play,
+          { ...play, claimBonus: false },
+          { ...play, claimBonus: false }
+        ]
+      }).success
     ).toBe(true);
     expect(
-      GiveResourcesCommandSchema.safeParse({ ...emptyGift, bluff: 1 }).success
-    ).toBe(true);
+      PlayerGameActionSchema.safeParse({
+        type: "operate",
+        partyId: "night-parliament",
+        plays: []
+      }).success
+    ).toBe(false);
   });
 
-  it("accepts ruleset-13 bonus choices and rejects retired bonus fields", () => {
-    const action = (choice: unknown) => ({
-      type: "resolve_party_operation",
-      decisionId: "decision-1",
-      operation: "rally",
-      choice
-    });
-
+  it("requires the play and choice Operation families to match", () => {
     expect(
-      PlayerGameActionSchema.safeParse(
-        action({
-          choice: {
+      PlayerGameActionSchema.safeParse({
+        type: "operate",
+        partyId: "honeycomb",
+        plays: [
+          {
             operation: "rally",
-            districtId: "harbormouth",
-            bonusDistrictIds: ["cloverfield", "millbank"]
-          },
-          claimBonus: true
-        })
-      ).success
-    ).toBe(true);
-    expect(
-      PlayerGameActionSchema.safeParse(
-        action({
-          choice: { operation: "rally", districtId: "harbormouth" },
-          claimBonus: true,
-          repeatChoice: {
-            operation: "organise",
-            sourceDistrictId: "harbormouth",
-            destinationDistrictId: "cloverfield"
+            choice: {
+              operation: "organise",
+              destinationDistrictId: "cloverfield"
+            }
           }
-        })
-      ).success
+        ]
+      }).success
+    ).toBe(false);
+  });
+
+  it("allows at most one bonus claim in an Operate action", () => {
+    expect(
+      PlayerGameActionSchema.safeParse({
+        type: "operate",
+        partyId: "honeycomb",
+        plays: [
+          {
+            operation: "rally",
+            choice: { operation: "rally", districtId: "cloverfield" },
+            claimBonus: true
+          },
+          {
+            operation: "court",
+            choice: { operation: "court", targetParty: "old-shell" },
+            claimBonus: true
+          }
+        ]
+      }).success
     ).toBe(false);
   });
 
@@ -190,15 +171,8 @@ describe("commands", () => {
         command: {
           type: "game_action",
           action: {
-            type: "set_counterbid",
-            slotIndex: 1,
-            bid: {
-              contestId: "pecking-order",
-              firmId: "one-fell-swoop",
-              leverage: 2,
-              bluff: 1,
-              operations: { organise: 1, rally: 0, smear: 0, court: 0 }
-            }
+            type: "collect",
+            partyId: "honeycomb"
           }
         }
       }).command
@@ -209,7 +183,7 @@ describe("commands", () => {
         idempotencyKey: "unknown-action",
         command: {
           type: "game_action",
-          action: { type: "place_counterbid", slot: 1 }
+          action: { type: "set_counterbid", slot: 1 }
         }
       }).success
     ).toBe(false);
@@ -249,14 +223,14 @@ describe("hidden-state boundaries", () => {
       ViewerStateEnvelopeSchema.safeParse({
         scope: "completed_replay",
         publicState,
-        fullState: { fullGame: { bids: [] } }
+        fullState: { fullGame: { parties: [] } }
       }).success
     ).toBe(false);
     expect(
       ViewerStateEnvelopeSchema.safeParse({
         scope: "completed_replay",
         publicState: { ...publicState, lifecycle: "completed" },
-        fullState: { fullGame: { bids: [] } }
+        fullState: { fullGame: { parties: [] } }
       }).success
     ).toBe(true);
   });
@@ -296,7 +270,7 @@ describe("event stream", () => {
         sequence: 5,
         version: 3,
         occurredAt: "2026-07-30T08:00:00.000Z",
-        eventType: "counterbid_changed",
+        eventType: "game.action_applied",
         scope: "public",
         publicData: { target: "honeycomb" },
         seatData: { operations: ["rally"] }
@@ -314,11 +288,11 @@ describe("event stream", () => {
           sequence: 5,
           version: 3,
           occurredAt: "2026-07-30T08:00:00.000Z",
-          eventType: "counterbid_changed",
+          eventType: "game.action_applied",
           scope: "seat",
           viewerSeatId: seatId,
           publicData: { target: "honeycomb" },
-          seatData: { leverage: 3, operations: ["rally"] }
+          seatData: { operations: ["rally"] }
         }
       }).success
     ).toBe(true);

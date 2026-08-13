@@ -44,7 +44,6 @@ export function createAppServer(options: AppServerOptions) {
   const webRoot =
     options.webRoot ??
     resolve(dirname(fileURLToPath(import.meta.url)), "../../web/dist");
-  const deadlines = new CounterbidDeadlines(store, subscriptions, now, random);
   const server = createHttpServer(async (request, response) => {
     try {
       await route(
@@ -52,7 +51,6 @@ export function createAppServer(options: AppServerOptions) {
         response,
         store,
         subscriptions,
-        deadlines,
         now,
         random,
         webRoot
@@ -97,7 +95,6 @@ export function createAppServer(options: AppServerOptions) {
         });
       });
       const address = server.address();
-      deadlines.recover();
       return {
         host,
         port:
@@ -107,7 +104,6 @@ export function createAppServer(options: AppServerOptions) {
       };
     },
     async close(): Promise<void> {
-      deadlines.close();
       for (const client of webSockets.clients) {
         client.close(1001, "Server shutting down");
       }
@@ -125,7 +121,6 @@ async function route(
   response: ServerResponse,
   store: EventStore,
   subscriptions: Subscriptions,
-  deadlines: CounterbidDeadlines,
   now: () => Date,
   random: { integer(maxExclusive: number): number },
   webRoot: string
@@ -150,10 +145,6 @@ async function route(
       rulesetVersion: engineVersion,
       settings: {
         playerCapacity: MAX_PLAYER_COUNT,
-        counterbidTimerSeconds:
-          input.configuration.counterbidTimer.mode === "off"
-            ? null
-            : input.configuration.counterbidTimer.durationSeconds,
         allowSpectators: input.configuration.allowSpectators
       },
       seat: {
@@ -291,7 +282,6 @@ async function route(
     const accepted = CommandAcceptedSchema.parse(processed.accepted);
     if (processed.event !== null) {
       subscriptions.broadcast(processed.event);
-      deadlines.schedule(authenticated.game.id);
     }
     writeJson(response, 200, accepted);
     return;
@@ -334,78 +324,6 @@ async function route(
     return;
   }
   throw new AppError(404, "not_found", "Route not found");
-}
-
-class CounterbidDeadlines {
-  private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
-  private stopped = false;
-
-  constructor(
-    private readonly store: EventStore,
-    private readonly subscriptions: Subscriptions,
-    private readonly now: () => Date,
-    private readonly random: { integer(maxExclusive: number): number }
-  ) {}
-
-  recover(): void {
-    for (const gameId of this.store.listCurrentActiveGameIds()) {
-      try {
-        this.schedule(gameId);
-      } catch (error) {
-        if (!(error instanceof AppError) || error.code !== "unsupported_ruleset") {
-          throw error;
-        }
-      }
-    }
-  }
-
-  schedule(gameId: string): void {
-    const existing = this.timers.get(gameId);
-    if (existing !== undefined) {
-      clearTimeout(existing);
-      this.timers.delete(gameId);
-    }
-    if (this.stopped) {
-      return;
-    }
-    const state = this.store.loadEngineState(gameId);
-    if (
-      state?.phase.type !== "counterbidding" ||
-      state.phase.deadlineAt === null
-    ) {
-      return;
-    }
-    const delay = Math.max(0, state.phase.deadlineAt - this.now().getTime());
-    const timer = setTimeout(
-      () => this.expire(gameId),
-      Math.min(delay, 2_147_483_647)
-    );
-    this.timers.set(gameId, timer);
-  }
-
-  close(): void {
-    this.stopped = true;
-    for (const timer of this.timers.values()) {
-      clearTimeout(timer);
-    }
-    this.timers.clear();
-  }
-
-  private expire(gameId: string): void {
-    this.timers.delete(gameId);
-    if (this.stopped) {
-      return;
-    }
-    const event = this.store.expireCounterbids(
-      gameId,
-      this.now().toISOString(),
-      this.random
-    );
-    if (event !== null) {
-      this.subscriptions.broadcast(event);
-    }
-    this.schedule(gameId);
-  }
 }
 
 function serveWebApp(

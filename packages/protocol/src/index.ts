@@ -64,19 +64,6 @@ export const ChatTextSchema = z.string().trim().min(1).max(2_000);
 export const MIN_PLAYER_COUNT = 2;
 export const MAX_PLAYER_COUNT = 6;
 
-export const CounterbidTimerSettingsSchema = z.discriminatedUnion("mode", [
-  z.object({ mode: z.literal("off") }).strict(),
-  z
-    .object({
-      mode: z.literal("countdown"),
-      durationSeconds: z.number().int().min(5).max(3_600)
-    })
-    .strict()
-]);
-export type CounterbidTimerSettings = z.infer<
-  typeof CounterbidTimerSettingsSchema
->;
-
 export const SeatRoleSchema = z.enum(["host", "player"]);
 export const ControllerKindSchema = z.enum(["human", "agent"]);
 export const JoinRoleSchema = z.enum(["player", "spectator"]);
@@ -86,7 +73,6 @@ export type JoinRole = z.infer<typeof JoinRoleSchema>;
 
 export const LobbyOptionsSchema = z
   .object({
-    counterbidTimer: CounterbidTimerSettingsSchema,
     allowSpectators: z.boolean()
   })
   .strict();
@@ -269,29 +255,6 @@ export const PostChatCommandSchema = z
     message: ChatTextSchema
   })
   .strict();
-export const GiveResourcesCommandSchema = z
-  .object({
-    type: z.literal("give_resources"),
-    recipientSeatId: SeatIdSchema,
-    leverage: z.number().int().nonnegative(),
-    bluff: z.number().int().nonnegative(),
-    operations: OperationInventorySchema,
-    points: z.number().int().nonnegative()
-  })
-  .strict()
-  .refine(
-    ({ leverage, bluff, operations, points }) =>
-      leverage +
-        bluff +
-        points +
-        operations.organise +
-        operations.rally +
-        operations.smear +
-        operations.court >
-      0,
-    { message: "A gift must contain at least one resource" }
-  );
-
 export const PartyIdSchema = z.enum([
   "honeycomb",
   "old-shell",
@@ -308,17 +271,12 @@ export const FirmIdSchema = z.enum([
   "vested-interests",
   "vip-access"
 ]);
-export const ContestIdSchema = z.union([
-  PartyIdSchema,
-  z.literal("pecking-order")
-]);
 export const OperationIdSchema = z.enum([
   "organise",
   "rally",
   "smear",
   "court"
 ]);
-const DecisionIdSchema = z.string().trim().min(1).max(100);
 const OrganiseChoiceSchema = z
   .object({
     operation: z.literal("organise"),
@@ -360,70 +318,52 @@ export const OperationChoiceSchema = z.discriminatedUnion("operation", [
   SmearChoiceSchema,
   CourtChoiceSchema
 ]);
-const OperationResolutionChoiceSchema = z.union([
-  OperationChoiceSchema,
-  z
-    .object({
-      choice: OperationChoiceSchema,
-      claimBonus: z.boolean().optional()
-    })
-    .strict()
-]);
 export type OperationChoice = z.infer<typeof OperationChoiceSchema>;
-export type OperationResolutionChoice = z.infer<
-  typeof OperationResolutionChoiceSchema
->;
-const BidPackageSchema = z
+export const OperationPlaySchema = z
   .object({
-    leverage: z.number().int().nonnegative(),
-    bluff: z.number().int().nonnegative(),
-    operations: OperationInventorySchema
-  })
-  .strict();
-const SubmitOpeningsActionSchema = z
-  .object({
-    type: z.literal("submit_openings"),
-    openings: z
-      .array(
-        BidPackageSchema.extend({
-          firmId: FirmIdSchema,
-          partyId: PartyIdSchema
-        }).strict()
-      )
-      .max(1)
-  })
-  .strict();
-const SetCounterbidActionSchema = z
-  .object({
-    type: z.literal("set_counterbid"),
-    slotIndex: z.number().int().min(0).max(3),
-    bid: BidPackageSchema.extend({
-      contestId: ContestIdSchema,
-      firmId: FirmIdSchema
-    })
-      .strict()
-      .nullable()
-  })
-  .strict();
-const SetCounterbidReadyActionSchema = z
-  .object({
-    type: z.literal("set_counterbid_ready"),
-    ready: z.boolean()
-  })
-  .strict();
-const ResolvePeckingSwapActionSchema = z
-  .object({
-    type: z.literal("resolve_pecking_swap"),
-    decisionId: DecisionIdSchema,
-    adjacentIndex: z.number().int().min(0).max(4)
-  })
-  .strict();
-const ResolvePartyOperationActionSchema = z
-  .object({
-    type: z.literal("resolve_party_operation"),
-    decisionId: DecisionIdSchema,
     operation: OperationIdSchema,
-    choice: OperationResolutionChoiceSchema
+    choice: OperationChoiceSchema,
+    claimBonus: z.boolean().optional()
+  })
+  .strict()
+  .refine(({ operation, choice }) => operation === choice.operation, {
+    message: "Operation and choice family must match",
+    path: ["choice", "operation"]
+  });
+export type OperationPlay = z.infer<typeof OperationPlaySchema>;
+const OpenPartyActionSchema = z
+  .object({
+    type: z.literal("open_party"),
+    firmId: FirmIdSchema,
+    partyId: PartyIdSchema
+  })
+  .strict();
+const OperateActionSchema = z
+  .object({
+    type: z.literal("operate"),
+    partyId: PartyIdSchema,
+    plays: z.array(OperationPlaySchema).min(1).max(3)
+  })
+  .strict()
+  .refine(
+    ({ plays }) => plays.filter((play) => play.claimBonus === true).length <= 1,
+    { message: "An Operate action may claim at most one party bonus", path: ["plays"] }
+  );
+const CollectActionSchema = z
+  .object({
+    type: z.literal("collect"),
+    partyId: PartyIdSchema
+  })
+  .strict();
+const CloseActionSchema = z
+  .object({
+    type: z.literal("close"),
+    partyId: PartyIdSchema
+  })
+  .strict();
+const PassActionSchema = z
+  .object({
+    type: z.literal("pass")
   })
   .strict();
 const SetElectionReadyActionSchema = z
@@ -433,11 +373,11 @@ const SetElectionReadyActionSchema = z
   })
   .strict();
 export const PlayerGameActionSchema = z.discriminatedUnion("type", [
-  SubmitOpeningsActionSchema,
-  SetCounterbidActionSchema,
-  SetCounterbidReadyActionSchema,
-  ResolvePeckingSwapActionSchema,
-  ResolvePartyOperationActionSchema,
+  OpenPartyActionSchema,
+  OperateActionSchema,
+  CollectActionSchema,
+  CloseActionSchema,
+  PassActionSchema,
   SetElectionReadyActionSchema
 ]);
 export const GameActionCommandSchema = z
@@ -451,13 +391,11 @@ export const GameCommandSchema = z.union([
   SetLobbyReadyCommandSchema,
   StartGameCommandSchema,
   PostChatCommandSchema,
-  GiveResourcesCommandSchema,
   GameActionCommandSchema
 ]);
 export type SetLobbyReadyCommand = z.infer<typeof SetLobbyReadyCommandSchema>;
 export type StartGameCommand = z.infer<typeof StartGameCommandSchema>;
 export type PostChatCommand = z.infer<typeof PostChatCommandSchema>;
-export type GiveResourcesCommand = z.infer<typeof GiveResourcesCommandSchema>;
 export type PlayerGameAction = z.infer<typeof PlayerGameActionSchema>;
 export type GameActionCommand = z.infer<typeof GameActionCommandSchema>;
 export type GameCommand = z.infer<typeof GameCommandSchema>;

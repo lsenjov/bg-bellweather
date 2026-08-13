@@ -11,8 +11,7 @@ import {
   initializeGame,
   type GameAction,
   type GameEvent,
-  type GameState,
-  type OperationInventory
+  type GameState
 } from "@bellweather/game";
 import { MIN_PLAYER_COUNT } from "@bellweather/protocol";
 import {
@@ -350,8 +349,7 @@ export class EventStore {
               id: seat.id,
               displayName: seat.displayName,
               controller: seat.controller
-            })),
-            counterbidTimerSeconds: game.settings.counterbidTimerSeconds
+            }))
           },
           random
         );
@@ -399,9 +397,7 @@ export class EventStore {
           type:
             command.type === "post_chat"
               ? "chat.posted"
-              : command.type === "give_resources"
-                ? "resources.given"
-                : "game.action_applied",
+              : "game.action_applied",
           actorSeatId: seatId,
           payload: {
             engineEvents: stabilized.events,
@@ -449,65 +445,6 @@ export class EventStore {
         );
       return { accepted, event, replayed: false };
     });
-  }
-
-  expireCounterbids(
-    gameId: string,
-    now: string,
-    random: EngineRandomSource
-  ): StoredEvent | null {
-    return this.transaction(() => {
-      const game = this.getGameById(gameId);
-      if (game.status !== "active") {
-        return null;
-      }
-      const current = this.requireEngineState(gameId);
-      if (
-        current.phase.type !== "counterbidding" ||
-        current.phase.deadlineAt === null ||
-        Date.parse(now) < current.phase.deadlineAt
-      ) {
-        return null;
-      }
-      const applied = executeEngine(current, {
-        type: "expire_counterbids",
-        now: Date.parse(now)
-      });
-      const stabilized = stabilizeElection(applied.state, applied.events, random);
-      const event = this.appendEventUnsafe(gameId, now, {
-        type: "counterbids.expired",
-        payload: {
-          engineEvents: stabilized.events,
-          ...(stabilized.electionResults.length === 0
-            ? {}
-            : { electionResults: stabilized.electionResults })
-        }
-      });
-      this.saveSnapshot(
-        gameId,
-        event.version,
-        game.rulesetVersion,
-        stabilized.state,
-        now
-      );
-      if (stabilized.state.phase.type === "complete") {
-        this.database
-          .prepare(
-            "UPDATE games SET status = 'finished', finished_at = ? WHERE id = ?"
-          )
-          .run(now, gameId);
-      }
-      return event;
-    });
-  }
-
-  listCurrentActiveGameIds(): string[] {
-    const rows = this.database
-      .prepare(
-        "SELECT id FROM games WHERE status = 'active' AND ruleset_version = ? ORDER BY id"
-      )
-      .all(engineVersion) as unknown as Array<{ id: string }>;
-    return rows.map((row) => row.id);
   }
 
   loadEngineState(gameId: string): GameState | null {
@@ -942,19 +879,6 @@ function commandToAction(
       now
     };
   }
-  if (command.type === "give_resources") {
-    return {
-      type: "give_resources",
-      seatId,
-      recipientSeatId: stringValue(payload.recipientSeatId, "recipientSeatId"),
-      resources: {
-        leverage: numberValue(payload.leverage, "leverage"),
-        bluff: numberValue(payload.bluff, "bluff"),
-        operations: objectValue(payload.operations) as unknown as OperationInventory,
-        points: numberValue(payload.points, "points")
-      }
-    };
-  }
   if (command.type !== "game_action") {
     throw new AppError(400, "invalid_request", "Unsupported game command");
   }
@@ -962,9 +886,7 @@ function commandToAction(
   const actionType = stringValue(action.type, "action.type");
   if (
     actionType === "complete_election" ||
-    actionType === "expire_counterbids" ||
-    actionType === "post_chat" ||
-    actionType === "give_resources"
+    actionType === "post_chat"
   ) {
     throw new AppError(
       403,
@@ -973,12 +895,12 @@ function commandToAction(
     );
   }
   const playerActionTypes = new Set([
-    "submit_openings",
-    "set_counterbid",
-    "set_counterbid_ready",
+    "open_party",
+    "operate",
+    "collect",
+    "close",
+    "pass",
     "set_election_ready",
-    "resolve_pecking_swap",
-    "resolve_party_operation"
   ]);
   if (!playerActionTypes.has(actionType)) {
     throw new AppError(400, "invalid_request", "Unknown game action");
@@ -986,14 +908,7 @@ function commandToAction(
   return {
     ...action,
     type: actionType,
-    seatId,
-    ...(
-      actionType === "submit_openings" ||
-      actionType === "set_counterbid" ||
-      actionType === "set_counterbid_ready"
-        ? { now }
-        : {}
-    )
+    seatId
   } as GameAction;
 }
 
@@ -1056,13 +971,6 @@ function objectValue(value: unknown): Record<string, unknown> {
 function stringValue(value: unknown, field: string): string {
   if (typeof value !== "string") {
     throw new AppError(400, "invalid_request", `${field} must be a string`);
-  }
-  return value;
-}
-
-function numberValue(value: unknown, field: string): number {
-  if (typeof value !== "number" || !Number.isFinite(value)) {
-    throw new AppError(400, "invalid_request", `${field} must be a number`);
   }
   return value;
 }

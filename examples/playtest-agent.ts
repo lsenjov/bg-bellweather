@@ -3,13 +3,11 @@ import {
   DISTRICTS,
   PARTIES,
   type FirmId,
-  type OperationId,
   type PartyId
 } from "@bellweather/content";
 import {
   type GameCommand,
   type GameId,
-  type OperationChoice,
   type ParticipantSession,
   type ViewerStateEnvelope
 } from "@bellweather/protocol";
@@ -26,10 +24,7 @@ const joined =
     ? await anonymous.createGame({
         displayName,
         controller: "agent",
-        configuration: {
-          counterbidTimer: { mode: "off" },
-          allowSpectators: true
-        }
+        configuration: { allowSpectators: true }
       })
     : await anonymous.joinGame({
         inviteCode: inviteCode as never,
@@ -54,8 +49,6 @@ void (async () => {
   }
 })();
 let introduced = false;
-let gifted = false;
-const counterbidRounds = new Set<number>();
 
 process.stdout.write(
   `${JSON.stringify({
@@ -88,11 +81,11 @@ async function takeTurn(
   envelope: ViewerStateEnvelope
 ): Promise<void> {
   const publicState = envelope.publicState;
-  const ownLobbySeat = publicState.seats.find(
+  const lobbySeat = publicState.seats.find(
     (seat) => seat.seatId === session.seatId
   );
   if (publicState.lifecycle === "lobby") {
-    if (ownLobbySeat?.ready !== true) {
+    if (lobbySeat?.ready !== true) {
       await command(client, session.gameId, publicState.version, {
         type: "set_lobby_ready",
         ready: true
@@ -100,7 +93,7 @@ async function takeTurn(
       return;
     }
     if (
-      ownLobbySeat.role === "host" &&
+      lobbySeat.role === "host" &&
       publicState.configuration.playerCount >= playerTarget
     ) {
       await command(client, session.gameId, publicState.version, {
@@ -111,12 +104,11 @@ async function takeTurn(
   }
 
   const game = objectValue(publicState.publicGame);
-  const phase = objectValue(game["phase"]);
-  const phaseType = stringValue(phase["type"]);
+  const phaseType = stringValue(game["phase"]);
+  const phase = objectValue(game["phaseData"]);
   const privateGame =
     envelope.scope === "seat" ? objectValue(envelope.seatState.privateGame) : {};
-  const seats = arrayValue(game["seats"]).map(objectValue);
-  const ownSeat = seats.find((seat) => seat["id"] === session.seatId);
+  const ownSeat = objectValue(privateGame["seat"]);
 
   if (!introduced) {
     await command(client, session.gameId, publicState.version, {
@@ -126,246 +118,107 @@ async function takeTurn(
     introduced = true;
     return;
   }
-  const opponent = seats.find((seat) => seat["id"] !== session.seatId);
-  const reserve = objectValue(privateGame["reserve"]);
-  if (!gifted && opponent !== undefined && Number(reserve["leverage"] ?? 0) > 0) {
-    await command(client, session.gameId, publicState.version, {
-      type: "give_resources",
-      recipientSeatId: stringValue(opponent["id"]) as never,
-      leverage: 1,
-      bluff: 0,
-      operations: emptyOperations(),
-      points: 0
-    });
-    gifted = true;
-    return;
-  }
 
-  if (
-    phaseType === "opening" &&
-    arrayValue(phase["turnSeatIds"])[Number(phase["turnIndex"] ?? 0)] ===
-      session.seatId &&
-    ownSeat !== undefined
-  ) {
-    const firms = arrayValue(ownSeat["firmIds"]).map(
-      (firmId) => stringValue(firmId) as FirmId
+  if (phaseType === "opening" && openingSeatId(phase) === session.seatId) {
+    const parties = objectValue(game["parties"]);
+    const usedFirms = new Set(
+      Object.values(parties).map((party) => stringValue(objectValue(party)["firmId"]))
     );
-    const contests = objectValue(game["contests"]);
-    const available = arrayValue(game["partyOrder"])
-      .map((partyId) => stringValue(partyId) as PartyId)
-      .filter((partyId) => !(partyId in contests));
-    const count = Math.min(1, Number(reserve["leverage"] ?? 0));
-    await command(client, session.gameId, publicState.version, {
-      type: "game_action",
-      action: {
-        type: "submit_openings",
-        openings: firms.slice(0, count).map((firmId) => ({
-          firmId,
-          partyId: available[0] ?? "honeycomb",
-          leverage: 1,
-          bluff: 0,
-          operations:
-            Number(objectValue(reserve["operations"])["organise"] ?? 0) > 0
-              ? { ...emptyOperations(), organise: 1 }
-              : emptyOperations()
-        }))
-      }
-    });
+    const firmId = arrayValue(ownSeat["firmIds"])
+      .map((value) => stringValue(value) as FirmId)
+      .find((candidate) => !usedFirms.has(candidate));
+    const partyId = PARTIES.map((party) => party.id).find(
+      (candidate) => !(candidate in parties)
+    );
+    if (firmId !== undefined && partyId !== undefined) {
+      await gameAction(client, session.gameId, publicState.version, {
+        type: "open_party",
+        firmId,
+        partyId
+      });
+    }
     return;
   }
 
-  if (phaseType === "counterbidding") {
-    const ready = arrayValue(phase["readySeatIds"]);
-    const round = Number(game["round"] ?? 0);
-    if (!counterbidRounds.has(round) && ownSeat !== undefined) {
-      const firms = arrayValue(ownSeat["firmIds"]).map(
-        (firmId) => stringValue(firmId) as FirmId
-      );
-      const firmId = firms[0];
-      if (firmId === undefined) {
-        return;
-      }
-      await command(client, session.gameId, publicState.version, {
-        type: "game_action",
-        action: {
-          type: "set_counterbid",
-          slotIndex: 0,
-          bid: {
-            contestId: "pecking-order",
-            firmId,
-            leverage: 0,
-            bluff: 0,
-            operations: emptyOperations()
-          }
-        }
-      });
-      counterbidRounds.add(round);
-      return;
-    }
-    if (!ready.includes(session.seatId)) {
-      await command(client, session.gameId, publicState.version, {
-        type: "game_action",
-        action: { type: "set_counterbid_ready", ready: true }
-      });
-    }
+  if (phaseType === "lobby" && phase["activeSeatId"] === session.seatId) {
+    const operation = chooseRally(game, ownSeat);
+    await gameAction(
+      client,
+      session.gameId,
+      publicState.version,
+      operation ?? { type: "pass" }
+    );
     return;
   }
 
   if (phaseType === "election" && phase["resultsRecorded"] === true) {
     const ready = arrayValue(phase["readySeatIds"]);
     if (!ready.includes(session.seatId)) {
-      await command(client, session.gameId, publicState.version, {
-        type: "game_action",
-        action: { type: "set_election_ready", ready: true }
-      });
-    }
-    return;
-  }
-
-  const pending = objectValue(privateGame["pendingDecision"]);
-  if (phaseType === "resolution" && pending["kind"] === "pecking_swap") {
-    const adjacent = arrayValue(pending["adjacentIndexes"]);
-    await command(client, session.gameId, publicState.version, {
-      type: "game_action",
-      action: {
-        type: "resolve_pecking_swap",
-        decisionId: stringValue(pending["id"]),
-        adjacentIndex: Number(adjacent[0])
-      }
-    });
-    return;
-  }
-  if (
-    phaseType === "resolution" &&
-    (pending["kind"] === "party_operation" ||
-      pending["kind"] === "night_delayed_operation")
-  ) {
-    const legal = arrayValue(pending["legalOperations"]).map(stringValue);
-    const operationValue = stringValue(pending["operation"] ?? legal[0]);
-    if (!isOperationId(operationValue)) {
-      return;
-    }
-    const operation = operationValue;
-    const partyId = stringValue(
-      pending["partyId"] ?? pending["contestId"]
-    ) as PartyId;
-    const choice = chooseOperation(
-      operation,
-      partyId,
-      objectValue(game["support"]),
-      pending["kind"] === "night_delayed_operation"
-    );
-    if (choice !== null) {
-      await command(client, session.gameId, publicState.version, {
-        type: "game_action",
-        action: {
-          type: "resolve_party_operation",
-          decisionId: stringValue(pending["id"]),
-          operation,
-          choice
-        }
+      await gameAction(client, session.gameId, publicState.version, {
+        type: "set_election_ready",
+        ready: true
       });
     }
   }
 }
 
-function chooseOperation(
-  operation: OperationId,
-  partyId: PartyId,
-  rawSupport: Record<string, unknown>,
-  nightShift = false
-): OperationChoice | null {
-  const support = Object.fromEntries(
-    DISTRICTS.map((district) => [
-      district.id,
-      objectValue(rawSupport[district.id])
-    ])
-  );
-  const occupied = (districtId: string) =>
-    Object.values(support[districtId] ?? {}).reduce<number>(
-      (total, count) => total + Number(count ?? 0),
-      0
-    );
-  const free = (districtId: string) => {
-    const district = DISTRICTS.find((candidate) => candidate.id === districtId);
-    return district !== undefined && occupied(districtId) < district.capacity;
-  };
-  const present = (districtId: string, party: PartyId) =>
-    Number(support[districtId]?.[party] ?? 0) > 0;
-
-  if (operation === "organise") {
-    const source = DISTRICTS.find((district) => present(district.id, partyId));
-    const destination =
-      source === undefined
-        ? DISTRICTS.find((district) => free(district.id))
-        : DISTRICTS.find(
-            (district) =>
-              (source.adjacentDistrictIds as readonly string[]).includes(
-                district.id
-              ) &&
-              free(district.id)
-          );
-    return destination === undefined
-      ? null
-      : {
-          operation,
-          destinationDistrictId: destination.id,
-          ...(source === undefined ? {} : { sourceDistrictId: source.id })
-        };
-  }
-  if (operation === "rally") {
-    const partyPresent = DISTRICTS.some((district) =>
-      present(district.id, partyId)
-    );
-    const legalDistricts = DISTRICTS.filter(
-      (candidate) =>
-        free(candidate.id) &&
-        (!partyPresent || present(candidate.id, partyId))
-    );
-    const minimum = Math.min(
-      ...legalDistricts.map((candidate) => occupied(candidate.id))
-    );
-    const district = nightShift
-      ? legalDistricts.find((candidate) => occupied(candidate.id) === minimum)
-      : legalDistricts[0];
-    return district === undefined
-      ? null
-      : { operation, districtId: district.id };
-  }
-  if (operation === "smear") {
-    const actingDistricts = DISTRICTS.filter((district) =>
-      present(district.id, partyId)
-    );
-    for (const district of DISTRICTS) {
-      const inRange =
-        actingDistricts.length === 0 ||
-        present(district.id, partyId) ||
-        actingDistricts.some((source) =>
-          (source.adjacentDistrictIds as readonly string[]).includes(
-            district.id
-          )
-        );
-      const rival = PARTIES.find(
-        (party) =>
-          party.id !== partyId && present(district.id, party.id)
-      );
-      if (inRange && rival !== undefined) {
-        return {
-          operation,
-          districtId: district.id,
-          rivalParty: rival.id
-        };
-      }
-    }
+function chooseRally(
+  game: Record<string, unknown>,
+  ownSeat: Record<string, unknown>
+): Record<string, unknown> | null {
+  const operations = objectValue(ownSeat["operations"]);
+  if (Number(operations["rally"] ?? 0) < 1) {
     return null;
   }
-  if (operation === "court") {
-    const target = PARTIES.find((party) => party.id !== partyId);
-    return target === undefined
-      ? null
-      : { operation, targetParty: target.id };
+  const parties = objectValue(game["parties"]);
+  const support = objectValue(game["support"]);
+  for (const [partyValue, partyState] of Object.entries(parties)) {
+    const partyId = partyValue as PartyId;
+    if (objectValue(partyState)["status"] !== "open") {
+      continue;
+    }
+    const hasSupport = DISTRICTS.some(
+      (district) => Number(objectValue(support[district.id])[partyId] ?? 0) > 0
+    );
+    const district = DISTRICTS.find((candidate) => {
+      const districtSupport = objectValue(support[candidate.id]);
+      const occupied = Object.values(districtSupport).reduce<number>(
+        (total, count) => total + Number(count ?? 0),
+        0
+      );
+      return (
+        occupied < candidate.capacity &&
+        (!hasSupport || Number(districtSupport[partyId] ?? 0) > 0)
+      );
+    });
+    if (district !== undefined) {
+      return {
+        type: "operate",
+        partyId,
+        plays: [{
+          operation: "rally",
+          choice: { operation: "rally", districtId: district.id }
+        }]
+      };
+    }
   }
   return null;
+}
+
+function openingSeatId(phase: Record<string, unknown>): unknown {
+  return arrayValue(phase["turnSeatIds"])[Number(phase["turnIndex"] ?? -1)];
+}
+
+async function gameAction(
+  client: AgentClient,
+  gameId: GameId,
+  expectedVersion: number,
+  action: Record<string, unknown>
+): Promise<void> {
+  await command(client, gameId, expectedVersion, {
+    type: "game_action",
+    action: action as never
+  });
 }
 
 async function command(
@@ -382,10 +235,6 @@ async function command(
   });
 }
 
-function emptyOperations() {
-  return { organise: 0, rally: 0, smear: 0, court: 0 };
-}
-
 function objectValue(value: unknown): Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -398,13 +247,4 @@ function arrayValue(value: unknown): unknown[] {
 
 function stringValue(value: unknown): string {
   return typeof value === "string" ? value : "";
-}
-
-function isOperationId(value: string): value is OperationId {
-  return (
-    value === "organise" ||
-    value === "rally" ||
-    value === "smear" ||
-    value === "court"
-  );
 }
