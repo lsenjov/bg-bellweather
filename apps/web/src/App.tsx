@@ -739,10 +739,19 @@ export function GameDesk(props: {
 
       <OperationLog view={props.view} />
 
-      <section className="back-channel-desk paper-panel">
-        <div className="section-heading">
-          <div><p className="section-label">Back channel</p><h2>Gifts & table talk</h2></div>
-        </div>
+      <details className="back-channel-desk paper-panel disclosure-panel" open>
+        <summary className="section-heading disclosure-summary">
+          <h2 className="disclosure-heading">
+            <span className="disclosure-title">
+              <span className="section-label" aria-hidden="true">Back channel</span>
+              <span>Gifts & table talk</span>
+            </span>
+            <span className="disclosure-state" aria-hidden="true">
+              <span className="disclosure-state-open">Fold −</span>
+              <span className="disclosure-state-closed">Open +</span>
+            </span>
+          </h2>
+        </summary>
         <div className="back-channel-grid">
           <section className="deal-desk">
             <p className="section-label">Private transfer</p>
@@ -785,7 +794,7 @@ export function GameDesk(props: {
             }}><input aria-label="Public chat message" disabled={props.busy || chatPending} value={chat} onChange={(event) => setChat(event.target.value)} placeholder="Put a statement on the record…" /><button className="red-button" disabled={props.busy || chatPending}>Send</button></form>}
           </section>
         </div>
-      </section>
+      </details>
     </main>
   );
 }
@@ -793,16 +802,24 @@ export function GameDesk(props: {
 function OperationLog({ view }: { view: GameView }) {
   const entries = operationLogEntries(view);
   return (
-    <section className="operation-log-desk paper-panel" aria-labelledby="operation-log-heading">
-      <div className="section-heading operation-log-heading">
-        <div>
-          <p className="section-label">Resolution wire</p>
-          <h2 id="operation-log-heading">Game log</h2>
-        </div>
-        <span className="operation-log-count">
-          {entries.length} {entries.length === 1 ? "entry" : "entries"} on record
-        </span>
-      </div>
+    <details className="operation-log-desk paper-panel disclosure-panel" open>
+      <summary className="section-heading operation-log-heading disclosure-summary">
+        <h2 className="disclosure-heading" id="operation-log-heading">
+          <span className="disclosure-title">
+            <span className="section-label" aria-hidden="true">Resolution wire</span>
+            <span>Game log</span>
+          </span>
+          <span className="disclosure-meta" aria-hidden="true">
+            <span className="operation-log-count">
+              {entries.length} {entries.length === 1 ? "entry" : "entries"} on record
+            </span>
+            <span className="disclosure-state">
+              <span className="disclosure-state-open">Fold −</span>
+              <span className="disclosure-state-closed">Open +</span>
+            </span>
+          </span>
+        </h2>
+      </summary>
       {entries.length === 0 && (
         <p className="operation-log-empty">No operations have resolved yet.</p>
       )}
@@ -830,7 +847,7 @@ function OperationLog({ view }: { view: GameView }) {
           </li>
         ))}
       </ol>
-    </section>
+    </details>
   );
 }
 
@@ -2886,12 +2903,23 @@ function ElectionArchive(props: {
   seats: ViewSeat[];
 }) {
   return (
-    <section
-      className="election-desk paper-panel"
+    <details
+      className="election-desk paper-panel disclosure-panel"
       aria-label="Public Election archive"
+      open
     >
-      <p className="section-label">Election Day bulletin</p>
-      <h2>Public returns & revealed agendas</h2>
+      <summary className="section-heading disclosure-summary">
+        <h2 className="disclosure-heading">
+          <span className="disclosure-title">
+            <span className="section-label" aria-hidden="true">Election Day bulletin</span>
+            <span>Public returns & revealed agendas</span>
+          </span>
+          <span className="disclosure-state" aria-hidden="true">
+            <span className="disclosure-state-open">Fold −</span>
+            <span className="disclosure-state-closed">Open +</span>
+          </span>
+        </h2>
+      </summary>
       <div className="election-bulletins">
         {props.elections.map((election, index) => {
           const electionNumber = Number(election.electionNumber) || index + 1;
@@ -2951,7 +2979,7 @@ function ElectionArchive(props: {
           );
         })}
       </div>
-    </section>
+    </details>
   );
 }
 

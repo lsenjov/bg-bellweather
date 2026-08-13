@@ -1,6 +1,7 @@
 /** @vitest-environment jsdom */
 
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { readFileSync } from "node:fs";
 import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
@@ -1221,6 +1222,98 @@ describe("browser play surface", () => {
       expect(message.matches(":disabled")).toBe(false);
       expect(send.matches(":disabled")).toBe(false);
     });
+  });
+
+  it("opens each public desk by default and collapses them independently", () => {
+    render(
+      <GameDesk
+        view={{
+          ...gameDeskView([]),
+          electionHistory: [{ electionNumber: 1, afterRound: 3 }]
+        }}
+        ownSeat={undefined}
+        ownSeatId={undefined}
+        spectator
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    const headings = [
+      "Public returns & revealed agendas",
+      "Game log",
+      "Gifts & table talk"
+    ];
+    const desks = headings.map((heading) => {
+      const summary = screen.getByRole("heading", { name: heading }).closest("summary");
+      expect(summary).toBeTruthy();
+      const details = summary!.closest("details") as HTMLDetailsElement;
+      expect(details.open).toBe(true);
+      return { summary: summary!, details };
+    });
+
+    fireEvent.click(desks[1].summary);
+
+    expect(desks[0].details.open).toBe(true);
+    expect(desks[1].details.open).toBe(false);
+    expect(desks[2].details.open).toBe(true);
+  });
+
+  it("keeps a back channel draft and disclosure state during live updates", () => {
+    const { rerender } = render(
+      <GameDesk
+        view={gameDeskView([])}
+        ownSeat={undefined}
+        ownSeatId={undefined}
+        spectator={false}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    const message = screen.getByLabelText("Public chat message") as HTMLInputElement;
+    fireEvent.change(message, { target: { value: "Hold this thought" } });
+    const summary = screen.getByRole("heading", { name: "Gifts & table talk" }).closest("summary")!;
+    const details = summary.closest("details") as HTMLDetailsElement;
+    fireEvent.click(summary);
+
+    rerender(
+      <GameDesk
+        view={{ ...gameDeskView([]), round: 2 }}
+        ownSeat={undefined}
+        ownSeatId={undefined}
+        spectator={false}
+        busy={false}
+        onCommand={async () => undefined}
+      />
+    );
+
+    const updatedSummary = screen.getByRole("heading", {
+      name: "Gifts & table talk"
+    }).closest("summary")!;
+    const updatedDetails = updatedSummary.closest("details") as HTMLDetailsElement;
+    const updatedMessage = screen.getByLabelText("Public chat message") as HTMLInputElement;
+
+    expect(updatedDetails.isConnected).toBe(true);
+    expect(updatedDetails).toBe(details);
+    expect(updatedDetails.open).toBe(false);
+    fireEvent.click(updatedSummary);
+    expect(updatedDetails.open).toBe(true);
+    expect(updatedMessage).toBe(message);
+    expect(updatedMessage.value).toBe("Hold this thought");
+  });
+
+  it("does not give the Influence book overlaying layout rules", () => {
+    const styles = readFileSync("apps/web/src/styles.css", "utf8");
+    const contestRules = [...styles.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+      .filter((match) => match[1]?.includes(".contest-desk"))
+      .map((match) => match[2])
+      .join("\n");
+
+    expect(contestRules).not.toBe("");
+    expect(contestRules).not.toMatch(/position\s*:\s*sticky/);
+    expect(contestRules).not.toMatch(/max-height\s*:/);
+    expect(contestRules).not.toMatch(/overflow-y\s*:/);
   });
 
   it("marks every revealed low-player agenda objective on Election Day", () => {
