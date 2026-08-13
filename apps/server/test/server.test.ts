@@ -347,6 +347,101 @@ describe("game server", () => {
     });
     await app.close();
   });
+
+  it("admits new observers to completed replays without changing game history", async () => {
+    const directory = temporaryDirectory();
+    const app = createAppServer({
+      databasePath: resolve(directory, "game.sqlite"),
+      port: 0,
+      randomInteger: () => 0
+    });
+    const address = await app.listen();
+    const baseUrl = `http://${address.host}:${address.port}`;
+    const game = await createGame(baseUrl, 2, true);
+    await command(baseUrl, game, 0, "start", { type: "start_game" });
+    app.store.database
+      .prepare("UPDATE games SET status = 'finished', finished_at = ? WHERE id = ?")
+      .run("2026-08-13T00:00:00.000Z", game.gameId);
+    const historyBeforeJoin = app.store.listEvents(game.gameId);
+
+    const joined = await request(baseUrl, "/api/v1/games/join", {
+      method: "POST",
+      body: {
+        inviteCode: game.inviteCode,
+        displayName: "Replay Reader",
+        controller: "human",
+        role: "spectator"
+      }
+    });
+    expect(joined).toMatchObject({
+      status: 201,
+      body: {
+        session: {
+          participantType: "spectator",
+          gameId: game.gameId
+        },
+        state: {
+          scope: "completed_replay",
+          publicState: {
+            lifecycle: "completed",
+            latestSequence: game.version
+          }
+        }
+      }
+    });
+    expect(app.store.listEvents(game.gameId)).toEqual(historyBeforeJoin);
+
+    const replayToken = (joined.body as {
+      session: { accessToken: string };
+    }).session.accessToken;
+    const replay = await request(
+      baseUrl,
+      `/api/v1/games/${game.gameId}/replay`,
+      { token: replayToken }
+    );
+    expect(replay).toMatchObject({
+      status: 200,
+      body: {
+        gameId: game.gameId,
+        latestSequence: game.version
+      }
+    });
+    expect((replay.body as { events: unknown[] }).events).toHaveLength(
+      historyBeforeJoin.length
+    );
+    await app.close();
+  });
+
+  it("keeps completed replays closed when observer admission is disabled", async () => {
+    const directory = temporaryDirectory();
+    const app = createAppServer({
+      databasePath: resolve(directory, "game.sqlite"),
+      port: 0,
+      randomInteger: () => 0
+    });
+    const address = await app.listen();
+    const baseUrl = `http://${address.host}:${address.port}`;
+    const game = await createGame(baseUrl, 2);
+    await command(baseUrl, game, 0, "start", { type: "start_game" });
+    app.store.database
+      .prepare("UPDATE games SET status = 'finished', finished_at = ? WHERE id = ?")
+      .run("2026-08-13T00:00:00.000Z", game.gameId);
+
+    const joined = await request(baseUrl, "/api/v1/games/join", {
+      method: "POST",
+      body: {
+        inviteCode: game.inviteCode,
+        displayName: "Replay Reader",
+        controller: "human",
+        role: "spectator"
+      }
+    });
+    expect(joined).toMatchObject({
+      status: 403,
+      body: { error: { code: "forbidden" } }
+    });
+    await app.close();
+  });
 });
 
 interface Session {

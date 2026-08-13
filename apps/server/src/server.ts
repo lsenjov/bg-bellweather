@@ -189,7 +189,9 @@ async function route(
         },
         now: now().toISOString()
       });
-      subscriptions.broadcast(mutation.event);
+      if (mutation.event !== null) {
+        subscriptions.broadcast(mutation.event);
+      }
       writeJson(
         response,
         201,

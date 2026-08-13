@@ -234,13 +234,10 @@ export class EventStore {
   joinSpectator(input: JoinSpectatorInput): {
     game: GameRecord;
     spectator: SpectatorRecord;
-    event: StoredEvent;
+    event: StoredEvent | null;
   } {
     return this.transaction(() => {
       const game = this.resolveGame(input.gameReference);
-      if (game.status === "finished") {
-        throw new AppError(409, "phase_closed", "Spectators cannot join after the game ends");
-      }
       if (!game.settings.allowSpectators) {
         throw new AppError(403, "forbidden", "This game does not allow spectators");
       }
@@ -262,6 +259,9 @@ export class EventStore {
           input.now
         );
       const spectator = this.getSpectatorById(input.spectator.id);
+      if (game.status === "finished") {
+        return { game, spectator, event: null };
+      }
       const event = this.appendEventUnsafe(game.id, input.now, {
         type: "spectator.joined",
         payload: {
