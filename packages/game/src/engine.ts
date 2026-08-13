@@ -200,7 +200,10 @@ export function applyAction(state: GameState, action: GameAction): GameState {
       openParty(next, action.seatId, action.firmId, action.partyId);
       break;
     case "operate":
-      operate(next, action.seatId, action.partyId, action.plays);
+      operate(next, action.seatId, action.partyId, action.play);
+      break;
+    case "finish_operate":
+      finishOperate(next, action.seatId);
       break;
     case "collect":
       collect(next, action.seatId, action.partyId);
@@ -265,93 +268,130 @@ function operate(
   state: GameState,
   seatId: SeatId,
   partyId: PartyId,
-  plays: OperationPlayInput[]
+  play: OperationPlayInput
 ): void {
   const phase = requireLobbyTurn(state, seatId);
-  const party = requireOpenParty(state, partyId);
-  if (!Array.isArray(plays) || plays.length < 1 || plays.length > 3) {
-    throw new GameRuleError("invalid_operation_count", "Operate requires one to three cards");
+  if (
+    phase.inProgressOperate !== null &&
+    phase.inProgressOperate.partyId !== partyId
+  ) {
+    throw new GameRuleError(
+      "operate_party_locked",
+      "Every card in an Operate action must resolve at the same party"
+    );
   }
-  if (plays.filter((play) => play.claimBonus === true).length > 1) {
+  const party = requireOpenParty(state, partyId);
+  if (
+    play.claimBonus === true &&
+    phase.inProgressOperate?.bonusClaimed === true
+  ) {
     throw new GameRuleError(
       "too_many_bonuses",
       "One Operate action can claim at most one bonus"
     );
   }
   const seat = getSeat(state, seatId);
-  const required = emptyOperationInventory();
-  for (const play of plays) {
-    if (!(OPERATION_IDS as readonly string[]).includes(play.operation)) {
-      throw new GameRuleError("unknown_operation", "The Operation does not exist");
-    }
-    required[play.operation] += 1;
+  if (!(OPERATION_IDS as readonly string[]).includes(play.operation)) {
+    throw new GameRuleError("unknown_operation", "The Operation does not exist");
   }
-  for (const operation of OPERATION_IDS) {
-    if (required[operation] > seat.operations[operation]) {
-      throw new GameRuleError("insufficient_operations", "The player lacks those Operation cards");
-    }
+  if (seat.operations[play.operation] < 1) {
+    throw new GameRuleError("insufficient_operations", "The player lacks that Operation card");
   }
 
-  for (const play of plays) {
-    const choice = operationChoice(play.choice);
-    if (choice.operation !== play.operation) {
-      throw new GameRuleError("operation_choice_mismatch", "The choice must match its Operation card");
-    }
-    if (play.claimBonus === true) {
-      if (PARTY_BONUSES[partyId][play.operation] === undefined) {
-        throw new GameRuleError("bonus_unavailable", "This party has no matching bonus");
-      }
-      if (party.claimedBonuses.includes(play.operation)) {
-        throw new GameRuleError("bonus_claimed", "That party bonus was already claimed this year");
-      }
-    }
-    const resolution = resolveOperation(toOperationState(state), {
-      party: partyId,
-      choice,
-      claimBonus: play.claimBonus === true
-    });
-    if (!resolution.baselineApplied) {
-      throw new GameRuleError(
-        "illegal_operation",
-        resolution.bonusFailure ?? resolution.failure ?? "The Operation is illegal"
-      );
-    }
-    if (play.claimBonus === true && !resolution.bonusApplied) {
-      throw new GameRuleError(
-        "illegal_bonus",
-        resolution.bonusFailure ?? "The bonus is illegal"
-      );
-    }
-    applyOperationState(state, resolution.state);
-    seat.operations[play.operation] -= 1;
-    party.operations[play.operation] += 1;
-    if (resolution.bonusApplied) {
-      party.claimedBonuses.push(play.operation);
-    }
-    state.resolvedOperations.push({
-      year: state.year,
-      turn: phase.turn,
-      seatId,
-      partyId,
-      operation: play.operation,
-      choice: structuredClone(choice),
-      bonusApplied: resolution.bonusApplied,
-      bonusName: resolution.bonusName
-    });
+  const choice = operationChoice(play.choice);
+  if (choice.operation !== play.operation) {
+    throw new GameRuleError("operation_choice_mismatch", "The choice must match its Operation card");
   }
-
-  recordLobbyAction(state, phase, {
+  if (play.claimBonus === true) {
+    if (PARTY_BONUSES[partyId][play.operation] === undefined) {
+      throw new GameRuleError("bonus_unavailable", "This party has no matching bonus");
+    }
+    if (party.claimedBonuses.includes(play.operation)) {
+      throw new GameRuleError("bonus_claimed", "That party bonus was already claimed this year");
+    }
+  }
+  const resolution = resolveOperation(toOperationState(state), {
+    party: partyId,
+    choice,
+    claimBonus: play.claimBonus === true
+  });
+  if (!resolution.baselineApplied) {
+    throw new GameRuleError(
+      "illegal_operation",
+      resolution.bonusFailure ?? resolution.failure ?? "The Operation is illegal"
+    );
+  }
+  if (play.claimBonus === true && !resolution.bonusApplied) {
+    throw new GameRuleError(
+      "illegal_bonus",
+      resolution.bonusFailure ?? "The bonus is illegal"
+    );
+  }
+  applyOperationState(state, resolution.state);
+  seat.operations[play.operation] -= 1;
+  party.operations[play.operation] += 1;
+  if (resolution.bonusApplied) {
+    party.claimedBonuses.push(play.operation);
+  }
+  state.resolvedOperations.push({
+    year: state.year,
+    turn: phase.turn,
     seatId,
+    partyId,
+    operation: play.operation,
+    choice: structuredClone(choice),
+    bonusApplied: resolution.bonusApplied,
+    bonusName: resolution.bonusName
+  });
+  phase.consecutivePasses = 0;
+
+  const operationCount = (phase.inProgressOperate?.operationCount ?? 0) + 1;
+  if (operationCount === 3) {
+    completeOperateAction(state, phase, 3);
+    return;
+  }
+  phase.inProgressOperate = {
+    partyId,
+    operationCount: operationCount as 1 | 2,
+    bonusClaimed:
+      phase.inProgressOperate?.bonusClaimed === true || resolution.bonusApplied
+  };
+}
+
+function finishOperate(state: GameState, seatId: SeatId): void {
+  const phase = requireLobbyTurn(state, seatId);
+  if (phase.inProgressOperate === null) {
+    throw new GameRuleError(
+      "no_operate_in_progress",
+      "Resolve an Operation before finishing the Operate action"
+    );
+  }
+  completeOperateAction(state, phase, phase.inProgressOperate.operationCount);
+}
+
+function completeOperateAction(
+  state: GameState,
+  phase: LobbyPhase,
+  operationCount: 1 | 2 | 3
+): void {
+  const partyId = phase.inProgressOperate?.partyId;
+  if (partyId === undefined) {
+    throw new GameRuleError("no_operate_in_progress", "No Operate action is in progress");
+  }
+  recordLobbyAction(state, phase, {
+    seatId: phase.activeSeatId,
     type: "operate",
     partyId,
-    operationCount: plays.length,
-    cardCount: plays.length
+    operationCount,
+    cardCount: operationCount
   });
+  phase.inProgressOperate = null;
   finishLobbyTurn(state, phase);
 }
 
 function collect(state: GameState, seatId: SeatId, partyId: PartyId): void {
   const phase = requireLobbyTurn(state, seatId);
+  requireNoOperateInProgress(phase);
   const party = requireOpenParty(state, partyId);
   const seat = getSeat(state, seatId);
   const cardCount = operationCount(party.operations);
@@ -376,6 +416,7 @@ function collect(state: GameState, seatId: SeatId, partyId: PartyId): void {
 
 function close(state: GameState, seatId: SeatId, partyId: PartyId): void {
   const phase = requireLobbyTurn(state, seatId);
+  requireNoOperateInProgress(phase);
   if ((phase.turnsTaken[seatId] ?? 0) === 0) {
     throw new GameRuleError("close_on_first_turn", "Close is unavailable on a player's first Lobby turn");
   }
@@ -408,6 +449,7 @@ function close(state: GameState, seatId: SeatId, partyId: PartyId): void {
 
 function pass(state: GameState, seatId: SeatId): void {
   const phase = requireLobbyTurn(state, seatId);
+  requireNoOperateInProgress(phase);
   recordLobbyAction(state, phase, {
     seatId,
     type: "pass",
@@ -622,6 +664,15 @@ function requireLobbyTurn(state: GameState, seatId: SeatId): LobbyPhase {
   return phase;
 }
 
+function requireNoOperateInProgress(phase: LobbyPhase): void {
+  if (phase.inProgressOperate !== null) {
+    throw new GameRuleError(
+      "operate_in_progress",
+      "Finish the current Operate action before taking another Lobby action"
+    );
+  }
+}
+
 function requireOpenParty(state: GameState, partyId: PartyId): PartyYearState {
   const party = state.parties[partyId];
   if (party === undefined) {
@@ -748,7 +799,8 @@ function lobbyPhase(
     activeSeatId: earlyBirdSeatId,
     turn: 1,
     turnsTaken: Object.fromEntries(seats.map((seat) => [seat.id, 0])),
-    consecutivePasses: 0
+    consecutivePasses: 0,
+    inProgressOperate: null
   };
 }
 

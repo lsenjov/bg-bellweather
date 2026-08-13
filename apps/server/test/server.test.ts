@@ -215,7 +215,7 @@ describe("game server", () => {
     await gameAction(baseUrl, game, 0, "operate", {
       type: "operate",
       partyId: "honeycomb",
-      plays: [{
+      play: {
         operation: "organise",
         choice: {
           operation: "organise",
@@ -223,7 +223,7 @@ describe("game server", () => {
           destinationDistrictId: "cloverfield"
         },
         claimBonus: true
-      }]
+      }
     });
     view = await state(baseUrl, game, 1);
     expect(
@@ -233,6 +233,10 @@ describe("game server", () => {
     ).toMatchObject({
       operations: { organise: 1, rally: 0, smear: 0, court: 0 },
       claimedBonuses: ["organise"]
+    });
+
+    await gameAction(baseUrl, game, 0, "finish-operate", {
+      type: "finish_operate"
     });
 
     await gameAction(baseUrl, game, 1, "collect", {
@@ -254,10 +258,10 @@ describe("game server", () => {
         action: {
           type: "operate",
           partyId: "honeycomb",
-          plays: [{
+          play: {
             operation: "rally",
             choice: { operation: "rally", districtId: "nowhere" }
-          }]
+          }
         }
       })
     });

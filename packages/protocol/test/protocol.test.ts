@@ -97,7 +97,7 @@ describe("commands", () => {
     ).toBe(false);
   });
 
-  it("accepts one to three ordered Operation plays", () => {
+  it("accepts one Operation play and a separate finish action", () => {
     const play = {
       operation: "rally",
       choice: { operation: "rally", districtId: "harbormouth" },
@@ -107,20 +107,17 @@ describe("commands", () => {
       PlayerGameActionSchema.safeParse({
         type: "operate",
         partyId: "night-parliament",
-        plays: [
-          play,
-          { ...play, claimBonus: false },
-          { ...play, claimBonus: false }
-        ]
+        play
       }).success
     ).toBe(true);
     expect(
       PlayerGameActionSchema.safeParse({
         type: "operate",
         partyId: "night-parliament",
-        plays: []
+        plays: [play]
       }).success
     ).toBe(false);
+    expect(PlayerGameActionSchema.safeParse({ type: "finish_operate" }).success).toBe(true);
   });
 
   it("requires the play and choice Operation families to match", () => {
@@ -128,36 +125,13 @@ describe("commands", () => {
       PlayerGameActionSchema.safeParse({
         type: "operate",
         partyId: "honeycomb",
-        plays: [
-          {
-            operation: "rally",
-            choice: {
-              operation: "organise",
-              destinationDistrictId: "cloverfield"
-            }
+        play: {
+          operation: "rally",
+          choice: {
+            operation: "organise",
+            destinationDistrictId: "cloverfield"
           }
-        ]
-      }).success
-    ).toBe(false);
-  });
-
-  it("allows at most one bonus claim in an Operate action", () => {
-    expect(
-      PlayerGameActionSchema.safeParse({
-        type: "operate",
-        partyId: "honeycomb",
-        plays: [
-          {
-            operation: "rally",
-            choice: { operation: "rally", districtId: "cloverfield" },
-            claimBonus: true
-          },
-          {
-            operation: "court",
-            choice: { operation: "court", targetParty: "old-shell" },
-            claimBonus: true
-          }
-        ]
+        }
       }).success
     ).toBe(false);
   });

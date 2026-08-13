@@ -91,6 +91,11 @@ export interface LobbyPhase {
   turn: number;
   turnsTaken: Record<SeatId, number>;
   consecutivePasses: number;
+  inProgressOperate: {
+    partyId: PartyId;
+    operationCount: 1 | 2;
+    bonusClaimed: boolean;
+  } | null;
 }
 
 export interface ElectionPhase {
@@ -179,7 +184,11 @@ export type GameAction =
       type: "operate";
       seatId: SeatId;
       partyId: PartyId;
-      plays: OperationPlayInput[];
+      play: OperationPlayInput;
+    }
+  | {
+      type: "finish_operate";
+      seatId: SeatId;
     }
   | {
       type: "collect";

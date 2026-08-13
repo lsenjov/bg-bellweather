@@ -897,6 +897,7 @@ function commandToAction(
   const playerActionTypes = new Set([
     "open_party",
     "operate",
+    "finish_operate",
     "collect",
     "close",
     "pass",

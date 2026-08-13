@@ -141,6 +141,12 @@ async function takeTurn(
   }
 
   if (phaseType === "lobby" && phase["activeSeatId"] === session.seatId) {
+    if (phase["inProgressOperate"] !== null) {
+      await gameAction(client, session.gameId, publicState.version, {
+        type: "finish_operate"
+      });
+      return;
+    }
     const operation = chooseRally(game, ownSeat);
     await gameAction(
       client,
@@ -195,10 +201,10 @@ function chooseRally(
       return {
         type: "operate",
         partyId,
-        plays: [{
+        play: {
           operation: "rally",
           choice: { operation: "rally", districtId: district.id }
-        }]
+        }
       };
     }
   }

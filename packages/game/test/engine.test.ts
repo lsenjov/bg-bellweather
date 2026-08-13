@@ -119,12 +119,15 @@ describe("party openings", () => {
 });
 
 describe("Lobby actions", () => {
-  it("resolves one to three cards atomically at one party and claims at most one bonus", () => {
+  it("resolves up to three cards one at a time at one locked party", () => {
     let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
     const seatId = lobbyPhase(state).activeSeatId;
     const before = structuredClone(state);
-    const plays: OperationPlayInput[] = [
-      {
+    state = act(state, {
+      type: "operate",
+      seatId,
+      partyId: "honeycomb",
+      play: {
         operation: "organise",
         choice: {
           operation: "organise",
@@ -132,17 +135,56 @@ describe("Lobby actions", () => {
           destinationDistrictId: "cloverfield"
         },
         claimBonus: true
-      },
-      {
+      }
+    });
+    expect(state.support.cloverfield.honeycomb).toBe(2);
+    expect(lobbyPhase(state)).toMatchObject({
+      activeSeatId: seatId,
+      inProgressOperate: {
+        partyId: "honeycomb",
+        operationCount: 1,
+        bonusClaimed: true
+      }
+    });
+    expect(() => act(state, {
+      type: "operate",
+      seatId,
+      partyId: "old-shell",
+      play: {
+        operation: "rally",
+        choice: { operation: "rally", districtId: "harbormouth" }
+      }
+    })).toThrow("same party");
+    expect(() => act(state, {
+      type: "operate",
+      seatId,
+      partyId: "honeycomb",
+      play: {
+        operation: "court",
+        choice: { operation: "court", targetParty: "foxglove" },
+        claimBonus: true
+      }
+    })).toThrow("at most one bonus");
+
+    state = act(state, {
+      type: "operate",
+      seatId,
+      partyId: "honeycomb",
+      play: {
         operation: "rally",
         choice: { operation: "rally", districtId: "cloverfield" }
-      },
-      {
+      }
+    });
+    expect(lobbyPhase(state).inProgressOperate?.operationCount).toBe(2);
+    state = act(state, {
+      type: "operate",
+      seatId,
+      partyId: "honeycomb",
+      play: {
         operation: "court",
         choice: { operation: "court", targetParty: "old-shell" }
       }
-    ];
-    state = act(state, { type: "operate", seatId, partyId: "honeycomb", plays });
+    });
     expect(state.parties.honeycomb?.operations).toMatchObject({
       organise: 1,
       rally: 1,
@@ -152,60 +194,40 @@ describe("Lobby actions", () => {
     expect(state.support.cloverfield.honeycomb).toBe(3);
     expect(state.resolvedOperations).toHaveLength(3);
     expect(before.support.cloverfield.honeycomb).toBeUndefined();
-
-    const nextSeatId = lobbyPhase(state).activeSeatId;
-    expect(() => act(state, {
-      type: "operate",
-      seatId: nextSeatId,
-      partyId: "honeycomb",
-      plays: [
-        {
-          operation: "organise",
-          choice: {
-            operation: "organise",
-            sourceDistrictId: "grand-market",
-            destinationDistrictId: "sunmeadow"
-          },
-          claimBonus: true
-        },
-        {
-          operation: "court",
-          choice: { operation: "court", targetParty: "foxglove" },
-          claimBonus: true
-        }
-      ]
-    })).toThrow("at most one bonus");
+    expect(lobbyPhase(state).activeSeatId).not.toBe(seatId);
+    expect(state.lobbyActions).toEqual([
+      expect.objectContaining({ type: "operate", operationCount: 3, cardCount: 3 })
+    ]);
   });
 
-  it("rejects an illegal later play without spending any card or changing the map", () => {
-    const state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
+  it("keeps an earlier resolved card when a later choice is illegal", () => {
+    let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
     const seatId = lobbyPhase(state).activeSeatId;
+    state = act(state, {
+      type: "operate",
+      seatId,
+      partyId: "honeycomb",
+      play: organise("harbormouth", "cloverfield")
+    });
     expect(() => act(state, {
       type: "operate",
       seatId,
       partyId: "honeycomb",
-      plays: [
-        {
-          operation: "organise",
-          choice: {
-            operation: "organise",
-            sourceDistrictId: "harbormouth",
-            destinationDistrictId: "cloverfield"
-          }
-        },
-        {
+      play: {
+        operation: "smear",
+        choice: {
           operation: "smear",
-          choice: {
-            operation: "smear",
-            districtId: "cloverfield",
-            rivalParty: "honeycomb"
-          }
+          districtId: "cloverfield",
+          rivalParty: "honeycomb"
         }
-      ]
+      }
     })).toThrow("Smear requires rival Support");
-    expect(state.support.cloverfield.honeycomb).toBeUndefined();
-    expect(state.seats[0]!.operations.organise).toBe(2);
-    expect(state.parties.honeycomb?.operations.organise).toBe(0);
+    expect(state.support.cloverfield.honeycomb).toBe(1);
+    expect(state.seats[0]!.operations.organise).toBe(1);
+    expect(state.parties.honeycomb?.operations.organise).toBe(1);
+    expect(() => act(state, { type: "pass", seatId })).toThrow("Finish the current Operate");
+    state = act(state, { type: "finish_operate", seatId });
+    expect(lobbyPhase(state).activeSeatId).not.toBe(seatId);
   });
 
   it("collects a complete non-empty pile into next year and leaves the party open", () => {
@@ -215,8 +237,9 @@ describe("Lobby actions", () => {
       type: "operate",
       seatId: operator,
       partyId: "honeycomb",
-      plays: [organise("harbormouth", "cloverfield")]
+      play: organise("harbormouth", "cloverfield")
     });
+    state = act(state, { type: "finish_operate", seatId: operator });
     const collector = lobbyPhase(state).activeSeatId;
     state = act(state, { type: "collect", seatId: collector, partyId: "honeycomb" });
     const collectorSeat = state.seats.find((seat) => seat.id === collector)!;
@@ -248,8 +271,9 @@ describe("Lobby actions", () => {
       type: "operate",
       seatId: "seat-4",
       partyId: partyOpenedBy(state, "seat-4"),
-      plays: [organise("harbormouth", "cloverfield")]
+      play: organise("harbormouth", "cloverfield")
     });
+    state = act(state, { type: "finish_operate", seatId: "seat-4" });
     state = act(state, {
       type: "close",
       seatId: "seat-1",
@@ -314,8 +338,9 @@ describe("cleanup, Elections, visibility, and replay", () => {
       type: "operate",
       seatId: operator,
       partyId: partyOpenedBy(state, operator),
-      plays: [organise("harbormouth", "cloverfield")]
+      play: organise("harbormouth", "cloverfield")
     });
+    state = act(state, { type: "finish_operate", seatId: operator });
     const collector = lobbyPhase(state).activeSeatId;
     state = act(state, {
       type: "collect",

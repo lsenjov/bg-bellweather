@@ -203,10 +203,8 @@ function publicAction(action: GameAction): Record<string, unknown> {
       type: action.type,
       seatId: action.seatId,
       partyId: action.partyId,
-      operations: action.plays.map((play) => ({
-        operation: play.operation,
-        claimBonus: play.claimBonus === true
-      }))
+      operation: action.play.operation,
+      claimBonus: action.play.claimBonus === true
     };
   }
   return { ...action };

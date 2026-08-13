@@ -342,13 +342,14 @@ const OperateActionSchema = z
   .object({
     type: z.literal("operate"),
     partyId: PartyIdSchema,
-    plays: z.array(OperationPlaySchema).min(1).max(3)
+    play: OperationPlaySchema
   })
-  .strict()
-  .refine(
-    ({ plays }) => plays.filter((play) => play.claimBonus === true).length <= 1,
-    { message: "An Operate action may claim at most one party bonus", path: ["plays"] }
-  );
+  .strict();
+const FinishOperateActionSchema = z
+  .object({
+    type: z.literal("finish_operate")
+  })
+  .strict();
 const CollectActionSchema = z
   .object({
     type: z.literal("collect"),
@@ -375,6 +376,7 @@ const SetElectionReadyActionSchema = z
 export const PlayerGameActionSchema = z.discriminatedUnion("type", [
   OpenPartyActionSchema,
   OperateActionSchema,
+  FinishOperateActionSchema,
   CollectActionSchema,
   CloseActionSchema,
   PassActionSchema,

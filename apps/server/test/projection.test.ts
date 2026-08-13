@@ -43,7 +43,7 @@ describe("yearly game projections", () => {
       type: "operate",
       seatId: "seat-1",
       partyId: "honeycomb",
-      plays: [{
+      play: {
         operation: "organise",
         choice: {
           operation: "organise",
@@ -51,7 +51,7 @@ describe("yearly game projections", () => {
           destinationDistrictId: "cloverfield"
         },
         claimBonus: true
-      }]
+      }
     });
 
     const parties = publicEngineState(state).parties as Record<
@@ -74,11 +74,11 @@ describe("yearly game projections", () => {
           type: "operate",
           seatId: "seat-1",
           partyId: "honeycomb",
-          plays: [{
+          play: {
             operation: "rally",
             choice: { operation: "rally", districtId: "cloverfield" },
             claimBonus: true
-          }]
+          }
         }
       }]
     });
@@ -89,7 +89,8 @@ describe("yearly game projections", () => {
           type: "operate",
           seatId: "seat-1",
           partyId: "honeycomb",
-          operations: [{ operation: "rally", claimBonus: true }]
+          operation: "rally",
+          claimBonus: true
         }]
       }
     });
