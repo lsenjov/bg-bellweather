@@ -671,6 +671,7 @@
             transform: `translate(${x} ${y})`,
             tabindex: "0",
             role: "button",
+            "aria-pressed": "false",
             "aria-label": `${district.name}, capacity ${district.capacity}. Neighbors: ${adjacency[id].map((neighbor) => districts[neighbor].name).join(", ")}`
           });
           group.dataset.id = id;
@@ -692,6 +693,7 @@
           Object.entries(nodeElements).forEach(([nodeId, node]) => {
             node.classList.toggle("is-active", nodeId === id);
             node.classList.toggle("is-muted", !neighborhood.has(nodeId));
+            node.setAttribute("aria-pressed", String(nodeId === id));
           });
           edgeElements.forEach((edge) => {
             const active = edge.dataset.left === id || edge.dataset.right === id;
@@ -702,7 +704,10 @@
         }
 
         function clearHighlight() {
-          Object.values(nodeElements).forEach((node) => node.classList.remove("is-active", "is-muted"));
+          Object.values(nodeElements).forEach((node) => {
+            node.classList.remove("is-active", "is-muted");
+            node.setAttribute("aria-pressed", "false");
+          });
           edgeElements.forEach((edge) => edge.classList.remove("is-active", "is-muted"));
           readout.textContent = "Select a district to inspect its immediate neighbors.";
         }
