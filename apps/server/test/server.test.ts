@@ -363,6 +363,11 @@ describe("game server", () => {
       .prepare("UPDATE games SET status = 'finished', finished_at = ? WHERE id = ?")
       .run("2026-08-13T00:00:00.000Z", game.gameId);
     const historyBeforeJoin = app.store.listEvents(game.gameId);
+    const stateBeforeJoin = await request(
+      baseUrl,
+      `/api/v1/games/${game.gameId}/state`,
+      { token: game.sessions[0]!.accessToken }
+    );
 
     const joined = await request(baseUrl, "/api/v1/games/join", {
       method: "POST",
@@ -390,6 +395,14 @@ describe("game server", () => {
       }
     });
     expect(app.store.listEvents(game.gameId)).toEqual(historyBeforeJoin);
+    expect((joined.body as { state: unknown }).state).toEqual(stateBeforeJoin.body);
+
+    const stateAfterJoin = await request(
+      baseUrl,
+      `/api/v1/games/${game.gameId}/state`,
+      { token: game.sessions[0]!.accessToken }
+    );
+    expect(stateAfterJoin.body).toEqual(stateBeforeJoin.body);
 
     const replayToken = (joined.body as {
       session: { accessToken: string };

@@ -245,8 +245,8 @@ export class EventStore {
         .prepare(
           `INSERT INTO spectators (
              id, game_id, display_name, controller,
-             token_lookup, token_salt, token_hash, joined_at
-           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+             token_lookup, token_salt, token_hash, joined_at, replay_only
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
         )
         .run(
           input.spectator.id,
@@ -256,7 +256,8 @@ export class EventStore {
           input.spectator.token.lookup,
           input.spectator.token.salt,
           input.spectator.token.hash,
-          input.now
+          input.now,
+          game.status === "finished" ? 1 : 0
         );
       const spectator = this.getSpectatorById(input.spectator.id);
       if (game.status === "finished") {
@@ -579,7 +580,7 @@ export class EventStore {
       .prepare(
         `SELECT id, game_id, display_name, controller, joined_at
            FROM spectators
-          WHERE game_id = ?
+          WHERE game_id = ? AND replay_only = 0
           ORDER BY joined_at, id`
       )
       .all(gameId) as unknown as SpectatorRow[];
