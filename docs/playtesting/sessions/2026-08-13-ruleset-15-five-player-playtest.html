@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Five-player Bellweather ruleset-15 API playtest on 13 August 2026.">
+    <title>Five-player Ruleset-15 API Playtest — Bellweather</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / playtest session</a>
+        <h1>Five-player ruleset-15 API playtest</h1>
+        <p class="meta">A complete twelve-year game of sequential Operations, collection, Closure, and whole-map Elections.</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../index.html">Index</a><span>/</span><a href="../playtest-guide.html">Playtesting</a><span>/</span>Five-player ruleset-15 API playtest</nav>
+
+      <section>
+        <h2>Session</h2>
+        <div class="table-wrap" role="region" aria-label="Playtest session details" tabindex="0">
+          <table>
+            <tbody>
+              <tr><th>Date</th><td>13 August 2026</td></tr>
+              <tr><th>Rules version</th><td>15</td></tr>
+              <tr><th>Players</th><td>Atlas, Briar, Cinder, Delta, and Ember</td></tr>
+              <tr><th>Profiles</th><td>Builder, disruptor, coalition builder, collector, and bonus opportunist</td></tr>
+              <tr><th>Configuration</th><td>Five API-controlled seats; observers allowed; no timer</td></tr>
+              <tr><th>Game</th><td>MTP2XUH6 / ec80c85b-5388-41af-ba47-b61320cdcf15</td></tr>
+              <tr><th>Duration</th><td>59.9 seconds from lobby creation to completion; 408 replay events</td></tr>
+              <tr><th>Main question</th><td>Does the new yearly Lobby produce active card circulation, map change, and differentiated strategy at five players?</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Method</h2>
+        <p>Each controller read its private current agenda and hand before every decision, refreshed canonical state after every card, and selected legal Operations by comparing their immediate effect on current district and Capital objectives. The profiles weighted building, Smear, Court, collection, or available party bonuses differently. Players chose when to collect or close under profile-specific thresholds; no facilitator capped legal actions or skipped a phase.</p>
+        <p>The clean game completed with zero rejected commands. Two earlier harness checks were discarded: the first failed to merge private hand data and produced only Pass actions, while the second exposed missing client-side checks for sequence-level and party-year bonus claims. Neither discarded game contributes to the results below.</p>
+        <p>This is useful systems and first-pass balance evidence, but it is one deterministic agent game. The controllers optimized the current Election rather than all three fixed agendas, did not negotiate, and used heuristics rather than human inference.</p>
+      </section>
+
+      <section>
+        <h2>Election 1 — after Year 4</h2>
+        <div class="table-wrap" role="region" aria-label="Election 1 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Capital</th><th>Change</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>Atlas</td><td>SC-01</td><td>4</td><td>-2</td><td>0</td><td>+2</td><td>7</td></tr>
+              <tr><td>Briar</td><td>SC-23</td><td>4</td><td>-1</td><td>0</td><td>+3</td><td>8</td></tr>
+              <tr><td>Cinder</td><td>SC-16</td><td>3</td><td>+2</td><td>0</td><td>+5</td><td>10</td></tr>
+              <tr><td>Delta</td><td>SC-03</td><td>4</td><td>-1</td><td>0</td><td>+3</td><td>8</td></tr>
+              <tr><td>Ember</td><td>SC-08</td><td>2</td><td>+1</td><td>0</td><td>+3</td><td>8</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul>
+          <li>Cinder took the lead despite only the fourth-highest base score because the +2 relative-seat modifier produced the largest Election gain.</li>
+          <li>The first four years contained 76 resolved Operation cards, 15 Collections, and twelve deliberate Closures. Every year ended when the third party closed.</li>
+          <li>Bellweather Centre was empty at scoring. No player matched even one Capital party.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Election 2 — after Year 8</h2>
+        <div class="table-wrap" role="region" aria-label="Election 2 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Capital</th><th>Change</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>Atlas</td><td>SC-02</td><td>2</td><td>-1</td><td>0</td><td>+1</td><td>8</td></tr>
+              <tr><td>Briar</td><td>SC-09</td><td>3</td><td>0</td><td>0</td><td>+3</td><td>11</td></tr>
+              <tr><td>Cinder</td><td>SC-19</td><td>4</td><td>0</td><td>0</td><td>+4</td><td>14</td></tr>
+              <tr><td>Delta</td><td>SC-07</td><td>2</td><td>+1</td><td>0</td><td>+3</td><td>11</td></tr>
+              <tr><td>Ember</td><td>SC-04</td><td>3</td><td>+2</td><td>0</td><td>+5</td><td>13</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul>
+          <li>Cinder retained the lead with the strongest base score. Ember moved into second because the +2 modifier turned a three-point base into five points.</li>
+          <li>Old Shell filled all three Centre spaces by this Election. Atlas matched one Capital party, but one match scores zero.</li>
+          <li>Operation volume declined from 20 cards in Year 4 to 11 in Year 8 as Collections redistributed cards and majority Closure shortened later years.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Election 3 and final result</h2>
+        <div class="table-wrap" role="region" aria-label="Election 3 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Capital</th><th>Change</th><th>Final</th></tr></thead>
+            <tbody>
+              <tr><td>Atlas</td><td>SC-10</td><td>4</td><td>0</td><td>0</td><td>+4</td><td>12</td></tr>
+              <tr><td>Briar</td><td>SC-12</td><td>1</td><td>-1</td><td>0</td><td>0</td><td>11</td></tr>
+              <tr><td>Cinder</td><td>SC-24</td><td>1</td><td>+3</td><td>0</td><td>+4</td><td>18 — joint winner</td></tr>
+              <tr><td>Delta</td><td>SC-13</td><td>2</td><td>+2</td><td>0</td><td>+4</td><td>15</td></tr>
+              <tr><td>Ember</td><td>SC-14</td><td>2</td><td>+3</td><td>0</td><td>+5</td><td>18 — joint winner</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ol>
+          <li>Cinder and Ember — 18</li>
+          <li>Delta — 15</li>
+          <li>Atlas — 12</li>
+          <li>Briar — 11</li>
+        </ol>
+        <ul>
+          <li>Cinder and Ember tied despite final-Election base scores of only one and two. Their +3 modifiers supplied seven of their combined nine final-Election points.</li>
+          <li>Old Shell still occupied all three Centre spaces. Briar and Ember each matched one Capital party, so no Capital points were scored.</li>
+          <li>The final four years resolved 30 Operation cards, down from 76 in the first four years. Year 10 reached only four Operations before the third Closure ended it.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>End-of-game findings</h2>
+        <ul>
+          <li><strong>The Lobby loop stayed active:</strong> the replay contains 165 resolved cards across 93 Operate actions, 30 Collections, 36 Closures, and ten Passes. All twelve years ended by majority Closure, never by five consecutive Passes.</li>
+          <li><strong>Sequential Operate worked:</strong> the controllers refreshed after every card, submitted 81 explicit <code>finish_operate</code> decisions, and completed the clean game without an illegal choice.</li>
+          <li><strong>Operation use was broad but Smear lagged:</strong> Court appeared 50 times, Organise 48, Rally 46, and Smear 21. The current-objective heuristic valued constructive placement and coalition creation more consistently than removing non-scoring Support.</li>
+          <li><strong>Party access was sharply asymmetric:</strong> Honeycomb, Old Shell, and Riverworks opened in all twelve years; Many Wings opened eleven times, Foxglove nine, and Night Parliament only four. Riverworks received 47 Operations while Night Parliament received ten.</li>
+          <li><strong>Most bonuses fired:</strong> 59 bonuses resolved across ten named powers. Common Cause and Scatter the Flock never found a legal, strategically preferred claim. Their conditional burden remains worth watching.</li>
+          <li><strong>The Centre became a blocker, not a scoring contest:</strong> Old Shell occupied all three persistent spaces from Election 2 onward. Across fifteen player-Elections there were only three single-party Capital matches and zero Capital points, even though controllers explicitly valued Capital presence.</li>
+          <li><strong>Relative-seat modifiers dominated the result:</strong> Atlas accumulated ten base points but lost three to modifiers; Ember accumulated the lowest base total, seven, but gained six through modifiers and shared the win. Cinder's eight base points gained five. This one game suggests the modifier can outweigh a player's own district performance at five players.</li>
+          <li><strong>Card activity contracted late:</strong> yearly Operation counts were 19, 20, 17, 20, 18, 17, 13, 11, 10, 4, 8, and 8. Collections and early Closures concentrated cards and shortened later years; this deserves comparison with human timing before changing the economy.</li>
+          <li><strong>Coalitions converged on Honeycomb:</strong> at game end Honeycomb and Old Shell targeted each other, while Foxglove, Riverworks, Many Wings, and Night Parliament all targeted Honeycomb. The Court system created a visible political centre of gravity rather than evenly distributed pairs.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Controller and API learning</h2>
+        <ul>
+          <li>A seat's exact hand and agendas live in <code>seatState.privateGame.seat</code>, not the public seat projection. A controller that does not merge that state will incorrectly believe it has no cards.</li>
+          <li>Bonus validation has three layers: the board effect must be legal, the matching party bonus must remain unclaimed for the year, and the current Operate sequence must not already have claimed a bonus.</li>
+          <li>If a command is rejected during an in-progress Operate, recovery must refetch and either continue legally or submit <code>finish_operate</code>; Pass is not legal until the sequence ends.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <div class="page-footer-inner">
+        <a href="../playtest-guide.html">Back to playtest guide →</a>
+        <span class="stamp">Completed — Cinder and Ember tied on 18</span>
+      </div>
+    </footer>
+  </body>
+</html>
