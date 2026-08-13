@@ -581,24 +581,26 @@ export function DistrictMap({
         const occupied = PARTIES.reduce((total, party) => total + (support[party.id] ?? 0), 0);
         const selectable = interaction?.districtIds?.includes(district.id) === true;
         const selected = interaction?.selectedDistrictIds?.includes(district.id) === true;
+        const summary = `${district.name}: ${occupied} of ${district.capacity} Support spaces occupied`;
         return (
           <article
             key={district.id}
-            className={`district district-${district.id} ${targeting ? "table-target" : ""} ${selectable ? "table-selectable" : ""} ${selected ? "table-selected" : ""}`}
-            aria-label={`${district.name}: ${occupied} of ${district.capacity} Support spaces occupied`}
-            role={targeting ? "button" : undefined}
-            tabIndex={selectable ? 0 : undefined}
-            aria-disabled={targeting && !selectable ? true : undefined}
-            aria-pressed={targeting ? selected : undefined}
-            onClick={() => { if (selectable) interaction?.onDistrictClick?.(district.id); }}
-            onKeyDown={(event) => {
-              if (selectable && (event.key === "Enter" || event.key === " ")) {
-                event.preventDefault();
-                interaction?.onDistrictClick?.(district.id);
-              }
-            }}
+            className={`district district-${district.id} ${targeting ? "table-target" : ""} ${targeting && !selectable ? "table-unavailable" : ""} ${selectable ? "table-selectable" : ""} ${selected ? "table-selected" : ""}`}
+            aria-label={targeting ? undefined : summary}
           >
-            <div><strong>{district.name}</strong><small>{occupied}/{district.capacity} support</small></div>
+            {targeting ? (
+              <button
+                type="button"
+                className="district-target-button"
+                aria-label={summary}
+                aria-disabled={!selectable}
+                aria-pressed={selected}
+                tabIndex={selectable ? 0 : -1}
+                onClick={() => { if (selectable) interaction?.onDistrictClick?.(district.id); }}
+              ><strong>{district.name}</strong><small>{occupied}/{district.capacity} support</small></button>
+            ) : (
+              <div className="district-heading"><strong>{district.name}</strong><small>{occupied}/{district.capacity} support</small></div>
+            )}
             <div className="support-groups">
               {PARTIES.map((party) => {
                 if ((support[party.id] ?? 0) < 1) return null;
@@ -617,11 +619,9 @@ export function DistrictMap({
                     className={supportSelectable ? "support-selectable" : ""}
                     style={style}
                     title={title}
+                    aria-label={`${party.shortName} Support in ${district.name}: ${support[party.id]}`}
                     disabled={!supportSelectable}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      interaction.onSupportClick?.(district.id, party.id);
-                    }}
+                    onClick={() => interaction.onSupportClick?.(district.id, party.id)}
                   >{content}</button>
                 );
               })}
@@ -763,6 +763,12 @@ function LobbyActionDesk(props: {
 
   const party = props.view.parties[partyId];
   const firstTurn = props.view.phaseData.type === "lobby" && (props.view.phaseData.turnsTaken[props.seatId] ?? 0) === 0;
+  const collectTargetPartyIds = props.seat.collectionCounters < 1
+    ? []
+    : openPartyIds.filter((candidate) => operationCount(props.view.parties[candidate]!.operations) > 0);
+  const closeTargetPartyIds = firstTurn
+    ? []
+    : openPartyIds.filter((candidate) => props.view.parties[candidate]?.ownerSeatId === props.seatId);
   const collectLegal = party !== undefined && operationCount(party.operations) > 0 && props.seat.collectionCounters > 0;
   const closeLegal = party !== undefined && party.ownerSeatId === props.seatId && !firstTurn;
   return (
@@ -776,10 +782,10 @@ function LobbyActionDesk(props: {
         <OperationComposer view={props.view} seat={props.seat} partyId={partyId} onPartyId={setPartyId} busy={props.busy} onInteraction={props.onInteraction} onSubmit={(play) => props.onCommand({ type: "game_action", action: { type: "operate", partyId, play } })} onFinish={() => props.onCommand({ type: "game_action", action: { type: "finish_operate" } })} />
       )}
       {mode === "collect" && (
-        <SimplePartyAction title="Collect" copy="Spend one Collection counter and take the complete public pile into your New Year area. The party stays open." partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} disabled={props.busy || !collectLegal} button={`Collect ${party === undefined ? 0 : operationCount(party.operations)} cards`} onInteraction={props.onInteraction} onSubmit={() => props.onCommand({ type: "game_action", action: { type: "collect", partyId } })} />
+        <SimplePartyAction title="Collect" copy="Spend one Collection counter and take the complete public pile into your New Year area. The party stays open." partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={collectTargetPartyIds} disabled={props.busy || !collectLegal} button={`Collect ${party === undefined ? 0 : operationCount(party.operations)} cards`} onInteraction={props.onInteraction} onSubmit={() => props.onCommand({ type: "game_action", action: { type: "collect", partyId } })} />
       )}
       {mode === "close" && (
-        <SimplePartyAction title="Close" copy={firstTurn ? "You cannot Close on your first Lobby turn, even if you previously passed." : "Only the opening Firm may Close. Its owner takes the pile into their New Year area."} partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} disabled={props.busy || !closeLegal} button="Close party" onInteraction={props.onInteraction} onSubmit={() => props.onCommand({ type: "game_action", action: { type: "close", partyId } })} />
+        <SimplePartyAction title="Close" copy={firstTurn ? "You cannot Close on your first Lobby turn, even if you previously passed." : "Only the opening Firm may Close. Its owner takes the pile into their New Year area."} partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={closeTargetPartyIds} disabled={props.busy || !closeLegal} button="Close party" onInteraction={props.onInteraction} onSubmit={() => props.onCommand({ type: "game_action", action: { type: "close", partyId } })} />
       )}
       {mode === "pass" && (
         <PassAction busy={props.busy} onInteraction={props.onInteraction} onPass={() => props.onCommand({ type: "game_action", action: { type: "pass" } })} />
@@ -794,22 +800,23 @@ function SimplePartyAction(props: {
   partyId: PartyId;
   onPartyId(partyId: PartyId): void;
   partyIds: PartyId[];
+  targetPartyIds: PartyId[];
   disabled: boolean;
   button: string;
   onSubmit(): Promise<boolean | void>;
   onInteraction?: ((interaction: TableInteraction | null) => void) | undefined;
 }) {
-  const partyKey = props.partyIds.join(",");
+  const targetPartyKey = props.targetPartyIds.join(",");
   useEffect(() => {
     if (props.onInteraction === undefined) return;
     props.onInteraction({
       prompt: `Select a party for ${props.title}, then confirm at the active desk.`,
-      partyIds: props.partyIds,
+      partyIds: props.targetPartyIds,
       selectedPartyIds: [props.partyId],
       onPartyClick: props.onPartyId
     });
     return () => props.onInteraction?.(null);
-  }, [partyKey, props.onInteraction, props.onPartyId, props.partyId, props.title]);
+  }, [targetPartyKey, props.onInteraction, props.onPartyId, props.partyId, props.title]);
   return (
     <form onSubmit={(event) => { event.preventDefault(); void props.onSubmit(); }}>
       <div className="action-copy"><h3>{props.title}</h3><p>{props.copy}</p></div>
@@ -1272,7 +1279,7 @@ function targetPrompt(target: OperationTarget): string {
     sourceDistrictId: "Select the Organise source district on the map.",
     destinationDistrictId: "Select the Organise destination district on the map.",
     districtId: "Select a district on the map. For Smear, click rival Support to fill both targets.",
-    rivalParty: "Select the rival party file, or click its Support on the map.",
+    rivalParty: "Select the rival party file. To choose both targets together, arm District and click rival Support.",
     targetParty: "Select the Court target's party file.",
     bonusDistrictId: "Select the bonus district on the map.",
     bonusDistrictIds: "Select or deselect the required Scatter destinations on the map.",

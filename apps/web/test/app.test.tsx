@@ -205,6 +205,19 @@ describe("yearly browser play surface", () => {
     });
   });
 
+  it("sets both Smear targets by clicking rival Support", () => {
+    const state = openEveryParty(initializeGame(configuration(2), random).state);
+    const view = privateView(state, "seat-1");
+    render(
+      <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /^smear/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Old Shell Support in Harbormouth: 1" }));
+    expect((screen.getByLabelText("District") as HTMLSelectElement).value).toBe("harbormouth");
+    expect((screen.getByLabelText("Rival party") as HTMLSelectElement).value).toBe("old-shell");
+  });
+
   it("collects a whole pile into the visible New Year area", () => {
     let state = openEveryParty(initializeGame(configuration(2), random).state);
     state = apply(state, organiseAction("seat-1", false));
@@ -212,9 +225,11 @@ describe("yearly browser play surface", () => {
     const view = privateView(state, "seat-2");
     const onCommand = vi.fn(async () => true);
     render(
-      <ActionDesk view={view} seat={view.seats[1]!} seatId="seat-2" busy={false} onCommand={onCommand} />
+      <GameDesk view={view} ownSeat={view.seats[1]} ownSeatId="seat-2" spectator={false} busy={false} onCommand={onCommand} />
     );
     fireEvent.click(screen.getByRole("button", { name: "collect" }));
+    expect(screen.getByRole("button", { name: /^Honeycomb open/ }).hasAttribute("aria-disabled")).toBe(false);
+    expect(screen.getByRole("button", { name: /^Old Shell open/ }).getAttribute("aria-disabled")).toBe("true");
     fireEvent.click(screen.getByRole("button", { name: "Collect 1 cards" }));
     expect(onCommand).toHaveBeenCalledWith({
       type: "game_action",
@@ -227,10 +242,11 @@ describe("yearly browser play surface", () => {
     const view = privateView(state, "seat-1");
     const onCommand = vi.fn(async () => true);
     render(
-      <ActionDesk view={view} seat={view.seats[0]!} seatId="seat-1" busy={false} onCommand={onCommand} />
+      <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={onCommand} />
     );
     fireEvent.click(screen.getByRole("button", { name: "close" }));
     expect(screen.getByRole("button", { name: "Close party" }).hasAttribute("disabled")).toBe(true);
+    expect(screen.getByRole("button", { name: /^Honeycomb open/ }).getAttribute("aria-disabled")).toBe("true");
     expect(screen.getByText(/cannot Close on your first Lobby turn/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "pass" }));
     expect(screen.getByText(/every party closes to its opening Firm/)).toBeTruthy();
