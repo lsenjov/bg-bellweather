@@ -1,0 +1,746 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Five alternative connection maps for Bellweather's existing districts and Support capacities.">
+    <title>District Topology Options — Ladder Bidding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+      :root {
+        --blueprint: #174a66;
+        --blueprint-soft: #d7e4e7;
+        --sage: #cfd9c6;
+        --charcoal: #555955;
+      }
+
+      body {
+        background:
+          linear-gradient(90deg, transparent 0 49px, rgb(23 74 102 / 12%) 50px 51px, transparent 52px),
+          repeating-linear-gradient(0deg, transparent 0 31px, rgb(23 74 102 / 5%) 32px 33px),
+          var(--paper);
+      }
+
+      .page-header {
+        background:
+          linear-gradient(112deg, transparent 0 62%, rgb(23 74 102 / 8%) 62% 100%),
+          var(--paper-bright);
+      }
+
+      .page-header::after {
+        background: repeating-linear-gradient(to bottom, var(--blueprint) 0 4px, transparent 4px 30px);
+      }
+
+      .brand-mark {
+        background: var(--blueprint-soft);
+      }
+
+      .study-lede {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(250px, 0.55fr);
+        gap: 28px;
+        align-items: start;
+        margin: 28px 0 42px;
+      }
+
+      .study-lede p {
+        margin: 0;
+        font: 1.16rem/1.55 var(--display);
+      }
+
+      .fixed-constraint {
+        border: 2px solid var(--ink);
+        box-shadow: 7px 7px 0 var(--blueprint-soft);
+        background: var(--paper-bright);
+        padding: 14px 16px;
+        font: 800 0.73rem/1.55 var(--mono);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .option-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 26px;
+      }
+
+      .map-option {
+        position: relative;
+        overflow: hidden;
+        border: 3px solid var(--ink);
+        background: rgb(255 250 240 / 94%);
+        box-shadow: 10px 10px 0 rgb(23 74 102 / 16%);
+      }
+
+      .option-head {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 15px;
+        align-items: start;
+        border-bottom: 2px solid var(--ink);
+        padding: 16px 18px 14px;
+      }
+
+      .option-number {
+        display: grid;
+        width: 42px;
+        aspect-ratio: 1;
+        place-items: center;
+        background: var(--blueprint);
+        color: var(--paper-bright);
+        font: 900 1rem/1 var(--mono);
+      }
+
+      .option-head h2 {
+        margin: -0.08em 0 3px;
+        font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+      }
+
+      .option-kicker {
+        margin: 0;
+        color: var(--red-dark);
+        font: 900 0.67rem/1.4 var(--mono);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .map-frame {
+        position: relative;
+        background:
+          linear-gradient(rgb(23 74 102 / 5%) 1px, transparent 1px),
+          linear-gradient(90deg, rgb(23 74 102 / 5%) 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+
+      .map-frame:focus-visible {
+        outline: 4px solid var(--blue);
+        outline-offset: -4px;
+      }
+
+      .pan-cue {
+        display: none;
+      }
+
+      .topology-map {
+        display: block;
+        width: 100%;
+        aspect-ratio: 840 / 520;
+      }
+
+      .connection {
+        stroke: var(--blueprint);
+        stroke-width: 4;
+        stroke-linecap: round;
+        opacity: 0.72;
+        transition: opacity 130ms ease, stroke-width 130ms ease;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .connection.is-muted {
+        opacity: 0.08;
+      }
+
+      .connection.is-active {
+        stroke: var(--red);
+        stroke-width: 6;
+        opacity: 1;
+      }
+
+      .district {
+        cursor: pointer;
+        outline: none;
+      }
+
+      .district rect {
+        stroke: var(--ink);
+        stroke-width: 3;
+        transition: filter 130ms ease, stroke-width 130ms ease, opacity 130ms ease;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .district:hover rect,
+      .district:focus-visible rect,
+      .district.is-active rect {
+        filter: drop-shadow(4px 5px 0 rgb(217 67 47 / 28%));
+        stroke: var(--red-dark);
+        stroke-width: 5;
+      }
+
+      .district.is-muted {
+        opacity: 0.22;
+      }
+
+      .district text {
+        fill: var(--ink);
+        pointer-events: none;
+        text-anchor: middle;
+      }
+
+      .district-name {
+        font: 900 13px/1 var(--body);
+        letter-spacing: 0.01em;
+      }
+
+      .district-capacity {
+        font: 900 10px/1 var(--mono);
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+      }
+
+      .district[data-capacity="2"] rect {
+        fill: var(--paper-bright);
+      }
+
+      .district[data-capacity="3"] rect {
+        fill: var(--yellow);
+      }
+
+      .district[data-capacity="4"] rect {
+        fill: var(--sage);
+      }
+
+      .district[data-capacity="6"] rect {
+        fill: var(--charcoal);
+      }
+
+      .district[data-capacity="6"] text {
+        fill: var(--paper-bright);
+      }
+
+      .option-foot {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: start;
+        min-height: 118px;
+        border-top: 2px solid var(--ink);
+        padding: 15px 18px 17px;
+      }
+
+      .option-foot p {
+        margin: 0;
+        font-size: 0.92rem;
+        line-height: 1.5;
+      }
+
+      .option-copy {
+        display: grid;
+        gap: 12px;
+      }
+
+      .option-foot .compatibility {
+        border-left: 4px solid var(--red);
+        padding-left: 10px;
+        color: var(--muted);
+        font: 750 0.69rem/1.55 var(--mono);
+      }
+
+      .metrics {
+        display: grid;
+        gap: 4px;
+        min-width: 150px;
+        font: 800 0.68rem/1.4 var(--mono);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .metrics span {
+        border-bottom: 1px solid var(--soft-line);
+        padding-bottom: 3px;
+      }
+
+      .neighbor-readout {
+        min-height: 43px;
+        border-top: 1px dashed var(--soft-line);
+        background: rgb(215 228 231 / 36%);
+        padding: 10px 18px;
+        color: var(--muted);
+        font: 700 0.7rem/1.5 var(--mono);
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 24px;
+        align-items: center;
+        margin: 34px 0 0;
+        border-block: 2px solid var(--ink);
+        padding: 14px 0;
+        font: 800 0.7rem/1.3 var(--mono);
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+
+      .legend-item {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .legend-swatch {
+        width: 25px;
+        height: 18px;
+        border: 2px solid var(--ink);
+      }
+
+      .legend-swatch.cap-2 { background: var(--paper-bright); }
+      .legend-swatch.cap-3 { background: var(--yellow); }
+      .legend-swatch.cap-4 { background: var(--sage); }
+      .legend-swatch.cap-6 { background: var(--charcoal); }
+
+      .study-notes {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin: 36px 0 0;
+      }
+
+      .study-notes h3 {
+        margin-top: 0;
+      }
+
+      .study-notes p {
+        margin-bottom: 0;
+        font-size: 0.91rem;
+      }
+
+      @media (max-width: 900px) {
+        .study-lede,
+        .study-notes {
+          grid-template-columns: 1fr;
+        }
+
+        .option-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .option-foot {
+          grid-template-columns: 1fr;
+        }
+
+        .map-frame {
+          overflow-x: auto;
+        }
+
+        .topology-map {
+          min-width: 720px;
+        }
+
+        .pan-cue {
+          position: sticky;
+          bottom: 10px;
+          left: 10px;
+          display: block;
+          width: max-content;
+          margin: -38px 0 10px 10px;
+          border: 2px solid var(--ink);
+          background: var(--yellow);
+          padding: 4px 8px;
+          font: 900 0.64rem/1.3 var(--mono);
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          pointer-events: none;
+        }
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+
+        .page-header,
+        .breadcrumb,
+        .study-notes,
+        .page-footer,
+        .neighbor-readout {
+          display: none;
+        }
+
+        main {
+          width: 100%;
+          max-width: none;
+        }
+
+        .study-lede {
+          margin-top: 0;
+        }
+
+        .map-option {
+          break-inside: avoid;
+          box-shadow: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../index.html">
+          <span class="brand-mark" aria-hidden="true">LB</span>
+          Design study / map connections
+        </a>
+        <h1>Five ways through Bellweather</h1>
+        <p class="meta">Alternative district topologies using the existing names and Support capacities.</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>District topology options</nav>
+
+      <div class="study-lede">
+        <p>Each scheme preserves all sixteen districts, their current Support capacities, and the current total of eighteen connections. The drawings are node maps for comparing movement, reach, and chokepoints—not proposals for the final geographic borders.</p>
+        <div class="fixed-constraint">Fixed in every option<br>16 districts · 18 connections<br>57 Support total<br>6× cap 2 · 1× cap 3<br>6× cap 4 · 3× cap 6</div>
+      </div>
+
+      <div class="option-grid" id="option-grid"></div>
+
+      <div class="legend" aria-label="Capacity legend">
+        <strong>Support capacity—not drawn area</strong>
+        <span class="legend-item"><span class="legend-swatch cap-2" aria-hidden="true"></span>2 Support</span>
+        <span class="legend-item"><span class="legend-swatch cap-3" aria-hidden="true"></span>3 Support</span>
+        <span class="legend-item"><span class="legend-swatch cap-4" aria-hidden="true"></span>4 Support</span>
+        <span class="legend-item"><span class="legend-swatch cap-6" aria-hidden="true"></span>6 Support</span>
+        <span>Click or focus a district to isolate its neighbors</span>
+      </div>
+
+      <div class="study-notes">
+        <section>
+          <h3>Density held constant</h3>
+          <p>Every option has eighteen connections, matching the live map. Changes in reach, redundancy, and chokepoints therefore come from placement rather than from adding more adjacency.</p>
+        </section>
+        <section>
+          <h3>Asymmetry is intentional</h3>
+          <p>The four alternatives after Capital Corridors deliberately concentrate shortcuts, high degree, or isolation on one side. They are stress tests, not attempts at geographical balance.</p>
+        </section>
+        <section>
+          <h3>Scoring cards need revision</h3>
+          <p>The live deck requires each card’s three districts to be pairwise non-neighboring. Every option marks the current cards that violate that rule under its new connections; selecting a map means replacing or re-registering those cards.</p>
+        </section>
+      </div>
+    </main>
+
+    <footer class="page-footer">
+      <div class="page-footer-inner">
+        <a href="../components/board.html#district-map">Compare with the current ring-and-cross map →</a>
+        <span class="stamp">Exploration · not a rules decision</span>
+      </div>
+    </footer>
+
+    <script>
+      const districts = {
+        nr: { name: "Northreach", capacity: 2 },
+        cf: { name: "Cloverfield", capacity: 4 },
+        hm: { name: "Harbormouth", capacity: 6 },
+        mb: { name: "Millbank", capacity: 4 },
+        rw: { name: "Reedwater", capacity: 2 },
+        sm: { name: "Sunmeadow", capacity: 4 },
+        gm: { name: "Grand Market", capacity: 6 },
+        ro: { name: "Red Orchard", capacity: 4 },
+        wg: { name: "Westgate", capacity: 2 },
+        mf: { name: "Mossfield", capacity: 4 },
+        iw: { name: "Ironwood", capacity: 6 },
+        hp: { name: "High Pastures", capacity: 4 },
+        cr: { name: "Crown Road", capacity: 2 },
+        cw: { name: "Canal Ward", capacity: 2 },
+        oq: { name: "Old Quarter", capacity: 2 },
+        bc: { name: "Bellweather Centre", capacity: 3 }
+      };
+
+      const scoringCardDistricts = {
+        "SC-01": ["gm", "cf", "oq"], "SC-02": ["iw", "mb", "wg"],
+        "SC-03": ["iw", "sm", "cw"], "SC-04": ["hm", "ro", "nr"],
+        "SC-05": ["hm", "mf", "rw"], "SC-06": ["gm", "hp", "cr"],
+        "SC-07": ["gm", "cf", "cr"], "SC-08": ["iw", "mb", "nr"],
+        "SC-09": ["iw", "sm", "oq"], "SC-10": ["hm", "ro", "cw"],
+        "SC-11": ["gm", "mf", "rw"], "SC-12": ["hm", "hp", "wg"],
+        "SC-13": ["iw", "cf", "rw"], "SC-14": ["gm", "mb", "wg"],
+        "SC-15": ["hm", "sm", "cr"], "SC-16": ["iw", "ro", "nr"],
+        "SC-17": ["gm", "mf", "cw"], "SC-18": ["hm", "hp", "oq"],
+        "SC-19": ["iw", "cf", "cr"], "SC-20": ["gm", "mb", "oq"],
+        "SC-21": ["hm", "sm", "cw"], "SC-22": ["iw", "ro", "rw"],
+        "SC-23": ["hm", "mf", "nr"], "SC-24": ["gm", "hp", "wg"]
+      };
+
+      const options = [
+        {
+          title: "Capital Corridors",
+          kicker: "Requested variant · paired Cap 2 approaches",
+          description: "Each capacity-six district reaches Bellweather Centre through its own two-district capacity-two corridor: Harbormouth—Northreach—Crown Road, Grand Market—Reedwater—Canal Ward, and Ironwood—Westgate—Old Quarter. An outer circuit through the capacity-four districts keeps the map connected when the Centre is blocked.",
+          positions: {
+            hm: [420, 48], nr: [420, 125], cr: [420, 202], bc: [420, 288],
+            gm: [755, 325], rw: [642, 312], cw: [530, 300],
+            iw: [190, 450], wg: [270, 398], oq: [345, 345],
+            cf: [570, 65], mb: [710, 165], sm: [700, 445], ro: [485, 480],
+            mf: [70, 365], hp: [115, 145]
+          },
+          edges: [
+            ["hm", "nr"], ["nr", "cr"], ["cr", "bc"],
+            ["gm", "rw"], ["rw", "cw"], ["cw", "bc"],
+            ["iw", "wg"], ["wg", "oq"], ["oq", "bc"],
+            ["hm", "cf"], ["cf", "mb"], ["mb", "gm"],
+            ["gm", "sm"], ["sm", "ro"], ["ro", "iw"],
+            ["iw", "mf"], ["mf", "hp"], ["hp", "hm"]
+          ]
+        },
+        {
+          title: "Market Gravity",
+          kicker: "Heavy asymmetry · one dominant transfer point",
+          description: "Grand Market has six neighbors and feeds three arms of sharply different lengths. The northeast is dense and easy to reroute; the western and southern ends become progressively more dependent on long chains. Blocking the Market does not disconnect the whole map, but it radically changes travel time.",
+          positions: {
+            nr: [80, 78], cf: [230, 65], hm: [380, 72], sm: [560, 92],
+            gm: [515, 250], ro: [680, 155], rw: [640, 260], cw: [635, 382],
+            bc: [485, 430], mb: [350, 360], cr: [225, 355], hp: [82, 410],
+            wg: [775, 240], oq: [770, 345], iw: [720, 455], mf: [580, 480]
+          },
+          edges: [
+            ["gm", "sm"], ["gm", "ro"], ["gm", "rw"], ["gm", "cw"], ["gm", "bc"], ["gm", "mb"],
+            ["sm", "hm"], ["hm", "cf"], ["cf", "nr"],
+            ["mb", "cr"], ["cr", "hp"],
+            ["ro", "wg"], ["wg", "oq"], ["oq", "iw"], ["iw", "mf"],
+            ["rw", "cw"], ["cw", "bc"], ["bc", "mb"]
+          ]
+        },
+        {
+          title: "Harbour Switchback",
+          kicker: "Heavy asymmetry · shortcuts at one end",
+          description: "A long switchback crosses every district. Three shortcuts cluster around Harbormouth and the middle bend, while the Ironwood end remains slow and exposed. Equal actions produce very different reach depending on which end a party occupies.",
+          positions: {
+            hp: [70, 75], nr: [190, 75], hm: [310, 75], cf: [430, 75], cr: [550, 75], mb: [670, 75],
+            bc: [765, 185], cw: [650, 215], sm: [530, 215], rw: [410, 215], gm: [290, 215], ro: [170, 215],
+            wg: [75, 330], oq: [205, 425], iw: [365, 440], mf: [525, 440]
+          },
+          edges: [
+            ["hp", "nr"], ["nr", "hm"], ["hm", "cf"], ["cf", "cr"], ["cr", "mb"],
+            ["mb", "bc"], ["bc", "cw"], ["cw", "sm"], ["sm", "rw"], ["rw", "gm"],
+            ["gm", "ro"], ["ro", "wg"], ["wg", "oq"], ["oq", "iw"], ["iw", "mf"],
+            ["hm", "cr"], ["cr", "bc"], ["gm", "wg"]
+          ]
+        },
+        {
+          title: "Unequal Banks",
+          kicker: "Heavy asymmetry · ten districts versus six",
+          description: "A large western circuit and a tight eastern circuit meet at a single Old Quarter—Westgate bridge. Each bank is internally resilient, but cross-map movement depends on those two low-capacity districts. The unequal 10–6 split makes the two sides strategically unlike from setup onward.",
+          viewBox: [960, 520],
+          positions: {
+            hm: [310, 55], cf: [175, 72], nr: [78, 175], hp: [75, 310], iw: [180, 420],
+            mf: [330, 460], oq: [500, 400], cr: [560, 300], bc: [525, 175], mb: [445, 78],
+            wg: [700, 405], gm: [850, 360], sm: [895, 250], rw: [820, 145], cw: [700, 175], ro: [680, 300]
+          },
+          edges: [
+            ["hm", "cf"], ["cf", "nr"], ["nr", "hp"], ["hp", "iw"], ["iw", "mf"],
+            ["mf", "oq"], ["oq", "cr"], ["cr", "bc"], ["bc", "mb"], ["mb", "hm"], ["hm", "cr"],
+            ["gm", "sm"], ["sm", "rw"], ["rw", "cw"], ["cw", "ro"], ["ro", "wg"], ["wg", "gm"],
+            ["oq", "wg"]
+          ]
+        },
+        {
+          title: "Old Quarter Delta",
+          kicker: "Heavy asymmetry · five branches, partial bypasses",
+          description: "Old Quarter fans into five unequal branches. Bypasses reinforce only the northern and eastern arms, leaving the western branches dependent on a sequence of chokepoints. This creates a map with an obvious centre of gravity without making Bellweather Centre the hub.",
+          positions: {
+            oq: [360, 260], bc: [470, 175], cw: [585, 105], rw: [720, 72], sm: [775, 155],
+            gm: [650, 260], wg: [480, 335], ro: [610, 405], hp: [755, 460],
+            mf: [245, 360], iw: [140, 440], nr: [62, 350],
+            cr: [245, 170], hm: [140, 80], cf: [62, 145], mb: [65, 245]
+          },
+          edges: [
+            ["oq", "bc"], ["bc", "cw"], ["cw", "rw"], ["rw", "sm"],
+            ["oq", "wg"], ["wg", "ro"], ["ro", "hp"],
+            ["oq", "mf"], ["mf", "iw"], ["iw", "nr"],
+            ["oq", "cr"], ["cr", "hm"], ["hm", "cf"], ["cf", "mb"],
+            ["oq", "gm"], ["bc", "cr"], ["cr", "mb"], ["rw", "gm"]
+          ]
+        }
+      ];
+
+      const svgNamespace = "http://www.w3.org/2000/svg";
+
+      function makeSvgElement(name, attributes = {}) {
+        const element = document.createElementNS(svgNamespace, name);
+        Object.entries(attributes).forEach(([attribute, value]) => element.setAttribute(attribute, value));
+        return element;
+      }
+
+      function adjacencyFor(option) {
+        const adjacency = Object.fromEntries(Object.keys(districts).map((id) => [id, []]));
+        option.edges.forEach(([left, right]) => {
+          adjacency[left].push(right);
+          adjacency[right].push(left);
+        });
+        return adjacency;
+      }
+
+      function articulationPoints(adjacency) {
+        const visited = new Set();
+        const discovered = {};
+        const low = {};
+        const parent = {};
+        const cuts = new Set();
+        let time = 0;
+
+        function visit(node) {
+          visited.add(node);
+          discovered[node] = ++time;
+          low[node] = discovered[node];
+          let children = 0;
+
+          adjacency[node].forEach((neighbor) => {
+            if (!visited.has(neighbor)) {
+              children += 1;
+              parent[neighbor] = node;
+              visit(neighbor);
+              low[node] = Math.min(low[node], low[neighbor]);
+
+              if (parent[node] === undefined && children > 1) cuts.add(node);
+              if (parent[node] !== undefined && low[neighbor] >= discovered[node]) cuts.add(node);
+            } else if (neighbor !== parent[node]) {
+              low[node] = Math.min(low[node], discovered[neighbor]);
+            }
+          });
+        }
+
+        Object.keys(adjacency).forEach((node) => {
+          if (!visited.has(node)) visit(node);
+        });
+        return [...cuts];
+      }
+
+      function scoringConflicts(option) {
+        const edges = new Set(option.edges.map((edge) => [...edge].sort().join("|")));
+        return Object.entries(scoringCardDistricts)
+          .filter(([, districtIds]) => districtIds.some((left, index) =>
+            districtIds.slice(index + 1).some((right) => edges.has([left, right].sort().join("|")))
+          ))
+          .map(([cardId]) => cardId);
+      }
+
+      function renderOption(option, index) {
+        const article = document.createElement("article");
+        article.className = "map-option";
+        article.innerHTML = `
+          <div class="option-head">
+            <span class="option-number">${String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <p class="option-kicker">${option.kicker}</p>
+              <h2>${option.title}</h2>
+            </div>
+          </div>
+          <div class="map-frame" role="region" tabindex="0" aria-label="Scrollable ${option.title} district map">
+            <span class="pan-cue" aria-hidden="true">Pan map →</span>
+          </div>
+          <div class="option-foot">
+            <div class="option-copy">
+              <p>${option.description}</p>
+              <p class="compatibility"></p>
+            </div>
+            <div class="metrics"></div>
+          </div>
+          <div class="neighbor-readout" aria-live="polite">Select a district to inspect its immediate neighbors.</div>
+        `;
+
+        const adjacency = adjacencyFor(option);
+        const mapFrame = article.querySelector(".map-frame");
+        const readout = article.querySelector(".neighbor-readout");
+        const [viewWidth, viewHeight] = option.viewBox ?? [840, 520];
+        const svg = makeSvgElement("svg", {
+          class: "topology-map",
+          viewBox: `0 0 ${viewWidth} ${viewHeight}`,
+          role: "group",
+          "aria-label": `${option.title} district connections`
+        });
+        svg.style.aspectRatio = `${viewWidth} / ${viewHeight}`;
+
+        const edgeElements = [];
+        option.edges.forEach(([left, right]) => {
+          const [x1, y1] = option.positions[left];
+          const [x2, y2] = option.positions[right];
+          const line = makeSvgElement("line", { x1, y1, x2, y2, class: "connection" });
+          line.dataset.left = left;
+          line.dataset.right = right;
+          edgeElements.push(line);
+          svg.append(line);
+        });
+
+        const nodeElements = {};
+        Object.entries(option.positions).forEach(([id, [x, y]]) => {
+          const district = districts[id];
+          const group = makeSvgElement("g", {
+            class: "district",
+            transform: `translate(${x} ${y})`,
+            tabindex: "0",
+            role: "button",
+            "aria-label": `${district.name}, capacity ${district.capacity}. Neighbors: ${adjacency[id].map((neighbor) => districts[neighbor].name).join(", ")}`
+          });
+          group.dataset.id = id;
+          group.dataset.capacity = district.capacity;
+          group.append(makeSvgElement("rect", { x: -53, y: -25, width: 106, height: 50, rx: 4 }));
+
+          const name = makeSvgElement("text", { class: "district-name", y: -4 });
+          name.textContent = district.name;
+          if (district.name.length > 15) name.style.fontSize = "9.5px";
+          const capacity = makeSvgElement("text", { class: "district-capacity", y: 14 });
+          capacity.textContent = `CAP ${district.capacity}`;
+          group.append(name, capacity);
+          nodeElements[id] = group;
+          svg.append(group);
+        });
+
+        function highlight(id) {
+          const neighborhood = new Set([id, ...adjacency[id]]);
+          Object.entries(nodeElements).forEach(([nodeId, node]) => {
+            node.classList.toggle("is-active", nodeId === id);
+            node.classList.toggle("is-muted", !neighborhood.has(nodeId));
+          });
+          edgeElements.forEach((edge) => {
+            const active = edge.dataset.left === id || edge.dataset.right === id;
+            edge.classList.toggle("is-active", active);
+            edge.classList.toggle("is-muted", !active);
+          });
+          readout.textContent = `${districts[id].name} (capacity ${districts[id].capacity}) → ${adjacency[id].map((neighbor) => districts[neighbor].name).join(" · ")}`;
+        }
+
+        function clearHighlight() {
+          Object.values(nodeElements).forEach((node) => node.classList.remove("is-active", "is-muted"));
+          edgeElements.forEach((edge) => edge.classList.remove("is-active", "is-muted"));
+          readout.textContent = "Select a district to inspect its immediate neighbors.";
+        }
+
+        Object.entries(nodeElements).forEach(([id, node]) => {
+          node.addEventListener("click", () => highlight(id));
+          node.addEventListener("focus", () => highlight(id));
+          node.addEventListener("blur", clearHighlight);
+          node.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              highlight(id);
+            }
+            if (event.key === "Escape") {
+              node.blur();
+              clearHighlight();
+            }
+          });
+        });
+
+        const cuts = articulationPoints(adjacency);
+        const conflicts = scoringConflicts(option);
+        const maximumDegree = Math.max(...Object.values(adjacency).map((neighbors) => neighbors.length));
+        article.querySelector(".metrics").innerHTML = `
+          <span>${option.edges.length} connections</span>
+          <span>Max ${maximumDegree} neighbors</span>
+          <span>${cuts.length} cut ${cuts.length === 1 ? "district" : "districts"}</span>
+        `;
+        article.querySelector(".compatibility").textContent = conflicts.length === 0
+          ? "Scoring deck: all 24 cards remain pairwise non-neighboring."
+          : `Scoring deck: revise ${conflicts.length}/24 cards — ${conflicts.join(", ")}.`;
+
+        mapFrame.prepend(svg);
+        return article;
+      }
+
+      const optionGrid = document.querySelector("#option-grid");
+      options.forEach((option, index) => optionGrid.append(renderOption(option, index)));
+    </script>
+  </body>
+</html>
