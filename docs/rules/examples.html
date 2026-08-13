@@ -3,131 +3,96 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Worked rules examples for Ladder Bidding.">
+    <meta name="description" content="Worked examples for the current Bellweather yearly party-access rules.">
     <title>Rules Examples — Ladder Bidding</title>
     <link rel="stylesheet" href="../styles.css">
   </head>
   <body>
     <header class="page-header">
       <div class="header-inner">
-        <a class="brand" href="../index.html">
-          <span class="brand-mark" aria-hidden="true">LB</span>
-          Design archive / 02.4
-        </a>
+        <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / 02.4</a>
         <h1>Rules examples</h1>
-        <p class="meta">Concrete situations expose vague rules faster than more prose.</p>
+        <p class="meta">Concrete situations for the yearly party-access loop.</p>
       </div>
     </header>
 
     <main>
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Rules examples</nav>
-      <p class="intro">The current district Support baselines, reciprocal coalition targets, coalition scoring, player deals, all twelve party bonuses, and Election Day procedure are concrete enough to expose timing and legality questions.</p>
+      <p class="intro">These examples clarify the places where Openings, Lobby actions, and the year boundary interact.</p>
 
       <section>
         <span class="status decided">Current rules</span>
         <h2>Worked examples</h2>
+
         <div class="note">
-          <h3>A gift changes the second half of an ABBA opening</h3>
-          <p><strong>State:</strong> Ada holds the Early Bird marker, so the two-player order is Ada, Bert, Bert, Ada. Ada has two Leverage and Bert has none.</p>
-          <p><strong>Resolution:</strong> Ada funds one opening. Bert has no Leverage on his first turn and passes. Before Bert’s repeated turn, Ada gives him her remaining Leverage. Bert must now fund one opening because affordability is checked again at the start of that turn. Ada then passes her final turn with no Leverage.</p>
-          <p><strong>Why:</strong> Every position in ABBA is a separate opening turn, and each turn requires one opening whenever its active player can fund the one-Leverage minimum.</p>
+          <h3>ABBA applies only to Party Openings</h3>
+          <p><strong>State:</strong> Ada is Early Bird in a two-player game. Each player must open two different parties.</p>
+          <p><strong>Resolution:</strong> Party Openings occur Ada, Bert, Bert, Ada. When the Lobby begins, turns simply continue clockwise from Ada: Ada, Bert, Ada, Bert, and so on.</p>
+          <p><strong>Why:</strong> The snake order gives later players a fair opening choice without changing the ordinary action orbit.</p>
         </div>
 
         <div class="note">
-          <h3>Supportless Foxglove Spins back onto the map</h3>
-          <p><strong>State:</strong> Foxglove has no Support on the map. One bid contains two Smear cards, and Spin is available.</p>
-          <p><strong>Resolution:</strong> The first Smear may remove rival Support from any district and claim Spin, adding Foxglove Support to the vacated spot. Foxglove is now present, so the second Smear may target only its district or a district neighboring one where it is present.</p>
-          <p><strong>Why:</strong> Check whether a party has Support separately when each operation card executes.</p>
+          <h3>Three Operations still allow one bonus</h3>
+          <p><strong>State:</strong> Ada Operates at Riverworks with Rally, Rally, and Organise. Both Riverworks bonuses are ready.</p>
+          <p><strong>Resolution:</strong> Ada resolves the three cards in her chosen order and leaves all three in Riverworks’ public pile. Across the complete action she may use no more than one Riverworks bonus, even if multiple cards match ready bonuses.</p>
+          <p><strong>Why:</strong> The one-bonus limit belongs to the Operate action, not to each card.</p>
         </div>
 
         <div class="note">
-          <h3>Whisper Network redirects the Court</h3>
-          <p><strong>State:</strong> Foxglove has two Court Support on Old Shell and one on Riverworks, so its Coalition Target points to Old Shell. A bid contains Court.</p>
-          <p><strong>Resolution:</strong> The bid Courts Riverworks and claims Whisper Network. The baseline produces a 2–2 tie, so Foxglove still targets Old Shell. Whisper Network moves one Foxglove Court Support from Old Shell to Riverworks, making Riverworks the unique 3–1 leader and moving the target there.</p>
-          <p><strong>Why:</strong> Recheck the unique leader after the complete Court bonus changes its Support distribution.</p>
+          <h3>Night Shift is an immediate double Rally</h3>
+          <p><strong>State:</strong> Ada plays Rally at Night Parliament and chooses to use its ready Night Shift bonus.</p>
+          <p><strong>Resolution:</strong> Resolve the ordinary Rally, then immediately add a second Night Parliament Support in the same district if it still has room. There is no delayed marker or later resolution window.</p>
+          <p><strong>Why:</strong> Night Shift is provisionally a double Rally for the yearly structure.</p>
         </div>
 
         <div class="note">
-          <h3>A tied Court leaves the coalition intact</h3>
-          <p><strong>State:</strong> Old Shell and Night Parliament target each other. On Night Parliament’s board, Old Shell leads Foxglove by one Court Support.</p>
-          <p><strong>Resolution:</strong> A Court card adds one Night Parliament Support to Foxglove’s Court space. The two spaces are now tied, so Night Parliament’s Coalition Target stays on Old Shell and the coalition remains. Another Court Support on Foxglove would give it the unique lead, move the target, and break the coalition immediately.</p>
-          <p><strong>Why:</strong> A tied high count never moves the existing Coalition Target. A coalition exists only while both targets remain reciprocal.</p>
+          <h3>Collect takes a pile out of circulation</h3>
+          <p><strong>State:</strong> Riverworks is open with four Operation cards in its pile. Bert has a Collection counter available.</p>
+          <p><strong>Resolution:</strong> Bert spends one counter and moves the entire pile to his face-up New Year area. Riverworks remains open and may receive more Operations later this year. Bert cannot use the collected cards until Cleanup releases them to his hand.</p>
+          <p><strong>Why:</strong> Collection harvests the current pile without reserving or closing the party.</p>
         </div>
 
         <div class="note">
-          <h3>Election cleanup preserves the target</h3>
-          <p><strong>State:</strong> Honeycomb’s Coalition Target points to Foxglove when Election Day finishes.</p>
-          <p><strong>Resolution:</strong> Return all Honeycomb Court Support to the supply, but leave its Coalition Target on Foxglove. If Honeycomb’s first later Court places Support on Riverworks, Riverworks becomes the unique 1–0 leader and the target moves there.</p>
-          <p><strong>Why:</strong> Election Day cleanup clears Court Support without recalculating targets; later placements resume the unique-leader check.</p>
+          <h3>Only the opener may Close</h3>
+          <p><strong>State:</strong> Ada opened Honeycomb. On Bert’s turn, Honeycomb holds a valuable pile. Ada has already taken one Lobby turn this year.</p>
+          <p><strong>Resolution:</strong> Bert cannot Close Honeycomb, although he may Collect its pile. On Ada’s next turn she may Close it, take its current pile into her New Year area, and remove her Firm marker. No one may Operate or Collect there for the rest of the year.</p>
+          <p><strong>Why:</strong> Closure and automatic closure always award the pile to the player who placed the opening Firm marker.</p>
         </div>
 
         <div class="note">
-          <h3>Night Parliament gets the final word</h3>
-          <p><strong>State:</strong> The highest bid at Night Parliament claims Night Shift with Rally. A later Smear creates a free spot in a district containing Night Support.</p>
-          <p><strong>Resolution:</strong> Finish Night Parliament’s Revolving Door and every later party contest. After the final Revolving Door, find every legal Night Rally district and compare their total Support. The claiming bid’s original owner adds one Night Support to a district tied for the lowest total.</p>
-          <p><strong>Why:</strong> Night Shift’s legality, minimum occupancy, and choice are checked when its delayed placement resolves.</p>
+          <h3>A strict majority ends the Lobby mid-orbit</h3>
+          <p><strong>State:</strong> Six parties opened. Two are already closed. Ada legally closes a third.</p>
+          <p><strong>Resolution:</strong> Three of six is not more than half, so play continues. If Bert then closes a fourth, the Lobby ends immediately. Unclosed party piles are awarded to their openers; later players do not finish the orbit.</p>
+          <p><strong>Why:</strong> The end trigger is a strict majority of opened parties, checked after each closure.</p>
         </div>
 
         <div class="note">
-          <h3>Coalition partners share an election result</h3>
-          <p><strong>State:</strong> Honeycomb and Foxglove are in a coalition when Election Day begins. A shared district draw reveals one Honeycomb Support, one Foxglove Support, and one Riverworks Support. One scoring card names Honeycomb in that district and another names Foxglove.</p>
-          <p><strong>Resolution:</strong> The Honeycomb objective scores two points, one for the Honeycomb Support and one for the Foxglove Support. The Foxglove objective also scores two points. The Riverworks Support scores for neither objective.</p>
-          <p><strong>Why:</strong> Each drawn Support belonging to either coalition partner matches an objective naming either party. One Support still contributes at most one point to a single objective.</p>
+          <h3>Consecutive passes close every party</h3>
+          <p><strong>State:</strong> In a four-player game, Cato passes, then Dara, Ada, and Bert also pass without any intervening action.</p>
+          <p><strong>Resolution:</strong> All open parties close immediately and each pile goes to that party’s opener. Bert, the player whose pass ended the year, receives the Early Bird marker during Cleanup.</p>
+          <p><strong>Why:</strong> Any Operate, Collect, or Close breaks the consecutive-pass chain; the player who actually ends the year becomes next year’s Early Bird.</p>
         </div>
 
         <div class="note">
-          <h3>A mixed gift is atomic</h3>
-          <p><strong>State:</strong> One player chooses to give another player three eligible Leverage, one Rally card, and two points.</p>
-          <p><strong>Resolution:</strong> All six resources move as one gift. If the giver lacks any stated resource or has fewer than two points, none of the gift moves. The recipient has no acceptance step.</p>
-          <p><strong>Why:</strong> A gift is one-way and atomic, and cannot include more points than the giver’s current balance.</p>
+          <h3>Cleanup precedes Election scoring</h3>
+          <p><strong>State:</strong> Year 4 has ended and Ada collected a Rally card during that year.</p>
+          <p><strong>Resolution:</strong> Complete Cleanup first: award remaining piles, release New Year cards such as Ada’s Rally to hand, return Firm markers and Collection counters, reset bonuses, and move Early Bird. Then reveal Election 1 agendas and score. The released Rally cannot affect that Election because there is no Lobby action between Cleanup and scoring.</p>
+          <p><strong>Why:</strong> Elections occur after the ordinary year boundary, leaving Cleanup uniform in all twelve years.</p>
         </div>
 
         <div class="note">
-          <h3>Committed bid components cannot be given</h3>
-          <p><strong>State:</strong> A player has placed a covered counterbid containing two Leverage and a Rally card. Before the counterbid phase locks, another player offers a Smear card for that Rally card.</p>
-          <p><strong>Resolution:</strong> The Rally card cannot be given while it remains in the counterbid, even though the bid is still revisable. Its owner may retrieve the counterbid and return its contents behind their screen; only then does the card become eligible for a gift.</p>
-          <p><strong>Why:</strong> Gift eligibility depends on the component being physically behind a player’s screen, not on whether its bid has locked.</p>
+          <h3>The first card fixes low-player Capital scoring</h3>
+          <p><strong>State:</strong> Bert’s registered Election pair is SC-05 followed by SC-06. Bellweather Centre contains two parties named on SC-05 and all three parties named on SC-06.</p>
+          <p><strong>Resolution:</strong> Both cards score their ordinary district objectives. Only SC-05 supplies Capital parties, so Bert gains 1 Capital point for having two of its three parties present. He cannot choose SC-06 for 3 points.</p>
+          <p><strong>Why:</strong> The first card in a registered pair is locked as its Capital card when the pair is formed.</p>
         </div>
-
-        <div class="note">
-          <h3>A deal is socially enforced</h3>
-          <p><strong>State:</strong> One player gives two Leverage after another player promises not to counterbid at Honeycomb later in the round.</p>
-          <p><strong>Resolution:</strong> The completed gift stands. The recipient may still counterbid at Honeycomb, because the game neither enforces the promise nor reverses the gift.</p>
-          <p><strong>Why:</strong> Players enforce agreements socially; the rules provide no acceptance, reversal, or contract enforcement.</p>
-        </div>
-      </section>
-
-      <section>
-        <h2>Example template</h2>
-        <div class="note">
-          <h3>Situation: short descriptive title</h3>
-          <p><strong>State:</strong> Name the target, Pecking Order, relevant party state, available information, and each human player’s committed resources.</p>
-          <p><strong>Choices:</strong> State exactly what each player commits.</p>
-          <p><strong>Resolution:</strong> Apply the rule one step at a time.</p>
-          <p><strong>Why:</strong> Point to the sentence in the current rules that determines the result.</p>
-        </div>
-      </section>
-
-      <section>
-        <h2>Examples to add first</h2>
-        <ul>
-          <li>Two equal counterbids at the Honeycomb Cooperative while its opening bid remains active.</li>
-          <li>An empty counterbid that becomes the sole lowest active bid and receives a richer package through the Revolving Door.</li>
-          <li>One lobbying firm occupying multiple ranks in a party contest.</li>
-          <li>The mandatory Pecking Order auction with several active bids, showing low-to-high operation-card execution followed by a normal Revolving Door.</li>
-          <li>An operation card made illegal by an earlier operation effect but still transferred.</li>
-          <li>Common Cause becoming available because its Court baseline creates Honeycomb’s new Coalition Target.</li>
-          <li>Canal Network reaching a free district through several Riverworks-held districts.</li>
-          <li>Scatter the Flock emptying its Rally district across every neighboring vacancy.</li>
-        </ul>
-        <p>Keep these as writing prompts until each edge case needs a full walkthrough.</p>
       </section>
     </main>
 
     <footer class="page-footer">
       <div class="page-footer-inner">
         <a href="current-rules.html">Back to current rules →</a>
-        <span class="stamp">8 worked examples</span>
+        <span class="stamp">9 worked examples</span>
       </div>
     </footer>
   </body>

@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="A4 landscape campaign and public score trackers for Bellweather.">
-    <title>Printable Campaign and Score Trackers — Ladder Bidding</title>
+    <meta name="description" content="A4 landscape year, Election, and public score trackers for Bellweather.">
+    <title>Printable Year and Score Trackers — Ladder Bidding</title>
     <link rel="stylesheet" href="../campaign-score-trackers.css">
   </head>
   <body>
     <header class="screen-header">
       <a href="board.html#district-map">← Board specification</a>
-      <h1>Campaign and score trackers</h1>
+      <h1>Year and score trackers</h1>
       <p>Print at actual size on one A4 landscape sheet. The 27 mm spaces fit the 25 mm firm score markers and 22 mm round marker.</p>
       <p><a href="../../assets/print/campaign-score-trackers-a4.pdf">Open print-ready PDF →</a></p>
     </header>
@@ -20,7 +20,7 @@
         <header class="sheet-header">
           <div>
             <p>Republic of Bellweather / public ledger 01</p>
-            <h2>Campaign register</h2>
+            <h2>Year register</h2>
           </div>
           <p class="sheet-instruction">Place markers inside spaces<br>Print at 100%</p>
         </header>
@@ -41,12 +41,12 @@
             <header class="panel-header">
               <div>
                 <p class="eyebrow">National calendar</p>
-                <h3 id="campaign-heading">Campaign</h3>
+                <h3 id="campaign-heading">Twelve years</h3>
               </div>
-              <p>Four rounds<br>then Election</p>
+              <p>Four years<br>then Election</p>
             </header>
-            <div class="campaign-grid" aria-label="Three election cycles of four Campaign Rounds and one Election Day"></div>
-            <p class="campaign-note">Move the round marker down a column, then begin the next cycle.</p>
+            <div class="campaign-grid" aria-label="Three election cycles of four years and one Election"></div>
+            <p class="campaign-note">Move the year marker down a column. Cleanup comes before each Election.</p>
           </section>
         </div>
 
@@ -83,9 +83,9 @@
       }
 
       const campaignColumns = [
-        ["R1", "R2", "R3", "R4", "E1"],
-        ["R5", "R6", "R7", "R8", "E2"],
-        ["R9", "R10", "R11", "R12", "E3"]
+        ["Y1", "Y2", "Y3", "Y4", "E1"],
+        ["Y5", "Y6", "Y7", "Y8", "E2"],
+        ["Y9", "Y10", "Y11", "Y12", "E3"]
       ];
       const campaignGrid = document.querySelector(".campaign-grid");
       for (const [columnIndex, column] of campaignColumns.entries()) {

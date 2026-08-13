@@ -3,17 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Local HTTP and WebSocket API contract for automated Ladder Bidding playtest agents.">
+    <meta name="description" content="Local HTTP and WebSocket API contract for automated Bellweather playtest agents.">
     <title>Playtest Agent API — Ladder Bidding</title>
     <link rel="stylesheet" href="../styles.css">
   </head>
   <body>
     <header class="page-header">
       <div class="header-inner">
-        <a class="brand" href="../index.html">
-          <span class="brand-mark" aria-hidden="true">LB</span>
-          Design archive / agent API
-        </a>
+        <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / agent API</a>
         <h1>Playtest agent API</h1>
         <p class="meta">The authenticated local contract shared by browser players and automated seats.</p>
       </div>
@@ -21,10 +18,10 @@
 
     <main>
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Playtest agent API</nav>
-      <p class="intro">Run the application locally at <code>http://127.0.0.1:4317</code>. Every seat receives an opaque bearer token. A command’s acting seat and timestamp always come from the server. Do not supply either field: strict command validation rejects unknown fields.</p>
+      <p class="intro">Run the application locally at <code>http://127.0.0.1:4317</code>. Every seat receives an opaque bearer token. A command’s acting seat and timestamp come from the server; strict validation rejects unknown fields.</p>
 
       <section>
-        <span class="status decided">Implemented</span>
+        <span class="status decided">Ruleset 15</span>
         <h2>Start and connect</h2>
         <pre><code>npm install
 npm run build
@@ -32,16 +29,13 @@ npm start
 
 # Development, with source packages and server reload
 npm run dev</code></pre>
-        <p>Create a table with <code>POST /api/v1/games</code>, or join one with <code>POST /api/v1/games/join</code>. Both responses contain a session with <code>gameId</code>, <code>seatId</code> or <code>spectatorId</code>, and <code>accessToken</code>. Keep the token private and send it as <code>Authorization: Bearer …</code>.</p>
+        <p>Create a table with <code>POST /api/v1/games</code>, or join one with <code>POST /api/v1/games/join</code>. Both responses include a session with <code>gameId</code>, a participant ID, and <code>accessToken</code>. Send the token as <code>Authorization: Bearer …</code>.</p>
         <pre><code>{
   "displayName": "Ada",
   "controller": "agent",
-  "configuration": {
-    "counterbidTimer": { "mode": "off" },
-    "allowSpectators": true
-  }
+  "configuration": { "allowSpectators": true }
 }</code></pre>
-        <p>Lobby creation does not set a player count. Every lobby admits up to six player seats, and <code>publicState.configuration.playerCount</code> reports the current occupied count. The host may start once at least two players have joined; the accepted start freezes the actual two-to-six-player seat list into canonical game state. A seventh player receives <code>lobby_full</code>. When observers are admitted, they may join from the lobby or while play is active; player seats remain closed after play starts.</p>
+        <p>The host may start after two to six players have joined. Starting freezes the seat list and assigns the low-player doubled setup automatically when required. There is no auction timer configuration.</p>
       </section>
 
       <section>
@@ -52,8 +46,8 @@ npm run dev</code></pre>
             <tbody>
               <tr><td>GET</td><td><code>/api/v1/health</code></td><td>Server and ruleset health.</td></tr>
               <tr><td>POST</td><td><code>/api/v1/games</code></td><td>Create a lobby and host seat.</td></tr>
-              <tr><td>POST</td><td><code>/api/v1/games/join</code></td><td>Join by invite code as a player, or as an admitted spectator before or during play.</td></tr>
-              <tr><td>GET</td><td><code>/api/v1/games/:id/state</code></td><td>Get the authenticated public plus seat-private projection.</td></tr>
+              <tr><td>POST</td><td><code>/api/v1/games/join</code></td><td>Join by invite code as a player or admitted spectator.</td></tr>
+              <tr><td>GET</td><td><code>/api/v1/games/:id/state</code></td><td>Get the authenticated public and seat-private projection.</td></tr>
               <tr><td>POST</td><td><code>/api/v1/games/:id/commands</code></td><td>Submit an idempotent lobby or game command.</td></tr>
               <tr><td>GET</td><td><code>/api/v1/games/:id/replay</code></td><td>Get canonical full-information events after completion.</td></tr>
               <tr><td>WS</td><td><code>/api/v1/games/:id/events</code></td><td>Resume from a sequence and receive redacted live events.</td></tr>
@@ -70,44 +64,47 @@ npm run dev</code></pre>
   "expectedVersion": 17,
   "command": {
     "type": "game_action",
-    "action": { "type": "set_counterbid_ready", "ready": true }
+    "action": { "type": "pass" }
   }
 }</code></pre>
-        <p><code>expectedVersion</code> is optional. Supplying it rejects decisions made before the latest gameplay change; during active play, observer arrivals do not stale a player decision. Reusing the same idempotency key with the same request returns the first acceptance; reusing it for different content is an error.</p>
-        <p>Lobby commands are <code>{"type":"set_lobby_ready","ready":true}</code> and host-only <code>{"type":"start_game"}</code>. Lobby readiness is advisory: starting requires two occupied player seats but does not require every player to be marked ready. Public chat uses <code>{"type":"post_chat","message":"…"}</code>. A gift uses <code>type</code> <code>give_resources</code>, <code>recipientSeatId</code>, nonnegative integer <code>leverage</code>, <code>bluff</code>, and <code>points</code>, plus an <code>operations</code> object containing nonnegative integer <code>organise</code>, <code>rally</code>, <code>smear</code>, and <code>court</code> counts; at least one transferred value must be positive. Player game actions are <code>submit_openings</code>, <code>set_counterbid</code>, <code>set_counterbid_ready</code>, <code>resolve_pecking_swap</code>, <code>resolve_party_operation</code>, and <code>set_election_ready</code>. Election draws and timer expiry are server-only.</p>
+        <p><code>expectedVersion</code> is optional. Supplying it rejects a decision based on stale gameplay state. Reusing an idempotency key with identical content returns the first acceptance; different content is an error. Lobby commands are <code>set_lobby_ready</code> and host-only <code>start_game</code>. Public chat uses <code>post_chat</code>.</p>
+
         <div class="table-wrap" role="region" aria-label="Game action payloads" tabindex="0">
           <table>
             <thead><tr><th>Action</th><th>Required payload</th></tr></thead>
             <tbody>
-              <tr><td><code>submit_openings</code></td><td><code>openings[]</code> contains exactly one opening when the active seat has Leverage, or is empty only when that seat has none. The opening contains <code>firmId</code>, <code>partyId</code>, integer <code>leverage</code>, integer <code>bluff</code>, and all four integer operation counts.</td></tr>
-              <tr><td><code>set_counterbid</code></td><td><code>slotIndex</code> from 0–3 and <code>bid</code>, either null to withdraw or an object containing <code>contestId</code>, <code>firmId</code>, <code>leverage</code>, <code>bluff</code>, and operation counts.</td></tr>
-              <tr><td><code>set_counterbid_ready</code></td><td>Boolean <code>ready</code>.</td></tr>
-              <tr><td><code>resolve_pecking_swap</code></td><td><code>decisionId</code> from private state and <code>adjacentIndex</code> from the projected legal indexes.</td></tr>
-              <tr><td><code>resolve_party_operation</code></td><td><code>decisionId</code>, one of the projected available operation families, and a matching legal choice against the current state. Organise uses destination and optional source district IDs; Rally uses a district; Smear uses a district and rival party; Court uses a target party whose Court space receives Support. To claim a bonus, wrap the baseline under <code>choice</code> with <code>claimBonus: true</code>. Variable bonus fields stay inside the nested choice: Common Cause uses <code>bonusSourceDistrictId</code> and <code>bonusDistrictId</code>; Public Works and Joint Campaign use <code>bonusDistrictId</code>; Scatter the Flock uses the maximum legal <code>bonusDistrictIds</code> array; Whisper Network uses <code>bonusCourtSourceParty</code>; and Midnight Leak uses <code>bonusCourtParty</code>. A delayed Night Shift decision uses an ordinary Rally choice restricted to the least-occupied legal districts. An illegal choice returns an <code>illegal_action</code> error without consuming the decision or card; when no remaining family has any legal choice, the engine records the impossible cards as failed and advances automatically.</td></tr>
-              <tr><td><code>set_election_ready</code></td><td>Boolean <code>ready</code>, after <code>phase.resultsRecorded</code> becomes true.</td></tr>
+              <tr><td><code>open_party</code></td><td><code>firmId</code> and an unopened <code>partyId</code>. Submit only while the projected opening cursor names the seat.</td></tr>
+              <tr><td><code>operate</code></td><td><code>partyId</code> and <code>plays</code>, an ordered array of one to three Operation plays. Each play contains a matching <code>operation</code> and <code>choice</code>; at most one play may set <code>claimBonus: true</code>.</td></tr>
+              <tr><td><code>collect</code></td><td><code>partyId</code> for an open party with a nonempty pile. The engine spends one Collection counter.</td></tr>
+              <tr><td><code>close</code></td><td><code>partyId</code> for an open party whose Firm marker belongs to the acting player. Illegal on that player’s first Lobby turn of the year.</td></tr>
+              <tr><td><code>pass</code></td><td>No additional fields.</td></tr>
+              <tr><td><code>set_election_ready</code></td><td>Boolean <code>ready</code>, after <code>phaseData.resultsRecorded</code> is true.</td></tr>
             </tbody>
           </table>
         </div>
-        <p>During the opening phase, public <code>phase.turnSeatIds</code> contains the complete Early Bird-relative turn sequence and may repeat a seat: ABBA at two players, ABCCBA at three, or one clockwise pass at four to six. <code>phase.turnIndex</code> is the zero-based current turn, and <code>phase.activeSeatId</code> is the seat at that index. Re-read the cursor after every accepted action, including when the same seat appears twice consecutively.</p>
+
+        <p>Operation choices follow the selected family. Organise uses <code>destinationDistrictId</code> and optional <code>sourceDistrictId</code>; Rally uses <code>districtId</code>; Smear uses <code>districtId</code> and <code>rivalParty</code>; Court uses <code>targetParty</code>. Bonus-dependent optional fields are <code>bonusDistrictId</code>, <code>bonusDistrictIds</code>, <code>bonusCourtParty</code>, <code>bonusSourceDistrictId</code>, and <code>bonusCourtSourceParty</code>. Resolve each play against the state created by the preceding play.</p>
         <pre><code>{
-  "type": "resolve_party_operation",
-  "decisionId": "decision-19",
-  "operation": "smear",
-  "choice": {
-    "choice": {
-      "operation": "smear",
-      "districtId": "harbormouth",
-      "rivalParty": "old-shell"
-    },
-    "claimBonus": true
-  }
+  "type": "operate",
+  "partyId": "night-parliament",
+  "plays": [
+    {
+      "operation": "rally",
+      "choice": {
+        "operation": "rally",
+        "districtId": "harbormouth"
+      },
+      "claimBonus": true
+    }
+  ]
 }</code></pre>
-        <p>An accepted command returns <code>gameId</code>, the same <code>idempotencyKey</code>, and the new <code>version</code>/<code>latestSequence</code>. Illegal choices return a structured protocol error; refetch state after a version conflict or another seat’s action.</p>
+        <p>An illegal choice returns <code>illegal_action</code> without consuming a turn or card. Refetch state after a version conflict or another seat’s action.</p>
       </section>
 
       <section>
-        <h2>Visibility</h2>
-        <p>Public state includes the invitation code, phase, public points, district Support, Court Support, Coalition Targets, Pecking Order, contest targets, readiness, chat, retained round reveals, and Election results. While the game is in its lobby or active and observer admission is enabled, every authenticated player and observer can use the displayed code to invite another observer. A seat projection additionally includes only that seat’s reserve, three ordered scoring-card slots, covered bid contents, counterbid slots, and pending decision. <code>privateGame.scoringCardIds</code> is a three-element Election-order array; each element contains one card at four to six players or a compatible pair at two or three. Spectators receive public state only. Live canonical events never disclose hidden engine payloads or gift contents.</p>
+        <h2>Phase and visibility</h2>
+        <p><code>publicGame.phase</code> is <code>opening</code>, <code>lobby</code>, <code>election</code>, or <code>complete</code>; <code>phaseData</code> carries the phase cursor. During Openings, <code>turnSeatIds</code> contains ABBA, ABCCBA, or the single clockwise orbit and may repeat a seat. During the Lobby, <code>activeSeatId</code> identifies the only acting seat.</p>
+        <p>Public state includes the year, Election number, Early Bird, public seat totals, party status and piles, Support, Court Support, Coalition Targets, Lobby actions, resolved Operations, year history, Election history, and chat. Opponents’ exact hands and New Year areas are hidden but their card counts are public. A seat projection adds that seat’s exact Operation inventories and all three ordered scoring slots. Previously revealed scoring slots remain public; future slots remain concealed.</p>
         <p>After the game ends, every authenticated participant may fetch the complete event history and canonical final state. Random setup and Election draws are recorded, so replay never rerolls.</p>
       </section>
 
@@ -119,10 +116,10 @@ npm run dev</code></pre>
   "accessToken": "opaque token",
   "afterSequence": 17
 }</code></pre>
-        <p>Omit <code>afterSequence</code> to receive a current snapshot. Include it to receive later projected events. Refetch the state after an event when the agent needs the newest legal-action context.</p>
+        <p>Omit <code>afterSequence</code> to receive a current snapshot. Include it to receive later projected events. Refetch state after an event when the agent needs current legality.</p>
       </section>
 
-      <p class="footer-note">The reusable TypeScript client is in <code>packages/testkit</code>; a runnable conservative agent is in <code>examples/playtest-agent.ts</code>. When that agent creates a lobby, <code>BELLWEATHER_PLAYERS</code> sets its host-only automatic-start target from 2–6 and defaults to 2. The target is local automation configuration and is not sent in the create-lobby request.</p>
+      <p class="footer-note">The reusable TypeScript client is in <code>packages/testkit</code>; a conservative runnable agent is in <code>examples/playtest-agent.ts</code>. <code>BELLWEATHER_PLAYERS</code> sets that agent’s host-only automatic-start target from two to six and defaults to two.</p>
     </main>
   </body>
 </html>

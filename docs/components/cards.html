@@ -3,156 +3,43 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Bid cards and Election Day scoring cards for the Republic of Bellweather.">
+    <meta name="description" content="Operation and Election scoring cards for Bellweather Ruleset 15.">
     <title>Cards — Ladder Bidding</title>
     <link rel="stylesheet" href="../styles.css">
   </head>
   <body>
-    <header class="page-header">
-      <div class="header-inner">
-        <a class="brand" href="../index.html">
-          <span class="brand-mark" aria-hidden="true">LB</span>
-          Design archive / 03.2
-        </a>
-        <h1>Cards</h1>
-        <p class="meta">Political operations, hidden agendas, and prototype counts.</p>
-      </div>
-    </header>
-
+    <header class="page-header"><div class="header-inner"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / 03.2</a><h1>Cards</h1><p class="meta">Operations and fixed Election agendas.</p></div></header>
     <main>
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Cards</nav>
-      <p class="intro">Reusable bid cards build concealed influence stacks, while a separate deck of hidden scoring cards gives each player a private Election Day agenda.</p>
-
+      <p class="intro">Ruleset 15 uses only Operation cards and scoring cards. Leverage and Bluff are retired; an Operation card now moves directly from a player’s hand to a public party pile.</p>
       <section>
         <span class="status decided">Decided</span>
-        <h2>Transferable bid cards</h2>
-        <p>Each 40 × 61 mm operation card belongs to the Organise, Rally, Smear, or Court family and performs its family’s baseline effect at any party. Each party favors two families and offers one bonus for each. Bids receive first refusal on still-available bonuses from highest rank to lowest, and each bonus may be applied with one matching operation card during the contest. The Pecking Order ignores printed families: every operation card there swaps one adjacent pair of party tokens instead of using its party baseline. Pecking Order bids execute from lowest Leverage to highest Leverage, and legal swap pairs are chosen when each card executes.</p>
-        <p>Every one-Leverage card contributes one public or revealed Leverage. Bluff cards have no effect but increase a face-down stack’s apparent size. At four to six players, every human contributes ten Leverage, four Bluff, two Organise, four Rally, two Smear, and two Court cards to the closed economy. At two or three players, each human contributes double that supply. Each family has a unique initial—L, B, O, R, S, or C—printed upright in the upper-left corner and rotated in the lower-right corner for recognition in a fanned hand. Every current or future bid-card family must begin with a different letter so those one-letter indices remain unambiguous. Transferable bid cards have front-only artwork and no lobbying-firm identity because complete bids pass between players through the Revolving Door and cards may move through player gifts. Opaque sleeves preserve their concealed information.</p>
-        <p><a href="bid-cards.html">Open the printable bid-card supply →</a></p>
+        <h2>Operation cards</h2>
+        <p>Each 40 × 61 mm card belongs to Organise, Rally, Smear, or Court. It has no Firm identity because any player may play it on any open party and another player may later Collect it. Played cards remain face up in that party’s pile until Collection or Closure.</p>
+        <div class="table-wrap" role="region" aria-label="Operation card supply" tabindex="0"><table>
+          <thead><tr><th>Family</th><th>Standard hand</th><th>Doubled hand at 2–3 players</th><th>Favored by</th></tr></thead>
+          <tbody>
+            <tr><td>Organise</td><td>2</td><td>4</td><td>Honeycomb, Old Shell, Riverworks</td></tr>
+            <tr><td>Rally</td><td>4</td><td>8</td><td>Riverworks, Many Wings, Night Parliament</td></tr>
+            <tr><td>Smear</td><td>2</td><td>4</td><td>Old Shell, Foxglove, Night Parliament</td></tr>
+            <tr><td>Court</td><td>2</td><td>4</td><td>Honeycomb, Foxglove, Many Wings</td></tr>
+          </tbody>
+        </table></div>
+        <p>A four-to-six-player supply therefore needs twelve Organise, twenty-four Rally, twelve Smear, and twelve Court cards. The same sixty cards support six standard hands or three doubled hands. No neutral deck is required during play; all cards begin in player hands.</p>
       </section>
-
-      <section>
-        <span class="status decided">Decided</span>
-        <h2>Operation families</h2>
-        <div class="table-wrap" role="region" aria-label="Operation families" tabindex="0">
-          <table>
-            <thead>
-              <tr>
-                <th>Family</th>
-                <th>Baseline effect</th>
-                <th>Favored by</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Organise</td>
-                <td>Relocate party Support to a neighboring district; re-establish a supportless party anywhere.</td>
-                <td>Honeycomb Cooperative, Foxglove League, Many Wings Coalition</td>
-              </tr>
-              <tr>
-                <td>Rally</td>
-                <td>Add party Support where it is present; re-establish a supportless party anywhere.</td>
-                <td>Honeycomb Cooperative, Riverworks Party, Night Parliament</td>
-              </tr>
-              <tr>
-                <td>Smear</td>
-                <td>Remove rival Support where the party is present or neighboring; a supportless party may target anywhere.</td>
-                <td>Old Shell Union, Foxglove League, Riverworks Party</td>
-              </tr>
-              <tr>
-                <td>Court</td>
-                <td>Place acting-party Support on another party’s Court space; move the Coalition Target when one space has a unique lead.</td>
-                <td>Old Shell Union, Many Wings Coalition, Night Parliament</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p>The four baselines and all twelve party bonuses are decided.</p>
-
-        <div class="note">
-          <p><strong>Superseded:</strong> An earlier specification treated the two party icons as compatibility restrictions. That version is retained in the <a href="../../archive/components/party-operation-compatibility-2026-07-28.html">component archive</a>.</p>
-          <p>The later Campaign, Expansion, Platform, and Coalition specification is retained in the <a href="../../archive/components/provisional-operation-families-2026-07-28.html">operation-family archive</a>.</p>
-          <p>The former Foxglove and Riverworks favored-operation icons are retained in the <a href="../../archive/components/foxglove-riverworks-pairing-2026-07-28.html">pairing archive</a>.</p>
-        </div>
-      </section>
-
       <section>
         <span class="status decided">Decided</span>
         <h2>Scoring cards</h2>
-        <p>The prototype uses a fixed <a href="scoring-cards.html">24-card scoring deck</a>. Each card pairs three different parties with pairwise non-neighboring districts: one 6-capacity, one 4-capacity, and one 2-capacity district. It also names one relative-seat score to gain and one to lose in games with four or more players.</p>
-        <p>Prepare the full deck once at setup and deal every player three fixed, ordered agenda slots for Elections 1, 2, and 3. At four to six players, shuffle the twenty-four individual cards once and deal one card per slot. At two or three players, assemble twelve registered compatible packets from adjacent odd–even IDs, SC-01 + SC-02 through SC-23 + SC-24, then shuffle all twelve face-down packets once and deal one per slot. Each packet names six distinct districts and keeps passed-over cards unseen. Players may inspect all three of their own slots immediately but cannot reassign them. Reveal only the assigned slot at each Election, leave every scored slot face up and public, and never collect or redeal agendas between Elections. Scoring cards never enter bids or transfer through the Revolving Door.</p>
+        <p>The <a href="scoring-cards.html">24-card scoring deck</a> retains its exact objective and seat-reference data. Each card names three different parties and three districts, one each of capacity 6, 4, and 2.</p>
+        <p>At four to six players, each of a player’s three Election slots contains one card; that card supplies both its ordinary objectives and its three Capital parties. At two or three players, each slot contains one registered adjacent odd–even pair. Both cards score their ordinary objectives, but only the first card in the registered pair supplies its three Capital parties. Print or layout should make the first/Capital position unmistakable.</p>
+        <p>Capital reminder: 0 points for zero or one named party present in Bellweather Centre, 1 point for two, and 3 points for all three.</p>
       </section>
-
       <section>
-        <span class="status">Archived prompt</span>
-        <h2>Initial candidate jobs</h2>
-        <div class="table-wrap" role="region" aria-label="Candidate card families" tabindex="0">
-          <table>
-            <thead>
-              <tr>
-                <th>Card family</th>
-                <th>Possible job</th>
-                <th>Question before adding it</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Bid cards</td>
-                <td>Make commitments finite, hidden, or asymmetric.</td>
-                <td>Why are tokens or a dial insufficient?</td>
-                <td>Candidate</td>
-              </tr>
-              <tr>
-                <td>Prize cards</td>
-                <td>Change what each contest is worth.</td>
-                <td>Does variety deepen valuation or obscure the loop?</td>
-                <td>Candidate</td>
-              </tr>
-              <tr>
-                <td>Rung cards</td>
-                <td>Give positions changing effects.</td>
-                <td>Should position be stable enough to plan around?</td>
-                <td>Candidate</td>
-              </tr>
-              <tr>
-                <td>Player powers</td>
-                <td>Create asymmetric incentives.</td>
-                <td>Is the symmetric game already interesting?</td>
-                <td>Deferred</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <h3>Superseded anatomy requirement</h3>
-        <p>The initial card checklist required an operation-family icon to remain readable in a fanned hand. Operation tokens briefly replaced that format before playtest feedback returned the complete bid economy to cards. Both superseded formats remain in the <a href="../../archive/components/operative-card-format-2026-07-29.html">first card archive</a> and <a href="../../archive/components/pre-card-playtest-components-2026-07-30.html">pre-card component archive</a>.</p>
-      </section>
-
-      <section>
-        <h2>Scoring-card anatomy</h2>
-        <ul class="checklist">
-          <li>Finished size is 40 × 61 mm for a 41 × 63 mm sleeve.</li>
-          <li>Objectives remain ordered by 6-, 4-, then 2-capacity district.</li>
-          <li>Party names and emblems identify each objective without relying on color.</li>
-          <li>Gain and Lose references remain visually distinct.</li>
-          <li>Every card keeps its SC-01 through SC-24 identifier.</li>
-        </ul>
-      </section>
-
-      <section>
-        <h2>Inventory</h2>
-        <p>The scoring deck contains twenty-four individually identified cards. The largest transferable bid-card supply contains sixty Leverage, twenty-four Bluff, twelve Organise, twenty-four Rally, twelve Smear, and twelve Court cards: the same 144 cards support six standard player supplies or three doubled supplies.</p>
-        <div class="note">
-          <p><strong>Superseded:</strong> The former eighty-four-token supply remains in the <a href="../../archive/components/eighty-four-operation-token-supply-2026-07-30.html">component archive</a>.</p>
-        </div>
+        <span class="status">Superseded</span>
+        <h2>Retired auction cards</h2>
+        <p>Ruleset 14’s sixty Leverage cards, twenty-four Bluff cards, bid-stack anatomy, identity-card covers, and 144-card printable supply are retained in the <a href="../../archive/components/auction-components-ruleset-14-2026-08-13.html">auction component archive</a>. The old <a href="bid-cards.html">printable bid-card page</a> remains available as a historical artifact and is not a current component.</p>
       </section>
     </main>
-
-    <footer class="page-footer">
-      <div class="page-footer-inner">
-        <a href="tokens.html">Next component: Tokens →</a>
-        <span>144 bid cards / 24 scoring cards</span>
-      </div>
-    </footer>
+    <footer class="page-footer"><div class="page-footer-inner"><a href="tokens.html">Next component: Tokens →</a><span>60 Operation cards / 24 scoring cards</span></div></footer>
   </body>
 </html>

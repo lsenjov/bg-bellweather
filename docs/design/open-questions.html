@@ -3,216 +3,46 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Ranked design questions for Ladder Bidding.">
+    <meta name="description" content="Current design questions for the Bellweather yearly party-access game.">
     <title>Open Questions — Ladder Bidding</title>
     <link rel="stylesheet" href="../styles.css">
   </head>
   <body>
     <header class="page-header">
       <div class="header-inner">
-        <a class="brand" href="../index.html">
-          <span class="brand-mark" aria-hidden="true">LB</span>
-          Design archive / 01.3
-        </a>
+        <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / 01.3</a>
         <h1>Open questions</h1>
-        <p class="meta">Resolve the questions that unlock a prototype before the ones that decorate it.</p>
+        <p class="meta">Questions for testing the replacement yearly loop.</p>
       </div>
     </header>
 
     <main>
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Open questions</nav>
-      <p class="intro">The initial ladder-era question queue remains as design history. Current unresolved rules and playtest watches follow it in a separate list.</p>
+      <p class="intro">The rules below are playable. These questions identify balance, pacing, and component choices still requiring evidence; they are not hidden rules.</p>
 
       <div class="table-wrap" role="region" aria-label="Open design question queue" tabindex="0">
         <table>
-          <caption>Archived initial queue / draft 00</caption>
-          <thead>
-            <tr>
-              <th>Priority</th>
-              <th>Question</th>
-              <th>Why it matters</th>
-              <th>Smallest useful test</th>
-            </tr>
-          </thead>
+          <caption>Current queue / Ruleset 15</caption>
+          <thead><tr><th>Priority</th><th>Question</th><th>Why it matters</th><th>Smallest useful test</th></tr></thead>
           <tbody>
-            <tr>
-              <td>01</td>
-              <td>What does the ladder represent?</td>
-              <td>Position could be progress, turn order, price, status, or eligibility; each creates a different game.</td>
-              <td>Sketch one loop for each interpretation using the same six-space track.</td>
-            </tr>
-            <tr>
-              <td>02</td>
-              <td>What are players bidding to gain or change?</td>
-              <td>The prize determines whether bids express valuation, timing, denial, or prediction.</td>
-              <td>Run five contests with one recurring prize and no scoring layer.</td>
-            </tr>
-            <tr>
-              <td>03</td>
-              <td>What does a bid cost?</td>
-              <td>Reusable, spent, and future-punishing bids produce very different incentives.</td>
-              <td>Compare finite coins with a bid that moves a player backward.</td>
-            </tr>
-            <tr>
-              <td>04</td>
-              <td>How are bids made and revealed?</td>
-              <td>Open, sealed, simultaneous, and once-around bidding create different information games.</td>
-              <td>Play the same contest three times using open, sealed, and once-around bids.</td>
-            </tr>
-            <tr>
-              <td>05</td>
-              <td>Why does a player want to climb?</td>
-              <td>The ladder needs an intrinsic incentive or a clear relationship to winning.</td>
-              <td>Test immediate privileges against end-game position scoring.</td>
-            </tr>
-            <tr>
-              <td>06</td>
-              <td>Can players fall, block, pass, or share a rung?</td>
-              <td>Movement constraints define the game’s sharpest interaction.</td>
-              <td>Prototype exclusive rungs first, then allow sharing and compare.</td>
-            </tr>
-            <tr>
-              <td>07</td>
-              <td>What happens to a losing bidder?</td>
-              <td>Repeated non-results can create runaway leaders or disengagement.</td>
-              <td>Compare keeping the bid, gaining priority, and moving on another track.</td>
-            </tr>
-            <tr>
-              <td>08</td>
-              <td>What ends the game?</td>
-              <td>The end trigger determines whether climbing is a race, a timer, or a positional contest.</td>
-              <td>Test reaching the top against a fixed number of auctions.</td>
-            </tr>
-            <tr>
-              <td>09</td>
-              <td>What theme makes these incentives intuitive?</td>
-              <td>Theme should explain the loop after the loop proves interesting.</td>
-              <td>Retheme one proven prototype, not the whole possibility space.</td>
-            </tr>
+            <tr><td>First test</td><td>Does the Operate–Collect–Close loop create meaningful timing pressure?</td><td>Players need reasons to feed a party pile, harvest it, wait for more cards, or secure it through their opening marker.</td><td>Play four years and record pile size at every Collect and Closure, plus every turn a player wanted to wait but acted from fear of losing the pile.</td></tr>
+            <tr><td>First test</td><td>Does the strict-majority Closure ending arrive at a satisfying time?</td><td>Ending mid-orbit is deliberately sharp, but it may cut off too many plans or make third and fourth Closures automatic.</td><td>Record who closes each party, the turn count, which players lose expected actions, and whether the ending player had a real alternative.</td></tr>
+            <tr><td>First test</td><td>Are two Collections per year enough at four to six players and four enough at two or three?</td><td>Too few makes openings deterministic ownership; too many drains piles before Closure matters.</td><td>Track unused counters, desired-but-unavailable Collections, repeated Collections at one party, and cards gained by Collect versus Closure.</td></tr>
+            <tr><td>First test</td><td>Does a one-to-three-card Operate remain readable and balanced with only one bonus?</td><td>Bundling accelerates the map but can produce long tactical sequences or make three cards routinely best.</td><td>Record Operate sizes, resolution time, bonus use, illegal later cards, and whether players regret announcing the whole sequence.</td></tr>
+            <tr><td>Balance</td><td>Does immediate Double Rally make Night Shift useful without excessive growth?</td><td>It is a provisional replacement for delayed resolution and can be tuned after the yearly loop is tested.</td><td>Record every opportunity, claim, blocked second placement, and district capacity pressure created by Night Shift.</td></tr>
+            <tr><td>Balance</td><td>Does Capital scoring at 0/0/1/3 reward Centre presence without dominating ordinary agendas?</td><td>The Centre persists through Elections and has only three spaces, so modest points may still create strong blocking incentives.</td><td>Record Capital points, ordinary points, who occupied each Centre space, and actions taken primarily to deny the third named party.</td></tr>
+            <tr><td>Balance</td><td>Does the fixed first Capital card in low-player pairs feel fair?</td><td>The lock removes a scoring-time choice but particular registered pairs may differ in Centre feasibility.</td><td>Compare Capital opportunities by pair across repeated setups and ask whether players could remember which first card mattered.</td></tr>
+            <tr><td>Pacing</td><td>Does the player who ends the year make a healthy next Early Bird?</td><td>The reward is tempo next year, while players later in the current orbit may lose actions.</td><td>Record deliberate year endings, the following ABBA/ABCCBA openings, and whether one player can chain the role too easily.</td></tr>
+            <tr><td>Pacing</td><td>Do twelve full years fit the intended play time and mental load?</td><td>The repeated structure must allow three Election arcs without becoming procedural.</td><td>Time Openings, Lobby, Cleanup, and Election separately for every year.</td></tr>
+            <tr><td>Components</td><td>What physical geometry best shows openers, piles, Closure, bonuses, and New Year cards?</td><td>The information is intentionally visible but should not require spreading every collected card across the table.</td><td>Prototype party mats, a compact New Year discard area, one Firm marker, and two Collection counters from borrowed components.</td></tr>
+            <tr><td>Identity</td><td>Should the working title change now that bidding has been removed?</td><td>“Ladder Bidding” describes neither the current action loop nor its strongest table moment.</td><td>Wait until players consistently name the game’s central tension in their own words.</td></tr>
           </tbody>
         </table>
       </div>
-
-      <section>
-        <h2>Current mechanic questions</h2>
-        <div class="table-wrap" role="region" aria-label="Questions raised by the current influence mechanic" tabindex="0">
-          <table>
-            <thead>
-              <tr>
-                <th>Status</th>
-                <th>Question</th>
-                <th>Why it matters</th>
-                <th>Smallest useful test</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Do the twelve party bonuses remain distinct and worth first refusal without overshadowing their baselines?</td>
-                <td>Every operation has three party expressions, but global movement, conversion, double effects, persistent protection, and delayed actions may differ sharply in practical value.</td>
-                <td>Record every claimed, declined, and unusable bonus, the bid rank that received it, and whether the baseline alone would have justified the operation card.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Do hidden district–party objectives, partial Support draws, and Election thinning reward deliberate map play?</td>
-                <td>Each card can still score at most six base points, but a coalition broadens which parties’ Support matches while every district except Bellweather Centre keeps only its capacity-based random draw. The Centre remains a persistent chokepoint.</td>
-                <td>At each Election Day, record Support retained and returned in every non-Centre district, plus every objective’s own-party and coalition-partner Support before the draw and whether its holder knowingly influenced that district, party, or coalition.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Are four Campaign Rounds per Election Day and twelve total Campaign Rounds the right clock?</td>
-                <td>The fixed 4/4/4 structure produces twelve complete Campaign Rounds regardless of player count, contest count, or insolvency.</td>
-                <td>Record elapsed time and meaningful board changes in each four-round period, then ask whether each Election Day arrived too early, too late, or at a useful turning point.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Does reciprocal coalition scoring make Court actions and Coalition Targets strategically valuable without overpowering district control?</td>
-                <td>Each drawn Support belonging to either coalition partner matches objectives for both, so a coalition can broaden scoring immediately before Election Day.</td>
-                <td>Record every coalition at each Election Day, the points each partner’s Support contributed to the other, and which Court placements formed or broke those coalitions.</td>
-              </tr>
-              <tr>
-                <td>Open component</td>
-                <td>Do the sleeved scoring cards need printed backs?</td>
-                <td>The 40 × 61 mm fronts fit the selected sleeves, but clear sleeves and thin paper may expose hidden agendas without a common back or opaque insert.</td>
-                <td>Test the front-only cards in the intended 41 × 63 mm sleeves under ordinary table lighting before designing backs.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Does the sixteen-district map make both outer-ring distance and Crownwater causeway movement matter?</td>
-                <td>The three large outer districts should attract Support while the low-capacity causeways provide alternate routes between sectors; either structure could dominate and flatten spatial choices.</td>
-                <td>Track every Organise origin and destination, whether its shortest route uses a causeway, and the free spots remaining at each capacity after every contest.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Do the long party boards keep bids, bonuses, Court Support, and Coalition Targets readable without consuming too much table space?</td>
-                <td>The boards combine the contest target with persistent state, but their opening-bid areas must fit a 40 × 61 mm firm identity card and six boards occupy more space than one central track.</td>
-                <td>Print all three sheets at actual size, use the intended identity cards, and run one contest at every party on an ordinary table.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Does unlimited Support with all three 6-capacity districts full at setup create useful pressure?</td>
-                <td>District capacity is the only placement limit. The three largest districts begin full, so early Rally effects there depend on a move or removal creating a vacancy.</td>
-                <td>Record every failed placement, every vacancy created and claimed in a 6-capacity district, and whether unlimited supply makes Support growth feel automatic elsewhere.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Does the player-count-scaled 2 Organise / 4 Rally / 2 Smear / 2 Court supply create enough growth and coalition competition without making Rally or Court bids routine?</td>
-                <td>Rally remains twice as common as Smear so board development should outpace direct removal. Court now matches Organise and Smear so Coalition Targets and Court-favoured bonuses appear more often. Players at two or three begin with double the standard supply, and every card can concentrate in another player’s reserve through gifts.</td>
-                <td>Record each family’s bids and gifts, every round in which a family is unavailable to a player, every Court-driven target or coalition change, and whether the additional Rally or Court cards create useful board state rather than merely taller bid stacks.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Does having no Support create a useful recovery state or a desirable global-Smear strategy?</td>
-                <td>A supportless party may Smear anywhere until it re-enters through Organise or Rally, so absence may provide offensive flexibility rather than merely prevent elimination.</td>
-                <td>Record every voluntary or forced loss of final Support, all global Smears, and how soon the party re-enters.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Do limited district spots create tactical vacancies or frequent failed actions?</td>
-                <td>Organise and Rally require free spots while Smear creates them, but a crowded map may make operation legality too brittle.</td>
-                <td>Record each failed spatial operation, each contested vacancy, and the number of free spots after every contest.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Do legal last-second counterbid moves improve bluffing or merely prevent informed reactions?</td>
-                <td>A timed phase deliberately permits sniping, but it may reward speed, vigilance, or reach more than judgment.</td>
-                <td>When using a timer, record every move made in the final five seconds, when each player stops revising, and whether opponents felt they had a meaningful response.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Do uncapped operation-card bundles create worthwhile risk or overwhelming action bursts?</td>
-                <td>Operation-card supply is the only limit, so one bid may produce a long resolution before transferring a highly concentrated asset.</td>
-                <td>Record the largest bundle, its resolution time, and whether another player would willingly make the same wager.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Does placing an additional bid on one’s own influence contest create varied tactics or compulsory insurance?</td>
-                <td>An opener can occupy several ranks and may be able to route valuable opening resources back to themselves.</td>
-                <td>Track how often players self-bid, whether the choice protects value, and what they gave up elsewhere to do it.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Do atomic gifts and socially enforced deals deepen negotiation without overwhelming play?</td>
-                <td>Gifts can redistribute Leverage, Bluff, and operation cards and points outside the Revolving Door. One-way transfers and unenforced agreements may create social pressure, kingmaking, or misunderstandings about reciprocity.</td>
-                <td>Record every gift and promise, the resources and points moved, any broken promise or rules dispute, and whether quieter players could participate meaningfully.</td>
-              </tr>
-              <tr>
-                <td>Playtest watch</td>
-                <td>Does the Revolving Door make circular transfer easier to predict without implying that a party receives the bid?</td>
-                <td>The theme should clarify that lobbying firms exchange complete influence packages after every contest, even though the party was the target.</td>
-                <td>Ask players to predict each transfer before moving any bid cards and record every mistaken destination.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
     </main>
 
     <footer class="page-footer">
-      <div class="page-footer-inner">
-        <a href="../rules/current-rules.html">Turn answers into rules →</a>
-        <span>0 open rules / 1 open component / 15 playtest watches / 9 archived prompts</span>
-      </div>
+      <div class="page-footer-inner"><a href="../rules/current-rules.html">Turn answers into rules →</a><span>11 playtest questions</span></div>
     </footer>
   </body>
 </html>

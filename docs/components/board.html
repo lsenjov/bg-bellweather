@@ -3,362 +3,66 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Party targets, the Pecking Order, and the district map for Ladder Bidding.">
+    <meta name="description" content="District map and yearly party access areas for Bellweather Ruleset 15.">
     <title>Board — Ladder Bidding</title>
     <link rel="stylesheet" href="../styles.css">
   </head>
   <body>
-    <header class="page-header">
-      <div class="header-inner">
-        <a class="brand" href="../index.html">
-          <span class="brand-mark" aria-hidden="true">LB</span>
-          Design archive / 03.1
-        </a>
-        <h1>Board</h1>
-        <p class="meta">Animal parties, political state, and shared media order.</p>
-      </div>
-    </header>
-
+    <header class="page-header"><div class="header-inner"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / 03.1</a><h1>Board</h1><p class="meta">District Support and yearly party access.</p></div></header>
     <main>
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Board</nav>
-      <p class="intro">A connected district map holds limited Support spots. Six animal political parties are the ordinary influence targets, while the Pecking Order board holds their persistent resolution sequence and its mandatory auction.</p>
-
+      <p class="intro">The main board has a fixed Support map and six party areas. There is no shared auction or persistent party-order track.</p>
       <section>
         <span class="status decided">Decided</span>
-        <h2>Current board role</h2>
+        <h2>Party areas</h2>
+        <p>Each party area must show its identity, two favored bonuses, five Court spaces, Coalition Target, annual Firm opening position, public Operation pile, and open/closed state. A Firm marker on a party identifies who receives that party’s pile when it closes; it is not a bid.</p>
         <ul>
-          <li>Give every party a unique, readable identity and two favored-operation bonus icons.</li>
-          <li>Show connected political districts, their limited Support spots, and every party’s public Support.</li>
-          <li>Show each party’s temporary Court Support, persistent directional Coalition Target, and any reciprocal coalition.</li>
-          <li>Provide one public location for each opening influence contest and its ranked bids.</li>
-          <li>List every party in a persistent Pecking Order that determines party-contest resolution.</li>
-          <li>Provide one automatic Pecking Order auction every Campaign Round, with no opener or opening bid.</li>
-          <li>Resolve Pecking Order operation cards from the lowest active bid to the highest, swapping one adjacent pair per card.</li>
-          <li>Show that the Pecking Order Revolving Door retains the normal high-to-low bid ranking.</li>
-          <li>Randomize the six party tokens to form the starting order.</li>
+          <li>The pile must hold and expose the families of played Operation cards.</li>
+          <li>Two annual bonus states reset during Cleanup and do not reset when the pile is Collected.</li>
+          <li>A closed state must prevent further Operations while preserving Firm ownership through Cleanup.</li>
+          <li>Night Shift needs no delayed marker; it is an immediate second Rally in the same district.</li>
         </ul>
+        <p>The existing <a href="party-boards.html">Ruleset 14 printable party boards</a> remain a historical layout reference until the opening and pile areas are redrawn.</p>
       </section>
-
       <section>
         <span class="status decided">Decided</span>
-        <h2>Party targets</h2>
-        <div class="table-wrap" role="region" aria-label="Animal party specifications" tabindex="0">
-          <table>
-            <thead>
-              <tr>
-                <th>Party</th>
-                <th>Animals</th>
-                <th>Favored operations</th>
-                <th>Organizational identity</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Honeycomb Cooperative</td>
-                <td>Bees</td>
-                <td>Organise and Rally</td>
-                <td>Connected grassroots organization</td>
-              </tr>
-              <tr>
-                <td>Old Shell Union</td>
-                <td>Tortoises</td>
-                <td>Smear and Court</td>
-                <td>Durable opposition and alliances</td>
-              </tr>
-              <tr>
-                <td>Foxglove League</td>
-                <td>Foxes</td>
-                <td>Organise and Smear</td>
-                <td>Global mobility and opportunistic conversion</td>
-              </tr>
-              <tr>
-                <td>Riverworks Party</td>
-                <td>Beavers</td>
-                <td>Rally and Smear</td>
-                <td>Connected growth and attrition</td>
-              </tr>
-              <tr>
-                <td>Many Wings Coalition</td>
-                <td>Starlings</td>
-                <td>Organise and Court</td>
-                <td>Numerous local groups and alliances</td>
-              </tr>
-              <tr>
-                <td>Night Parliament</td>
-                <td>Owls</td>
-                <td>Rally and Court</td>
-                <td>Debates, endorsements, and timing</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p>The names, animals, favored-operation pairs, and all twelve party bonuses are rules. Each displayed operation receives one independently claimable party bonus during that party’s influence contest.</p>
-      </section>
-
-      <section>
-        <span class="status decided">Prototype component and starting state decided</span>
-        <h2>Party state</h2>
-        <p>Each party has an unlimited Support supply, public Support on the district map, public Court Support on its party board, and one persistent directional Coalition Target. Every party begins with one district Support in Harbormouth, Grand Market, and Ironwood, empty Court spaces, and an unpointed Coalition Target. A unique Court Support leader moves the target; a tied lead leaves it in place. Reciprocal Coalition Targets form a coalition, and drawn district Support belonging to either partner scores for objectives naming either party. Court Support clears after Election Day without moving the targets. Night Parliament may hold a claimed Night Shift until every contest and Revolving Door has completed.</p>
-        <p>Each party has one long horizontal tracking board and one source-coloured Coalition Target token supplied on the shared Pecking Order sheet. Three A4 landscape sheets hold two boards each. A board shows the party identity and favored operations, one opening-bid area, two full-text bonus panels with coverable Ready circles, and a Court track containing a neutral target-token position plus five prospective-partner spaces. Every Court space uses the prospective partner’s colour, short code, and name. Stack acting-party Support on those spaces; the Coalition Target token marks the persistent target and moves when a unique leader emerges. Reciprocal targets show a coalition without a separate coalition marker. Night Parliament reminds players to mark a bid that claimed Night Shift.</p>
-        <p><a href="party-boards.html">Open the printable party tracking boards →</a></p>
-      </section>
-
-      <section id="pecking-order">
-        <span class="status decided">Prototype component and random setup decided</span>
-        <h2>Pecking Order</h2>
-        <p>The Pecking Order is one A4 landscape sheet. Its upper board has six numbered positions, while its cut-away lower panel supplies six movable 44 mm party tokens, six source-coloured coalition target tokens, one Early Bird marker, and one round marker. The positions run from the first party contest to the last. Each party token repeats its party’s prototype colour, emblem, and short name so the order remains readable without relying on colour. Party numbers do not appear on the tokens because numbers identify resolution positions on this component.</p>
-        <p>The board identifies the automatic auction and its exceptional operation-card sequence without retaining the former three-panel procedure block. There is no opening-bid position. Counterbid stacks sit beside the board’s long yellow edge. Bids rank normally from most Leverage to least, operation cards execute from the lowest active bid to the highest, and the Revolving Door then uses the normal high-to-low ranking. Every operation card swaps one adjacent pair of party tokens; Bluff cards do nothing.</p>
-        <p>Shuffle all six party tokens during setup to create a random starting order.</p>
-        <p><a href="pecking-order.html">Open the printable Pecking Order board and tokens →</a></p>
-        <div class="note">
-          <p><strong>Superseded:</strong> The board was formerly an unresolved optional contest target called the Press Perch. Its open format remains in the <a href="../../archive/components/open-press-perch-format-2026-07-29.html">component archive</a>.</p>
-        </div>
-      </section>
-
-      <section>
-        <span class="status decided">Prototype map decided / setup open</span>
         <h2 id="district-map">District map</h2>
-        <p>The first prototype uses sixteen named districts in a ring-and-cross layout. Twelve districts form the outer land ring. Bellweather Centre connects through Crown Road, Canal Ward, and Old Quarter to Northreach, Reedwater, and Westgate. Districts are neighboring when they share a black border segment; meeting only at a point or across Crownwater does not make them neighbors. The A3 map is dedicated to district play; campaign and score state use a separate A4 tracker sheet.</p>
-        <figure class="board-map">
-          <div class="board-map-frame">
-            <img src="../assets/ring-and-cross-district-map.svg" alt="Territorial map of sixteen named districts surrounding Crownwater. Twelve districts form the outer land ring, and three causeway districts connect Bellweather Centre to the ring.">
-          </div>
-          <figcaption>
-            <span>Shared black borders define adjacency. Crownwater separates non-neighbors. The enlarged district diagram is designed for A3 landscape with standard cubes.</span>
-            <span><a href="../../assets/print/ring-and-cross-district-map-a3.pdf">Open A3 PDF →</a> · <a href="../assets/ring-and-cross-district-map.svg">Open SVG source →</a></span>
-          </figcaption>
-        </figure>
-        <h3>A3 print export</h3>
-        <p>The print-ready PDF is one 420 × 297 mm A3 landscape page. It keeps the 396 × 297 mm artwork at 100% scale and centers it with 12 mm white margins on the left and right. Print at “Actual size” or 100% with “Fit to page” disabled.</p>
-        <p>Run <code>./scripts/export-print-assets.sh</code> from the repository root to regenerate this PDF and every other print-ready component. The command verifies the fonts and the 396 × 297 mm source size before converting map text to paths, so the printed result does not depend on fonts installed at the printer. The repository README lists all tool and font prerequisites.</p>
-        <p>The grey districts—Harbormouth, Grand Market, and Ironwood—hold six Support each. Their six ring neighbors hold four each. Bellweather Centre holds three. Northreach, Reedwater, Westgate, and the three causeway districts hold two each. The complete map has fifty-seven Support spots and eighteen shared borders. Capacity remains visible through the number of printed Support circles; redundant “2 spots,” “4 spots,” and “6 spots” labels are omitted.</p>
-        <h3>Shared tracker sheet</h3>
-        <p>The separate A4 landscape sheet places scores 0–40 in a 7 × 6 alternating-row snake and retains the three-column campaign sequence: R1–R4/E1, R5–R8/E2, and R9–R12/E3. Every track space is 27 mm square, fitting the existing 25 mm firm score markers and 22 mm round marker. Record a total beside the score track when it falls below 0 or rises above 40.</p>
-        <p><a href="campaign-score-trackers.html">Open the printable campaign and score trackers →</a></p>
-        <h3>District reference</h3>
-        <div class="table-wrap" role="region" aria-label="District capacities and neighboring districts" tabindex="0">
-          <table>
-            <thead>
-              <tr>
-                <th>District</th>
-                <th>Support spots</th>
-                <th>Neighboring districts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Northreach</td>
-                <td>2</td>
-                <td>High Pastures, Cloverfield, Crown Road</td>
-              </tr>
-              <tr>
-                <td>Cloverfield</td>
-                <td>4</td>
-                <td>Northreach, Harbormouth</td>
-              </tr>
-              <tr>
-                <td>Harbormouth</td>
-                <td>6</td>
-                <td>Cloverfield, Millbank</td>
-              </tr>
-              <tr>
-                <td>Millbank</td>
-                <td>4</td>
-                <td>Harbormouth, Reedwater</td>
-              </tr>
-              <tr>
-                <td>Reedwater</td>
-                <td>2</td>
-                <td>Millbank, Sunmeadow, Canal Ward</td>
-              </tr>
-              <tr>
-                <td>Sunmeadow</td>
-                <td>4</td>
-                <td>Reedwater, Grand Market</td>
-              </tr>
-              <tr>
-                <td>Grand Market</td>
-                <td>6</td>
-                <td>Sunmeadow, Red Orchard</td>
-              </tr>
-              <tr>
-                <td>Red Orchard</td>
-                <td>4</td>
-                <td>Grand Market, Westgate</td>
-              </tr>
-              <tr>
-                <td>Westgate</td>
-                <td>2</td>
-                <td>Red Orchard, Mossfield, Old Quarter</td>
-              </tr>
-              <tr>
-                <td>Mossfield</td>
-                <td>4</td>
-                <td>Westgate, Ironwood</td>
-              </tr>
-              <tr>
-                <td>Ironwood</td>
-                <td>6</td>
-                <td>Mossfield, High Pastures</td>
-              </tr>
-              <tr>
-                <td>High Pastures</td>
-                <td>4</td>
-                <td>Ironwood, Northreach</td>
-              </tr>
-              <tr>
-                <td>Crown Road</td>
-                <td>2</td>
-                <td>Northreach, Bellweather Centre</td>
-              </tr>
-              <tr>
-                <td>Canal Ward</td>
-                <td>2</td>
-                <td>Reedwater, Bellweather Centre</td>
-              </tr>
-              <tr>
-                <td>Old Quarter</td>
-                <td>2</td>
-                <td>Westgate, Bellweather Centre</td>
-              </tr>
-              <tr>
-                <td>Bellweather Centre</td>
-                <td>3</td>
-                <td>Crown Road, Canal Ward, Old Quarter</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="callout">
-          <p><strong>Still open:</strong> whether the capacity pattern needs adjustment after play. Support supply is unlimited, and starting occupation is fixed: every party places one Support in each grey 6-capacity district.</p>
-        </div>
-        <p>The earlier <a href="../../archive/components/ring-and-cross-node-map-2026-07-28.html">node-map presentation</a> is archived; its topology and capacities remain current.</p>
+        <p>The map contains sixteen districts, fifty-seven Support spaces, and eighteen shared borders. Shared printed border segments define adjacency; districts touching only at a point are not adjacent.</p>
+        <div class="table-wrap" role="region" aria-label="District capacities and neighbors" tabindex="0"><table>
+          <thead><tr><th>District</th><th>Capacity</th><th>Neighbors</th></tr></thead>
+          <tbody>
+            <tr><td>Northreach</td><td>2</td><td>High Pastures, Cloverfield, Crown Road</td></tr>
+            <tr><td>Cloverfield</td><td>4</td><td>Northreach, Harbormouth</td></tr>
+            <tr><td>Harbormouth</td><td>6</td><td>Cloverfield, Millbank</td></tr>
+            <tr><td>Millbank</td><td>4</td><td>Harbormouth, Reedwater</td></tr>
+            <tr><td>Reedwater</td><td>2</td><td>Millbank, Sunmeadow, Canal Ward</td></tr>
+            <tr><td>Sunmeadow</td><td>4</td><td>Reedwater, Grand Market</td></tr>
+            <tr><td>Grand Market</td><td>6</td><td>Sunmeadow, Red Orchard</td></tr>
+            <tr><td>Red Orchard</td><td>4</td><td>Grand Market, Westgate</td></tr>
+            <tr><td>Westgate</td><td>2</td><td>Red Orchard, Mossfield, Old Quarter</td></tr>
+            <tr><td>Mossfield</td><td>4</td><td>Westgate, Ironwood</td></tr>
+            <tr><td>Ironwood</td><td>6</td><td>Mossfield, High Pastures</td></tr>
+            <tr><td>High Pastures</td><td>4</td><td>Ironwood, Northreach</td></tr>
+            <tr><td>Crown Road</td><td>2</td><td>Northreach, Bellweather Centre</td></tr>
+            <tr><td>Canal Ward</td><td>2</td><td>Reedwater, Bellweather Centre</td></tr>
+            <tr><td>Old Quarter</td><td>2</td><td>Westgate, Bellweather Centre</td></tr>
+            <tr><td>Bellweather Centre</td><td>3</td><td>Crown Road, Canal Ward, Old Quarter</td></tr>
+          </tbody>
+        </table></div>
+        <p>At setup, Harbormouth, Grand Market, and Ironwood each contain one Support from every party and therefore begin full. Bellweather Centre does not participate in ordinary Election draws; it remains intact and supplies separate Capital scoring.</p>
+        <p><a href="../../assets/print/ring-and-cross-district-map-a3.pdf">Open the current A3 map PDF →</a></p>
       </section>
-
       <section>
-        <span class="status">Archived prompt</span>
-        <h2>Initial board questions</h2>
-        <ul>
-          <li>What information must be shared and ordered?</li>
-          <li>Does one ladder hold all players, or does each player have one?</li>
-          <li>Are rungs exclusive, shared, or capacity-limited?</li>
-          <li>Does position show progress, privilege, risk, price, or turn order?</li>
-          <li>Can the same information live on cards or a small track?</li>
-        </ul>
+        <span class="status">Superseded</span>
+        <h2>Pecking Order</h2>
+        <p>The mandatory Pecking Order auction, six movable party-order tokens, adjacent swaps, and special low-to-high Operation resolution are retired. The <a href="pecking-order.html">printable sheet</a> remains a historical artifact and the former role is summarized in the <a href="../../archive/components/auction-components-ruleset-14-2026-08-13.html">component archive</a>. The Early Bird marker and Coalition Target markers should move to the new shared token supply.</p>
       </section>
-
       <section>
-        <span class="status">Superseded hypothesis</span>
-        <h2>Initial ladder sketch</h2>
-        <p>Draw six ordered spaces on one sheet of paper. Number them from bottom to top, leave room for every player marker on every space, and add no printed effects.</p>
-        <div class="callout">
-          <p><strong>Reason:</strong> six spaces are enough to create relative position without making track length the main balance decision.</p>
-        </div>
-        <h3>Superseded specification</h3>
-        <ul>
-          <li>Every space had a unique, readable identifier.</li>
-          <li>Player markers remained distinguishable when sharing a space.</li>
-          <li>The direction of movement read from every seat.</li>
-          <li>Triggered effects were printed where they occurred.</li>
-          <li>The board showed state rather than rules players had to memorize.</li>
-        </ul>
-        <div class="table-wrap" role="region" aria-label="Superseded ladder measurements" tabindex="0">
-          <table>
-            <thead>
-              <tr>
-                <th>Property</th>
-                <th>Former value</th>
-                <th>Former evidence need</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Number of ladders</td>
-                <td>Superseded by target areas and one ordered list</td>
-                <td>None; retained as design history</td>
-              </tr>
-              <tr>
-                <td>Rungs per ladder</td>
-                <td>Six for the first sketch only</td>
-                <td>Observed movement range</td>
-              </tr>
-              <tr>
-                <td>Rung capacity</td>
-                <td>Unresolved</td>
-                <td>Interaction test</td>
-              </tr>
-              <tr>
-                <td>Board size</td>
-                <td>One sheet of paper</td>
-                <td>Fit target areas, bid containers, and a readable ordered list</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section>
-        <h2>Specification checklist</h2>
-        <ul class="checklist">
-          <li>Every party has a unique name, animal identity, and pair of favored-operation bonus icons.</li>
-          <li>Every district has a unique name, readable shared borders, and a fixed number of Support spots.</li>
-          <li>District Support, Court Support, free spots, Coalition Targets, coalitions, and claimed Night Shift remain visible from every seat.</li>
-          <li>Opening bids and counterbid locations remain readable around every party.</li>
-          <li>The Pecking Order and direction of resolution read from every seat.</li>
-          <li>The Pecking Order board is visibly distinct from the six parties while its movable tokens repeat party identities.</li>
-          <li>Any triggered effect is printed where it occurs.</li>
-          <li>The board shows state, not rules players must memorize.</li>
-        </ul>
-      </section>
-
-      <section>
-        <h2>Open measurements</h2>
-        <div class="table-wrap" role="region" aria-label="Open board measurements" tabindex="0">
-          <table>
-            <thead>
-              <tr>
-                <th>Property</th>
-                <th>Current value</th>
-                <th>Evidence needed</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Contest targets</td>
-                <td>Six party targets plus one automatic Pecking Order auction</td>
-                <td>Test whether the mandatory shared auction leaves enough counterbid attention for the player-opened party contests</td>
-              </tr>
-              <tr>
-                <td>Pecking Order positions</td>
-                <td>One per party</td>
-                <td>Verify that adjacent swaps materially change plans</td>
-              </tr>
-              <tr>
-                <td>Party state areas</td>
-                <td>Six separate 287 × 100 mm party boards, printed two per A4 landscape sheet; unlimited Support requires no tracked reserve</td>
-                <td>Verify bid-container fit, bonus readability, marker handling, and room for eventual election outcomes</td>
-              </tr>
-              <tr>
-                <td>District map</td>
-                <td>Sixteen named districts, eighteen shared borders, and fifty-seven Support spots in the territorial prototype</td>
-                <td>Test whether the 6/4/3/2 capacity pattern creates useful vacancies and whether movement through the Crownwater causeways is valuable</td>
-              </tr>
-              <tr>
-                <td>Board size</td>
-                <td>District map, three A4 party-board sheets, and one A4 landscape Pecking Order sheet whose cut-away lower panel supplies the shared tokens</td>
-                <td>Fit the complete setup and covered Pecking Order bids on an ordinary table without obscuring the ordered party track</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <span class="status">Open</span>
+        <h2>Layout questions</h2>
+        <ul><li>Can the six party piles fit around the map without obscuring Support?</li><li>Should open/closed state be a reversible card, marker, or integrated track?</li><li>Can Firm ownership, pile contents, and both bonus states be read across the table?</li></ul>
       </section>
     </main>
-
-    <footer class="page-footer">
-      <div class="page-footer-inner">
-        <a href="cards.html">Next component: Cards →</a>
-        <span class="stamp">Sketch only</span>
-      </div>
-    </footer>
+    <footer class="page-footer"><div class="page-footer-inner"><a href="cards.html">Next component: Cards →</a><span class="stamp">16 districts / 6 party areas</span></div></footer>
   </body>
 </html>
