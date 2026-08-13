@@ -135,13 +135,14 @@ describe("yearly browser play surface", () => {
     expect(within(honeycomb).getByText("Waggle Route").className).toContain("bonus-used");
   });
 
-  it("files one Firm and one party during an active opening", () => {
+  it("selects an opening party on the table before confirming its Firm", () => {
     const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
     const onCommand = vi.fn(async () => true);
     render(
-      <ActionDesk view={view} seat={view.seats[0]!} seatId="seat-1" busy={false} onCommand={onCommand} />
+      <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={onCommand} />
     );
-    fireEvent.change(screen.getByLabelText("Party"), { target: { value: "night-parliament" } });
+    fireEvent.click(screen.getByRole("button", { name: /^Night Not opened/ }));
+    expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe("night-parliament");
     fireEvent.click(screen.getByRole("button", { name: "Open party access" }));
     expect(onCommand).toHaveBeenCalledWith({
       type: "game_action",
@@ -153,25 +154,26 @@ describe("yearly browser play surface", () => {
     });
   });
 
-  it("composes an ordered Operate action and permits only one bonus", async () => {
+  it("targets and resolves one Operation card with mouse clicks", async () => {
     const state = openEveryParty(initializeGame(configuration(2), random).state);
     const view = privateView(state, "seat-1");
     const onCommand = vi.fn(async () => true);
     render(
-      <ActionDesk view={view} seat={view.seats[0]!} seatId="seat-1" busy={false} onCommand={onCommand} />
+      <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={onCommand} />
     );
-    fireEvent.click(screen.getByRole("button", { name: /\+ organise/ }));
-    fireEvent.change(screen.getByLabelText("Source"), { target: { value: "harbormouth" } });
-    fireEvent.change(screen.getByLabelText("Destination"), { target: { value: "cloverfield" } });
+    fireEvent.click(screen.getByLabelText("Harbormouth: 6 of 6 Support spaces occupied"));
+    const destinationField = screen.getByLabelText("Destination").parentElement!;
+    fireEvent.click(within(destinationField).getByRole("button", { name: "Select on map" }));
+    fireEvent.click(screen.getByLabelText("Cloverfield: 0 of 4 Support spaces occupied"));
     fireEvent.click(screen.getByRole("checkbox", { name: /Waggle Route/ }));
-    expect(screen.getByText("All cards resolve in the listed order.")).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Operate with 1 card" }));
+    expect(screen.getByText("Ready to resolve this card.")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Resolve organise" }));
     await waitFor(() => expect(onCommand).toHaveBeenCalledWith({
       type: "game_action",
       action: {
         type: "operate",
         partyId: "honeycomb",
-        plays: [{
+        play: {
           operation: "organise",
           choice: {
             operation: "organise",
@@ -179,14 +181,34 @@ describe("yearly browser play surface", () => {
             destinationDistrictId: "cloverfield"
           },
           claimBonus: true
-        }]
+        }
       }
     }));
+  });
+
+  it("offers another card or Finish after each resolved Operation", () => {
+    let state = openEveryParty(initializeGame(configuration(2), random).state);
+    state = apply(state, organiseAction("seat-1", true));
+    const view = privateView(state, "seat-1");
+    const onCommand = vi.fn(async () => true);
+    render(
+      <ActionDesk view={view} seat={view.seats[0]!} seatId="seat-1" busy={false} onCommand={onCommand} />
+    );
+
+    expect(screen.getByText(/Card 2 of up to 3/)).toBeTruthy();
+    expect(screen.getByText(/bonus already used/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: "collect" }).hasAttribute("disabled")).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Finish Operate" }));
+    expect(onCommand).toHaveBeenCalledWith({
+      type: "game_action",
+      action: { type: "finish_operate" }
+    });
   });
 
   it("collects a whole pile into the visible New Year area", () => {
     let state = openEveryParty(initializeGame(configuration(2), random).state);
     state = apply(state, organiseAction("seat-1", false));
+    state = apply(state, { type: "finish_operate", seatId: "seat-1" });
     const view = privateView(state, "seat-2");
     const onCommand = vi.fn(async () => true);
     render(
@@ -287,7 +309,7 @@ function organiseAction(seatId: string, claimBonus: boolean): GameAction {
     type: "operate",
     seatId,
     partyId: "honeycomb",
-    plays: [{
+    play: {
       operation: "organise",
       choice: {
         operation: "organise",
@@ -295,7 +317,7 @@ function organiseAction(seatId: string, claimBonus: boolean): GameAction {
         destinationDistrictId: "cloverfield"
       },
       ...(claimBonus ? { claimBonus: true } : {})
-    }]
+    }
   };
 }
 
