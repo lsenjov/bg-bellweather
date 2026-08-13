@@ -46,7 +46,7 @@ npm run dev</code></pre>
             <tbody>
               <tr><td>GET</td><td><code>/api/v1/health</code></td><td>Server and ruleset health.</td></tr>
               <tr><td>POST</td><td><code>/api/v1/games</code></td><td>Create a lobby and host seat.</td></tr>
-              <tr><td>POST</td><td><code>/api/v1/games/join</code></td><td>Join by invite code as a player or admitted spectator.</td></tr>
+              <tr><td>POST</td><td><code>/api/v1/games/join</code></td><td>Join by invite code as a player, live observer, or completed-replay observer.</td></tr>
               <tr><td>GET</td><td><code>/api/v1/games/:id/state</code></td><td>Get the authenticated public and seat-private projection.</td></tr>
               <tr><td>POST</td><td><code>/api/v1/games/:id/commands</code></td><td>Submit an idempotent lobby or game command.</td></tr>
               <tr><td>GET</td><td><code>/api/v1/games/:id/replay</code></td><td>Get canonical full-information events after completion.</td></tr>
@@ -104,7 +104,7 @@ npm run dev</code></pre>
         <h2>Phase and visibility</h2>
         <p><code>publicGame.phase</code> is <code>opening</code>, <code>lobby</code>, <code>election</code>, or <code>complete</code>; <code>phaseData</code> carries the phase cursor. During Openings, <code>turnSeatIds</code> contains ABBA, ABCCBA, or the single clockwise orbit and may repeat a seat. During the Lobby, <code>activeSeatId</code> identifies the only acting seat. A non-null <code>inProgressOperate</code> gives the locked <code>partyId</code>, resolved <code>operationCount</code>, and whether the sequence has <code>bonusClaimed</code>; the active seat must either continue that Operate action or finish it.</p>
         <p>Public state includes the year, Election number, Early Bird, public seat totals, party status and piles, Support, Court Support, Coalition Targets, Lobby actions, resolved Operations, year history, Election history, and chat. Opponents’ exact hands and New Year areas are hidden but their card counts are public. A seat projection adds that seat’s exact Operation inventories and all three ordered scoring slots. Previously revealed scoring slots remain public; future slots remain concealed.</p>
-        <p>After the game ends, every authenticated participant may fetch the complete event history and canonical final state. Random setup and Election draws are recorded, so replay never rerolls.</p>
+        <p>After the game ends, every authenticated participant may fetch the complete event history and canonical final state. If observer admission was enabled, a new observer may still join by invitation code to obtain replay access; this adds no event to the completed history. Random setup and Election draws are recorded, so replay never rerolls.</p>
       </section>
 
       <section>

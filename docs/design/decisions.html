@@ -37,6 +37,12 @@
           <tbody>
             <tr>
               <td>2026-08-13</td>
+              <td>When observer admission is enabled, let a new observer use the invitation code after the game ends to open the completed state and replay. Persist only the observer credential needed for authentication; do not append or broadcast a post-completion event, so the canonical replay sequence remains fixed.</td>
+              <td>A person who receives the invitation code after play should not need a participant token saved before completion. Treating this as replay admission preserves the completed game as immutable history rather than pretending that live observation continued after play.</td>
+              <td>Invitation codes are shared too broadly for full-information replay access, completed replays need separate host-controlled publication, or retained replay-viewer credentials require an expiry policy.</td>
+            </tr>
+            <tr>
+              <td>2026-08-13</td>
               <td>Resolve an Operate action one card at a time. After each of the first two cards resolves immediately, the acting player may finish or choose another card at the same locked party against the current board; a third card finishes automatically. Keep the one-bonus limit across the complete sequence, with no intervening turns. In the app, retain select controls and also make legal party files, districts, and rival Support directly clickable. Party Openings use click-to-select followed by explicit confirmation.</td>
               <td>Sequential choice makes board changes meaningful without requiring players to precommit now-invalid targets. Direct table targeting restores the map as the primary play surface while confirmation protects the consequential Opening placement.</td>
               <td>Operate sequences become too slow, updated-state choices make three cards routinely dominant, players lose track of whether they are still operating, or table targeting creates accidental selections.</td>
