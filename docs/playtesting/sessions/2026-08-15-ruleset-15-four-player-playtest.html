@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Four-player Bellweather ruleset-15 API playtest on 15 August 2026.">
+    <title>Four-player Ruleset-15 API Playtest — Bellweather</title>
+    <link rel="stylesheet" href="../../styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / playtest session</a>
+        <h1>Four-player ruleset-15 API playtest</h1>
+        <p class="meta">A complete twelve-year game testing dynamic Operate length, collection pressure, party access, and Capital scoring.</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../index.html">Index</a><span>/</span><a href="../playtest-guide.html">Playtesting</a><span>/</span>Four-player ruleset-15 API playtest</nav>
+
+      <section>
+        <h2>Session</h2>
+        <div class="table-wrap" role="region" aria-label="Playtest session details" tabindex="0">
+          <table>
+            <tbody>
+              <tr><th>Date</th><td>15 August 2026</td></tr>
+              <tr><th>Rules version</th><td>15</td></tr>
+              <tr><th>Players</th><td>Horizon, Vex, Accord, and Cache</td></tr>
+              <tr><th>Profiles</th><td>Builder, disruptor, coalition builder, and collector</td></tr>
+              <tr><th>Configuration</th><td>Four API-controlled seats; observers allowed; no timer</td></tr>
+              <tr><th>Game</th><td>7L2KX9NJ / f715361b-36bc-4fb6-bd0e-963b3c05d0ba</td></tr>
+              <tr><th>Duration</th><td>49.1 seconds from lobby creation to completion; 317 replay events</td></tr>
+              <tr><th>Main question</th><td>How does the current yearly Lobby behave at four players when Operate length is chosen from updated board value rather than fixed by profile?</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Method</h2>
+        <p>Each controller merged its private hand and all three fixed agendas into the public state, refreshed after every resolved card, and considered every legal Operation and available party bonus. Current-Election objectives received the greatest weight, while later agendas retained smaller planning weights. After the first and second cards of an Operate action, the controller continued only when the best updated-board choice cleared its profile's opportunity-cost threshold.</p>
+        <p>The profiles independently valued constructive Support, Smear, Court coalitions, or collecting rival piles. No bundle length, annual Operation count, Collection count, Closure time, or deliberation period was imposed by the facilitator. The game completed with zero rejected commands.</p>
+        <p>This is one deterministic agent game. The collection strategy used a deliberately low two-card threshold, opponents did not negotiate or coordinate denial, and the relative-seat system can amplify a single seating and agenda assignment. Findings identify repeat-test targets rather than settled balance conclusions.</p>
+      </section>
+
+      <section>
+        <h2>Election 1 — after Year 4</h2>
+        <div class="table-wrap" role="region" aria-label="Election 1 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Capital</th><th>Change</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>Horizon</td><td>SC-01</td><td>2</td><td>+3</td><td>0</td><td>+5</td><td>10</td></tr>
+              <tr><td>Vex</td><td>SC-08</td><td>1</td><td>-3</td><td>0</td><td>-2</td><td>3</td></tr>
+              <tr><td>Accord</td><td>SC-12</td><td>2</td><td>+3</td><td>0</td><td>+5</td><td>10</td></tr>
+              <tr><td>Cache</td><td>SC-21</td><td>5</td><td>+1</td><td>0</td><td>+6</td><td>11</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul>
+          <li>Cache led through the strongest direct district performance. Horizon and Accord stayed one point behind only because each received a +3 modifier.</li>
+          <li>Vex's one-point base became a negative Election change. This confirms that cumulative points can fall below their pre-Election value.</li>
+          <li>By the start of Year 5, Cache held 32 of the forty Operation cards. The other hands contained four, two, and two.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Election 2 — after Year 8</h2>
+        <div class="table-wrap" role="region" aria-label="Election 2 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Capital</th><th>Change</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>Horizon</td><td>SC-18</td><td>1</td><td>-3</td><td>0</td><td>-2</td><td>8</td></tr>
+              <tr><td>Vex</td><td>SC-10</td><td>0</td><td>+3</td><td>+1</td><td>+4</td><td>7</td></tr>
+              <tr><td>Accord</td><td>SC-22</td><td>2</td><td>+1</td><td>0</td><td>+3</td><td>13</td></tr>
+              <tr><td>Cache</td><td>SC-02</td><td>5</td><td>+2</td><td>0</td><td>+7</td><td>18</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul>
+          <li>Cache extended the lead to five points with another five-point base. Vex scored the game's first Capital point after matching two named parties in the Centre.</li>
+          <li>Year 8 was the only year to end through four consecutive Passes. Just one party had closed; the pass ending awarded all remaining piles to their opening firms.</li>
+          <li>The Year 9 hand distribution was 3, 3, 1, and 33 cards. Card access, not baseline Operation legality, had become the binding constraint for three seats.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Election 3 and final result</h2>
+        <div class="table-wrap" role="region" aria-label="Election 3 results" tabindex="0">
+          <table>
+            <thead><tr><th>Player</th><th>Card</th><th>Base</th><th>Modifier</th><th>Capital</th><th>Change</th><th>Final</th></tr></thead>
+            <tbody>
+              <tr><td>Horizon</td><td>SC-13</td><td>2</td><td>-2</td><td>+1</td><td>+1</td><td>9</td></tr>
+              <tr><td>Vex</td><td>SC-14</td><td>2</td><td>-2</td><td>0</td><td>0</td><td>7</td></tr>
+              <tr><td>Accord</td><td>SC-11</td><td>0</td><td>0</td><td>0</td><td>0</td><td>13</td></tr>
+              <tr><td>Cache</td><td>SC-03</td><td>2</td><td>-2</td><td>0</td><td>0</td><td>18 — winner</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ol>
+          <li>Cache — 18</li>
+          <li>Accord — 13</li>
+          <li>Horizon — 9</li>
+          <li>Vex — 7</li>
+        </ol>
+        <ul>
+          <li>Cache had already reached the winning score at Election 2 and gained nothing from Election 3. Horizon was the only player to gain, through one Capital point.</li>
+          <li>Year 12 contained only two single-card Operate actions. At game end Cache held all forty Operation cards and every rival hand was empty.</li>
+          <li>The Centre ended with Honeycomb and Riverworks present, demonstrating the intended two-party one-point Capital state without becoming full.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Operate length</h2>
+        <div class="table-wrap" role="region" aria-label="Operate bundle distribution" tabindex="0">
+          <table>
+            <thead><tr><th>Cards in action</th><th>Actions</th><th>Share</th><th>Cards resolved</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>49</td><td>71.0%</td><td>49</td></tr>
+              <tr><td>2</td><td>13</td><td>18.8%</td><td>26</td></tr>
+              <tr><td>3</td><td>7</td><td>10.1%</td><td>21</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The 69 Operate actions resolved 96 cards, averaging 1.39 cards per action. Unlike the prior five-player test, these lengths were chosen from marginal updated-board value. Single-card actions dominated, suggesting that the freedom to continue does not by itself make three-card bundles routine under an opportunity-cost policy.</p>
+      </section>
+
+      <section>
+        <h2>Card concentration</h2>
+        <div class="table-wrap" role="region" aria-label="Operation hand sizes at selected year starts" tabindex="0">
+          <table>
+            <thead><tr><th>Year start</th><th>Horizon</th><th>Vex</th><th>Accord</th><th>Cache</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>10</td><td>10</td><td>10</td><td>10</td></tr>
+              <tr><td>2</td><td>7</td><td>5</td><td>12</td><td>16</td></tr>
+              <tr><td>4</td><td>5</td><td>2</td><td>6</td><td>27</td></tr>
+              <tr><td>5</td><td>4</td><td>2</td><td>2</td><td>32</td></tr>
+              <tr><td>9</td><td>3</td><td>3</td><td>1</td><td>33</td></tr>
+              <tr><td>11</td><td>0</td><td>1</td><td>1</td><td>38</td></tr>
+              <tr><td>12</td><td>0</td><td>0</td><td>1</td><td>39</td></tr>
+              <tr><td>Game end</td><td>0</td><td>0</td><td>0</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Cache made twelve of the game's fourteen Collections and took 34 cards through those actions, compared with one four-card Collection each for Vex and Accord. Cache also received 18 cards through seven Closures. These are gross transfers across repeated yearly circulation, not unique cards.</p>
+      </section>
+
+      <section>
+        <h2>End-of-game findings</h2>
+        <ul>
+          <li><strong>Collector runaway is a credible failure mode:</strong> the low-threshold collector converted early piles into a compounding hand advantage, captured the whole deck, suppressed opponents' agency, and won by five points. Repeat with human denial and alternative Collection thresholds before treating it as inevitable.</li>
+          <li><strong>Late-game activity collapsed with card access:</strong> yearly Operation counts were 24, 12, 9, 7, 8, 9, 6, 4, 6, 6, 3, and 2. The decline followed hand concentration much more closely than map saturation.</li>
+          <li><strong>Pass remained relevant:</strong> the game recorded 42 Passes, and Year 8 ended by passes. This contrasts with the five-player session, where every year ended through majority Closure.</li>
+          <li><strong>Dynamic bundles were mostly short:</strong> 49 of 69 Operate actions stopped after one card. Seven reached the automatic three-card limit.</li>
+          <li><strong>Party access was selective:</strong> Old Shell opened in all twelve years and Foxglove in eleven, while Riverworks and Many Wings opened only four times each. Old Shell received 32 Operations; Many Wings received three.</li>
+          <li><strong>Operation families skewed constructive:</strong> Organise appeared 41 times, Rally 31, Smear 13, and Court 11. The coalition specialist formed a final reciprocal Honeycomb–Foxglove coalition, but Court remained the least-used family.</li>
+          <li><strong>Nine party powers resolved forty times:</strong> Common Cause, Scatter the Flock, and Midnight Leak were never claimed. Common Cause and Scatter the Flock also went unused in the five-player game.</li>
+          <li><strong>Capital scoring occurred but stayed small:</strong> two of twelve player-Elections scored one Capital point; no player achieved all three named parties.</li>
+          <li><strong>Relative modifiers remained volatile:</strong> individual modifiers ranged from -3 to +3. Cache's win was nevertheless supported by the highest cumulative base score, twelve, rather than modifiers alone.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <div class="page-footer-inner">
+        <a href="../playtest-guide.html">Back to playtest guide →</a>
+        <span class="stamp">Completed — Cache won with 18</span>
+      </div>
+    </footer>
+  </body>
+</html>
