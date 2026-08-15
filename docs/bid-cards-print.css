@@ -98,14 +98,14 @@ main {
   gap: 0;
 }
 
-.bid-card,
+.operation-card,
 .blank-card {
   display: block;
   width: 40mm;
   height: 61mm;
 }
 
-.bid-card {
+.operation-card {
   position: relative;
   overflow: hidden;
   border: 0.45mm solid var(--ink);
@@ -129,24 +129,6 @@ main {
   opacity: 0.15;
   content: "";
   pointer-events: none;
-}
-
-.leverage::before {
-  background: none;
-}
-
-.leverage {
-  --tint: #fbf1d4;
-  background: var(--tint);
-}
-
-.bluff {
-  --accent: #b8b6af;
-  --tint: #efeee9;
-}
-
-.bluff::before {
-  background: repeating-linear-gradient(135deg, transparent 0 3.5mm, currentColor 3.5mm 3.8mm);
 }
 
 .organise {
@@ -227,14 +209,6 @@ main {
   color: var(--ink);
   font: 800 37pt/0.8 var(--display);
   place-items: center;
-}
-
-.leverage .card-glyph {
-  font-size: 46pt;
-}
-
-.bluff .card-glyph {
-  color: #817e77;
 }
 
 .card-title {

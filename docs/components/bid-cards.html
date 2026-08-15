@@ -3,43 +3,23 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Six-player printable supply of front-only Bellweather Leverage, Bluff, and operation cards.">
-    <title>Printable Bid Cards — Ladder Bidding</title>
+    <meta name="description" content="Four printable A4 sheets containing the sixty Bellweather Ruleset 15 Operation cards.">
+    <title>Printable Operation Cards — Ladder Bidding</title>
     <link rel="stylesheet" href="../bid-cards-print.css">
   </head>
   <body>
     <header class="screen-header">
       <a href="cards.html">← Card specification</a>
-      <h1>Archived Ruleset 14 bid cards</h1>
-      <p><strong>Historical component:</strong> Leverage, Bluff, and bid stacks are not used in Ruleset 15. This printable source is retained only as design history.</p>
-      <p>Print the nine front-only A4 portrait pages at actual size. Every card is exactly 40 × 61 mm for a 41 × 63 mm opaque sleeve. Cards share cut lines in a zero-gutter 4 × 4 grid. The full 144-card supply contains sixty one-Leverage, twenty-four Bluff, twelve Organise, twenty-four Rally, twelve Smear, and twelve Court cards. The unique L, B, O, R, S, and C corner indices remain visible in a fanned hand.</p>
+      <h1>Ruleset 15 Operation cards</h1>
+      <p><strong>Current component:</strong> this four-sheet supply contains every Operation card needed for six standard hands or three doubled low-player hands. The retired Leverage, Bluff, and bid-stack components remain in the <a href="../../archive/components/auction-components-ruleset-14-2026-08-13.html">Ruleset 14 archive</a>.</p>
+      <p>Print the four front-only A4 portrait pages at actual size. Every card is exactly 40 × 61 mm for a 41 × 63 mm opaque sleeve. Cards share cut lines in a zero-gutter 4 × 4 grid. The full sixty-card supply contains twelve Organise, twenty-four Rally, twelve Smear, and twelve Court cards. The O, R, S, and C corner indices remain visible in a fanned hand.</p>
       <p><a href="../../assets/print/bid-cards-a4.pdf">Open print-ready PDF →</a></p>
     </header>
 
-    <main id="card-sheets" aria-label="Printable bid-card sheets"></main>
+    <main id="card-sheets" aria-label="Printable Operation-card sheets"></main>
 
     <script>
       const definitions = [
-        {
-          kind: "leverage",
-          index: "L",
-          count: 60,
-          kicker: "Registered leverage",
-          glyph: "1",
-          title: "Leverage",
-          rule: "Each card contributes one Leverage.",
-          footer: "Reveal to rank the bid"
-        },
-        {
-          kind: "bluff",
-          index: "B",
-          count: 24,
-          kicker: "Classified enclosure",
-          glyph: "—",
-          title: "Bluff",
-          rule: "No effect.",
-          footer: "Remains in the bid • Revolves"
-        },
         {
           kind: "organise",
           index: "O",
@@ -47,8 +27,8 @@
           kicker: "Operation / relocate",
           glyph: "→",
           title: "Organise",
-          rule: "Move Support next door. If absent, add anywhere.",
-          footer: "Party bonus may apply"
+          rule: "Move 1 Support to a free neighboring district. If absent, add anywhere.",
+          footer: "Open party • bonus may apply"
         },
         {
           kind: "rally",
@@ -57,8 +37,8 @@
           kicker: "Operation / reinforce",
           glyph: "+",
           title: "Rally",
-          rule: "Add Support where present. If absent, add anywhere.",
-          footer: "Party bonus may apply"
+          rule: "Add 1 Support to a free spot where present. If absent, add anywhere.",
+          footer: "Open party • bonus may apply"
         },
         {
           kind: "smear",
@@ -67,8 +47,8 @@
           kicker: "Operation / remove",
           glyph: "−",
           title: "Smear",
-          rule: "Remove a rival here or next door. If absent, anywhere.",
-          footer: "Party bonus may apply"
+          rule: "Remove 1 rival here or next door. If absent, remove anywhere.",
+          footer: "Open party • bonus may apply"
         },
         {
           kind: "court",
@@ -77,8 +57,8 @@
           kicker: "Operation / court",
           glyph: "+",
           title: "Court",
-          rule: "Place Support on another party’s Court space.",
-          footer: "Party bonus may apply"
+          rule: "Place 1 Support on another party’s Court space.",
+          footer: "Open party • bonus may apply"
         }
       ];
 
@@ -91,7 +71,7 @@
 
       function cardFront(definition) {
         const card = document.createElement("article");
-        card.className = `bid-card front ${definition.kind}`;
+        card.className = `operation-card front ${definition.kind}`;
         card.setAttribute("aria-label", `${definition.title} card`);
         card.innerHTML = `
           <span class="card-index index-top" aria-hidden="true">${definition.index}</span>
@@ -109,11 +89,11 @@
         section.className = "print-sheet";
         section.setAttribute(
           "aria-label",
-          `Bid-card sheet ${index + 1} of ${sheetCount}`
+          `Operation-card sheet ${index + 1} of ${sheetCount}`
         );
         const label = document.createElement("p");
         label.className = "sheet-label";
-        label.textContent = `Bid cards / fronts / ${index + 1} of ${sheetCount}`;
+        label.textContent = `Ruleset 15 / Operation cards / ${index + 1} of ${sheetCount}`;
         const grid = document.createElement("div");
         grid.className = "card-grid";
         for (let position = 0; position < cardsPerSheet; position += 1) {

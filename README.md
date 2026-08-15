@@ -95,7 +95,7 @@ physical-size checks pass.
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
 | `assets/print/lobbying-firm-boards-a4.pdf` | Three A4 portrait player-board sheets |
 | `assets/print/lobbying-firm-tokens-a4.pdf` | Three A4 landscape firm-token sheets |
-| `assets/print/bid-cards-a4.pdf` | Printable A4 portrait Leverage, Bluff, and operation-card supply |
+| `assets/print/bid-cards-a4.pdf` | Four A4 portrait sheets containing the current 60-card Operation supply |
 | `assets/print/scoring-cards-a4.pdf` | Two A4 portrait scoring-card sheets |
 | `assets/print/pecking-order-a4.pdf` | One A4 landscape Pecking Order sheet |
 
