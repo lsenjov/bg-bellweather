@@ -1,0 +1,173 @@
+* { box-sizing: border-box; }
+
+:root {
+  color-scheme: light;
+  --paper: #eee6d7;
+  --paper-bright: #fffaf0;
+  --ink: #171713;
+  --display: "Liberation Serif", serif;
+  --body: "Liberation Sans", sans-serif;
+  --mono: "Noto Sans Mono", monospace;
+}
+
+html { background: #1b1b18; }
+
+body {
+  min-width: 210mm;
+  margin: 0;
+  background: repeating-linear-gradient(135deg, rgb(255 255 255 / 3%) 0 1px, transparent 1px 12px), #1b1b18;
+  color: var(--ink);
+  font-family: var(--body);
+}
+
+.screen-header {
+  width: min(210mm, calc(100vw - 40px));
+  min-width: 180mm;
+  margin: 0 auto;
+  padding: 26px 0 22px;
+  color: var(--paper-bright);
+}
+
+.screen-header a { color: #f1b84a; font: 800 0.76rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.screen-header h1 { margin: 18px 0 4px; font: 800 clamp(2.4rem, 6vw, 5rem) / 0.9 var(--display); letter-spacing: -0.045em; }
+.screen-header p { max-width: 70ch; margin: 12px 0 0; color: #d7d0c4; line-height: 1.5; }
+.symbol-library { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: column; gap: 28px; }
+
+.print-sheet {
+  display: grid;
+  width: 210mm;
+  height: 297mm;
+  flex: 0 0 auto;
+  grid-template-rows: repeat(2, 120mm);
+  padding: 15mm 5mm;
+  background: #fff;
+  box-shadow: 0 10px 35px rgb(0 0 0 / 35%);
+  align-content: space-between;
+}
+
+.player-folio {
+  --accent: #efcfca;
+  --tint: #f7e9e6;
+  --detail: #3f3b35;
+  position: relative;
+  display: grid;
+  width: 200mm;
+  height: 120mm;
+  grid-template-columns: 41mm 72mm 40mm 30mm;
+  grid-template-rows: 61mm 48mm;
+  gap: 3mm;
+  padding: 4mm;
+  overflow: hidden;
+  border: 0.65mm solid var(--ink);
+  background: repeating-linear-gradient(0deg, transparent 0 7.8mm, rgb(23 23 19 / 3%) 7.8mm 8mm), var(--paper-bright);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.player-folio::after { position: absolute; right: 2mm; bottom: 1.5mm; color: rgb(23 23 19 / 38%); content: "BELLWEATHER REGISTERED INFLUENCE BUREAU"; font: 800 4.5pt/1 var(--mono); letter-spacing: 0.12em; }
+.pairliament { --accent: #d4e1eb; --tint: #eaf1f5; }
+.triumvirat { --accent: #eeddb8; --tint: #f7efdc; }
+.ivy-league { --accent: #d8e4d1; --tint: #edf3e9; }
+.vested { --accent: #e5d4e1; --tint: #f3eaf1; }
+.vip-access { --accent: #cfe4df; --tint: #e8f2ef; }
+
+.identity {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  grid-row: 1 / 3;
+  padding: 4mm 3.5mm;
+  overflow: hidden;
+  border: 0.5mm solid var(--ink);
+  background: var(--accent);
+  flex-direction: column;
+}
+
+.identity::before { position: absolute; inset: 0; opacity: 0.18; content: ""; pointer-events: none; }
+.swoop .identity::before { background: repeating-linear-gradient(153deg, transparent 0 7mm, currentColor 7mm 7.5mm); }
+.pairliament .identity::before { background: repeating-linear-gradient(90deg, transparent 0 8mm, currentColor 8mm 8.5mm); }
+.triumvirat .identity::before { background: radial-gradient(circle, currentColor 0 0.8mm, transparent 0.9mm) 0 0 / 8mm 8mm; }
+.ivy-league .identity::before { background: linear-gradient(45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 10mm 10mm, linear-gradient(-45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 10mm 10mm; }
+.vested .identity::before { background: linear-gradient(135deg, transparent 43%, currentColor 44% 49%, transparent 50%) 0 0 / 12mm 12mm, linear-gradient(225deg, transparent 43%, currentColor 44% 49%, transparent 50%) 0 0 / 12mm 12mm; }
+.vip-access .identity::before { background: linear-gradient(30deg, transparent 44%, currentColor 45% 50%, transparent 51%) 0 0 / 11mm 19mm, linear-gradient(150deg, transparent 44%, currentColor 45% 50%, transparent 51%) 0 0 / 11mm 19mm; }
+.identity > * { position: relative; z-index: 1; }
+
+.emblem { width: 25mm; height: 25mm; margin-bottom: 3mm; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.8; }
+.firm-index, .motto, .private-note strong, .new-year > span, .counter-bank > span, .agenda-slot span, .agenda-slot b, .reference-heading, .action-reference b { font: 800 5.5pt/1.1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.firm-index { margin: 0 0 1.5mm; }
+.identity h2 { margin: 0; font: 800 15pt/0.91 var(--display); letter-spacing: -0.035em; }
+.identity h2 span, .identity h2 small { display: block; }
+.identity h2 small { margin-top: 1mm; font: 800 8pt/1 var(--mono); letter-spacing: 0.02em; text-transform: uppercase; }
+.motto { margin: 3mm 0 0; line-height: 1.35; }
+.firm-number { margin: auto 0 0; font: 800 43pt/0.74 var(--display); letter-spacing: -0.08em; }
+.private-note { margin: 3mm 0 0; padding-top: 2mm; border-top: 0.4mm solid currentColor; font: 750 6.2pt/1.25 var(--body); }
+
+.agenda-rack { position: relative; width: 72mm; height: 61mm; }
+.agenda-slot {
+  position: absolute;
+  top: 0;
+  display: flex;
+  width: 40mm;
+  height: 61mm;
+  padding: 2.5mm;
+  overflow: hidden;
+  border: 0.5mm solid var(--ink);
+  background: linear-gradient(135deg, transparent 0 47%, rgb(23 23 19 / 5%) 48% 52%, transparent 53%), var(--paper);
+  box-shadow: -1mm 0 0 rgb(23 23 19 / 12%);
+  flex-direction: column;
+}
+.agenda-slot::before { position: absolute; inset: 1.6mm; border: 0.35mm dashed var(--detail); content: ""; }
+.agenda-slot > * { position: relative; }
+.agenda-slot span { width: 11mm; padding: 1mm 0.8mm; color: var(--paper-bright); background: var(--detail); text-align: center; }
+.agenda-slot strong { margin: auto; font: 800 12pt/1 var(--display); }
+.agenda-slot b { margin-top: auto; padding: 1mm; background: var(--paper); text-align: center; }
+.election-one { left: 0; z-index: 1; }
+.election-two { left: 14mm; z-index: 2; }
+.election-three { left: 28mm; z-index: 3; }
+.election-one span, .election-two span { writing-mode: vertical-rl; transform: rotate(180deg); }
+.election-one b, .election-two b { position: absolute; bottom: 3mm; left: 3mm; padding: 0; background: transparent; font-size: 4.4pt; writing-mode: vertical-rl; transform: rotate(180deg); }
+
+.new-year {
+  display: flex;
+  width: 40mm;
+  height: 61mm;
+  padding: 3mm;
+  border: 0.55mm solid var(--ink);
+  outline: 0.35mm dashed var(--detail);
+  outline-offset: -2mm;
+  background: var(--tint);
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+.new-year > span { position: absolute; margin-top: -49mm; font-size: 4.5pt; }
+.new-year strong { font: 800 16pt/0.9 var(--display); letter-spacing: -0.04em; }
+.new-year small { margin-top: 3mm; font: 750 5.4pt/1.25 var(--body); }
+
+.counter-bank { display: flex; width: 30mm; height: 61mm; padding: 2.5mm; border: 0.5mm solid var(--ink); background: var(--paper-bright); align-items: center; flex-direction: column; }
+.counter-wells { display: grid; margin: auto 0; grid-template-columns: repeat(2, 12mm); gap: 2mm; }
+.counter-wells i { display: grid; width: 12mm; height: 12mm; border: 0.45mm dashed var(--detail); border-radius: 50%; background: var(--tint); place-items: center; font: 800 6pt/1 var(--mono); font-style: normal; }
+.counter-wells .low-player { opacity: 0.6; background: repeating-linear-gradient(135deg, var(--tint) 0 1.5mm, var(--paper) 1.5mm 3mm); }
+.counter-bank small { font: 750 4.5pt/1 var(--body); text-align: center; }
+
+.action-reference { display: grid; min-width: 0; grid-column: 2 / 5; grid-row: 2; padding: 2.5mm; border: 0.5mm solid var(--ink); background: var(--paper-bright); grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto 1fr; gap: 1.5mm; }
+.reference-heading { display: flex; grid-column: 1 / 5; color: var(--detail); justify-content: space-between; }
+.reference-heading strong { font: inherit; }
+.reference-heading span { letter-spacing: 0.04em; }
+.action-reference > div:not(.reference-heading) { min-width: 0; padding: 1.5mm; border-left: 1.3mm solid var(--detail); background: var(--tint); }
+.action-reference b { display: block; margin-bottom: 1mm; font-size: 5.7pt; }
+.action-reference p { margin: 0; font: 750 5.5pt/1.2 var(--body); }
+
+@page { size: A4 portrait; margin: 0; }
+
+@media print {
+  html, body { background: #fff; }
+  body { min-width: 0; }
+  .screen-header { display: none; }
+  main { display: block; padding: 0; }
+  .print-sheet { margin: 0; break-after: page; box-shadow: none; }
+  .print-sheet:last-child { break-after: auto; }
+}
