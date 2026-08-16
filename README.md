@@ -15,7 +15,7 @@ Start here:
 - [`docs/design/vision.html`](docs/design/vision.html) — the pitch and target experience
 - [`docs/rules/current-rules.html`](docs/rules/current-rules.html) — current rules, including explicit gaps
 - [`docs/design/open-questions.html`](docs/design/open-questions.html) — the next decisions to make
-- [`docs/playtesting/playtest-guide.html`](docs/playtesting/playtest-guide.html) — prototype and session guidance
+- [`docs/playtesting/playtest-guide.html`](docs/playtesting/playtest-guide.html) — playtest and session guidance
 
 Open `docs/index.html` directly in a browser. No build step or web server is
 required.
@@ -95,7 +95,7 @@ physical-size checks pass.
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
 | `assets/print/player-folios-a4.pdf` | Three A4 portrait player-folio sheets |
 | `assets/print/firm-player-pieces-a4.pdf` | Three A4 landscape Firm opening, Collection, and score-piece sheets |
-| `assets/print/bid-cards-a4.pdf` | Four A4 portrait sheets containing the current 60-card Operation supply |
+| `assets/print/operation-cards-a4.pdf` | Four A4 portrait sheets containing the current 60-card Operation supply |
 | `assets/print/scoring-cards-a4.pdf` | Two A4 portrait scoring-card sheets |
 | `assets/print/shared-state-tokens-a4.pdf` | One A4 landscape shared state and annual-sequence sheet |
 

@@ -10,7 +10,7 @@ const errors = [];
 const generatedPrintOutputs = new Set([
   "player-folios-a4.pdf",
   "firm-player-pieces-a4.pdf",
-  "bid-cards-a4.pdf",
+  "operation-cards-a4.pdf",
   "campaign-score-trackers-a4.pdf",
   "party-boards-a4.pdf",
   "shared-state-tokens-a4.pdf",
