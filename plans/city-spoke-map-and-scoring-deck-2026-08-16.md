@@ -28,7 +28,7 @@ still names one pairwise non-neighboring district at each scoring capacity.
 2. ✅ Replace and verify all scoring-card objectives, registered-pair
    compatibility, specification inventory, printable card faces, and generated
    PDF.
-3. Archive the replaced map and scoring-card specifications, record the design
+3. ✅ Archive the replaced map and scoring-card specifications, record the design
    decision and changelog entry, advance the ruleset, update current rules and
    component documentation, regenerate print assets, and run the full project
    checks.

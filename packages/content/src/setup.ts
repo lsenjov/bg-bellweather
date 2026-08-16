@@ -41,4 +41,4 @@ export const INITIAL_SUPPORT_DISTRICTS = deepFreeze([
 
 export const SUPPORT_SUPPLY = "unlimited" as const;
 export const ELECTION_YEARS = deepFreeze([4, 8, 12] as const);
-export const RULESET_VERSION = "16" as const;
+export const RULESET_VERSION = "17" as const;
