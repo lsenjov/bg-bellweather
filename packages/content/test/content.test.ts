@@ -125,6 +125,15 @@ describe("parties and firms", () => {
     ]);
   });
 
+  it("defines Quiet Hours as Night Parliament's Rally bonus", () => {
+    expect(PARTIES_BY_ID["night-parliament"].bonuses[0]).toMatchObject({
+      operation: "rally",
+      name: "Quiet Hours",
+      effect:
+        "After Rally resolves, add one Night Support to an otherwise empty district."
+    });
+  });
+
   it("defines six distinct, sequentially numbered firms", () => {
     expect(FIRMS).toHaveLength(6);
     expect(new Set(FIRM_IDS).size).toBe(6);

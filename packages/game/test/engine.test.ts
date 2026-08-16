@@ -25,7 +25,7 @@ import { projectGameState } from "../src/projection.js";
 
 const zeroRandom = { integer: () => 0 };
 
-describe("ruleset 15 setup", () => {
+describe("ruleset 16 setup", () => {
   for (const playerCount of [2, 3, 4, 5, 6]) {
     it(`creates the yearly Operation economy for ${playerCount} players`, () => {
       const state = initializeGame(configuration(playerCount), zeroRandom).state;
@@ -63,8 +63,8 @@ describe("ruleset 15 setup", () => {
 
   it("rejects old saved rulesets", () => {
     const initialized = initializeGame(configuration(4), zeroRandom);
-    initialized.state.rulesetVersion = "14";
-    expect(() => replay([initialized])).toThrow("Only ruleset 15 is supported");
+    initialized.state.rulesetVersion = "15";
+    expect(() => replay([initialized])).toThrow("Only ruleset 16 is supported");
   });
 });
 

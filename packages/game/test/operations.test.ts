@@ -242,10 +242,32 @@ describe("operation baselines", () => {
     expect(
       isOperationRequestLegal(state({ a: { "night-parliament": 1 } }), {
         party: "night-parliament",
-        choice: { operation: "rally", districtId: "a" },
+        choice: {
+          operation: "rally",
+          districtId: "a",
+          bonusDistrictId: "c"
+        },
         claimBonus: true
       })
     ).toBe(true);
+    expect(
+      isOperationRequestLegal(state({ a: { "night-parliament": 1 } }), {
+        party: "night-parliament",
+        choice: { operation: "rally", districtId: "a" },
+        claimBonus: true
+      })
+    ).toBe(false);
+    expect(
+      isOperationRequestLegal(state({ a: { "night-parliament": 1 } }), {
+        party: "night-parliament",
+        choice: {
+          operation: "rally",
+          districtId: "a",
+          bonusDistrictId: "a"
+        },
+        claimBonus: true
+      })
+    ).toBe(false);
   });
 });
 
@@ -418,14 +440,39 @@ describe("all twelve party bonuses", () => {
     expect(campaign.state.districts.c?.support.foxglove).toBe(1);
   });
 
-  it("applies immediate Night Shift and Midnight Leak", () => {
-    const shift = resolveOperation(state({ a: { "night-parliament": 1 } }), {
+  it("applies immediate Quiet Hours and Midnight Leak", () => {
+    const quietHours = resolveOperation(state({ a: { "night-parliament": 1 } }), {
       party: "night-parliament",
-      choice: { operation: "rally", districtId: "a" },
+      choice: {
+        operation: "rally",
+        districtId: "a",
+        bonusDistrictId: "c"
+      },
       claimBonus: true
     });
-    expect(shift.bonusApplied).toBe(true);
-    expect(shift.state.districts.a?.support["night-parliament"]).toBe(3);
+    expect(quietHours.bonusName).toBe("Quiet Hours");
+    expect(quietHours.bonusApplied).toBe(true);
+    expect(quietHours.state.districts.a?.support["night-parliament"]).toBe(2);
+    expect(quietHours.state.districts.c?.support["night-parliament"]).toBe(1);
+
+    const occupied = state({
+      a: { "night-parliament": 1 },
+      c: { honeycomb: 1 }
+    });
+    const failedQuietHours = resolveOperation(occupied, {
+      party: "night-parliament",
+      choice: {
+        operation: "rally",
+        districtId: "a",
+        bonusDistrictId: "c"
+      },
+      claimBonus: true
+    });
+    expect(failedQuietHours.baselineApplied).toBe(false);
+    expect(failedQuietHours.bonusFailure).toBe(
+      "Quiet Hours requires an otherwise empty district"
+    );
+    expect(failedQuietHours.state).toEqual(occupied);
 
     const leakState = state({ a: { "night-parliament": 1, foxglove: 1 } });
     leakState.courtSupport.foxglove = { honeycomb: 2, riverworks: 2 };

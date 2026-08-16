@@ -165,9 +165,9 @@ export const PARTIES = deepFreeze([
     bonuses: [
       {
         operation: "rally",
-        name: "Night Shift",
+        name: "Quiet Hours",
         effect:
-          "After Rally resolves, add one more Night Support to a free spot in the Rally district.",
+          "After Rally resolves, add one Night Support to an otherwise empty district.",
         timing: "immediate"
       },
       {

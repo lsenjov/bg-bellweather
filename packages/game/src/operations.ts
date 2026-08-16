@@ -93,7 +93,7 @@ export const PARTY_BONUSES: Record<
     court: "Joint Campaign"
   },
   "night-parliament": {
-    rally: "Night Shift",
+    rally: "Quiet Hours",
     smear: "Midnight Leak"
   }
 };
@@ -508,12 +508,12 @@ function applyBonus(
     party === "night-parliament" &&
     choice.operation === "rally"
   ) {
-    return addBonusSupport(
-      state,
-      baseline.destinationDistrictId,
-      party,
-      "Night Shift requires another free spot in the Rally district"
-    );
+    const destination = state.districts[choice.bonusDistrictId ?? ""];
+    if (destination === undefined || districtTotal(destination) !== 0) {
+      return bonusFailed("Quiet Hours requires an otherwise empty district");
+    }
+    addSupport(destination, party);
+    return bonusApplied();
   }
   if (party === "night-parliament" && choice.operation === "smear") {
     const rivalParty = baseline.rivalParty;
