@@ -109,7 +109,7 @@ describe("yearly browser play surface", () => {
   it("rejects obsolete and incomplete active projections", () => {
     const state = initializeGame(configuration(2), random).state;
     const old = activeEnvelope(state, "seat-1");
-    (old.publicState.publicGame as Record<string, unknown>)["rulesetVersion"] = "15";
+    (old.publicState.publicGame as Record<string, unknown>)["rulesetVersion"] = "16";
     expect(() => extractView(old)).toThrow("unsupported ruleset");
 
     const incomplete = activeEnvelope(state, "seat-1");

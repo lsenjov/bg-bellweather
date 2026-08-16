@@ -63,7 +63,7 @@ describe("ruleset 17 setup", () => {
 
   it("rejects old saved rulesets", () => {
     const initialized = initializeGame(configuration(4), zeroRandom);
-    initialized.state.rulesetVersion = "15";
+    initialized.state.rulesetVersion = "16";
     expect(() => replay([initialized])).toThrow("Only ruleset 17 is supported");
   });
 });

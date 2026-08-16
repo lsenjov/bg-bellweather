@@ -32,7 +32,7 @@ still names one pairwise non-neighboring district at each scoring capacity.
    decision and changelog entry, advance the ruleset, update current rules and
    component documentation, regenerate print assets, and run the full project
    checks.
-4. Obtain an independent code review and resolve all high- and medium-severity
+4. ✅ Obtain an independent code review and resolve all high- and medium-severity
    findings, repeating review until none remain; fix low documentation findings
    and report any other low findings before proceeding.
 
@@ -44,6 +44,11 @@ still names one pairwise non-neighboring district at each scoring capacity.
   compatible pairs, pairwise non-adjacency, capacity order, and preserved
   district, party, and seat-reference distributions.
 - Browser and printable maps visibly place each spoke against its capacity-six
-  city rather than its former capacity-two ring district.
+  city rather than its former capacity-two ring district, with matching shared
+  curve geometry and a contained Centre label.
+- Every printable scoring-card front carries its card ID and an R17 mark so the
+  replacement deck cannot be silently mixed with the archived version.
 - `npm run check` passes and the print exporter produces valid embedded-font
   PDFs at the expected page sizes.
+- Two independent review passes report no remaining high-, medium-, or
+  low-severity findings.

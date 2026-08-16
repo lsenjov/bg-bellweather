@@ -19,7 +19,7 @@
     .district-center { fill: #f2bc3b; stroke-width: 9; }
     .region-name { fill: #171612; font: 900 25px "Noto Serif", serif; letter-spacing: -0.4px; text-anchor: middle; }
     .region-name-small { font-size: 22px; }
-    .region-name-centre { font-size: 16px; letter-spacing: 0; }
+    .region-name-centre { font-size: 12px; letter-spacing: 0; }
     .heading { fill: #171612; font: 900 38px "Noto Serif", serif; letter-spacing: -1px; }
     .eyebrow { fill: #9f2c1e; font: 900 15px "Noto Sans Mono", monospace; letter-spacing: 3px; }
     .map-note { fill: #625f57; font: 900 14px "Noto Sans Mono", monospace; letter-spacing: 2px; }
@@ -52,9 +52,9 @@
   </g>
 
   <g aria-label="Inner city-spoke districts">
-    <path class="district district-two" aria-label="Crown Road district, capacity 2" d="M1055 405L1148 535L900 710L800 540Z"/>
-    <path class="district district-two" aria-label="Canal Ward district, capacity 2" d="M707 890L893 890L900 710H700Z"/>
-    <path class="district district-two" aria-label="Old Quarter district, capacity 2" d="M452 535L545 405L800 540L700 710Z"/>
+    <path class="district district-two" aria-label="Crown Road district, capacity 2" d="M1055 405Q1150 470 1148 535L900 710L800 540Z"/>
+    <path class="district district-two" aria-label="Canal Ward district, capacity 2" d="M707 890Q800 920 893 890L900 710H700Z"/>
+    <path class="district district-two" aria-label="Old Quarter district, capacity 2" d="M452 535Q480 460 545 405L800 540L700 710Z"/>
     <path class="district district-center" aria-label="Bellweather Centre district, capacity 3" d="M800 540L900 710H700Z"/>
   </g>
 
