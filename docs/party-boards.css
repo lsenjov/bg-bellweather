@@ -267,9 +267,10 @@ main {
   display: grid;
   min-width: 0;
   height: 63mm;
-  grid-template-columns: 40mm 40mm minmax(0, 1fr);
-  gap: 2mm;
+  grid-template-columns: repeat(2, 40mm);
+  gap: 6mm;
   align-items: center;
+  justify-content: center;
 }
 
 .card-well {
@@ -298,8 +299,7 @@ main {
   position: relative;
 }
 
-.card-well span,
-.state-well > span {
+.card-well span {
   font: 800 4.8pt/1.1 var(--mono);
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -323,41 +323,6 @@ main {
 
 .pile-well {
   box-shadow: inset -1.5mm -1.5mm 0 rgb(23 22 18 / 9%);
-}
-
-.state-well {
-  display: flex;
-  min-width: 0;
-  height: 61mm;
-  padding: 2mm 1mm;
-  border: 0.5mm solid var(--ink);
-  background: var(--tint);
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
-}
-
-.state-well > strong {
-  margin: 2mm 0;
-  font: 800 9pt/0.9 var(--display);
-}
-
-.closed-well {
-  display: grid;
-  width: 14mm;
-  height: 14mm;
-  margin: auto 0;
-  place-items: center;
-  border: 0.5mm dashed var(--ink);
-  border-radius: 50%;
-  background: var(--paper-bright);
-  font: 800 4.2pt/1 var(--mono);
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-
-.state-well small {
-  font: 750 4.3pt/1.15 var(--body);
 }
 
 .coalition-target {

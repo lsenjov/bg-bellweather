@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="One A4 sheet containing all shared state, Firm opening, Collection, and score pieces for Bellweather Ruleset 17.">
+    <meta name="description" content="One A4 sheet containing the annual register, Firm, Collection, score, Coalition Target, and bonus pieces for Bellweather Ruleset 17.">
     <title>Printable State and Player Pieces — Ladder Bidding</title>
     <link rel="stylesheet" href="../shared-state-tokens.css">
   </head>
@@ -11,7 +11,7 @@
     <header class="screen-header">
       <a href="tokens.html">← Token specification</a>
       <h1>Ruleset 17 state and player pieces</h1>
-      <p>Print at actual size on one A4 landscape sheet. It contains the complete six-Firm supply: six exact 40 × 61 mm annual opening markers, twelve 14 mm Collection counters, six 25 mm score markers, Early Bird and Year markers, six Closed markers, six Coalition Targets, and twelve bonus-used markers.</p>
+      <p>Print at actual size on one A4 landscape sheet. It contains the complete six-Firm supply: six exact 40 × 61 mm annual opening markers, twelve 14 mm Collection counters, six 25 mm score markers, Early Bird and Year markers, six Coalition Targets, and twelve bonus-used markers.</p>
       <p>At four to six players, take one opening, two Collection counters, and one score marker from one Firm. At two or three players, combine two Firm sets for two openings and four counters, but use only one score marker.</p>
       <p><a href="../../assets/print/shared-state-tokens-a4.pdf">Open print-ready PDF →</a></p>
     </header>
@@ -33,12 +33,12 @@
             <div class="register-title"><span>Bellweather register</span><strong>Ruleset 17</strong><small>12 years • 3 Elections</small></div>
             <div><span>01</span><strong>Openings</strong><small>Place Firms on different parties.</small></div>
             <div><span>02</span><strong>Lobby</strong><small>Operate, Collect, Close, or Pass.</small></div>
-            <div><span>03</span><strong>Cleanup</strong><small>Award piles; release New Year; reset pieces; assign Early Bird.</small></div>
+            <div><span>03</span><strong>Cleanup</strong><small>Close the rest; release New Year; reset pieces; assign Early Bird.</small></div>
             <div><span>04</span><strong>Election</strong><small>After Years 4, 8, and 12.</small></div>
           </header>
 
           <section class="component-row firm-openings" aria-label="Six annual Firm opening markers">
-            <header><span>Annual access</span><strong>Firm openings</strong><small>40 × 61 mm<br>Return at Cleanup</small></header>
+            <header><span>Annual access</span><strong>Firm openings</strong><small>40 × 61 mm<br>Return on Closure</small></header>
             <div class="six-column-grid">
               <article class="opening-marker swoop" aria-label="One Fell Swoop Firm opening marker"><span>Firm 01 / One</span><svg aria-hidden="true"><use href="#emblem-swoop"/></svg><strong>One Fell Swoop</strong><small>Closure owner</small><b>Opening</b></article>
               <article class="opening-marker pairliament" aria-label="Pairliament Partners Firm opening marker"><span>Firm 02 / Pair</span><svg aria-hidden="true"><use href="#emblem-pairliament"/></svg><strong>Pairliament Partners</strong><small>Closure owner</small><b>Opening</b></article>
@@ -73,13 +73,12 @@
             </div>
           </section>
 
-          <section class="component-row public-pieces" aria-label="Early Bird, Year, and Closed markers">
-            <header><span>Table state</span><strong>Public markers</strong><small>Reset Closed at Cleanup</small></header>
+          <section class="component-row public-pieces" aria-label="Early Bird and Year markers with opening-state reminder">
+            <header><span>Table state</span><strong>Public markers</strong><small>Open state lives on Firm markers</small></header>
             <div class="public-piece-grid">
               <span class="early-bird" aria-label="Early Bird marker"><svg aria-hidden="true"><use href="#emblem-bird"/></svg><b>Early</b></span>
               <span class="year-marker" aria-label="Year and Election marker"><b>Year</b><small>1–12</small></span>
-              <i>Closed</i><i>Closed</i><i>Closed</i><i>Closed</i><i>Closed</i><i>Closed</i>
-              <p>Targets persist. Court Support clears after Elections. Bonus-used and Closed markers reset during Cleanup.</p>
+              <p><strong>Firm marker on a party = open.</strong> Return it to its player on Closure. Face-up returned markers count toward the Closure majority and cannot be reused until next year.</p>
             </div>
           </section>
         </article>
