@@ -441,19 +441,27 @@ describe("all twelve party bonuses", () => {
   });
 
   it("applies immediate Quiet Hours and Midnight Leak", () => {
-    const quietHours = resolveOperation(state({ a: { "night-parliament": 1 } }), {
+    const quietHoursState = state({ a: { "night-parliament": 1 } });
+    quietHoursState.districts["bellweather-centre"] = district(
+      "bellweather-centre",
+      3,
+      []
+    );
+    const quietHours = resolveOperation(quietHoursState, {
       party: "night-parliament",
       choice: {
         operation: "rally",
         districtId: "a",
-        bonusDistrictId: "c"
+        bonusDistrictId: "bellweather-centre"
       },
       claimBonus: true
     });
     expect(quietHours.bonusName).toBe("Quiet Hours");
     expect(quietHours.bonusApplied).toBe(true);
     expect(quietHours.state.districts.a?.support["night-parliament"]).toBe(2);
-    expect(quietHours.state.districts.c?.support["night-parliament"]).toBe(1);
+    expect(
+      quietHours.state.districts["bellweather-centre"]?.support["night-parliament"]
+    ).toBe(1);
 
     const occupied = state({
       a: { "night-parliament": 1 },

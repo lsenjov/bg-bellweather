@@ -212,7 +212,7 @@ describe("yearly browser play surface", () => {
     expect(
       screen.getByLabelText("Harbormouth: 6 of 6 Support spaces occupied").getAttribute("aria-disabled")
     ).toBe("true");
-    fireEvent.click(screen.getByLabelText("Reedwater: 0 of 2 Support spaces occupied"));
+    fireEvent.click(screen.getByLabelText("Bellweather Centre: 0 of 3 Support spaces occupied"));
 
     expect(screen.getByText("Ready to resolve this card.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Resolve rally" }));
@@ -226,7 +226,7 @@ describe("yearly browser play surface", () => {
           choice: {
             operation: "rally",
             districtId: "cloverfield",
-            bonusDistrictId: "reedwater"
+            bonusDistrictId: "bellweather-centre"
           },
           claimBonus: true
         }
