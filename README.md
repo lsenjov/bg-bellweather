@@ -97,7 +97,7 @@ physical-size checks pass.
 | `assets/print/lobbying-firm-tokens-a4.pdf` | Three A4 landscape firm-token sheets |
 | `assets/print/bid-cards-a4.pdf` | Four A4 portrait sheets containing the current 60-card Operation supply |
 | `assets/print/scoring-cards-a4.pdf` | Two A4 portrait scoring-card sheets |
-| `assets/print/pecking-order-a4.pdf` | One A4 landscape Pecking Order sheet |
+| `assets/print/shared-state-tokens-a4.pdf` | One A4 landscape shared state and annual-sequence sheet |
 
 The A3 export keeps the 396 × 297 mm map artwork at 100% scale and centers it
 with 12 mm side margins. The A4 exports preserve the millimetre dimensions in

@@ -13,7 +13,7 @@ const generatedPrintOutputs = new Set([
   "bid-cards-a4.pdf",
   "campaign-score-trackers-a4.pdf",
   "party-boards-a4.pdf",
-  "pecking-order-a4.pdf",
+  "shared-state-tokens-a4.pdf",
   "ring-and-cross-district-map-a3.pdf",
   "scoring-cards-a4.pdf",
 ].map((name) => join(repositoryRoot, "assets", "print", name)));

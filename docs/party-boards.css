@@ -81,7 +81,7 @@ main {
   display: grid;
   width: 287mm;
   height: 100mm;
-  grid-template-columns: 54mm 61mm 61mm minmax(0, 1fr);
+  grid-template-columns: 52mm 58mm 58mm minmax(0, 1fr);
   grid-template-rows: 63mm 24mm;
   gap: 3mm;
   padding: 4mm;
@@ -162,7 +162,6 @@ main {
 .animals,
 .bonus-family,
 .coalition-target-kicker,
-.opening-kicker,
 .state-kicker {
   font: 800 6.5pt/1.2 var(--mono);
   letter-spacing: 0.11em;
@@ -218,19 +217,6 @@ main {
   font: 700 6.2pt/1.25 var(--body);
 }
 
-.state-marker {
-  display: grid;
-  width: 11mm;
-  height: 11mm;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 0.5mm dashed currentColor;
-  border-radius: 50%;
-  font: 800 5.1pt/1 var(--mono);
-  letter-spacing: 0.04em;
-  text-align: center;
-}
-
 .bonus {
   position: relative;
   min-width: 0;
@@ -277,50 +263,101 @@ main {
   text-align: center;
 }
 
-.opening-bid {
-  position: relative;
+.party-workspace {
   display: grid;
   min-width: 0;
   height: 63mm;
-  padding: 3.5mm;
-  place-items: center;
-  border: 0.7mm dashed var(--accent);
+  grid-template-columns: 40mm 40mm minmax(0, 1fr);
+  gap: 2mm;
+  align-items: center;
+}
+
+.card-well {
+  position: relative;
+  display: flex;
+  width: 40mm;
+  height: 61mm;
+  padding: 3mm;
+  overflow: hidden;
+  border: 0.55mm solid var(--ink);
   background:
     linear-gradient(135deg, transparent 0 47%, rgb(23 22 18 / 5%) 48% 52%, transparent 53%),
-    var(--tint);
+    var(--paper-bright);
+  flex-direction: column;
   text-align: center;
 }
 
-.opening-kicker {
+.card-well::before {
   position: absolute;
-  top: 3mm;
-  left: 3.5mm;
-  color: var(--ink);
+  inset: 1.5mm;
+  border: 0.35mm dashed var(--accent);
+  content: "";
 }
 
-.opening-bid strong {
-  display: block;
-  max-width: 48mm;
-  font: 800 17pt/0.95 var(--display);
-  letter-spacing: -0.025em;
+.card-well > * {
+  position: relative;
 }
 
-.opening-bid > span:not(.opening-kicker) {
-  display: block;
-  margin-top: 1.5mm;
-  font: 800 6.2pt/1.3 var(--mono);
-  letter-spacing: 0.08em;
+.card-well span,
+.state-well > span {
+  font: 800 4.8pt/1.1 var(--mono);
+  letter-spacing: 0.09em;
   text-transform: uppercase;
 }
 
-.opening-note {
-  position: absolute;
-  right: 3mm;
-  bottom: 2.7mm;
-  left: 3mm;
-  margin: 0;
-  color: #3f3c36;
-  font: 700 6pt/1.25 var(--body);
+.card-well strong {
+  margin: auto 1mm;
+  font: 800 12pt/0.92 var(--display);
+  letter-spacing: -0.025em;
+}
+
+.card-well small {
+  font: 750 4.7pt/1.18 var(--body);
+}
+
+.firm-well {
+  background:
+    repeating-linear-gradient(135deg, transparent 0 5mm, rgb(23 22 18 / 5%) 5mm 5.4mm),
+    var(--tint);
+}
+
+.pile-well {
+  box-shadow: inset -1.5mm -1.5mm 0 rgb(23 22 18 / 9%);
+}
+
+.state-well {
+  display: flex;
+  min-width: 0;
+  height: 61mm;
+  padding: 2mm 1mm;
+  border: 0.5mm solid var(--ink);
+  background: var(--tint);
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.state-well > strong {
+  margin: 2mm 0;
+  font: 800 9pt/0.9 var(--display);
+}
+
+.closed-well {
+  display: grid;
+  width: 14mm;
+  height: 14mm;
+  margin: auto 0;
+  place-items: center;
+  border: 0.5mm dashed var(--ink);
+  border-radius: 50%;
+  background: var(--paper-bright);
+  font: 800 4.2pt/1 var(--mono);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.state-well small {
+  font: 750 4.3pt/1.15 var(--body);
 }
 
 .coalition-target {

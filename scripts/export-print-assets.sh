@@ -105,7 +105,7 @@ html_exports=(
   "lobbying-firm-tokens|docs/components/lobbying-firm-tokens.html|assets/print/lobbying-firm-tokens-a4.pdf|3|841.92|594.96"
   "operation-cards|docs/components/bid-cards.html|assets/print/bid-cards-a4.pdf|4|594.96|841.92"
   "scoring-cards|docs/components/printable-scoring-cards.html|assets/print/scoring-cards-a4.pdf|2|594.96|841.92"
-  "pecking-order|docs/components/pecking-order.html|assets/print/pecking-order-a4.pdf|1|841.92|594.96"
+  "shared-state-tokens|docs/components/shared-state-tokens.html|assets/print/shared-state-tokens-a4.pdf|1|841.92|594.96"
   "campaign-score-trackers|docs/components/campaign-score-trackers.html|assets/print/campaign-score-trackers-a4.pdf|1|841.92|594.96"
 )
 
