@@ -551,7 +551,7 @@ export function PartyBoard({
             }}
           >
             <PartyEmblem partyId={party.id} className="party-file-emblem" />
-            <div className="party-file-title"><strong>{party.shortName}</strong><small>{state === undefined ? "Not opened" : `${state.status} · ${owner?.displayName ?? "Unknown"}`}</small></div>
+            <div className="party-file-title"><strong>{party.shortName}</strong><small>{state === undefined ? "Not opened" : state.status === "closed" ? "Closed · opening returned" : `open · ${owner?.displayName ?? "Unknown"}`}</small></div>
             <div className="pile-count"><b>{pile}</b><span>pile</span></div>
             <div className="pile-cards" aria-label={`${pile} Operation cards`}>
               {state !== undefined && OPERATION_IDS.map((operation) => state.operations[operation] > 0 && <span key={operation}>{operation.slice(0, 3)} {state.operations[operation]}</span>)}
@@ -785,7 +785,7 @@ function LobbyActionDesk(props: {
         <SimplePartyAction title="Collect" copy="Spend one Collection counter and take the complete public pile into your New Year area. The party stays open." partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={collectTargetPartyIds} disabled={props.busy || !collectLegal} button={`Collect ${party === undefined ? 0 : operationCount(party.operations)} cards`} onInteraction={props.onInteraction} onSubmit={() => props.onCommand({ type: "game_action", action: { type: "collect", partyId } })} />
       )}
       {mode === "close" && (
-        <SimplePartyAction title="Close" copy={firstTurn ? "You cannot Close on your first Lobby turn, even if you previously passed." : "Only the opening Firm may Close. Its owner takes the pile into their New Year area."} partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={closeTargetPartyIds} disabled={props.busy || !closeLegal} button="Close party" onInteraction={props.onInteraction} onSubmit={() => props.onCommand({ type: "game_action", action: { type: "close", partyId } })} />
+        <SimplePartyAction title="Close" copy={firstTurn ? "You cannot Close on your first Lobby turn, even if you previously passed." : "Only the opening Firm may Close. Its owner takes the pile and gets the opening back."} partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={closeTargetPartyIds} disabled={props.busy || !closeLegal} button="Close party" onInteraction={props.onInteraction} onSubmit={() => props.onCommand({ type: "game_action", action: { type: "close", partyId } })} />
       )}
       {mode === "pass" && (
         <PassAction busy={props.busy} onInteraction={props.onInteraction} onPass={() => props.onCommand({ type: "game_action", action: { type: "pass" } })} />
@@ -837,7 +837,7 @@ function PassAction(props: {
   return (
     <div className="action-copy">
       <h3>Pass</h3>
-      <p>If every player passes consecutively, every party closes to its opening Firm and the year ends.</p>
+      <p>If every player passes consecutively, every party closes to its opening Firm, all openings return, and the year ends.</p>
       <button className="red-button" disabled={props.busy} onClick={() => void props.onPass()}>Pass this turn</button>
     </div>
   );
