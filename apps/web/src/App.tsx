@@ -988,6 +988,9 @@ function BonusFields(props: { draft: OperationDraft; partyId: PartyId; armedTarg
   if (partyId === "many-wings" && draft.operation === "court") {
     return <DistrictSelect label="Joint Campaign district" value={draft.bonusDistrictId} active={props.armedTarget === "bonusDistrictId"} onArm={() => props.onArm("bonusDistrictId")} onChange={(bonusDistrictId) => props.onUpdate({ bonusDistrictId })} />;
   }
+  if (partyId === "night-parliament" && draft.operation === "rally") {
+    return <DistrictSelect label="Quiet Hours district" value={draft.bonusDistrictId} active={props.armedTarget === "bonusDistrictId"} onArm={() => props.onArm("bonusDistrictId")} onChange={(bonusDistrictId) => props.onUpdate({ bonusDistrictId })} />;
+  }
   if (partyId === "night-parliament" && draft.operation === "smear") {
     return <PartyField label="Rival Court space" optional value={draft.bonusCourtParty} actingParty={partyId} active={props.armedTarget === "bonusCourtParty"} onArm={() => props.onArm("bonusCourtParty")} onChange={(bonusCourtParty) => props.onUpdate({ bonusCourtParty })} />;
   }

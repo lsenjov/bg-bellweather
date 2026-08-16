@@ -109,7 +109,7 @@ describe("yearly browser play surface", () => {
   it("rejects obsolete and incomplete active projections", () => {
     const state = initializeGame(configuration(2), random).state;
     const old = activeEnvelope(state, "seat-1");
-    (old.publicState.publicGame as Record<string, unknown>)["rulesetVersion"] = "14";
+    (old.publicState.publicGame as Record<string, unknown>)["rulesetVersion"] = "15";
     expect(() => extractView(old)).toThrow("unsupported ruleset");
 
     const incomplete = activeEnvelope(state, "seat-1");
@@ -179,6 +179,54 @@ describe("yearly browser play surface", () => {
             operation: "organise",
             sourceDistrictId: "harbormouth",
             destinationDistrictId: "cloverfield"
+          },
+          claimBonus: true
+        }
+      }
+    }));
+  });
+
+  it("selects an empty Quiet Hours district on the map", async () => {
+    let state = openEveryParty(
+      initializeGame(configuration(2), random).state,
+      ["night-parliament", "old-shell", "foxglove", "riverworks"]
+    );
+    state.support.cloverfield["night-parliament"] = 1;
+    const view = privateView(state, "seat-1");
+    const onCommand = vi.fn(async () => true);
+    render(
+      <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={onCommand} />
+    );
+
+    fireEvent.change(screen.getByLabelText("Party"), {
+      target: { value: "night-parliament" }
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^rally/ }));
+    fireEvent.change(screen.getByLabelText("Rally district"), {
+      target: { value: "cloverfield" }
+    });
+    fireEvent.click(screen.getByRole("checkbox", { name: /Quiet Hours/ }));
+
+    const quietHoursField = screen.getByLabelText("Quiet Hours district").parentElement!;
+    fireEvent.click(within(quietHoursField).getByRole("button", { name: "Select on map" }));
+    expect(
+      screen.getByLabelText("Harbormouth: 6 of 6 Support spaces occupied").getAttribute("aria-disabled")
+    ).toBe("true");
+    fireEvent.click(screen.getByLabelText("Reedwater: 0 of 2 Support spaces occupied"));
+
+    expect(screen.getByText("Ready to resolve this card.")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Resolve rally" }));
+    await waitFor(() => expect(onCommand).toHaveBeenCalledWith({
+      type: "game_action",
+      action: {
+        type: "operate",
+        partyId: "night-parliament",
+        play: {
+          operation: "rally",
+          choice: {
+            operation: "rally",
+            districtId: "cloverfield",
+            bonusDistrictId: "reedwater"
           },
           claimBonus: true
         }
@@ -302,9 +350,11 @@ function configuration(playerCount: number) {
   };
 }
 
-function openEveryParty(initial: GameState): GameState {
+function openEveryParty(
+  initial: GameState,
+  partyIds: PartyId[] = ["honeycomb", "old-shell", "foxglove", "riverworks"]
+): GameState {
   let state = initial;
-  const partyIds: PartyId[] = ["honeycomb", "old-shell", "foxglove", "riverworks"];
   while (state.phase.type === "opening") {
     const seatId = state.phase.turnSeatIds[state.phase.turnIndex]!;
     const seat = state.seats.find((candidate) => candidate.id === seatId)!;
