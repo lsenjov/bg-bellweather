@@ -97,9 +97,9 @@ describe("Election Day scoring", () => {
     expect(toElectionScoringCard(SCORING_CARDS_BY_ID["SC-01"])).toEqual({
       id: "SC-01",
       objectives: [
-        { districtId: "grand-market", party: "honeycomb" },
-        { districtId: "cloverfield", party: "old-shell" },
-        { districtId: "old-quarter", party: "foxglove" }
+        { districtId: "ironwood", party: "honeycomb" },
+        { districtId: "millbank", party: "old-shell" },
+        { districtId: "canal-ward", party: "foxglove" }
       ],
       positiveSeat: "left",
       negativeSeat: "second-left"

@@ -155,30 +155,30 @@ describe("scoring deck", () => {
         ].join("|")
       )
     ).toEqual([
-      "SC-01|grand-market/honeycomb|cloverfield/old-shell|old-quarter/foxglove|+left|-second-left",
-      "SC-02|ironwood/old-shell|millbank/foxglove|westgate/riverworks|+left|-second-right",
-      "SC-03|ironwood/foxglove|sunmeadow/riverworks|canal-ward/many-wings|+left|-second-right",
-      "SC-04|harbormouth/riverworks|red-orchard/many-wings|northreach/night-parliament|+second-left|-right",
-      "SC-05|harbormouth/many-wings|mossfield/night-parliament|reedwater/honeycomb|+second-left|-left",
-      "SC-06|grand-market/night-parliament|high-pastures/honeycomb|crown-road/old-shell|+right|-second-right",
-      "SC-07|grand-market/honeycomb|cloverfield/foxglove|crown-road/riverworks|+left|-second-left",
-      "SC-08|ironwood/old-shell|millbank/riverworks|northreach/many-wings|+right|-second-left",
-      "SC-09|ironwood/foxglove|sunmeadow/many-wings|old-quarter/night-parliament|+left|-second-right",
-      "SC-10|harbormouth/riverworks|red-orchard/night-parliament|canal-ward/honeycomb|+second-right|-right",
-      "SC-11|grand-market/many-wings|mossfield/honeycomb|reedwater/old-shell|+second-right|-right",
-      "SC-12|harbormouth/night-parliament|high-pastures/old-shell|westgate/foxglove|+right|-second-left",
-      "SC-13|ironwood/honeycomb|cloverfield/riverworks|reedwater/many-wings|+second-right|-right",
-      "SC-14|grand-market/old-shell|millbank/many-wings|westgate/night-parliament|+right|-second-right",
-      "SC-15|harbormouth/foxglove|sunmeadow/night-parliament|crown-road/honeycomb|+right|-second-left",
-      "SC-16|ironwood/riverworks|red-orchard/honeycomb|northreach/old-shell|+right|-second-right",
-      "SC-17|grand-market/many-wings|mossfield/old-shell|canal-ward/foxglove|+second-right|-left",
-      "SC-18|harbormouth/night-parliament|high-pastures/foxglove|old-quarter/riverworks|+second-right|-left",
-      "SC-19|ironwood/honeycomb|cloverfield/many-wings|crown-road/night-parliament|+second-left|-right",
-      "SC-20|grand-market/old-shell|millbank/night-parliament|old-quarter/honeycomb|+second-left|-left",
-      "SC-21|harbormouth/foxglove|sunmeadow/honeycomb|canal-ward/old-shell|+left|-second-left",
-      "SC-22|ironwood/riverworks|red-orchard/old-shell|reedwater/foxglove|+second-right|-left",
-      "SC-23|harbormouth/many-wings|mossfield/foxglove|northreach/riverworks|+second-left|-right",
-      "SC-24|grand-market/night-parliament|high-pastures/riverworks|westgate/many-wings|+second-left|-left"
+      "SC-01|ironwood/honeycomb|millbank/old-shell|canal-ward/foxglove|+left|-second-left",
+      "SC-02|harbormouth/old-shell|high-pastures/foxglove|old-quarter/riverworks|+left|-second-right",
+      "SC-03|harbormouth/foxglove|mossfield/riverworks|northreach/many-wings|+left|-second-right",
+      "SC-04|grand-market/riverworks|cloverfield/many-wings|crown-road/night-parliament|+second-left|-right",
+      "SC-05|grand-market/many-wings|cloverfield/night-parliament|old-quarter/honeycomb|+second-left|-left",
+      "SC-06|ironwood/night-parliament|red-orchard/honeycomb|reedwater/old-shell|+right|-second-right",
+      "SC-07|ironwood/honeycomb|sunmeadow/foxglove|canal-ward/riverworks|+left|-second-left",
+      "SC-08|harbormouth/old-shell|high-pastures/riverworks|westgate/many-wings|+right|-second-left",
+      "SC-09|harbormouth/foxglove|mossfield/many-wings|reedwater/night-parliament|+left|-second-right",
+      "SC-10|grand-market/riverworks|millbank/night-parliament|westgate/honeycomb|+second-right|-right",
+      "SC-11|ironwood/many-wings|sunmeadow/honeycomb|westgate/old-shell|+second-right|-right",
+      "SC-12|grand-market/night-parliament|cloverfield/old-shell|reedwater/foxglove|+right|-second-left",
+      "SC-13|harbormouth/honeycomb|red-orchard/riverworks|old-quarter/many-wings|+second-right|-right",
+      "SC-14|ironwood/old-shell|sunmeadow/many-wings|northreach/night-parliament|+right|-second-right",
+      "SC-15|grand-market/foxglove|high-pastures/night-parliament|reedwater/honeycomb|+right|-second-left",
+      "SC-16|harbormouth/riverworks|mossfield/honeycomb|canal-ward/old-shell|+right|-second-right",
+      "SC-17|ironwood/many-wings|red-orchard/old-shell|crown-road/foxglove|+second-right|-left",
+      "SC-18|grand-market/night-parliament|millbank/foxglove|northreach/riverworks|+second-right|-left",
+      "SC-19|harbormouth/honeycomb|high-pastures/many-wings|canal-ward/night-parliament|+second-left|-right",
+      "SC-20|ironwood/old-shell|red-orchard/night-parliament|northreach/honeycomb|+second-left|-left",
+      "SC-21|grand-market/foxglove|millbank/honeycomb|crown-road/old-shell|+left|-second-left",
+      "SC-22|harbormouth/riverworks|mossfield/old-shell|old-quarter/foxglove|+second-right|-left",
+      "SC-23|grand-market/many-wings|cloverfield/foxglove|westgate/riverworks|+second-left|-right",
+      "SC-24|ironwood/night-parliament|sunmeadow/riverworks|crown-road/many-wings|+second-left|-left"
     ]);
   });
 
@@ -201,6 +201,7 @@ describe("scoring deck", () => {
   });
 
   it("gives each card one non-neighboring objective at each scoring capacity", () => {
+    const districtTriples = new Set<string>();
     for (const card of SCORING_CARDS) {
       expect(
         card.objectives.map(
@@ -209,6 +210,9 @@ describe("scoring deck", () => {
       ).toEqual([6, 4, 2]);
       expect(new Set(card.objectives.map((objective) => objective.partyId)).size).toBe(
         3
+      );
+      districtTriples.add(
+        card.objectives.map((objective) => objective.districtId).join("|")
       );
       for (const [index, objective] of card.objectives.entries()) {
         const otherDistricts = card.objectives
@@ -221,6 +225,7 @@ describe("scoring deck", () => {
         }
       }
     }
+    expect(districtTriples.size).toBe(SCORING_CARDS.length);
   });
 
   it("matches the district and party distribution", () => {

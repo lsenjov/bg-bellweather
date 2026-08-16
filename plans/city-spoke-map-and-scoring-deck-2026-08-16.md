@@ -25,7 +25,7 @@ still names one pairwise non-neighboring district at each scoring capacity.
 1. ✅ Update and verify the executable district topology, browser map layout, and
    printable district map while preserving the established territorial-atlas
    presentation and accessibility.
-2. Replace and verify all scoring-card objectives, registered-pair
+2. ✅ Replace and verify all scoring-card objectives, registered-pair
    compatibility, specification inventory, printable card faces, and generated
    PDF.
 3. Archive the replaced map and scoring-card specifications, record the design
