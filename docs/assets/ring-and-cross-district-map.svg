@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="396mm" height="297mm" viewBox="0 0 1600 1200" role="img" aria-labelledby="title description">
   <title id="title">Territorial district map of Bellweather</title>
-  <desc id="description">Sixteen named districts form an irregular land ring and three causeways across Crownwater to Bellweather Centre. Shared black borders define adjacency. Clockwise from north, the outer ring is Northreach with 2 Support spots, Cloverfield with 4, Harbormouth with 6, Millbank with 4, Reedwater with 2, Sunmeadow with 4, Grand Market with 6, Red Orchard with 4, Westgate with 2, Mossfield with 4, Ironwood with 6, and High Pastures with 4. Crown Road has 2 spots and borders Northreach and Bellweather Centre. Canal Ward has 2 spots and borders Reedwater and Bellweather Centre. Old Quarter has 2 spots and borders Westgate and Bellweather Centre. Bellweather Centre has 3 spots and borders the three causeways.</desc>
+  <desc id="description">Sixteen named districts form an irregular land ring and three causeways across Crownwater to Bellweather Centre. Shared black borders define adjacency. Clockwise from north, the outer ring is Northreach with 2 Support spots, Cloverfield with 4, Harbormouth with 6, Millbank with 4, Reedwater with 2, Sunmeadow with 4, Grand Market with 6, Red Orchard with 4, Westgate with 2, Mossfield with 4, Ironwood with 6, and High Pastures with 4. Crown Road has 2 spots and borders Harbormouth and Bellweather Centre. Canal Ward has 2 spots and borders Grand Market and Bellweather Centre. Old Quarter has 2 spots and borders Ironwood and Bellweather Centre. Bellweather Centre has 3 spots and borders the three causeways.</desc>
   <defs>
     <pattern id="water" width="52" height="28" patternUnits="userSpaceOnUse">
       <rect width="52" height="28" fill="#c9d9da"/>
@@ -19,6 +19,7 @@
     .district-center { fill: #f2bc3b; stroke-width: 9; }
     .region-name { fill: #171612; font: 900 25px "Noto Serif", serif; letter-spacing: -0.4px; text-anchor: middle; }
     .region-name-small { font-size: 22px; }
+    .region-name-centre { font-size: 16px; letter-spacing: 0; }
     .heading { fill: #171612; font: 900 38px "Noto Serif", serif; letter-spacing: -1px; }
     .eyebrow { fill: #9f2c1e; font: 900 15px "Noto Sans Mono", monospace; letter-spacing: 3px; }
     .map-note { fill: #625f57; font: 900 14px "Noto Sans Mono", monospace; letter-spacing: 2px; }
@@ -50,17 +51,17 @@
     <path class="district district-four" aria-label="High Pastures district, capacity 4" d="M362 256Q500 145 639 127L680 230L707 330Q620 340 545 405L450 335Z"/>
   </g>
 
-  <g aria-label="Inner cross districts">
-    <path class="district district-two" aria-label="Crown Road district, capacity 2" d="M707 330Q800 290 893 330L950 510H650Z"/>
-    <path class="district district-two" aria-label="Canal Ward district, capacity 2" d="M1148 685Q1080 770 1055 815L800 770L950 510Z"/>
-    <path class="district district-two" aria-label="Old Quarter district, capacity 2" d="M545 815Q460 750 452 685L650 510L800 770Z"/>
-    <path class="district district-center" aria-label="Bellweather Centre district, capacity 3" d="M650 510H950L800 770Z"/>
+  <g aria-label="Inner city-spoke districts">
+    <path class="district district-two" aria-label="Crown Road district, capacity 2" d="M1055 405L1148 535L900 710L800 540Z"/>
+    <path class="district district-two" aria-label="Canal Ward district, capacity 2" d="M707 890L893 890L900 710H700Z"/>
+    <path class="district district-two" aria-label="Old Quarter district, capacity 2" d="M452 535L545 405L800 540L700 710Z"/>
+    <path class="district district-center" aria-label="Bellweather Centre district, capacity 3" d="M800 540L900 710H700Z"/>
   </g>
 
   <g aria-hidden="true">
-    <text class="water-label" x="1080" y="575" transform="rotate(18 1080 575)">CROWNWATER</text>
-    <text class="water-label" x="520" y="575" transform="rotate(-18 520 575)">CROWNWATER</text>
-    <text class="water-label" x="800" y="855">CROWNWATER</text>
+    <text class="water-label" x="800" y="420">CROWNWATER</text>
+    <text class="water-label" x="1040" y="765" transform="rotate(-32 1040 765)">CROWNWATER</text>
+    <text class="water-label" x="560" y="765" transform="rotate(32 560 765)">CROWNWATER</text>
   </g>
 
   <g aria-label="District labels and Support spots">
@@ -161,29 +162,29 @@
     </g>
 
     <g aria-label="Crown Road, 2 Support spots">
-      <text class="region-name region-name-small" x="800" y="374">Crown Road</text>
-      <use href="#support-spot" x="774" y="447"/>
-      <use href="#support-spot" x="826" y="447"/>
+      <text class="region-name region-name-small" x="1000" y="492">Crown Road</text>
+      <use href="#support-spot" x="974" y="555"/>
+      <use href="#support-spot" x="1026" y="555"/>
     </g>
 
     <g aria-label="Canal Ward, 2 Support spots">
-      <text class="region-name region-name-small" x="1004" y="662">Canal Ward</text>
-      <use href="#support-spot" x="978" y="735"/>
-      <use href="#support-spot" x="1030" y="735"/>
+      <text class="region-name region-name-small" x="800" y="760">Canal Ward</text>
+      <use href="#support-spot" x="774" y="830"/>
+      <use href="#support-spot" x="826" y="830"/>
     </g>
 
     <g aria-label="Old Quarter, 2 Support spots">
-      <text class="region-name region-name-small" x="596" y="662">Old Quarter</text>
-      <use href="#support-spot" x="570" y="735"/>
-      <use href="#support-spot" x="622" y="735"/>
+      <text class="region-name region-name-small" x="600" y="492">Old Quarter</text>
+      <use href="#support-spot" x="574" y="555"/>
+      <use href="#support-spot" x="626" y="555"/>
     </g>
 
     <g aria-label="Bellweather Centre, 3 Support spots">
-      <text class="region-name region-name-small" x="800" y="555">Bellweather</text>
-      <text class="region-name region-name-small" x="800" y="580">Centre</text>
-      <use href="#support-spot" x="755" y="642"/>
-      <use href="#support-spot" x="800" y="642"/>
-      <use href="#support-spot" x="845" y="642"/>
+      <text class="region-name region-name-centre" x="800" y="620">Bellweather</text>
+      <text class="region-name region-name-centre" x="800" y="640">Centre</text>
+      <use href="#support-spot" x="755" y="676"/>
+      <use href="#support-spot" x="800" y="676"/>
+      <use href="#support-spot" x="845" y="676"/>
     </g>
   </g>
 

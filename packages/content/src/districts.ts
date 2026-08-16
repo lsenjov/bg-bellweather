@@ -33,7 +33,7 @@ export const DISTRICTS = deepFreeze([
     id: "northreach",
     name: "Northreach",
     capacity: 2,
-    adjacentDistrictIds: ["high-pastures", "cloverfield", "crown-road"]
+    adjacentDistrictIds: ["high-pastures", "cloverfield"]
   },
   {
     id: "cloverfield",
@@ -45,7 +45,7 @@ export const DISTRICTS = deepFreeze([
     id: "harbormouth",
     name: "Harbormouth",
     capacity: 6,
-    adjacentDistrictIds: ["cloverfield", "millbank"]
+    adjacentDistrictIds: ["cloverfield", "millbank", "crown-road"]
   },
   {
     id: "millbank",
@@ -57,7 +57,7 @@ export const DISTRICTS = deepFreeze([
     id: "reedwater",
     name: "Reedwater",
     capacity: 2,
-    adjacentDistrictIds: ["millbank", "sunmeadow", "canal-ward"]
+    adjacentDistrictIds: ["millbank", "sunmeadow"]
   },
   {
     id: "sunmeadow",
@@ -69,7 +69,7 @@ export const DISTRICTS = deepFreeze([
     id: "grand-market",
     name: "Grand Market",
     capacity: 6,
-    adjacentDistrictIds: ["sunmeadow", "red-orchard"]
+    adjacentDistrictIds: ["sunmeadow", "red-orchard", "canal-ward"]
   },
   {
     id: "red-orchard",
@@ -81,7 +81,7 @@ export const DISTRICTS = deepFreeze([
     id: "westgate",
     name: "Westgate",
     capacity: 2,
-    adjacentDistrictIds: ["red-orchard", "mossfield", "old-quarter"]
+    adjacentDistrictIds: ["red-orchard", "mossfield"]
   },
   {
     id: "mossfield",
@@ -93,7 +93,7 @@ export const DISTRICTS = deepFreeze([
     id: "ironwood",
     name: "Ironwood",
     capacity: 6,
-    adjacentDistrictIds: ["mossfield", "high-pastures"]
+    adjacentDistrictIds: ["mossfield", "high-pastures", "old-quarter"]
   },
   {
     id: "high-pastures",
@@ -105,19 +105,19 @@ export const DISTRICTS = deepFreeze([
     id: "crown-road",
     name: "Crown Road",
     capacity: 2,
-    adjacentDistrictIds: ["northreach", "bellweather-centre"]
+    adjacentDistrictIds: ["harbormouth", "bellweather-centre"]
   },
   {
     id: "canal-ward",
     name: "Canal Ward",
     capacity: 2,
-    adjacentDistrictIds: ["reedwater", "bellweather-centre"]
+    adjacentDistrictIds: ["grand-market", "bellweather-centre"]
   },
   {
     id: "old-quarter",
     name: "Old Quarter",
     capacity: 2,
-    adjacentDistrictIds: ["westgate", "bellweather-centre"]
+    adjacentDistrictIds: ["ironwood", "bellweather-centre"]
   },
   {
     id: "bellweather-centre",
