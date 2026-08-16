@@ -15,29 +15,30 @@ player ownership, large physical wells for cards and markers, and compact
 monospaced procedural labels. These are the current print components and do not
 carry a separate prototype label.
 
-## Step 1 — Party workspaces and shared state
+## Step 1 — Party workspaces and consolidated state
 
 - Redraw the six party boards around one annual Firm opening, one public
   Operation pile, an open/closed state, two once-per-year bonus states, five
   Court spaces, and one Coalition Target.
-- Replace the Pecking Order export with a shared state sheet containing Early
-  Bird, Year/Election, six Coalition Targets, six Closed markers, and twelve
-  bonus-used markers.
+- Replace the Pecking Order export with one shared sheet containing Early Bird,
+  Year/Election, six Coalition Targets, six Closed markers, twelve bonus-used
+  markers, all six annual Firm openings, twelve Collection counters, and six
+  score markers.
 - Produce three A4 landscape party-board sheets and one A4 landscape
   `shared-state-tokens` sheet.
 - Export, inspect every page, validate physical sizes and fonts, and commit.
 
-## Step 2 — Player folios and Firm/player pieces
+## Step 2 — Player folios and matching player pieces
 
 - Redraw the six Firm boards as player folios with three ordered Election
   slots, a physically distinguished first/Capital pair position, one visible
   New Year card well, available-hand guidance, four Collection-counter wells,
   and a concise Lobby action reference.
 - Replace each Firm's three bid-identity cards with one annual opening marker,
-  two distinct Collection counters, and one score marker. Combining two Firm
-  kits supplies the doubled low-player quantities.
-- Produce three A4 portrait `player-folios` sheets and three A4 landscape
-  `firm-player-pieces` sheets.
+  two distinct 14 mm Collection counters, and one score marker on the shared
+  sheet. Combining two Firm kits supplies the doubled low-player quantities.
+- Produce three A4 portrait `player-folios` sheets. Match the four 14 mm folio
+  wells exactly to the consolidated Collection counters.
 - Export, inspect every page, validate physical sizes and fonts, and commit.
 
 ## Step 3 — Documentation and complete-bundle verification

@@ -102,7 +102,6 @@ validate_pdf() {
 html_exports=(
   "party-boards|docs/components/party-boards.html|assets/print/party-boards-a4.pdf|3|841.92|594.96"
   "player-folios|docs/components/player-folios.html|assets/print/player-folios-a4.pdf|3|594.96|841.92"
-  "firm-player-pieces|docs/components/firm-player-pieces.html|assets/print/firm-player-pieces-a4.pdf|3|841.92|594.96"
   "operation-cards|docs/components/operation-cards.html|assets/print/operation-cards-a4.pdf|4|594.96|841.92"
   "scoring-cards|docs/components/printable-scoring-cards.html|assets/print/scoring-cards-a4.pdf|2|594.96|841.92"
   "shared-state-tokens|docs/components/shared-state-tokens.html|assets/print/shared-state-tokens-a4.pdf|1|841.92|594.96"

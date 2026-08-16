@@ -55,7 +55,7 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
   display: grid;
   width: 200mm;
   height: 120mm;
-  grid-template-columns: 41mm 72mm 40mm 30mm;
+  grid-template-columns: 41mm 68mm 40mm 34mm;
   grid-template-rows: 61mm 48mm;
   gap: 3mm;
   padding: 4mm;
@@ -104,7 +104,7 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
 .firm-number { margin: auto 0 0; font: 800 43pt/0.74 var(--display); letter-spacing: -0.08em; }
 .private-note { margin: 3mm 0 0; padding-top: 2mm; border-top: 0.4mm solid currentColor; font: 750 6.2pt/1.25 var(--body); }
 
-.agenda-rack { position: relative; width: 72mm; height: 61mm; }
+.agenda-rack { position: relative; width: 68mm; height: 61mm; }
 .agenda-slot {
   position: absolute;
   top: 0;
@@ -147,9 +147,9 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
 .new-year strong { font: 800 16pt/0.9 var(--display); letter-spacing: -0.04em; }
 .new-year small { margin-top: 3mm; font: 750 5.4pt/1.25 var(--body); }
 
-.counter-bank { display: flex; width: 30mm; height: 61mm; padding: 2.5mm; border: 0.5mm solid var(--ink); background: var(--paper-bright); align-items: center; flex-direction: column; }
-.counter-wells { display: grid; margin: auto 0; grid-template-columns: repeat(2, 12mm); gap: 2mm; }
-.counter-wells i { display: grid; width: 12mm; height: 12mm; border: 0.45mm dashed var(--detail); border-radius: 50%; background: var(--tint); place-items: center; font: 800 6pt/1 var(--mono); font-style: normal; }
+.counter-bank { display: flex; width: 34mm; height: 61mm; padding: 2mm; border: 0.5mm solid var(--ink); background: var(--paper-bright); align-items: center; flex-direction: column; }
+.counter-wells { display: grid; margin: auto 0; grid-template-columns: repeat(2, 14mm); gap: 2mm; }
+.counter-wells i { display: grid; width: 14mm; height: 14mm; border: 0.45mm dashed var(--detail); border-radius: 50%; background: var(--tint); place-items: center; font: 800 6pt/1 var(--mono); font-style: normal; }
 .counter-wells .low-player { opacity: 0.6; background: repeating-linear-gradient(135deg, var(--tint) 0 1.5mm, var(--paper) 1.5mm 3mm); }
 .counter-bank small { font: 750 4.5pt/1 var(--body); text-align: center; }
 

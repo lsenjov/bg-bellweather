@@ -94,10 +94,9 @@ physical-size checks pass.
 | `assets/print/campaign-score-trackers-a4.pdf` | One A4 landscape campaign and 0–40 score tracker sheet |
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
 | `assets/print/player-folios-a4.pdf` | Three A4 portrait player-folio sheets |
-| `assets/print/firm-player-pieces-a4.pdf` | Three A4 landscape Firm opening, Collection, and score-piece sheets |
 | `assets/print/operation-cards-a4.pdf` | Four A4 portrait sheets containing the current 60-card Operation supply |
 | `assets/print/scoring-cards-a4.pdf` | Two A4 portrait scoring-card sheets |
-| `assets/print/shared-state-tokens-a4.pdf` | One A4 landscape shared state and annual-sequence sheet |
+| `assets/print/shared-state-tokens-a4.pdf` | One A4 landscape sheet containing all shared state, Firm opening, Collection, and score pieces |
 
 The A3 export keeps the 396 × 297 mm map artwork at 100% scale and centers it
 with 12 mm side margins. The A4 exports preserve the millimetre dimensions in
