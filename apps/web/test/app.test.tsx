@@ -135,6 +135,14 @@ describe("yearly browser play surface", () => {
     expect(within(honeycomb).getByText("Waggle Route").className).toContain("bonus-used");
   });
 
+  it("shows that a closed party's opening has returned", () => {
+    const state = openEveryParty(initializeGame(configuration(2), random).state);
+    state.parties.honeycomb!.status = "closed";
+    render(<PartyBoard view={privateView(state, "seat-1")} />);
+    const honeycomb = screen.getByText("Honeycomb").closest("article")!;
+    expect(within(honeycomb).getByText("Closed · opening returned")).toBeTruthy();
+  });
+
   it("selects an opening party on the table before confirming its Firm", () => {
     const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
     const onCommand = vi.fn(async () => true);

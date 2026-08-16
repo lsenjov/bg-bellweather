@@ -531,6 +531,12 @@ export function PartyBoard({
         const state = view.parties[party.id];
         const owner = view.seats.find((seat) => seat.id === state?.ownerSeatId);
         const pile = state === undefined ? 0 : operationCount(state.operations);
+        let stateLabel = "Not opened";
+        if (state?.status === "open") {
+          stateLabel = `open · ${owner?.displayName ?? "Unknown"}`;
+        } else if (state?.status === "closed") {
+          stateLabel = "Closed · opening returned";
+        }
         const selectable = interaction?.partyIds?.includes(party.id) === true;
         const selected = interaction?.selectedPartyIds?.includes(party.id) === true;
         return (
@@ -551,7 +557,7 @@ export function PartyBoard({
             }}
           >
             <PartyEmblem partyId={party.id} className="party-file-emblem" />
-            <div className="party-file-title"><strong>{party.shortName}</strong><small>{state === undefined ? "Not opened" : state.status === "closed" ? "Closed · opening returned" : `open · ${owner?.displayName ?? "Unknown"}`}</small></div>
+            <div className="party-file-title"><strong>{party.shortName}</strong><small>{stateLabel}</small></div>
             <div className="pile-count"><b>{pile}</b><span>pile</span></div>
             <div className="pile-cards" aria-label={`${pile} Operation cards`}>
               {state !== undefined && OPERATION_IDS.map((operation) => state.operations[operation] > 0 && <span key={operation}>{operation.slice(0, 3)} {state.operations[operation]}</span>)}
