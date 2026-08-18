@@ -26,4 +26,5 @@ Ship the change as Ruleset 18 without saved-game compatibility.
 
 - Step 1 complete: Ruleset 18 setup and focused tests pass.
 - Step 2 complete: active and archived documentation plus print sources are updated.
-- Step 3 pending: full checks, independent review, and delivery.
+- Step 3 complete: full checks pass and the independent review is clean after
+  correcting the README print manifest.
