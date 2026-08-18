@@ -1143,7 +1143,7 @@ function ElectionBulletin({ view }: { view: GameView }) {
       <div className="election-scores">
         {election.scores.map((score) => {
           const seat = view.seats.find((candidate) => candidate.id === score.playerId);
-          return <article key={score.playerId}><span>{seat?.displayName ?? score.playerId}</span><b>{signed(score.pointsChange)} points</b><small>District {score.baseDistrictScore} · Seat {signed(score.seatModifier)} · Capital {score.capitalScore} ({score.capitalMatches}/3)</small><strong>{score.resultingPoints} total</strong></article>;
+          return <article key={score.playerId}><span>{seat?.displayName ?? score.playerId}</span><b>{signed(score.pointsChange)} points</b><small>District {score.baseDistrictScore} · Seat {signed(score.seatModifier)} · Capital {score.capitalScore} ({score.capitalMatches}/3){score.finalCardCount === null ? "" : ` · Final cards ${score.finalCardCount} · Rank ${signed(score.finalCardRankBonus)}`}</small><strong>{score.resultingPoints} total</strong></article>;
         })}
       </div>
     </section>

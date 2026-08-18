@@ -395,6 +395,8 @@ describe("yearly browser play surface", () => {
         seatModifier: 1,
         capitalMatches: 3,
         capitalScore: 3,
+        finalCardCount: null,
+        finalCardRankBonus: 0,
         pointsChange: 6,
         resultingPoints: 16
       }],
@@ -405,6 +407,37 @@ describe("yearly browser play surface", () => {
     );
     expect(screen.getByText(/Capital 3 \(3\/3\)/)).toBeTruthy();
     expect(screen.getByText("+6 points")).toBeTruthy();
+  });
+
+  it("reports final card count and rank bonus in the Election 3 bulletin", () => {
+    const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
+    view.electionHistory.push({
+      electionNumber: 3,
+      afterYear: 6,
+      scoringCards: [
+        { seatId: "seat-1", scoringCardIds: ["SC-01", "SC-02"], capitalCardId: "SC-01" },
+        { seatId: "seat-2", scoringCardIds: ["SC-03", "SC-04"], capitalCardId: "SC-03" }
+      ],
+      draws: {},
+      scores: [{
+        playerId: "seat-1",
+        baseDistrictScore: 2,
+        seatModifier: 0,
+        capitalMatches: 2,
+        capitalScore: 1,
+        finalCardCount: 14,
+        finalCardRankBonus: 1,
+        pointsChange: 4,
+        resultingPoints: 14
+      }],
+      winnerSeatIds: ["seat-1"]
+    });
+    render(
+      <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />
+    );
+
+    expect(screen.getByText(/Final cards 14 · Rank \+1/)).toBeTruthy();
+    expect(screen.getByText("+4 points")).toBeTruthy();
   });
 });
 
