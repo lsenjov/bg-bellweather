@@ -1,4 +1,6 @@
 import {
+  BONUS_CARD_IDS,
+  BONUS_CARDS_BY_ID,
   DISTRICTS,
   DISTRICT_IDS,
   DOUBLED_PLAYER_SETUP,
@@ -13,6 +15,7 @@ import {
   SCORING_CARD_PAIRS,
   SCORING_CARDS_BY_ID,
   STANDARD_PLAYER_SETUP,
+  type BonusCardId,
   type FirmId,
   type OperationId,
   type PartyId,
@@ -43,7 +46,6 @@ import type {
 } from "./model.js";
 import { GameRuleError } from "./model.js";
 import {
-  PARTY_BONUSES,
   resolveOperation,
   type OperationChoice,
   type OperationState
@@ -104,6 +106,9 @@ export function initializeGame(
     support,
     courtSupport,
     coalitionTargets,
+    bonusCards: Object.fromEntries(
+      BONUS_CARD_IDS.map((cardId) => [cardId, { zone: "home" }])
+    ) as GameState["bonusCards"],
     chat: [],
     lobbyActions: [],
     resolvedOperations: [],
@@ -207,10 +212,18 @@ export function applyAction(state: GameState, action: GameAction): GameState {
       finishOperate(next, action.seatId);
       break;
     case "collect":
-      collect(next, action.seatId, action.partyId);
+      collect(next, action.seatId, action.partyId, action.bonusCardId);
       break;
     case "close":
-      close(next, action.seatId, action.partyId);
+      close(next, action.seatId, action.partyId, action.bonusCardId);
+      break;
+    case "choose_closure_bonus":
+      chooseClosureBonus(
+        next,
+        action.seatId,
+        action.partyId,
+        action.bonusCardId
+      );
       break;
     case "pass":
       pass(next, action.seatId);
@@ -256,8 +269,7 @@ function openParty(
     firmId,
     ownerSeatId: seatId,
     status: "open",
-    operations: emptyOperationInventory(),
-    claimedBonuses: []
+    operations: emptyOperationInventory()
   };
   phase.turnIndex += 1;
   if (phase.turnIndex === phase.turnSeatIds.length) {
@@ -282,39 +294,31 @@ function operate(
     );
   }
   const party = requireOpenParty(state, partyId);
-  if (
-    play.claimBonus === true &&
-    phase.inProgressOperate?.bonusClaimed === true
-  ) {
-    throw new GameRuleError(
-      "too_many_bonuses",
-      "One Operate action can claim at most one bonus"
-    );
-  }
   const seat = getSeat(state, seatId);
-  if (!(OPERATION_IDS as readonly string[]).includes(play.operation)) {
+  const bonusCard = play.cardType === "bonus"
+    ? requirePlayableBonusCard(state, seatId, partyId, play.bonusCardId)
+    : null;
+  const operation = play.cardType === "operation"
+    ? play.operation
+    : bonusCard!.operation;
+  if (!(OPERATION_IDS as readonly string[]).includes(operation)) {
     throw new GameRuleError("unknown_operation", "The Operation does not exist");
   }
-  if (seat.operations[play.operation] < 1) {
-    throw new GameRuleError("insufficient_operations", "The player lacks that Operation card");
+  if (play.cardType === "operation" && seat.operations[operation] < 1) {
+    throw new GameRuleError(
+      "insufficient_operations",
+      "The player lacks that Operation card"
+    );
   }
 
   const choice = operationChoice(play.choice);
-  if (choice.operation !== play.operation) {
+  if (choice.operation !== operation) {
     throw new GameRuleError("operation_choice_mismatch", "The choice must match its Operation card");
-  }
-  if (play.claimBonus === true) {
-    if (PARTY_BONUSES[partyId][play.operation] === undefined) {
-      throw new GameRuleError("bonus_unavailable", "This party has no matching bonus");
-    }
-    if (party.claimedBonuses.includes(play.operation)) {
-      throw new GameRuleError("bonus_claimed", "That party bonus was already claimed this year");
-    }
   }
   const resolution = resolveOperation(toOperationState(state), {
     party: partyId,
     choice,
-    claimBonus: play.claimBonus === true
+    ...(play.cardType === "bonus" ? { bonusCardId: play.bonusCardId } : {})
   });
   if (!resolution.baselineApplied) {
     throw new GameRuleError(
@@ -322,40 +326,45 @@ function operate(
       resolution.bonusFailure ?? resolution.failure ?? "The Operation is illegal"
     );
   }
-  if (play.claimBonus === true && !resolution.bonusApplied) {
+  if (play.cardType === "bonus" && !resolution.bonusApplied) {
     throw new GameRuleError(
       "illegal_bonus",
       resolution.bonusFailure ?? "The bonus is illegal"
     );
   }
   applyOperationState(state, resolution.state);
-  seat.operations[play.operation] -= 1;
-  party.operations[play.operation] += 1;
-  if (resolution.bonusApplied) {
-    party.claimedBonuses.push(play.operation);
+  if (play.cardType === "operation") {
+    seat.operations[operation] -= 1;
+    party.operations[operation] += 1;
+  } else {
+    state.bonusCards[play.bonusCardId] = { zone: "home" };
   }
   state.resolvedOperations.push({
     year: state.year,
     turn: phase.turn,
     seatId,
     partyId,
-    operation: play.operation,
+    cardType: play.cardType,
+    operation,
+    bonusCardId: play.cardType === "bonus" ? play.bonusCardId : null,
+    bonusHomePartyId: bonusCard?.homePartyId ?? null,
     choice: structuredClone(choice),
-    bonusApplied: resolution.bonusApplied,
-    bonusName: resolution.bonusName
+    bonusCardReturnedHome: play.cardType === "bonus"
   });
   phase.consecutivePasses = 0;
 
-  const operationCount = (phase.inProgressOperate?.operationCount ?? 0) + 1;
-  if (operationCount === 3) {
-    completeOperateAction(state, phase, 3);
+  const cardCount = (phase.inProgressOperate?.cardCount ?? 0) + 1;
+  const operationCount =
+    (phase.inProgressOperate?.operationCount ?? 0) +
+    (play.cardType === "operation" ? 1 : 0);
+  if (cardCount === 3) {
+    completeOperateAction(state, phase, operationCount, 3);
     return;
   }
   phase.inProgressOperate = {
     partyId,
-    operationCount: operationCount as 1 | 2,
-    bonusClaimed:
-      phase.inProgressOperate?.bonusClaimed === true || resolution.bonusApplied
+    operationCount,
+    cardCount: cardCount as 1 | 2
   };
 }
 
@@ -367,13 +376,19 @@ function finishOperate(state: GameState, seatId: SeatId): void {
       "Resolve an Operation before finishing the Operate action"
     );
   }
-  completeOperateAction(state, phase, phase.inProgressOperate.operationCount);
+  completeOperateAction(
+    state,
+    phase,
+    phase.inProgressOperate.operationCount,
+    phase.inProgressOperate.cardCount
+  );
 }
 
 function completeOperateAction(
   state: GameState,
   phase: LobbyPhase,
-  operationCount: 1 | 2 | 3
+  operationCount: number,
+  cardCount: 1 | 2 | 3
 ): void {
   const partyId = phase.inProgressOperate?.partyId;
   if (partyId === undefined) {
@@ -384,13 +399,19 @@ function completeOperateAction(
     type: "operate",
     partyId,
     operationCount,
-    cardCount: operationCount
+    cardCount,
+    bonusCardId: null
   });
   phase.inProgressOperate = null;
   finishLobbyTurn(state, phase);
 }
 
-function collect(state: GameState, seatId: SeatId, partyId: PartyId): void {
+function collect(
+  state: GameState,
+  seatId: SeatId,
+  partyId: PartyId,
+  bonusCardId?: BonusCardId
+): void {
   const phase = requireLobbyTurn(state, seatId);
   requireNoOperateInProgress(phase);
   const party = requireOpenParty(state, partyId);
@@ -404,18 +425,30 @@ function collect(state: GameState, seatId: SeatId, partyId: PartyId): void {
   }
   addOperations(seat.newYearOperations, party.operations);
   party.operations = emptyOperationInventory();
+  const awardedBonusCardId = awardBonusCard(
+    state,
+    seatId,
+    partyId,
+    bonusCardId
+  );
   seat.collectionCounters -= 1;
   recordLobbyAction(state, phase, {
     seatId,
     type: "collect",
     partyId,
     operationCount: 0,
-    cardCount
+    cardCount,
+    bonusCardId: awardedBonusCardId
   });
   finishLobbyTurn(state, phase);
 }
 
-function close(state: GameState, seatId: SeatId, partyId: PartyId): void {
+function close(
+  state: GameState,
+  seatId: SeatId,
+  partyId: PartyId,
+  bonusCardId?: BonusCardId
+): void {
   const phase = requireLobbyTurn(state, seatId);
   requireNoOperateInProgress(phase);
   if ((phase.turnsTaken[seatId] ?? 0) === 0) {
@@ -427,12 +460,19 @@ function close(state: GameState, seatId: SeatId, partyId: PartyId): void {
   }
   const cardCount = operationCount(party.operations);
   closeParty(state, party);
+  const awardedBonusCardId = awardBonusCard(
+    state,
+    seatId,
+    partyId,
+    bonusCardId
+  );
   recordLobbyAction(state, phase, {
     seatId,
     type: "close",
     partyId,
     operationCount: 0,
-    cardCount
+    cardCount,
+    bonusCardId: awardedBonusCardId
   });
   markTurnTaken(phase, seatId);
   phase.consecutivePasses = 0;
@@ -441,8 +481,7 @@ function close(state: GameState, seatId: SeatId, partyId: PartyId): void {
   );
   const closedCount = parties.filter((candidate) => candidate.status === "closed").length;
   if (closedCount > parties.length / 2) {
-    closeEveryParty(state);
-    finishYear(state, seatId, "majority_closed");
+    beginClosure(state, seatId, "majority_closed");
     return;
   }
   advanceLobbyTurn(state, phase);
@@ -456,13 +495,13 @@ function pass(state: GameState, seatId: SeatId): void {
     type: "pass",
     partyId: null,
     operationCount: 0,
-    cardCount: 0
+    cardCount: 0,
+    bonusCardId: null
   });
   markTurnTaken(phase, seatId);
   phase.consecutivePasses += 1;
   if (phase.consecutivePasses === state.seats.length) {
-    closeEveryParty(state);
-    finishYear(state, seatId, "passes");
+    beginClosure(state, seatId, "passes");
     return;
   }
   advanceLobbyTurn(state, phase);
@@ -495,6 +534,55 @@ function closeEveryParty(state: GameState): void {
   }
 }
 
+function beginClosure(
+  state: GameState,
+  endedBySeatId: SeatId,
+  endReason: "passes" | "majority_closed"
+): void {
+  const pendingPartyIds = PARTY_IDS.filter((partyId) => {
+    const party = state.parties[partyId];
+    return party?.status === "open" && availableBonusCards(state, partyId).length > 0;
+  });
+  closeEveryParty(state);
+  if (pendingPartyIds.length === 0) {
+    finishYear(state, endedBySeatId, endReason);
+    return;
+  }
+  state.phase = {
+    type: "closure",
+    endedBySeatId,
+    endReason,
+    pendingPartyIds
+  };
+}
+
+function chooseClosureBonus(
+  state: GameState,
+  seatId: SeatId,
+  partyId: PartyId,
+  bonusCardId?: BonusCardId
+): void {
+  const phase = requirePhase(state, "closure");
+  if (phase.pendingPartyIds[0] !== partyId) {
+    throw new GameRuleError(
+      "wrong_closure_party",
+      "Resolve automatic Closure choices in party order"
+    );
+  }
+  const party = state.parties[partyId];
+  if (party === undefined || party.ownerSeatId !== seatId) {
+    throw new GameRuleError(
+      "not_party_opener",
+      "Only the opening player can choose this Closure Bonus card"
+    );
+  }
+  awardBonusCard(state, seatId, partyId, bonusCardId);
+  phase.pendingPartyIds.shift();
+  if (phase.pendingPartyIds.length === 0) {
+    finishYear(state, phase.endedBySeatId, phase.endReason);
+  }
+}
+
 function finishYear(
   state: GameState,
   endedBySeatId: SeatId,
@@ -513,6 +601,12 @@ function finishYear(
     addOperations(seat.operations, seat.newYearOperations);
     seat.newYearOperations = emptyOperationInventory();
     seat.collectionCounters = seat.collectionCounterLimit;
+  }
+  for (const cardId of BONUS_CARD_IDS) {
+    const location = state.bonusCards[cardId];
+    if (location.zone === "new_year") {
+      state.bonusCards[cardId] = { zone: "hand", seatId: location.seatId };
+    }
   }
   state.parties = {};
   state.earlyBirdSeatId = endedBySeatId;
@@ -684,6 +778,73 @@ function requireOpenParty(state: GameState, partyId: PartyId): PartyYearState {
     throw new GameRuleError("party_closed", "That party is closed for this year");
   }
   return party;
+}
+
+function availableBonusCards(
+  state: GameState,
+  partyId: PartyId
+): BonusCardId[] {
+  return BONUS_CARD_IDS.filter(
+    (cardId) =>
+      BONUS_CARDS_BY_ID[cardId].homePartyId === partyId &&
+      state.bonusCards[cardId].zone === "home"
+  );
+}
+
+function awardBonusCard(
+  state: GameState,
+  seatId: SeatId,
+  partyId: PartyId,
+  bonusCardId?: BonusCardId
+): BonusCardId | null {
+  if (bonusCardId === undefined) {
+    return null;
+  }
+  if (!(BONUS_CARD_IDS as readonly string[]).includes(bonusCardId)) {
+    throw new GameRuleError("unknown_bonus_card", "The Bonus card does not exist");
+  }
+  const card = BONUS_CARDS_BY_ID[bonusCardId];
+  if (
+    card.homePartyId !== partyId ||
+    state.bonusCards[bonusCardId].zone !== "home"
+  ) {
+    throw new GameRuleError(
+      "bonus_card_unavailable",
+      "That Bonus card is not available at this party"
+    );
+  }
+  state.bonusCards[bonusCardId] = { zone: "new_year", seatId };
+  return bonusCardId;
+}
+
+function requirePlayableBonusCard(
+  state: GameState,
+  seatId: SeatId,
+  partyId: PartyId,
+  bonusCardId: BonusCardId
+) {
+  if (!(BONUS_CARD_IDS as readonly string[]).includes(bonusCardId)) {
+    throw new GameRuleError("unknown_bonus_card", "The Bonus card does not exist");
+  }
+  const card = BONUS_CARDS_BY_ID[bonusCardId];
+  const location = state.bonusCards[bonusCardId];
+  if (location.zone !== "hand" || location.seatId !== seatId) {
+    throw new GameRuleError(
+      "bonus_card_not_held",
+      "The player does not hold that Bonus card"
+    );
+  }
+  const homePartyId = card.homePartyId;
+  const reciprocalCoalition =
+    state.coalitionTargets[homePartyId] === partyId &&
+    state.coalitionTargets[partyId] === homePartyId;
+  if (partyId !== homePartyId && !reciprocalCoalition) {
+    throw new GameRuleError(
+      "bonus_card_party_ineligible",
+      "A Bonus card requires its home party or its current reciprocal coalition partner"
+    );
+  }
+  return card;
 }
 
 function operationChoice(value: unknown): OperationChoice {

@@ -18,11 +18,28 @@ export const PARTY_IDS = deepFreeze([
 ] as const);
 export type PartyId = (typeof PARTY_IDS)[number];
 
-export interface PartyBonus {
+export const BONUS_CARD_IDS = deepFreeze([
+  "honeycomb-waggle-route",
+  "honeycomb-common-cause",
+  "old-shell-dig-in",
+  "old-shell-stonewall",
+  "foxglove-spin",
+  "foxglove-whisper-network",
+  "riverworks-canal-network",
+  "riverworks-public-works",
+  "many-wings-scatter-the-flock",
+  "many-wings-joint-campaign",
+  "night-parliament-quiet-hours",
+  "night-parliament-midnight-leak"
+] as const);
+export type BonusCardId = (typeof BONUS_CARD_IDS)[number];
+
+export interface BonusCardDefinition {
+  readonly id: BonusCardId;
+  readonly homePartyId: PartyId;
   readonly operation: OperationId;
   readonly name: string;
   readonly effect: string;
-  readonly timing: "immediate";
 }
 
 export interface PartyDefinition {
@@ -32,7 +49,7 @@ export interface PartyDefinition {
   readonly animal: string;
   readonly color: `#${string}`;
   readonly favoredOperations: readonly [OperationId, OperationId];
-  readonly bonuses: readonly [PartyBonus, PartyBonus];
+  readonly bonusCards: readonly [BonusCardDefinition, BonusCardDefinition];
 }
 
 export const PARTIES = deepFreeze([
@@ -43,20 +60,22 @@ export const PARTIES = deepFreeze([
     animal: "Bees",
     color: "#d7aa12",
     favoredOperations: ["organise", "court"],
-    bonuses: [
+    bonusCards: [
       {
+        id: "honeycomb-waggle-route",
+        homePartyId: "honeycomb",
         operation: "organise",
         name: "Waggle Route",
         effect:
-          "After Organise resolves, add one Honeycomb Support to another free spot in the destination district.",
-        timing: "immediate"
+          "Resolve Organise for the acting party, then add another acting-party Support to a free spot in the destination district."
       },
       {
+        id: "honeycomb-common-cause",
+        homePartyId: "honeycomb",
         operation: "court",
         name: "Common Cause",
         effect:
-          "After Court resolves, if the selected party is Honeycomb's Coalition Target, move one Honeycomb Support to a free spot in a different district containing that party's Support.",
-        timing: "immediate"
+          "Resolve Court for the acting party. The selected party must become its Coalition Target; then move acting-party Support to a different free district containing selected-party Support."
       }
     ]
   },
@@ -67,20 +86,22 @@ export const PARTIES = deepFreeze([
     animal: "Tortoises",
     color: "#3f7447",
     favoredOperations: ["organise", "smear"],
-    bonuses: [
+    bonusCards: [
       {
+        id: "old-shell-dig-in",
+        homePartyId: "old-shell",
         operation: "organise",
         name: "Dig In",
         effect:
-          "After a movement Organise resolves, add one Old Shell Support to the vacated source spot. Dig In cannot be used when recovering from no Support.",
-        timing: "immediate"
+          "Resolve a movement Organise for the acting party, then add acting-party Support to the vacated source spot."
       },
       {
+        id: "old-shell-stonewall",
+        homePartyId: "old-shell",
         operation: "smear",
         name: "Stonewall",
         effect:
-          "After Smear removes rival Support, remove a second Support belonging to the same rival from the affected district.",
-        timing: "immediate"
+          "Resolve Smear for the acting party, then remove a second Support belonging to the same rival from that district."
       }
     ]
   },
@@ -91,19 +112,22 @@ export const PARTIES = deepFreeze([
     animal: "Foxes",
     color: "#b83d6d",
     favoredOperations: ["smear", "court"],
-    bonuses: [
+    bonusCards: [
       {
+        id: "foxglove-spin",
+        homePartyId: "foxglove",
         operation: "smear",
         name: "Spin",
-        effect: "Add one Foxglove Support to the spot its Smear vacated.",
-        timing: "immediate"
+        effect:
+          "Resolve Smear for the acting party, then add acting-party Support to the vacated spot."
       },
       {
+        id: "foxglove-whisper-network",
+        homePartyId: "foxglove",
         operation: "court",
         name: "Whisper Network",
         effect:
-          "After Court resolves, move one Foxglove Court Support from a different Court space to the selected party's Court space, then update Foxglove's Coalition Target again.",
-        timing: "immediate"
+          "Resolve Court for the acting party, then move its Court Support from another party's space to the selected party and update its Coalition Target again."
       }
     ]
   },
@@ -114,20 +138,22 @@ export const PARTIES = deepFreeze([
     animal: "Beavers",
     color: "#2d6fa3",
     favoredOperations: ["organise", "rally"],
-    bonuses: [
+    bonusCards: [
       {
+        id: "riverworks-canal-network",
+        homePartyId: "riverworks",
         operation: "organise",
         name: "Canal Network",
         effect:
-          "Riverworks may Organise through connected districts containing its Support and end in a free district at the end of that route.",
-        timing: "immediate"
+          "Move acting-party Support through connected districts containing its Support to a free destination at the end of the route."
       },
       {
+        id: "riverworks-public-works",
+        homePartyId: "riverworks",
         operation: "rally",
         name: "Public Works",
         effect:
-          "After Rally resolves, add one Riverworks Support to a free spot in a district neighboring the Rally district.",
-        timing: "immediate"
+          "Resolve Rally for the acting party, then add acting-party Support to a free neighboring district."
       }
     ]
   },
@@ -138,20 +164,22 @@ export const PARTIES = deepFreeze([
     animal: "Starlings",
     color: "#d86f24",
     favoredOperations: ["rally", "court"],
-    bonuses: [
+    bonusCards: [
       {
+        id: "many-wings-scatter-the-flock",
+        homePartyId: "many-wings",
         operation: "rally",
         name: "Scatter the Flock",
         effect:
-          "After Rally resolves, move as many Many Wings Support as possible from the Rally district to distinct neighboring districts with free spots.",
-        timing: "immediate"
+          "Resolve Rally for the acting party, then move the maximum possible acting-party Support to distinct free neighboring districts."
       },
       {
+        id: "many-wings-joint-campaign",
+        homePartyId: "many-wings",
         operation: "court",
         name: "Joint Campaign",
         effect:
-          "After Court resolves, add one Support belonging to the selected party to a free spot in a district containing Many Wings Support.",
-        timing: "immediate"
+          "Resolve Court for the acting party, then add selected-party Support to a free district containing acting-party Support."
       }
     ]
   },
@@ -162,20 +190,22 @@ export const PARTIES = deepFreeze([
     animal: "Owls",
     color: "#252522",
     favoredOperations: ["rally", "smear"],
-    bonuses: [
+    bonusCards: [
       {
+        id: "night-parliament-quiet-hours",
+        homePartyId: "night-parliament",
         operation: "rally",
         name: "Quiet Hours",
         effect:
-          "After Rally resolves, add one Night Support to an otherwise empty district.",
-        timing: "immediate"
+          "Resolve Rally for the acting party, then add acting-party Support to an otherwise empty district."
       },
       {
+        id: "night-parliament-midnight-leak",
+        homePartyId: "night-parliament",
         operation: "smear",
         name: "Midnight Leak",
         effect:
-          "After Smear removes rival Support, remove one Court Support belonging to that rival from any Court space, then update its Coalition Target.",
-        timing: "immediate"
+          "Resolve Smear for the acting party, then remove rival Court Support and update that rival's Coalition Target."
       }
     ]
   }
@@ -187,5 +217,15 @@ export const PARTIES_BY_ID = Object.freeze(
       (typeof PARTIES)[number],
       { readonly id: Id }
     >;
+  }
+);
+
+export const BONUS_CARDS = deepFreeze(
+  PARTIES.flatMap((party) => [...party.bonusCards]) as BonusCardDefinition[]
+);
+
+export const BONUS_CARDS_BY_ID = Object.freeze(
+  Object.fromEntries(BONUS_CARDS.map((card) => [card.id, card])) as {
+    readonly [Id in BonusCardId]: BonusCardDefinition & { readonly id: Id };
   }
 );

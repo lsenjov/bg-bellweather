@@ -1,13 +1,12 @@
-export const PARTIES = [
-  "honeycomb",
-  "old-shell",
-  "foxglove",
-  "riverworks",
-  "many-wings",
-  "night-parliament"
-] as const;
+import {
+  BONUS_CARDS_BY_ID,
+  PARTY_IDS,
+  type BonusCardId,
+  type PartyId
+} from "@bellweather/content";
 
-export type Party = (typeof PARTIES)[number];
+export const PARTIES = PARTY_IDS;
+export type Party = PartyId;
 export type Operation = "organise" | "rally" | "smear" | "court";
 
 export interface DistrictState {
@@ -52,7 +51,7 @@ export type OperationChoice =
 export interface OperationRequest {
   party: Party;
   choice: OperationChoice;
-  claimBonus?: boolean;
+  bonusCardId?: BonusCardId;
 }
 
 export interface OperationResolution {
@@ -68,56 +67,37 @@ export interface OperationLegalityOptions {
   allowCanalNetwork?: boolean;
 }
 
-export const PARTY_BONUSES: Record<
-  Party,
-  Partial<Record<Operation, string>>
-> = {
-  honeycomb: {
-    organise: "Waggle Route",
-    court: "Common Cause"
-  },
-  "old-shell": {
-    organise: "Dig In",
-    smear: "Stonewall"
-  },
-  foxglove: {
-    smear: "Spin",
-    court: "Whisper Network"
-  },
-  riverworks: {
-    organise: "Canal Network",
-    rally: "Public Works"
-  },
-  "many-wings": {
-    rally: "Scatter the Flock",
-    court: "Joint Campaign"
-  },
-  "night-parliament": {
-    rally: "Quiet Hours",
-    smear: "Midnight Leak"
-  }
-};
-
 export function resolveOperation(
   initialState: OperationState,
   request: OperationRequest
 ): OperationResolution {
   const state = cloneState(initialState);
   const operation = request.choice.operation;
-  const bonusName = PARTY_BONUSES[request.party][operation] ?? null;
+  const bonusCard = request.bonusCardId === undefined
+    ? undefined
+    : BONUS_CARDS_BY_ID[request.bonusCardId];
+  const bonusName = bonusCard?.name ?? null;
+  if (bonusCard !== undefined && bonusCard.operation !== operation) {
+    return result(
+      state,
+      false,
+      false,
+      bonusName,
+      "The Bonus card choice must match its printed action",
+      null
+    );
+  }
   const baseline = applyBaseline(
     state,
     request.party,
     request.choice,
-    request.party === "riverworks" &&
-      operation === "organise" &&
-      request.claimBonus === true
+    request.bonusCardId === "riverworks-canal-network"
   );
 
   if (!baseline.applied) {
     return result(state, false, false, bonusName, baseline.failure, null);
   }
-  if (request.claimBonus !== true || bonusName === null) {
+  if (request.bonusCardId === undefined) {
     return result(state, true, false, bonusName, null, null);
   }
 
@@ -178,7 +158,7 @@ export function isOperationRequestLegal(
   const resolution = resolveOperation(initialState, request);
   return (
     resolution.baselineApplied &&
-    (request.claimBonus !== true || resolution.bonusApplied)
+    (request.bonusCardId === undefined || resolution.bonusApplied)
   );
 }
 
@@ -288,8 +268,7 @@ function applyBaseline(
       !source.neighbors.includes(destination.id) &&
       !(
         allowCanalNetwork &&
-        party === "riverworks" &&
-        canalNetworkConnects(state, source.id, destination.id)
+        canalNetworkConnects(state, source.id, destination.id, party)
       )
     ) {
       return failed(wasAbsent, "Organise destination must neighbor the source");
@@ -376,8 +355,8 @@ function applyBonus(
   applied: boolean;
   failure: string | null;
 } {
-  const { party, choice } = request;
-  if (party === "honeycomb" && choice.operation === "organise") {
+  const { party, choice, bonusCardId } = request;
+  if (bonusCardId === "honeycomb-waggle-route") {
     return addBonusSupport(
       state,
       baseline.destinationDistrictId,
@@ -385,7 +364,7 @@ function applyBonus(
       "Waggle Route requires another free destination spot"
     );
   }
-  if (party === "honeycomb" && choice.operation === "court") {
+  if (bonusCardId === "honeycomb-common-cause" && choice.operation === "court") {
     const source = state.districts[choice.bonusSourceDistrictId ?? ""];
     const destination = state.districts[choice.bonusDistrictId ?? ""];
     if (
@@ -398,16 +377,16 @@ function applyBonus(
       !hasFreeSpot(destination)
     ) {
       return bonusFailed(
-        "Common Cause requires Honeycomb's selected Coalition Target, a Honeycomb source, and a distinct free district containing that target's Support"
+        "Common Cause requires the acting party's selected Coalition Target, an acting-party source, and a distinct free district containing that target's Support"
       );
     }
     removeSupport(source, party);
     addSupport(destination, party);
     return bonusApplied();
   }
-  if (party === "old-shell" && choice.operation === "organise") {
+  if (bonusCardId === "old-shell-dig-in") {
     return baseline.wasAbsent
-      ? bonusFailed("Dig In cannot be claimed while Old Shell is absent")
+      ? bonusFailed("Dig In requires a movement Organise")
       : addBonusSupport(
           state,
           baseline.sourceDistrictId,
@@ -415,14 +394,14 @@ function applyBonus(
           "Dig In requires a free source spot"
         );
   }
-  if (party === "old-shell" && choice.operation === "smear") {
+  if (bonusCardId === "old-shell-stonewall") {
     return removeBonusSupport(
       state,
       baseline.affectedDistrictId,
       baseline.rivalParty
     );
   }
-  if (party === "foxglove" && choice.operation === "smear") {
+  if (bonusCardId === "foxglove-spin") {
     return addBonusSupport(
       state,
       baseline.affectedDistrictId,
@@ -430,7 +409,7 @@ function applyBonus(
       null
     );
   }
-  if (party === "foxglove" && choice.operation === "court") {
+  if (bonusCardId === "foxglove-whisper-network" && choice.operation === "court") {
     const sourceParty = choice.bonusCourtSourceParty;
     if (
       sourceParty === undefined ||
@@ -439,19 +418,19 @@ function applyBonus(
       (state.courtSupport[party][sourceParty] ?? 0) < 1
     ) {
       return bonusFailed(
-        "Whisper Network requires Foxglove Court Support on a different Court space"
+        "Whisper Network requires acting-party Court Support on a different Court space"
       );
     }
     removeCourtSupport(state, party, sourceParty);
     placeCourtSupport(state, party, choice.targetParty);
     return bonusApplied();
   }
-  if (party === "riverworks" && choice.operation === "organise") {
+  if (bonusCardId === "riverworks-canal-network") {
     return baseline.wasAbsent
-      ? bonusFailed("Canal Network cannot be claimed while Riverworks is absent")
+      ? bonusFailed("Canal Network requires a movement Organise")
       : bonusApplied();
   }
-  if (party === "riverworks" && choice.operation === "rally") {
+  if (bonusCardId === "riverworks-public-works" && choice.operation === "rally") {
     const source = state.districts[baseline.destinationDistrictId ?? ""];
     const destination = state.districts[choice.bonusDistrictId ?? ""];
     if (
@@ -463,7 +442,7 @@ function applyBonus(
     }
     return addBonusSupport(state, destination.id, party, null);
   }
-  if (party === "many-wings" && choice.operation === "rally") {
+  if (bonusCardId === "many-wings-scatter-the-flock" && choice.operation === "rally") {
     const source = state.districts[baseline.destinationDistrictId ?? ""];
     const destinations = choice.bonusDistrictIds ?? [];
     if (source === undefined) {
@@ -490,7 +469,7 @@ function applyBonus(
     }
     return bonusApplied();
   }
-  if (party === "many-wings" && choice.operation === "court") {
+  if (bonusCardId === "many-wings-joint-campaign" && choice.operation === "court") {
     const district = state.districts[choice.bonusDistrictId ?? ""];
     if (
       district === undefined ||
@@ -498,14 +477,14 @@ function applyBonus(
       (district.support[party] ?? 0) < 1
     ) {
       return bonusFailed(
-        "Joint Campaign requires a free district containing Many Wings Support"
+        "Joint Campaign requires a free district containing acting-party Support"
       );
     }
     addSupport(district, choice.targetParty);
     return bonusApplied();
   }
   if (
-    party === "night-parliament" &&
+    bonusCardId === "night-parliament-quiet-hours" &&
     choice.operation === "rally"
   ) {
     const destination = state.districts[choice.bonusDistrictId ?? ""];
@@ -515,7 +494,7 @@ function applyBonus(
     addSupport(destination, party);
     return bonusApplied();
   }
-  if (party === "night-parliament" && choice.operation === "smear") {
+  if (bonusCardId === "night-parliament-midnight-leak" && choice.operation === "smear") {
     const rivalParty = baseline.rivalParty;
     const courtParty = choice.bonusCourtParty;
     if (
@@ -531,7 +510,7 @@ function applyBonus(
     updateCoalitionTarget(state, rivalParty);
     return bonusApplied();
   }
-  return bonusFailed("This party has no matching bonus");
+  return bonusFailed("The Bonus card does not match this action");
 }
 
 function addBonusSupport(
@@ -568,7 +547,8 @@ function removeBonusSupport(
 function canalNetworkConnects(
   state: OperationState,
   sourceDistrictId: string,
-  destinationDistrictId: string
+  destinationDistrictId: string,
+  party: Party
 ): boolean {
   const visited = new Set<string>();
   const pending = [sourceDistrictId];
@@ -579,7 +559,7 @@ function canalNetworkConnects(
     }
     visited.add(districtId);
     const district = state.districts[districtId];
-    if (district === undefined || (district.support.riverworks ?? 0) < 1) {
+    if (district === undefined || (district.support[party] ?? 0) < 1) {
       continue;
     }
     if (district.neighbors.includes(destinationDistrictId)) {

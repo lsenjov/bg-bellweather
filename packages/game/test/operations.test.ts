@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
+import { BONUS_CARDS } from "@bellweather/content";
 import {
   hasLegalOperationChoice,
   isOperationChoiceLegal,
   isOperationRequestLegal,
-  PARTY_BONUSES,
   PARTIES,
   resolveOperation,
   supportCount,
@@ -189,7 +189,7 @@ describe("operation baselines", () => {
     );
   });
 
-  it("reports complete immediate bonus request legality", () => {
+  it("reports complete Bonus card request legality", () => {
     expect(
       isOperationRequestLegal(
         state({ a: { honeycomb: 1 }, b: { foxglove: 3 } }),
@@ -200,7 +200,7 @@ describe("operation baselines", () => {
           sourceDistrictId: "a",
           destinationDistrictId: "b"
         },
-        claimBonus: true
+        bonusCardId: "honeycomb-waggle-route"
         }
       )
     ).toBe(false);
@@ -214,7 +214,7 @@ describe("operation baselines", () => {
             districtId: "a",
             rivalParty: "foxglove"
           },
-          claimBonus: true
+          bonusCardId: "old-shell-stonewall"
         }
       )
     ).toBe(false);
@@ -226,7 +226,7 @@ describe("operation baselines", () => {
           districtId: "a",
           bonusDistrictId: "c"
         },
-        claimBonus: true
+        bonusCardId: "riverworks-public-works"
       })
     ).toBe(false);
     expect(
@@ -236,7 +236,7 @@ describe("operation baselines", () => {
           operation: "rally",
           districtId: "a"
         },
-        claimBonus: true
+        bonusCardId: "many-wings-scatter-the-flock"
       })
     ).toBe(false);
     expect(
@@ -247,14 +247,14 @@ describe("operation baselines", () => {
           districtId: "a",
           bonusDistrictId: "c"
         },
-        claimBonus: true
+        bonusCardId: "night-parliament-quiet-hours"
       })
     ).toBe(true);
     expect(
       isOperationRequestLegal(state({ a: { "night-parliament": 1 } }), {
         party: "night-parliament",
         choice: { operation: "rally", districtId: "a" },
-        claimBonus: true
+        bonusCardId: "night-parliament-quiet-hours"
       })
     ).toBe(false);
     expect(
@@ -265,17 +265,15 @@ describe("operation baselines", () => {
           districtId: "a",
           bonusDistrictId: "a"
         },
-        claimBonus: true
+        bonusCardId: "night-parliament-quiet-hours"
       })
     ).toBe(false);
   });
 });
 
-describe("all twelve party bonuses", () => {
-  it("defines exactly two bonuses for every party", () => {
-    expect(
-      PARTIES.flatMap((party) => Object.values(PARTY_BONUSES[party]))
-    ).toHaveLength(12);
+describe("all twelve Bonus card actions", () => {
+  it("defines exactly two Bonus cards for every party", () => {
+    expect(BONUS_CARDS).toHaveLength(PARTIES.length * 2);
   });
 
   it("applies Honeycomb Waggle Route and Common Cause", () => {
@@ -286,7 +284,7 @@ describe("all twelve party bonuses", () => {
         sourceDistrictId: "a",
         destinationDistrictId: "b"
       },
-      claimBonus: true
+      bonusCardId: "honeycomb-waggle-route"
     });
     expect(route.bonusApplied).toBe(true);
     expect(route.state.districts.b?.support.honeycomb).toBe(2);
@@ -301,7 +299,7 @@ describe("all twelve party bonuses", () => {
           bonusSourceDistrictId: "a",
           bonusDistrictId: "c"
         },
-        claimBonus: true
+        bonusCardId: "honeycomb-common-cause"
       }
     );
     expect(cause.bonusApplied).toBe(true);
@@ -317,7 +315,7 @@ describe("all twelve party bonuses", () => {
         sourceDistrictId: "a",
         destinationDistrictId: "b"
       },
-      claimBonus: true
+      bonusCardId: "old-shell-dig-in"
     });
     expect(dugIn.state.districts.a?.support["old-shell"]).toBe(1);
 
@@ -325,7 +323,7 @@ describe("all twelve party bonuses", () => {
       resolveOperation(state(), {
         party: "old-shell",
         choice: { operation: "organise", destinationDistrictId: "a" },
-        claimBonus: true
+        bonusCardId: "old-shell-dig-in"
       }).bonusApplied
     ).toBe(false);
 
@@ -338,7 +336,7 @@ describe("all twelve party bonuses", () => {
           districtId: "a",
           rivalParty: "foxglove"
         },
-        claimBonus: true
+        bonusCardId: "old-shell-stonewall"
       }
     );
     expect(stonewall.state.districts.a?.support.foxglove).toBeUndefined();
@@ -354,7 +352,7 @@ describe("all twelve party bonuses", () => {
           districtId: "a",
           rivalParty: "honeycomb"
         },
-        claimBonus: true
+        bonusCardId: "foxglove-spin"
       }
     );
     expect(spin.state.districts.a?.support.foxglove).toBe(2);
@@ -369,7 +367,7 @@ describe("all twelve party bonuses", () => {
         targetParty: "riverworks",
         bonusCourtSourceParty: "old-shell"
       },
-      claimBonus: true
+      bonusCardId: "foxglove-whisper-network"
     });
     expect(whisper.state.courtSupport.foxglove).toEqual({ riverworks: 2 });
     expect(whisper.state.coalitionTargets.foxglove).toBe("riverworks");
@@ -385,7 +383,7 @@ describe("all twelve party bonuses", () => {
           sourceDistrictId: "a",
           destinationDistrictId: "c"
         },
-        claimBonus: true
+        bonusCardId: "riverworks-canal-network"
       }
     );
     expect(canal.baselineApplied).toBe(true);
@@ -394,7 +392,7 @@ describe("all twelve party bonuses", () => {
       resolveOperation(state(), {
         party: "riverworks",
         choice: { operation: "organise", destinationDistrictId: "a" },
-        claimBonus: true
+        bonusCardId: "riverworks-canal-network"
       }).bonusApplied
     ).toBe(false);
 
@@ -405,7 +403,7 @@ describe("all twelve party bonuses", () => {
         districtId: "a",
         bonusDistrictId: "b"
       },
-      claimBonus: true
+      bonusCardId: "riverworks-public-works"
     });
     expect(works.state.districts.b?.support.riverworks).toBe(1);
   });
@@ -418,7 +416,7 @@ describe("all twelve party bonuses", () => {
         districtId: "b",
         bonusDistrictIds: ["a", "c"]
       },
-      claimBonus: true
+      bonusCardId: "many-wings-scatter-the-flock"
     });
     expect(scatter.bonusApplied).toBe(true);
     expect(scatter.state.districts.b?.support["many-wings"]).toBe(1);
@@ -434,7 +432,7 @@ describe("all twelve party bonuses", () => {
           targetParty: "foxglove",
           bonusDistrictId: "c"
         },
-        claimBonus: true
+        bonusCardId: "many-wings-joint-campaign"
       }
     );
     expect(campaign.state.districts.c?.support.foxglove).toBe(1);
@@ -454,7 +452,7 @@ describe("all twelve party bonuses", () => {
         districtId: "a",
         bonusDistrictId: "bellweather-centre"
       },
-      claimBonus: true
+      bonusCardId: "night-parliament-quiet-hours"
     });
     expect(quietHours.bonusName).toBe("Quiet Hours");
     expect(quietHours.bonusApplied).toBe(true);
@@ -474,7 +472,7 @@ describe("all twelve party bonuses", () => {
         districtId: "a",
         bonusDistrictId: "c"
       },
-      claimBonus: true
+      bonusCardId: "night-parliament-quiet-hours"
     });
     expect(failedQuietHours.baselineApplied).toBe(false);
     expect(failedQuietHours.bonusFailure).toBe(
@@ -493,7 +491,7 @@ describe("all twelve party bonuses", () => {
         rivalParty: "foxglove",
         bonusCourtParty: "honeycomb"
       },
-      claimBonus: true
+      bonusCardId: "night-parliament-midnight-leak"
     });
     expect(leak.state.courtSupport.foxglove).toEqual({
       honeycomb: 1,

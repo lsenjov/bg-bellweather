@@ -1,4 +1,5 @@
 import type {
+  BonusCardId,
   DistrictId,
   ElectionYear,
   FirmId,
@@ -42,8 +43,12 @@ export interface PartyYearState {
   ownerSeatId: SeatId;
   status: "open" | "closed";
   operations: OperationInventory;
-  claimedBonuses: OperationId[];
 }
+
+export type BonusCardLocation =
+  | { zone: "home" }
+  | { zone: "new_year"; seatId: SeatId }
+  | { zone: "hand"; seatId: SeatId };
 
 export interface ChatMessage {
   id: string;
@@ -52,21 +57,29 @@ export interface ChatMessage {
   sentAt: number;
 }
 
-export interface OperationPlayInput {
-  operation: OperationId;
-  choice: unknown;
-  claimBonus?: boolean;
-}
+export type OperationPlayInput =
+  | {
+      cardType: "operation";
+      operation: OperationId;
+      choice: unknown;
+    }
+  | {
+      cardType: "bonus";
+      bonusCardId: BonusCardId;
+      choice: unknown;
+    };
 
 export interface ResolvedOperation {
   year: number;
   turn: number;
   seatId: SeatId;
   partyId: PartyId;
+  cardType: "operation" | "bonus";
   operation: OperationId;
+  bonusCardId: BonusCardId | null;
+  bonusHomePartyId: PartyId | null;
   choice: unknown;
-  bonusApplied: boolean;
-  bonusName: string | null;
+  bonusCardReturnedHome: boolean;
 }
 
 export interface LobbyActionRecord {
@@ -78,6 +91,7 @@ export interface LobbyActionRecord {
   partyId: PartyId | null;
   operationCount: number;
   cardCount: number;
+  bonusCardId: BonusCardId | null;
 }
 
 export interface OpeningPhase {
@@ -94,9 +108,16 @@ export interface LobbyPhase {
   consecutivePasses: number;
   inProgressOperate: {
     partyId: PartyId;
-    operationCount: 1 | 2;
-    bonusClaimed: boolean;
+    operationCount: number;
+    cardCount: 1 | 2;
   } | null;
+}
+
+export interface ClosurePhase {
+  type: "closure";
+  endedBySeatId: SeatId;
+  endReason: "passes" | "majority_closed";
+  pendingPartyIds: PartyId[];
 }
 
 export interface ElectionPhase {
@@ -152,6 +173,7 @@ export interface YearRecord {
 export type GamePhase =
   | OpeningPhase
   | LobbyPhase
+  | ClosurePhase
   | ElectionPhase
   | CompletePhase;
 
@@ -165,6 +187,7 @@ export interface GameState {
   support: Record<DistrictId, Partial<Record<PartyId, number>>>;
   courtSupport: Record<PartyId, Partial<Record<PartyId, number>>>;
   coalitionTargets: Record<PartyId, PartyId | null>;
+  bonusCards: Record<BonusCardId, BonusCardLocation>;
   chat: ChatMessage[];
   lobbyActions: LobbyActionRecord[];
   resolvedOperations: ResolvedOperation[];
@@ -195,11 +218,19 @@ export type GameAction =
       type: "collect";
       seatId: SeatId;
       partyId: PartyId;
+      bonusCardId?: BonusCardId;
     }
   | {
       type: "close";
       seatId: SeatId;
       partyId: PartyId;
+      bonusCardId?: BonusCardId;
+    }
+  | {
+      type: "choose_closure_bonus";
+      seatId: SeatId;
+      partyId: PartyId;
+      bonusCardId?: BonusCardId;
     }
   | {
       type: "pass";

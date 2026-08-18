@@ -4,6 +4,13 @@ import type {
   ScoringCardSlots,
   SeatId
 } from "./model.js";
+import {
+  BONUS_CARD_IDS,
+  BONUS_CARDS_BY_ID,
+  PARTY_IDS,
+  type BonusCardId,
+  type PartyId
+} from "@bellweather/content";
 import { assertCurrentRuleset, operationCount } from "./engine.js";
 import { GameRuleError } from "./model.js";
 
@@ -18,6 +25,8 @@ export interface ProjectedSeat {
   collectionCounterLimit: number;
   handCount: number;
   newYearCardCount: number;
+  bonusCardIds: BonusCardId[] | null;
+  newYearBonusCardIds: BonusCardId[] | null;
   operations: OperationInventory | null;
   newYearOperations: OperationInventory | null;
   scoringCardIds: ScoringCardSlots | null;
@@ -35,6 +44,7 @@ export interface GameView {
   support: GameState["support"];
   courtSupport: GameState["courtSupport"];
   coalitionTargets: GameState["coalitionTargets"];
+  bonusCardsAtParties: Record<PartyId, BonusCardId[]>;
   lobbyActions: GameState["lobbyActions"];
   resolvedOperations: GameState["resolvedOperations"];
   chat: GameState["chat"];
@@ -79,8 +89,18 @@ export function projectGameState(
         points: seat.points,
         collectionCounters: seat.collectionCounters,
         collectionCounterLimit: seat.collectionCounterLimit,
-        handCount: operationCount(seat.operations),
-        newYearCardCount: operationCount(seat.newYearOperations),
+        handCount:
+          operationCount(seat.operations) +
+          bonusCardsForSeat(state, seat.id, "hand").length,
+        newYearCardCount:
+          operationCount(seat.newYearOperations) +
+          bonusCardsForSeat(state, seat.id, "new_year").length,
+        bonusCardIds: privateInformation
+          ? bonusCardsForSeat(state, seat.id, "hand")
+          : null,
+        newYearBonusCardIds: privateInformation
+          ? bonusCardsForSeat(state, seat.id, "new_year")
+          : null,
         operations: privateInformation ? { ...seat.operations } : null,
         newYearOperations: privateInformation
           ? { ...seat.newYearOperations }
@@ -94,12 +114,33 @@ export function projectGameState(
     support: structuredClone(state.support),
     courtSupport: structuredClone(state.courtSupport),
     coalitionTargets: { ...state.coalitionTargets },
+    bonusCardsAtParties: Object.fromEntries(
+      PARTY_IDS.map((partyId) => [
+        partyId,
+        BONUS_CARD_IDS.filter(
+          (cardId) =>
+            BONUS_CARDS_BY_ID[cardId].homePartyId === partyId &&
+            state.bonusCards[cardId].zone === "home"
+        )
+      ])
+    ) as Record<PartyId, BonusCardId[]>,
     lobbyActions: structuredClone(state.lobbyActions),
     resolvedOperations: structuredClone(state.resolvedOperations),
     chat: structuredClone(state.chat),
     yearHistory: structuredClone(state.yearHistory),
     electionHistory: structuredClone(state.electionHistory)
   };
+}
+
+function bonusCardsForSeat(
+  state: GameState,
+  seatId: SeatId,
+  zone: "hand" | "new_year"
+): BonusCardId[] {
+  return BONUS_CARD_IDS.filter((cardId) => {
+    const location = state.bonusCards[cardId];
+    return location.zone === zone && location.seatId === seatId;
+  });
 }
 
 function visibleScoringCardSlots(

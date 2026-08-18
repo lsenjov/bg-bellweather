@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  BONUS_CARDS,
+  BONUS_CARD_IDS,
   DISTRICTS,
   DISTRICTS_BY_ID,
   DISTRICT_IDS,
@@ -108,29 +110,25 @@ describe("parties and firms", () => {
     }
   });
 
-  it("gives each party exactly one matching bonus per favored operation", () => {
+  it("gives each party two unique cards matching its favored operations", () => {
+    expect(BONUS_CARDS).toHaveLength(12);
+    expect(new Set(BONUS_CARD_IDS).size).toBe(12);
     for (const party of PARTIES) {
-      expect(party.bonuses.map((bonus) => bonus.operation)).toEqual(
+      expect(party.bonusCards.map((card) => card.operation)).toEqual(
         party.favoredOperations
       );
+      expect(party.bonusCards.every((card) => card.homePartyId === party.id)).toBe(true);
     }
   });
 
-  it("makes every party bonus immediate", () => {
-    expect(
-      PARTIES_BY_ID["night-parliament"].bonuses.map((bonus) => bonus.timing)
-    ).toEqual([
-      "immediate",
-      "immediate"
-    ]);
-  });
-
-  it("defines Quiet Hours as Night Parliament's Rally bonus", () => {
-    expect(PARTIES_BY_ID["night-parliament"].bonuses[0]).toMatchObject({
+  it("defines Quiet Hours as Night Parliament's Rally Bonus card", () => {
+    expect(PARTIES_BY_ID["night-parliament"].bonusCards[0]).toMatchObject({
+      id: "night-parliament-quiet-hours",
+      homePartyId: "night-parliament",
       operation: "rally",
       name: "Quiet Hours",
       effect:
-        "After Rally resolves, add one Night Support to an otherwise empty district."
+        "Resolve Rally for the acting party, then add acting-party Support to an otherwise empty district."
     });
   });
 
@@ -282,7 +280,7 @@ describe("setup constants", () => {
     expect(Object.isFrozen(DISTRICTS)).toBe(true);
     expect(Object.isFrozen(DISTRICTS[0])).toBe(true);
     expect(Object.isFrozen(DISTRICTS[0].adjacentDistrictIds)).toBe(true);
-    expect(Object.isFrozen(PARTIES[0].bonuses[0])).toBe(true);
+    expect(Object.isFrozen(PARTIES[0].bonusCards[0])).toBe(true);
     expect(Object.isFrozen(SCORING_CARDS[0].objectives[0])).toBe(true);
     expect(Object.isFrozen(STANDARD_PLAYER_SETUP.operations)).toBe(true);
   });
