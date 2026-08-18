@@ -8,7 +8,7 @@ Replace the once-per-year party bonus flags with twelve unique Bonus cards that 
 
 1. [x] Add canonical Bonus card content, game state, collection and closure choices, standalone resolution, projection privacy, and focused core tests.
 2. [x] Update the protocol, server adapters, web controls, and example agent for Bonus card collection, closure choices, private hands, and standalone play.
-3. [ ] Update rules, design history, changelog, component specifications, and current print assets; archive the replaced immediate-bonus material.
+3. [x] Update rules, design history, changelog, component specifications, and current print assets; archive the replaced immediate-bonus material.
 4. [ ] Run the complete validation suite, obtain an independent code review, resolve all high and medium findings, and publish the implementation.
 
 ## Validation
