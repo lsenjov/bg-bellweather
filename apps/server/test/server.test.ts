@@ -216,13 +216,13 @@ describe("game server", () => {
       type: "operate",
       partyId: "honeycomb",
       play: {
+        cardType: "operation",
         operation: "organise",
         choice: {
           operation: "organise",
           sourceDistrictId: "harbormouth",
           destinationDistrictId: "cloverfield"
-        },
-        claimBonus: true
+        }
       }
     });
     view = await state(baseUrl, game, 1);
@@ -231,8 +231,7 @@ describe("game server", () => {
         parties: Record<string, unknown>;
       }).parties.honeycomb
     ).toMatchObject({
-      operations: { organise: 1, rally: 0, smear: 0, court: 0 },
-      claimedBonuses: ["organise"]
+      operations: { organise: 1, rally: 0, smear: 0, court: 0 }
     });
 
     await gameAction(baseUrl, game, 0, "finish-operate", {
@@ -241,13 +240,15 @@ describe("game server", () => {
 
     await gameAction(baseUrl, game, 1, "collect", {
       type: "collect",
-      partyId: "honeycomb"
+      partyId: "honeycomb",
+      bonusCardId: "honeycomb-waggle-route"
     });
     view = await state(baseUrl, game, 1);
     expect(privateSeat(view)).toMatchObject({
       collectionCounters: 3,
-      newYearCardCount: 1,
-      newYearOperations: { organise: 1, rally: 0, smear: 0, court: 0 }
+      newYearCardCount: 2,
+      newYearOperations: { organise: 1, rally: 0, smear: 0, court: 0 },
+      newYearBonusCardIds: ["honeycomb-waggle-route"]
     });
 
     const malformed = await request(baseUrl, commandPath(game), {
@@ -259,6 +260,7 @@ describe("game server", () => {
           type: "operate",
           partyId: "honeycomb",
           play: {
+            cardType: "operation",
             operation: "rally",
             choice: { operation: "rally", districtId: "nowhere" }
           }
@@ -286,6 +288,22 @@ describe("game server", () => {
 
     await gameAction(baseUrl, game, 0, "pass-a", { type: "pass" });
     await gameAction(baseUrl, game, 1, "pass-b", { type: "pass" });
+    await gameAction(baseUrl, game, 0, "closure-honeycomb", {
+      type: "choose_closure_bonus",
+      partyId: "honeycomb"
+    });
+    await gameAction(baseUrl, game, 1, "closure-old-shell", {
+      type: "choose_closure_bonus",
+      partyId: "old-shell"
+    });
+    await gameAction(baseUrl, game, 1, "closure-foxglove", {
+      type: "choose_closure_bonus",
+      partyId: "foxglove"
+    });
+    await gameAction(baseUrl, game, 0, "closure-riverworks", {
+      type: "choose_closure_bonus",
+      partyId: "riverworks"
+    });
     view = await state(baseUrl, game, 1);
     expect(view.publicState.publicGame).toMatchObject({
       year: 2,

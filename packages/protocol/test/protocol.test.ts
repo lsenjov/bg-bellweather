@@ -99,9 +99,9 @@ describe("commands", () => {
 
   it("accepts one Operation play and a separate finish action", () => {
     const play = {
+      cardType: "operation",
       operation: "rally",
-      choice: { operation: "rally", districtId: "harbormouth" },
-      claimBonus: true
+      choice: { operation: "rally", districtId: "harbormouth" }
     };
     expect(
       PlayerGameActionSchema.safeParse({
@@ -118,6 +118,19 @@ describe("commands", () => {
       }).success
     ).toBe(false);
     expect(PlayerGameActionSchema.safeParse({ type: "finish_operate" }).success).toBe(true);
+    expect(PlayerGameActionSchema.safeParse({
+      type: "operate",
+      partyId: "night-parliament",
+      play: {
+        cardType: "bonus",
+        bonusCardId: "night-parliament-quiet-hours",
+        choice: {
+          operation: "rally",
+          districtId: "harbormouth",
+          bonusDistrictId: "bellweather-centre"
+        }
+      }
+    }).success).toBe(true);
   });
 
   it("requires the play and choice Operation families to match", () => {
@@ -126,6 +139,7 @@ describe("commands", () => {
         type: "operate",
         partyId: "honeycomb",
         play: {
+          cardType: "operation",
           operation: "rally",
           choice: {
             operation: "organise",
@@ -146,11 +160,16 @@ describe("commands", () => {
           type: "game_action",
           action: {
             type: "collect",
-            partyId: "honeycomb"
+            partyId: "honeycomb",
+            bonusCardId: "honeycomb-waggle-route"
           }
         }
       }).command
     ).toMatchObject({ type: "game_action" });
+    expect(PlayerGameActionSchema.safeParse({
+      type: "choose_closure_bonus",
+      partyId: "old-shell"
+    }).success).toBe(true);
     expect(
       CommandEnvelopeSchema.safeParse({
         gameId,

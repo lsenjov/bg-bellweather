@@ -277,6 +277,20 @@ export const OperationIdSchema = z.enum([
   "smear",
   "court"
 ]);
+export const BonusCardIdSchema = z.enum([
+  "honeycomb-waggle-route",
+  "honeycomb-common-cause",
+  "old-shell-dig-in",
+  "old-shell-stonewall",
+  "foxglove-spin",
+  "foxglove-whisper-network",
+  "riverworks-canal-network",
+  "riverworks-public-works",
+  "many-wings-scatter-the-flock",
+  "many-wings-joint-campaign",
+  "night-parliament-quiet-hours",
+  "night-parliament-midnight-leak"
+]);
 const OrganiseChoiceSchema = z
   .object({
     operation: z.literal("organise"),
@@ -319,17 +333,28 @@ export const OperationChoiceSchema = z.discriminatedUnion("operation", [
   CourtChoiceSchema
 ]);
 export type OperationChoice = z.infer<typeof OperationChoiceSchema>;
-export const OperationPlaySchema = z
+const OperationCardPlaySchema = z
   .object({
+    cardType: z.literal("operation"),
     operation: OperationIdSchema,
-    choice: OperationChoiceSchema,
-    claimBonus: z.boolean().optional()
+    choice: OperationChoiceSchema
   })
   .strict()
   .refine(({ operation, choice }) => operation === choice.operation, {
     message: "Operation and choice family must match",
     path: ["choice", "operation"]
   });
+const BonusCardPlaySchema = z
+  .object({
+    cardType: z.literal("bonus"),
+    bonusCardId: BonusCardIdSchema,
+    choice: OperationChoiceSchema
+  })
+  .strict();
+export const OperationPlaySchema = z.union([
+  OperationCardPlaySchema,
+  BonusCardPlaySchema
+]);
 export type OperationPlay = z.infer<typeof OperationPlaySchema>;
 const OpenPartyActionSchema = z
   .object({
@@ -353,13 +378,22 @@ const FinishOperateActionSchema = z
 const CollectActionSchema = z
   .object({
     type: z.literal("collect"),
-    partyId: PartyIdSchema
+    partyId: PartyIdSchema,
+    bonusCardId: BonusCardIdSchema.optional()
   })
   .strict();
 const CloseActionSchema = z
   .object({
     type: z.literal("close"),
-    partyId: PartyIdSchema
+    partyId: PartyIdSchema,
+    bonusCardId: BonusCardIdSchema.optional()
+  })
+  .strict();
+const ChooseClosureBonusActionSchema = z
+  .object({
+    type: z.literal("choose_closure_bonus"),
+    partyId: PartyIdSchema,
+    bonusCardId: BonusCardIdSchema.optional()
   })
   .strict();
 const PassActionSchema = z
@@ -379,6 +413,7 @@ export const PlayerGameActionSchema = z.discriminatedUnion("type", [
   FinishOperateActionSchema,
   CollectActionSchema,
   CloseActionSchema,
+  ChooseClosureBonusActionSchema,
   PassActionSchema,
   SetElectionReadyActionSchema
 ]);

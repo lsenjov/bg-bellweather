@@ -1,4 +1,5 @@
 import {
+  BONUS_CARDS_BY_ID,
   DISTRICTS,
   FIRMS_BY_ID,
   OPERATION_IDS,
@@ -6,6 +7,7 @@ import {
   PARTIES_BY_ID,
   RULESET_VERSION,
   SCORING_CARDS_BY_ID,
+  type BonusCardId,
   type DistrictId,
   type FirmId,
   type OperationId,
@@ -16,6 +18,7 @@ import {
   MAX_PLAYER_COUNT,
   MIN_PLAYER_COUNT,
   type GameCommand,
+  type OperationPlay,
   type ParticipantSession,
   type ReplayResponse,
   type ViewerStateEnvelope
@@ -67,7 +70,7 @@ interface OperationDraft {
   bonusSourceDistrictId: string;
   bonusCourtSourceParty: PartyId | "";
   bonusCourtParty: PartyId | "";
-  claimBonus: boolean;
+  bonusCardId: BonusCardId | "";
 }
 
 type OperationTarget =
@@ -477,7 +480,18 @@ function PrivateFolio(props: {
             {OPERATION_IDS.map((operation) => (
               <b key={operation}>{operation.slice(0, 3).toUpperCase()} {props.seat!.newYearOperations?.[operation] ?? 0}</b>
             ))}
+            {props.seat.newYearBonusCardIds?.map((cardId) => (
+              <b key={cardId}>{BONUS_CARDS_BY_ID[cardId].name}</b>
+            ))}
           </div>
+          {(props.seat.bonusCardIds?.length ?? 0) > 0 && (
+            <div className="new-year-area">
+              <span>Held Bonus cards</span>
+              {props.seat.bonusCardIds!.map((cardId) => (
+                <b key={cardId}>{BONUS_CARDS_BY_ID[cardId].name}</b>
+              ))}
+            </div>
+          )}
           <div className="agenda-stack">
             {(props.seat.scoringCardIds ?? []).flatMap((slot, slotIndex) =>
               slot.map((cardId, index) => (
@@ -563,7 +577,14 @@ export function PartyBoard({
               {state !== undefined && OPERATION_IDS.map((operation) => state.operations[operation] > 0 && <span key={operation}>{operation.slice(0, 3)} {state.operations[operation]}</span>)}
             </div>
             <div className="bonus-flags">
-              {party.bonuses.map((bonus) => <span key={bonus.operation} className={state?.claimedBonuses.includes(bonus.operation) ? "bonus-used" : ""}>{bonus.name}</span>)}
+              {party.bonusCards.map((card) => (
+                <span
+                  key={card.id}
+                  className={view.bonusCardsAtParties[party.id].includes(card.id) ? "" : "bonus-used"}
+                >
+                  {card.name}
+                </span>
+              ))}
             </div>
           </article>
         );
@@ -676,6 +697,9 @@ export function ActionDesk(props: {
   if (props.view.phase === "lobby") {
     return <LobbyActionDesk {...props} />;
   }
+  if (props.view.phase === "closure") {
+    return <ClosureDesk {...props} />;
+  }
   if (props.view.phase === "election") {
     const ready = props.view.phaseData.type === "election"
       ? props.view.phaseData.readySeatIds.includes(props.seatId)
@@ -691,6 +715,38 @@ export function ActionDesk(props: {
     );
   }
   return <WaitingCopy view={props.view} />;
+}
+
+function ClosureDesk(props: {
+  view: GameView;
+  seatId: string;
+  busy: boolean;
+  onCommand(command: GameCommand): Promise<boolean | void>;
+}) {
+  const phase = props.view.phaseData;
+  if (phase.type !== "closure") return <WaitingCopy view={props.view} />;
+  const partyId = phase.pendingPartyIds[0];
+  if (partyId === undefined) return <WaitingCopy view={props.view} />;
+  const party = props.view.parties[partyId];
+  if (party?.ownerSeatId !== props.seatId) return <WaitingCopy view={props.view} />;
+  const available = props.view.bonusCardsAtParties[partyId];
+  return (
+    <BonusCardChoice
+      title={`${PARTIES_BY_ID[partyId].shortName} Closure`}
+      copy="Choose at most one available Bonus card before Cleanup releases every New Year area."
+      bonusCardIds={available}
+      busy={props.busy}
+      button="Confirm Closure choice"
+      onSubmit={(bonusCardId) => props.onCommand({
+        type: "game_action",
+        action: {
+          type: "choose_closure_bonus",
+          partyId,
+          ...(bonusCardId === undefined ? {} : { bonusCardId })
+        }
+      })}
+    />
+  );
 }
 
 function OpeningDesk(props: {
@@ -788,10 +844,10 @@ function LobbyActionDesk(props: {
         <OperationComposer view={props.view} seat={props.seat} partyId={partyId} onPartyId={setPartyId} busy={props.busy} onInteraction={props.onInteraction} onSubmit={(play) => props.onCommand({ type: "game_action", action: { type: "operate", partyId, play } })} onFinish={() => props.onCommand({ type: "game_action", action: { type: "finish_operate" } })} />
       )}
       {mode === "collect" && (
-        <SimplePartyAction title="Collect" copy="Spend one Collection counter and take the complete public pile into your New Year area. The party stays open." partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={collectTargetPartyIds} disabled={props.busy || !collectLegal} button={`Collect ${party === undefined ? 0 : operationCount(party.operations)} cards`} onInteraction={props.onInteraction} onSubmit={() => props.onCommand({ type: "game_action", action: { type: "collect", partyId } })} />
+        <SimplePartyAction title="Collect" copy="Spend one Collection counter and take the complete public pile into your New Year area. You may also take one available Bonus card. The party stays open." partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={collectTargetPartyIds} bonusCardIds={props.view.bonusCardsAtParties[partyId]} disabled={props.busy || !collectLegal} button={`Collect ${party === undefined ? 0 : operationCount(party.operations)} cards`} onInteraction={props.onInteraction} onSubmit={(bonusCardId) => props.onCommand({ type: "game_action", action: { type: "collect", partyId, ...(bonusCardId === undefined ? {} : { bonusCardId }) } })} />
       )}
       {mode === "close" && (
-        <SimplePartyAction title="Close" copy={firstTurn ? "You cannot Close on your first Lobby turn, even if you previously passed." : "Only the opening Firm may Close. Its owner takes the pile and gets the opening back."} partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={closeTargetPartyIds} disabled={props.busy || !closeLegal} button="Close party" onInteraction={props.onInteraction} onSubmit={() => props.onCommand({ type: "game_action", action: { type: "close", partyId } })} />
+        <SimplePartyAction title="Close" copy={firstTurn ? "You cannot Close on your first Lobby turn, even if you previously passed." : "Only the opening Firm may Close. Its owner takes the pile, may take one Bonus card, and gets the opening back."} partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={closeTargetPartyIds} bonusCardIds={props.view.bonusCardsAtParties[partyId]} disabled={props.busy || !closeLegal} button="Close party" onInteraction={props.onInteraction} onSubmit={(bonusCardId) => props.onCommand({ type: "game_action", action: { type: "close", partyId, ...(bonusCardId === undefined ? {} : { bonusCardId }) } })} />
       )}
       {mode === "pass" && (
         <PassAction busy={props.busy} onInteraction={props.onInteraction} onPass={() => props.onCommand({ type: "game_action", action: { type: "pass" } })} />
@@ -807,12 +863,15 @@ function SimplePartyAction(props: {
   onPartyId(partyId: PartyId): void;
   partyIds: PartyId[];
   targetPartyIds: PartyId[];
+  bonusCardIds: BonusCardId[];
   disabled: boolean;
   button: string;
-  onSubmit(): Promise<boolean | void>;
+  onSubmit(bonusCardId?: BonusCardId): Promise<boolean | void>;
   onInteraction?: ((interaction: TableInteraction | null) => void) | undefined;
 }) {
   const targetPartyKey = props.targetPartyIds.join(",");
+  const [bonusCardId, setBonusCardId] = useState<BonusCardId | "">("");
+  useEffect(() => setBonusCardId(""), [props.partyId]);
   useEffect(() => {
     if (props.onInteraction === undefined) return;
     props.onInteraction({
@@ -824,11 +883,55 @@ function SimplePartyAction(props: {
     return () => props.onInteraction?.(null);
   }, [targetPartyKey, props.onInteraction, props.onPartyId, props.partyId, props.title]);
   return (
-    <form onSubmit={(event) => { event.preventDefault(); void props.onSubmit(); }}>
+    <form onSubmit={(event) => {
+      event.preventDefault();
+      void props.onSubmit(bonusCardId || undefined);
+    }}>
       <div className="action-copy"><h3>{props.title}</h3><p>{props.copy}</p></div>
       <PartySelect partyId={props.partyId} partyIds={props.partyIds} onPartyId={props.onPartyId} />
+      {props.bonusCardIds.length > 0 && (
+        <label>
+          Bonus card
+          <select aria-label="Bonus card" value={bonusCardId} onChange={(event) => setBonusCardId(event.target.value as BonusCardId | "")}>
+            <option value="">Take no Bonus card</option>
+            {props.bonusCardIds.map((cardId) => <option key={cardId} value={cardId}>{BONUS_CARDS_BY_ID[cardId].name}</option>)}
+          </select>
+        </label>
+      )}
       <button className="red-button" disabled={props.disabled}>{props.button}</button>
     </form>
+  );
+}
+
+function BonusCardChoice(props: {
+  title?: string;
+  copy?: string;
+  bonusCardIds: BonusCardId[];
+  busy: boolean;
+  button: string;
+  onSubmit(bonusCardId?: BonusCardId): Promise<boolean | void>;
+}) {
+  const [bonusCardId, setBonusCardId] = useState<BonusCardId | "">("");
+  useEffect(() => {
+    if (bonusCardId !== "" && !props.bonusCardIds.includes(bonusCardId)) {
+      setBonusCardId("");
+    }
+  }, [bonusCardId, props.bonusCardIds]);
+  return (
+    <div className="action-copy">
+      {props.title !== undefined && <h3>{props.title}</h3>}
+      {props.copy !== undefined && <p>{props.copy}</p>}
+      {props.bonusCardIds.length > 0 && (
+        <label>
+          Bonus card
+          <select aria-label="Bonus card" value={bonusCardId} onChange={(event) => setBonusCardId(event.target.value as BonusCardId | "")}>
+            <option value="">Take no Bonus card</option>
+            {props.bonusCardIds.map((cardId) => <option key={cardId} value={cardId}>{BONUS_CARDS_BY_ID[cardId].name}</option>)}
+          </select>
+        </label>
+      )}
+      <button className="red-button" disabled={props.busy} onClick={() => void props.onSubmit(bonusCardId || undefined)}>{props.button}</button>
+    </div>
   );
 }
 
@@ -855,7 +958,7 @@ export function OperationComposer(props: {
   partyId: PartyId;
   onPartyId(partyId: PartyId): void;
   busy: boolean;
-  onSubmit(play: { operation: OperationId; choice: OperationChoice; claimBonus?: boolean }): Promise<boolean | void>;
+  onSubmit(play: OperationPlay): Promise<boolean | void>;
   onFinish(): Promise<boolean | void>;
   onInteraction?: ((interaction: TableInteraction | null) => void) | undefined;
 }) {
@@ -863,7 +966,7 @@ export function OperationComposer(props: {
   const sequence = props.view.phaseData.type === "lobby"
     ? props.view.phaseData.inProgressOperate
     : null;
-  const resolvedCount = sequence?.operationCount ?? 0;
+  const resolvedCount = sequence?.cardCount ?? 0;
   const [draft, setDraft] = useState<OperationDraft>(() =>
     emptyOperationDraft(nextId.current++, "organise", props.partyId)
   );
@@ -881,10 +984,20 @@ export function OperationComposer(props: {
     [operationState, props.partyId, draft, props.seat.operations]
   );
   const openPartyIds = PARTIES.map((party) => party.id).filter((partyId) => props.view.parties[partyId]?.status === "open");
-  const claimedBonuses = props.view.parties[props.partyId]?.claimedBonuses ?? [];
+  const playableBonusCardIds = (props.seat.bonusCardIds ?? []).filter((cardId) =>
+    canPlayBonusCardAtParty(props.view, cardId, props.partyId)
+  );
   const partyLocked = sequence !== null;
   const chooseOperation = (operation: OperationId) => {
     setDraft(emptyOperationDraft(nextId.current++, operation, props.partyId));
+    setArmedTarget(defaultOperationTarget(operation));
+  };
+  const chooseBonusCard = (bonusCardId: BonusCardId) => {
+    const operation = BONUS_CARDS_BY_ID[bonusCardId].operation;
+    setDraft({
+      ...emptyOperationDraft(nextId.current++, operation, props.partyId),
+      bonusCardId
+    });
     setArmedTarget(defaultOperationTarget(operation));
   };
   const update = (patch: Partial<OperationDraft>) => setDraft((current) => ({ ...current, ...patch }));
@@ -918,13 +1031,18 @@ export function OperationComposer(props: {
       event.preventDefault();
       if (preview.play !== null) void props.onSubmit(preview.play);
     }}>
-      <p className="action-lede">Resolve one Operation now. After it changes the board, either resolve another at this party or finish your action.</p>
-      <p className="operation-progress">Card {resolvedCount + 1} of up to 3 · {sequence?.bonusClaimed === true ? "bonus already used" : "one bonus available"}</p>
+      <p className="action-lede">Resolve one ordinary Operation or held Bonus card now. Then either resolve another card at this party or finish your action.</p>
+      <p className="operation-progress">Card {resolvedCount + 1} of up to 3</p>
       <PartySelect partyId={props.partyId} partyIds={openPartyIds} onPartyId={props.onPartyId} disabled={partyLocked} active={armedTarget === "actingParty"} onArm={() => setArmedTarget("actingParty")} />
       <div className="operation-adders" aria-label="Choose an Operation card">
         {OPERATION_IDS.map((operation) => (
-          <button type="button" key={operation} className={draft.operation === operation ? "active" : ""} disabled={(props.seat.operations?.[operation] ?? 0) < 1} onClick={() => chooseOperation(operation)}>
+          <button type="button" key={operation} className={draft.bonusCardId === "" && draft.operation === operation ? "active" : ""} disabled={(props.seat.operations?.[operation] ?? 0) < 1} onClick={() => chooseOperation(operation)}>
             {operation} <b>{props.seat.operations?.[operation] ?? 0}</b>
+          </button>
+        ))}
+        {playableBonusCardIds.map((cardId) => (
+          <button type="button" key={cardId} className={draft.bonusCardId === cardId ? "active" : ""} onClick={() => chooseBonusCard(cardId)}>
+            {BONUS_CARDS_BY_ID[cardId].name} <b>Bonus</b>
           </button>
         ))}
       </div>
@@ -932,15 +1050,13 @@ export function OperationComposer(props: {
         index={resolvedCount}
         draft={draft}
         partyId={props.partyId}
-        claimedBonuses={claimedBonuses}
-        bonusBlocked={sequence?.bonusClaimed === true}
         armedTarget={armedTarget}
         onArm={setArmedTarget}
         onUpdate={update}
       />
       {preview.message !== null && <p className="validation-copy">{preview.message}</p>}
       <div className="button-row">
-        <button className="red-button" disabled={props.busy || preview.play === null}>Resolve {draft.operation}</button>
+        <button className="red-button" disabled={props.busy || preview.play === null}>Resolve {draft.bonusCardId === "" ? draft.operation : BONUS_CARDS_BY_ID[draft.bonusCardId].name}</button>
         {sequence !== null && <button type="button" className="ink-button" disabled={props.busy} onClick={() => void props.onFinish()}>Finish Operate</button>}
       </div>
     </form>
@@ -951,14 +1067,13 @@ function OperationDraftCard(props: {
   index: number;
   draft: OperationDraft;
   partyId: PartyId;
-  claimedBonuses: OperationId[];
-  bonusBlocked: boolean;
   armedTarget: OperationTarget;
   onArm(target: OperationTarget): void;
   onUpdate(patch: Partial<OperationDraft>): void;
 }) {
-  const bonus = PARTIES_BY_ID[props.partyId].bonuses.find((candidate) => candidate.operation === props.draft.operation);
-  const bonusAvailable = bonus !== undefined && !props.claimedBonuses.includes(props.draft.operation);
+  const bonus = props.draft.bonusCardId === ""
+    ? null
+    : BONUS_CARDS_BY_ID[props.draft.bonusCardId];
   return (
     <fieldset className="operation-card">
       <legend>{props.index + 1}. {props.draft.operation}</legend>
@@ -968,37 +1083,35 @@ function OperationDraftCard(props: {
       {props.draft.operation === "rally" && <DistrictSelect label="Rally district" value={props.draft.districtId} active={props.armedTarget === "districtId"} onArm={() => props.onArm("districtId")} onChange={(districtId) => props.onUpdate({ districtId })} />}
       {props.draft.operation === "smear" && <div className="field-grid"><DistrictSelect label="District" value={props.draft.districtId} active={props.armedTarget === "districtId"} onArm={() => props.onArm("districtId")} onChange={(districtId) => props.onUpdate({ districtId })} /><PartyField label="Rival party" value={props.draft.rivalParty} actingParty={props.partyId} active={props.armedTarget === "rivalParty"} onArm={() => props.onArm("rivalParty")} onChange={(rivalParty) => { if (rivalParty !== "") props.onUpdate({ rivalParty }); }} /></div>}
       {props.draft.operation === "court" && <PartyField label="Court target" value={props.draft.targetParty} actingParty={props.partyId} active={props.armedTarget === "targetParty"} onArm={() => props.onArm("targetParty")} onChange={(targetParty) => { if (targetParty !== "") props.onUpdate({ targetParty }); }} />}
-      {bonusAvailable && (
-        <label className="bonus-check"><input type="checkbox" checked={props.draft.claimBonus} disabled={props.bonusBlocked} onChange={(event) => props.onUpdate({ claimBonus: event.target.checked })} /><span><b>{bonus.name}</b>{bonus.effect}</span></label>
-      )}
-      {props.draft.claimBonus && <BonusFields draft={props.draft} partyId={props.partyId} armedTarget={props.armedTarget} onArm={props.onArm} onUpdate={props.onUpdate} />}
+      {bonus !== null && <p className="bonus-check"><span><b>{bonus.name}</b>{bonus.effect}</span></p>}
+      {bonus !== null && <BonusFields draft={props.draft} homePartyId={bonus.homePartyId} actingPartyId={props.partyId} armedTarget={props.armedTarget} onArm={props.onArm} onUpdate={props.onUpdate} />}
     </fieldset>
   );
 }
 
-function BonusFields(props: { draft: OperationDraft; partyId: PartyId; armedTarget: OperationTarget; onArm(target: OperationTarget): void; onUpdate(patch: Partial<OperationDraft>): void }) {
-  const { draft, partyId } = props;
+function BonusFields(props: { draft: OperationDraft; homePartyId: PartyId; actingPartyId: PartyId; armedTarget: OperationTarget; onArm(target: OperationTarget): void; onUpdate(patch: Partial<OperationDraft>): void }) {
+  const { draft, homePartyId, actingPartyId } = props;
   const scatterId = useId();
-  if (partyId === "honeycomb" && draft.operation === "court") {
+  if (homePartyId === "honeycomb" && draft.operation === "court") {
     return <div className="bonus-fields"><DistrictSelect label="Bonus source" value={draft.bonusSourceDistrictId} active={props.armedTarget === "bonusSourceDistrictId"} onArm={() => props.onArm("bonusSourceDistrictId")} onChange={(bonusSourceDistrictId) => props.onUpdate({ bonusSourceDistrictId })} /><DistrictSelect label="Bonus destination" value={draft.bonusDistrictId} active={props.armedTarget === "bonusDistrictId"} onArm={() => props.onArm("bonusDistrictId")} onChange={(bonusDistrictId) => props.onUpdate({ bonusDistrictId })} /></div>;
   }
-  if (partyId === "foxglove" && draft.operation === "court") {
-    return <PartyField label="Court source" optional value={draft.bonusCourtSourceParty} actingParty={partyId} active={props.armedTarget === "bonusCourtSourceParty"} onArm={() => props.onArm("bonusCourtSourceParty")} onChange={(bonusCourtSourceParty) => props.onUpdate({ bonusCourtSourceParty })} />;
+  if (homePartyId === "foxglove" && draft.operation === "court") {
+    return <PartyField label="Court source" optional value={draft.bonusCourtSourceParty} actingParty={actingPartyId} active={props.armedTarget === "bonusCourtSourceParty"} onArm={() => props.onArm("bonusCourtSourceParty")} onChange={(bonusCourtSourceParty) => props.onUpdate({ bonusCourtSourceParty })} />;
   }
-  if (partyId === "riverworks" && draft.operation === "rally") {
+  if (homePartyId === "riverworks" && draft.operation === "rally") {
     return <DistrictSelect label="Public Works district" value={draft.bonusDistrictId} active={props.armedTarget === "bonusDistrictId"} onArm={() => props.onArm("bonusDistrictId")} onChange={(bonusDistrictId) => props.onUpdate({ bonusDistrictId })} />;
   }
-  if (partyId === "many-wings" && draft.operation === "rally") {
+  if (homePartyId === "many-wings" && draft.operation === "rally") {
     return <div className={`target-field ${props.armedTarget === "bonusDistrictIds" ? "target-field-active" : ""}`}><div className="target-field-heading"><label htmlFor={scatterId}>Scatter destinations</label><button type="button" className="target-arm" onClick={() => props.onArm("bonusDistrictIds")}>Select on map</button></div><select id={scatterId} multiple value={draft.bonusDistrictIds} onFocus={() => props.onArm("bonusDistrictIds")} onChange={(event) => props.onUpdate({ bonusDistrictIds: [...event.currentTarget.selectedOptions].map((option) => option.value) })}>{DISTRICTS.map((district) => <option key={district.id} value={district.id}>{district.name}</option>)}</select></div>;
   }
-  if (partyId === "many-wings" && draft.operation === "court") {
+  if (homePartyId === "many-wings" && draft.operation === "court") {
     return <DistrictSelect label="Joint Campaign district" value={draft.bonusDistrictId} active={props.armedTarget === "bonusDistrictId"} onArm={() => props.onArm("bonusDistrictId")} onChange={(bonusDistrictId) => props.onUpdate({ bonusDistrictId })} />;
   }
-  if (partyId === "night-parliament" && draft.operation === "rally") {
+  if (homePartyId === "night-parliament" && draft.operation === "rally") {
     return <DistrictSelect label="Quiet Hours district" value={draft.bonusDistrictId} active={props.armedTarget === "bonusDistrictId"} onArm={() => props.onArm("bonusDistrictId")} onChange={(bonusDistrictId) => props.onUpdate({ bonusDistrictId })} />;
   }
-  if (partyId === "night-parliament" && draft.operation === "smear") {
-    return <PartyField label="Rival Court space" optional value={draft.bonusCourtParty} actingParty={partyId} active={props.armedTarget === "bonusCourtParty"} onArm={() => props.onArm("bonusCourtParty")} onChange={(bonusCourtParty) => props.onUpdate({ bonusCourtParty })} />;
+  if (homePartyId === "night-parliament" && draft.operation === "smear") {
+    return <PartyField label="Rival Court space" optional value={draft.bonusCourtParty} actingParty={actingPartyId} active={props.armedTarget === "bonusCourtParty"} onArm={() => props.onArm("bonusCourtParty")} onChange={(bonusCourtParty) => props.onUpdate({ bonusCourtParty })} />;
   }
   return null;
 }
@@ -1097,11 +1210,11 @@ function previewDraft(
   draft: OperationDraft,
   inventory: ViewSeat["operations"]
 ): {
-  play: { operation: OperationId; choice: OperationChoice; claimBonus?: boolean } | null;
+  play: OperationPlay | null;
   message: string | null;
 } {
   if (inventory === null) return { play: null, message: "Your private hand is unavailable." };
-  if (inventory[draft.operation] < 1) {
+  if (draft.bonusCardId === "" && inventory[draft.operation] < 1) {
     return { play: null, message: `You do not have a ${draft.operation} card.` };
   }
   const choice = draftChoice(draft);
@@ -1109,9 +1222,9 @@ function previewDraft(
   const resolution = resolveOperation(initial, {
     party: partyId,
     choice,
-    claimBonus: draft.claimBonus
+    ...(draft.bonusCardId === "" ? {} : { bonusCardId: draft.bonusCardId })
   });
-  if (!resolution.baselineApplied || (draft.claimBonus && !resolution.bonusApplied)) {
+  if (!resolution.baselineApplied || (draft.bonusCardId !== "" && !resolution.bonusApplied)) {
     return {
       play: null,
       message: resolution.bonusFailure ?? resolution.failure ?? "That choice is illegal."
@@ -1119,9 +1232,9 @@ function previewDraft(
   }
   return {
     play: {
-      operation: draft.operation,
-      choice,
-      ...(draft.claimBonus ? { claimBonus: true } : {})
+      ...(draft.bonusCardId === ""
+        ? { cardType: "operation" as const, operation: draft.operation, choice }
+        : { cardType: "bonus" as const, bonusCardId: draft.bonusCardId, choice })
     },
     message: "Ready to resolve this card."
   };
@@ -1209,8 +1322,8 @@ function legalDistrictTargets(
     }
     const choice = draftChoice(candidate);
     if (choice === null) return false;
-    return target.startsWith("bonus")
-      ? isOperationRequestLegal(state, { party: partyId, choice, claimBonus: true })
+    return draft.bonusCardId !== ""
+      ? isOperationRequestLegal(state, { party: partyId, choice, bonusCardId: draft.bonusCardId })
       : isOperationChoiceLegal(state, partyId, choice);
   });
 }
@@ -1231,8 +1344,8 @@ function legalPartyTargets(
     const candidate = { ...draft, [target]: candidateParty };
     const choice = draftChoice(candidate);
     if (choice === null) return false;
-    return target.startsWith("bonus")
-      ? isOperationRequestLegal(state, { party: partyId, choice, claimBonus: true })
+    return draft.bonusCardId !== ""
+      ? isOperationRequestLegal(state, { party: partyId, choice, bonusCardId: draft.bonusCardId })
       : isOperationChoiceLegal(state, partyId, choice);
   });
 }
@@ -1329,7 +1442,19 @@ function emptyOperationDraft(
   actingParty: PartyId
 ): OperationDraft {
   const target = PARTIES.find((party) => party.id !== actingParty)!.id;
-  return { id, operation, sourceDistrictId: "", destinationDistrictId: "", districtId: "", rivalParty: target, targetParty: target, bonusDistrictId: "", bonusDistrictIds: [], bonusSourceDistrictId: "", bonusCourtSourceParty: "", bonusCourtParty: "", claimBonus: false };
+  return { id, operation, sourceDistrictId: "", destinationDistrictId: "", districtId: "", rivalParty: target, targetParty: target, bonusDistrictId: "", bonusDistrictIds: [], bonusSourceDistrictId: "", bonusCourtSourceParty: "", bonusCourtParty: "", bonusCardId: "" };
+}
+
+function canPlayBonusCardAtParty(
+  view: GameView,
+  bonusCardId: BonusCardId,
+  partyId: PartyId
+): boolean {
+  const homePartyId = BONUS_CARDS_BY_ID[bonusCardId].homePartyId;
+  return partyId === homePartyId || (
+    view.coalitionTargets[homePartyId] === partyId &&
+    view.coalitionTargets[partyId] === homePartyId
+  );
 }
 
 function toOperationState(view: GameView): OperationState {
@@ -1347,6 +1472,10 @@ function operationCount(inventory: Record<OperationId, number>): number {
 function activeSeat(view: GameView): string | null {
   if (view.phaseData.type === "opening") return view.phaseData.turnSeatIds[view.phaseData.turnIndex] ?? null;
   if (view.phaseData.type === "lobby") return view.phaseData.activeSeatId;
+  if (view.phaseData.type === "closure") {
+    const partyId = view.phaseData.pendingPartyIds[0];
+    return partyId === undefined ? null : view.parties[partyId]?.ownerSeatId ?? null;
+  }
   return null;
 }
 
@@ -1369,6 +1498,7 @@ function seatName(view: GameView, seatId: string): string {
 function phaseName(phase: GameView["phase"]): string {
   if (phase === "opening") return "Party Openings";
   if (phase === "lobby") return "Lobby Actions";
+  if (phase === "closure") return "Automatic Closure";
   if (phase === "election") return "Election";
   return "Complete";
 }

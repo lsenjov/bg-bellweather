@@ -203,8 +203,10 @@ function publicAction(action: GameAction): Record<string, unknown> {
       type: action.type,
       seatId: action.seatId,
       partyId: action.partyId,
-      operation: action.play.operation,
-      claimBonus: action.play.claimBonus === true
+      cardType: action.play.cardType,
+      ...(action.play.cardType === "operation"
+        ? { operation: action.play.operation }
+        : { bonusCardId: action.play.bonusCardId })
     };
   }
   return { ...action };

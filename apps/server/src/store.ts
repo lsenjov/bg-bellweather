@@ -901,6 +901,7 @@ function commandToAction(
     "finish_operate",
     "collect",
     "close",
+    "choose_closure_bonus",
     "pass",
     "set_election_ready",
   ]);

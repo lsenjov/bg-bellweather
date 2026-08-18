@@ -18,12 +18,16 @@ describe("yearly game projections", () => {
   it("shows public counts while keeping hands, New Year cards, and scoring cards private", () => {
     const state = initializeGame(configuration(), random).state;
     state.seats[0]!.newYearOperations.rally = 2;
+    state.bonusCards["honeycomb-waggle-route"] = {
+      zone: "new_year",
+      seatId: "seat-1"
+    };
 
     const publicView = publicEngineState(state);
     const publicSeats = publicView.seats as Array<Record<string, unknown>>;
     expect(publicSeats[0]).toMatchObject({
       handCount: 11,
-      newYearCardCount: 2,
+      newYearCardCount: 3,
       operations: null,
       newYearOperations: null,
       scoringCardIds: null
@@ -35,34 +39,40 @@ describe("yearly game projections", () => {
       operations: { organise: 3, rally: 4, smear: 2, court: 2 },
       newYearOperations: { organise: 0, rally: 2, smear: 0, court: 0 }
     });
+    expect(privateView.seat).toMatchObject({
+      newYearBonusCardIds: ["honeycomb-waggle-route"]
+    });
   });
 
-  it("shows the exact public Operation pile and claimed party bonus", () => {
+  it("shows the exact public Operation pile and home Bonus cards", () => {
     let state = openEveryParty(initializeGame(configuration(), random).state);
     state = apply(state, {
       type: "operate",
       seatId: "seat-1",
       partyId: "honeycomb",
       play: {
+        cardType: "operation",
         operation: "organise",
         choice: {
           operation: "organise",
           sourceDistrictId: "harbormouth",
           destinationDistrictId: "cloverfield"
-        },
-        claimBonus: true
+        }
       }
     });
 
-    const parties = publicEngineState(state).parties as Record<
+    const publicState = publicEngineState(state);
+    const parties = publicState.parties as Record<
       string,
       Record<string, unknown>
     >;
     expect(parties.honeycomb).toMatchObject({
       ownerSeatId: "seat-1",
       status: "open",
-      operations: { organise: 1, rally: 0, smear: 0, court: 0 },
-      claimedBonuses: ["organise"]
+      operations: { organise: 1, rally: 0, smear: 0, court: 0 }
+    });
+    expect(publicState.bonusCardsAtParties).toMatchObject({
+      honeycomb: ["honeycomb-waggle-route", "honeycomb-common-cause"]
     });
   });
 
@@ -75,9 +85,9 @@ describe("yearly game projections", () => {
           seatId: "seat-1",
           partyId: "honeycomb",
           play: {
-            operation: "rally",
-            choice: { operation: "rally", districtId: "cloverfield" },
-            claimBonus: true
+            cardType: "bonus",
+            bonusCardId: "honeycomb-waggle-route",
+            choice: { operation: "organise", destinationDistrictId: "cloverfield" }
           }
         }
       }]
@@ -89,8 +99,8 @@ describe("yearly game projections", () => {
           type: "operate",
           seatId: "seat-1",
           partyId: "honeycomb",
-          operation: "rally",
-          claimBonus: true
+          cardType: "bonus",
+          bonusCardId: "honeycomb-waggle-route"
         }]
       }
     });

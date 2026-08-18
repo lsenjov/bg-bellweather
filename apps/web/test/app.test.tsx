@@ -125,9 +125,13 @@ describe("yearly browser play surface", () => {
     expect(screen.getByLabelText("Harbormouth: 6 of 6 Support spaces occupied")).toBeTruthy();
   });
 
-  it("shows exact public party piles and yearly bonus use", () => {
+  it("shows exact public party piles and Bonus card locations", () => {
     let state = openEveryParty(initializeGame(configuration(2), random).state);
-    state = apply(state, organiseAction("seat-1", true));
+    state = apply(state, organiseAction("seat-1"));
+    state.bonusCards["honeycomb-waggle-route"] = {
+      zone: "hand",
+      seatId: "seat-1"
+    };
     const view = privateView(state, "seat-2");
     render(<PartyBoard view={view} />);
     const honeycomb = screen.getByText("Honeycomb").closest("article")!;
@@ -173,7 +177,6 @@ describe("yearly browser play surface", () => {
     const destinationField = screen.getByLabelText("Destination").parentElement!;
     fireEvent.click(within(destinationField).getByRole("button", { name: "Select on map" }));
     fireEvent.click(screen.getByLabelText("Cloverfield: 0 of 4 Support spaces occupied"));
-    fireEvent.click(screen.getByRole("checkbox", { name: /Waggle Route/ }));
     expect(screen.getByText("Ready to resolve this card.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Resolve organise" }));
     await waitFor(() => expect(onCommand).toHaveBeenCalledWith({
@@ -182,13 +185,13 @@ describe("yearly browser play surface", () => {
         type: "operate",
         partyId: "honeycomb",
         play: {
+          cardType: "operation",
           operation: "organise",
           choice: {
             operation: "organise",
             sourceDistrictId: "harbormouth",
             destinationDistrictId: "cloverfield"
-          },
-          claimBonus: true
+          }
         }
       }
     }));
@@ -200,6 +203,10 @@ describe("yearly browser play surface", () => {
       ["night-parliament", "old-shell", "foxglove", "riverworks"]
     );
     state.support.cloverfield["night-parliament"] = 1;
+    state.bonusCards["night-parliament-quiet-hours"] = {
+      zone: "hand",
+      seatId: "seat-1"
+    };
     const view = privateView(state, "seat-1");
     const onCommand = vi.fn(async () => true);
     render(
@@ -209,12 +216,10 @@ describe("yearly browser play surface", () => {
     fireEvent.change(screen.getByLabelText("Party"), {
       target: { value: "night-parliament" }
     });
-    fireEvent.click(screen.getByRole("button", { name: /^rally/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Quiet Hours Bonus/ }));
     fireEvent.change(screen.getByLabelText("Rally district"), {
       target: { value: "cloverfield" }
     });
-    fireEvent.click(screen.getByRole("checkbox", { name: /Quiet Hours/ }));
-
     const quietHoursField = screen.getByLabelText("Quiet Hours district").parentElement!;
     fireEvent.click(within(quietHoursField).getByRole("button", { name: "Select on map" }));
     expect(
@@ -223,20 +228,20 @@ describe("yearly browser play surface", () => {
     fireEvent.click(screen.getByLabelText("Bellweather Centre: 0 of 3 Support spaces occupied"));
 
     expect(screen.getByText("Ready to resolve this card.")).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Resolve rally" }));
+    fireEvent.click(screen.getByRole("button", { name: "Resolve Quiet Hours" }));
     await waitFor(() => expect(onCommand).toHaveBeenCalledWith({
       type: "game_action",
       action: {
         type: "operate",
         partyId: "night-parliament",
         play: {
-          operation: "rally",
+          cardType: "bonus",
+          bonusCardId: "night-parliament-quiet-hours",
           choice: {
             operation: "rally",
             districtId: "cloverfield",
             bonusDistrictId: "bellweather-centre"
-          },
-          claimBonus: true
+          }
         }
       }
     }));
@@ -244,7 +249,7 @@ describe("yearly browser play surface", () => {
 
   it("offers another card or Finish after each resolved Operation", () => {
     let state = openEveryParty(initializeGame(configuration(2), random).state);
-    state = apply(state, organiseAction("seat-1", true));
+    state = apply(state, organiseAction("seat-1"));
     const view = privateView(state, "seat-1");
     const onCommand = vi.fn(async () => true);
     render(
@@ -252,7 +257,6 @@ describe("yearly browser play surface", () => {
     );
 
     expect(screen.getByText(/Card 2 of up to 3/)).toBeTruthy();
-    expect(screen.getByText(/bonus already used/)).toBeTruthy();
     expect(screen.getByRole("button", { name: "collect" }).hasAttribute("disabled")).toBe(true);
     fireEvent.click(screen.getByRole("button", { name: "Finish Operate" }));
     expect(onCommand).toHaveBeenCalledWith({
@@ -276,7 +280,7 @@ describe("yearly browser play surface", () => {
 
   it("collects a whole pile into the visible New Year area", () => {
     let state = openEveryParty(initializeGame(configuration(2), random).state);
-    state = apply(state, organiseAction("seat-1", false));
+    state = apply(state, organiseAction("seat-1"));
     state = apply(state, { type: "finish_operate", seatId: "seat-1" });
     const view = privateView(state, "seat-2");
     const onCommand = vi.fn(async () => true);
@@ -286,10 +290,17 @@ describe("yearly browser play surface", () => {
     fireEvent.click(screen.getByRole("button", { name: "collect" }));
     expect(screen.getByRole("button", { name: /^Honeycomb open/ }).hasAttribute("aria-disabled")).toBe(false);
     expect(screen.getByRole("button", { name: /^Old Shell open/ }).getAttribute("aria-disabled")).toBe("true");
+    fireEvent.change(screen.getByLabelText("Bonus card"), {
+      target: { value: "honeycomb-waggle-route" }
+    });
     fireEvent.click(screen.getByRole("button", { name: "Collect 1 cards" }));
     expect(onCommand).toHaveBeenCalledWith({
       type: "game_action",
-      action: { type: "collect", partyId: "honeycomb" }
+      action: {
+        type: "collect",
+        partyId: "honeycomb",
+        bonusCardId: "honeycomb-waggle-route"
+      }
     });
   });
 
@@ -306,6 +317,30 @@ describe("yearly browser play surface", () => {
     expect(screen.getByText(/cannot Close on your first Lobby turn/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "pass" }));
     expect(screen.getByText(/every party closes to its opening Firm/)).toBeTruthy();
+  });
+
+  it("lets each opener choose a Bonus card during automatic Closure", () => {
+    let state = openEveryParty(initializeGame(configuration(2), random).state);
+    state = apply(state, { type: "pass", seatId: "seat-1" });
+    state = apply(state, { type: "pass", seatId: "seat-2" });
+    const view = privateView(state, "seat-1");
+    const onCommand = vi.fn(async () => true);
+    render(
+      <ActionDesk view={view} seat={view.seats[0]!} seatId="seat-1" busy={false} onCommand={onCommand} />
+    );
+
+    fireEvent.change(screen.getByLabelText("Bonus card"), {
+      target: { value: "honeycomb-common-cause" }
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Confirm Closure choice" }));
+    expect(onCommand).toHaveBeenCalledWith({
+      type: "game_action",
+      action: {
+        type: "choose_closure_bonus",
+        partyId: "honeycomb",
+        bonusCardId: "honeycomb-common-cause"
+      }
+    });
   });
 
   it("labels collected cards unavailable and explains the Capital card", () => {
@@ -378,19 +413,19 @@ function openEveryParty(
   return state;
 }
 
-function organiseAction(seatId: string, claimBonus: boolean): GameAction {
+function organiseAction(seatId: string): GameAction {
   return {
     type: "operate",
     seatId,
     partyId: "honeycomb",
     play: {
+      cardType: "operation",
       operation: "organise",
       choice: {
         operation: "organise",
         sourceDistrictId: "harbormouth",
         destinationDistrictId: "cloverfield"
-      },
-      ...(claimBonus ? { claimBonus: true } : {})
+      }
     }
   };
 }

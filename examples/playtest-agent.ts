@@ -157,6 +157,18 @@ async function takeTurn(
     return;
   }
 
+  if (phaseType === "closure") {
+    const partyId = arrayValue(phase["pendingPartyIds"])[0];
+    const party = objectValue(objectValue(game["parties"])[String(partyId)]);
+    if (party["ownerSeatId"] === session.seatId) {
+      await gameAction(client, session.gameId, publicState.version, {
+        type: "choose_closure_bonus",
+        partyId
+      });
+    }
+    return;
+  }
+
   if (phaseType === "election" && phase["resultsRecorded"] === true) {
     const ready = arrayValue(phase["readySeatIds"]);
     if (!ready.includes(session.seatId)) {
@@ -202,6 +214,7 @@ function chooseRally(
         type: "operate",
         partyId,
         play: {
+          cardType: "operation",
           operation: "rally",
           choice: { operation: "rally", districtId: district.id }
         }
