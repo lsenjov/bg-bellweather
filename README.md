@@ -96,7 +96,7 @@ physical-size checks pass.
 | `assets/print/campaign-score-trackers-a4.pdf` | One A4 landscape campaign and 0–40 score tracker sheet |
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
 | `assets/print/player-folios-a4.pdf` | Three A4 portrait player-folio sheets |
-| `assets/print/operation-cards-a4.pdf` | Four A4 portrait sheets containing the current 60-card Operation supply |
+| `assets/print/operation-cards-a4.pdf` | Five A4 portrait sheets containing the current 66-card Operation supply |
 | `assets/print/scoring-cards-a4.pdf` | Two A4 portrait scoring-card sheets |
 | `assets/print/shared-state-tokens-a4.pdf` | One A4 landscape sheet containing all shared state, Firm opening, Collection, and score pieces |
 
