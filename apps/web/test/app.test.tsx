@@ -247,6 +247,31 @@ describe("yearly browser play surface", () => {
     }));
   });
 
+  it("allows Midnight Leak to target rival Court Support on the acting party", () => {
+    const state = openEveryParty(
+      initializeGame(configuration(2), random).state,
+      ["night-parliament", "old-shell", "foxglove", "riverworks"]
+    );
+    state.bonusCards["night-parliament-midnight-leak"] = {
+      zone: "hand",
+      seatId: "seat-1"
+    };
+    state.courtSupport["old-shell"]["night-parliament"] = 1;
+    const view = privateView(state, "seat-1");
+    render(
+      <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />
+    );
+
+    fireEvent.change(screen.getByLabelText("Party"), {
+      target: { value: "night-parliament" }
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Midnight Leak Bonus/ }));
+
+    expect(within(screen.getByLabelText("Rival Court space")).getByRole("option", {
+      name: "Night Parliament"
+    })).toBeTruthy();
+  });
+
   it("offers another card or Finish after each resolved Operation", () => {
     let state = openEveryParty(initializeGame(configuration(2), random).state);
     state = apply(state, organiseAction("seat-1"));

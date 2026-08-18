@@ -1111,7 +1111,7 @@ function BonusFields(props: { draft: OperationDraft; homePartyId: PartyId; actin
     return <DistrictSelect label="Quiet Hours district" value={draft.bonusDistrictId} active={props.armedTarget === "bonusDistrictId"} onArm={() => props.onArm("bonusDistrictId")} onChange={(bonusDistrictId) => props.onUpdate({ bonusDistrictId })} />;
   }
   if (homePartyId === "night-parliament" && draft.operation === "smear") {
-    return <PartyField label="Rival Court space" optional value={draft.bonusCourtParty} actingParty={actingPartyId} active={props.armedTarget === "bonusCourtParty"} onArm={() => props.onArm("bonusCourtParty")} onChange={(bonusCourtParty) => props.onUpdate({ bonusCourtParty })} />;
+    return <PartyField label="Rival Court space" optional value={draft.bonusCourtParty} actingParty={actingPartyId} allowActingParty active={props.armedTarget === "bonusCourtParty"} onArm={() => props.onArm("bonusCourtParty")} onChange={(bonusCourtParty) => props.onUpdate({ bonusCourtParty })} />;
   }
   return null;
 }
@@ -1121,11 +1121,11 @@ function DistrictSelect(props: { label: string; value: string; optional?: boolea
   return <div className={`target-field ${props.active ? "target-field-active" : ""}`}><div className="target-field-heading"><label htmlFor={id}>{props.label}</label>{props.onArm !== undefined && <button type="button" className="target-arm" onClick={props.onArm}>Select on map</button>}</div><select id={id} value={props.value} onFocus={props.onArm} onChange={(event) => props.onChange(event.target.value)}><option value="">{props.optional ? "None / recovery" : "Choose district"}</option>{DISTRICTS.map((district) => <option key={district.id} value={district.id}>{district.name}</option>)}</select></div>;
 }
 
-function PartyField(props: { label: string; value: PartyId | ""; optional?: boolean; actingParty: PartyId; active?: boolean; onArm?(): void; onChange(value: PartyId | ""): void }) {
+function PartyField(props: { label: string; value: PartyId | ""; optional?: boolean; actingParty: PartyId; allowActingParty?: boolean; active?: boolean; onArm?(): void; onChange(value: PartyId | ""): void }) {
   const id = useId();
   return <div className={`target-field ${props.active ? "target-field-active" : ""}`}><div className="target-field-heading"><label htmlFor={id}>{props.label}</label>{props.onArm !== undefined && <button type="button" className="target-arm" onClick={props.onArm}>Select party file</button>}</div><select id={id} value={props.value} onFocus={props.onArm} onChange={(event) => props.onChange(event.target.value as PartyId | "")}>
     {props.optional && <option value="">Choose party</option>}
-    {PARTIES.filter((party) => party.id !== props.actingParty).map((party) => <option key={party.id} value={party.id}>{party.name}</option>)}
+    {PARTIES.filter((party) => props.allowActingParty === true || party.id !== props.actingParty).map((party) => <option key={party.id} value={party.id}>{party.name}</option>)}
   </select></div>;
 }
 
@@ -1335,7 +1335,7 @@ function legalPartyTargets(
   target: OperationTarget
 ): PartyId[] {
   return PARTIES.map((party) => party.id).filter((candidateParty) => {
-    if (candidateParty === partyId) return false;
+    if (candidateParty === partyId && target !== "bonusCourtParty") return false;
     if (target === "targetParty") return true;
     if (target === "rivalParty" && draft.districtId === "") return true;
     if (target === "bonusCourtSourceParty" && draft.targetParty === candidateParty) {
