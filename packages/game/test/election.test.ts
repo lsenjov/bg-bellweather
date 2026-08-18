@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { SCORING_CARDS_BY_ID } from "@bellweather/content";
 import {
   determineWinners,
+  finalCardRankBonuses,
   recordElectionDraws,
   retainElectionSupport,
   relativeSeatIndex,
@@ -129,6 +130,8 @@ describe("Election Day scoring", () => {
         seatModifier: 0,
         capitalMatches: 0,
         capitalScore: 0,
+        finalCardCount: null,
+        finalCardRankBonus: 0,
         pointsChange: 0,
         resultingPoints: -2
       },
@@ -138,6 +141,8 @@ describe("Election Day scoring", () => {
         seatModifier: 0,
         capitalMatches: 0,
         capitalScore: 0,
+        finalCardCount: null,
+        finalCardRankBonus: 0,
         pointsChange: 3,
         resultingPoints: 4
       }
@@ -198,9 +203,27 @@ describe("Election Day scoring", () => {
       0, 3, 0, -3
     ]);
     expect(result.scores.map((score) => score.resultingPoints)).toEqual([
-      8, 8, 5, 2
+      11, 11, 8, 5
+    ]);
+    expect(result.scores.map((score) => score.finalCardRankBonus)).toEqual([
+      3, 3, 3, 3
     ]);
     expect(result.winnerIds).toEqual(["p1", "p2"]);
+  });
+
+  it("ranks final card totals upward across every tie shape", () => {
+    const bonuses = (counts: number[]) => {
+      const result = finalCardRankBonuses(counts.map((finalCardCount, index) => ({
+        id: `p${index + 1}`,
+        finalCardCount
+      })));
+      return counts.map((_, index) => result.get(`p${index + 1}`));
+    };
+
+    expect(bonuses([5, 8, 8, 10])).toEqual([0, 2, 2, 3]);
+    expect(bonuses([2, 7, 7, 7, 9])).toEqual([0, 3, 3, 3, 4]);
+    expect(bonuses([5, 5, 8, 10])).toEqual([1, 1, 2, 3]);
+    expect(bonuses([6, 6, 6, 6])).toEqual([3, 3, 3, 3]);
   });
 
   it("maps clockwise relative seats and shares tied wins at any point total", () => {
@@ -283,7 +306,8 @@ function player(
     position: Number.parseInt(id.replace(/\D/g, ""), 10) - 1,
     points,
     cards,
-    capitalCard: cards[0]!
+    capitalCard: cards[0]!,
+    finalCardCount: 0
   };
 }
 

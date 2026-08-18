@@ -154,6 +154,8 @@ export interface ElectionRecord {
     seatModifier: number;
     capitalMatches: number;
     capitalScore: number;
+    finalCardCount: number | null;
+    finalCardRankBonus: number;
     pointsChange: number;
     resultingPoints: number;
   }>;

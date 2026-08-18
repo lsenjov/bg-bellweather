@@ -27,7 +27,7 @@ import { projectGameState } from "../src/projection.js";
 
 const zeroRandom = { integer: () => 0 };
 
-describe("ruleset 20 setup", () => {
+describe("ruleset 21 setup", () => {
   for (const playerCount of [2, 3, 4, 5, 6]) {
     it(`creates the yearly Operation economy for ${playerCount} players`, () => {
       const state = initializeGame(configuration(playerCount), zeroRandom).state;
@@ -67,7 +67,7 @@ describe("ruleset 20 setup", () => {
   it("rejects old saved rulesets", () => {
     const initialized = initializeGame(configuration(4), zeroRandom);
     initialized.state.rulesetVersion = "18";
-    expect(() => replay([initialized])).toThrow("Only ruleset 20 is supported");
+    expect(() => replay([initialized])).toThrow("Only ruleset 21 is supported");
   });
 });
 
@@ -546,6 +546,21 @@ describe("cleanup, Elections, visibility, and replay", () => {
         electionNumber: index + 1,
         afterYear
       });
+      if (afterYear === 6) {
+        const totals = [5, 8, 8, 9];
+        for (const [seatIndex, seat] of state.seats.entries()) {
+          seat.operations = {
+            organise: totals[seatIndex]!,
+            rally: 0,
+            smear: 0,
+            court: 0
+          };
+        }
+        state.bonusCards["night-parliament-quiet-hours"] = {
+          zone: "hand",
+          seatId: "seat-4"
+        };
+      }
       state = act(state, createElectionAction(state, zeroRandom));
       for (const seat of state.seats) {
         state = act(state, { type: "set_election_ready", seatId: seat.id, ready: true });
@@ -558,7 +573,19 @@ describe("cleanup, Elections, visibility, and replay", () => {
 
     expect(state.year).toBe(6);
     expect(state.electionHistory.map((election) => election.afterYear)).toEqual([2, 4, 6]);
+    expect(state.electionHistory.at(-1)!.scores.map((score) => ({
+      count: score.finalCardCount,
+      bonus: score.finalCardRankBonus
+    }))).toEqual([
+      { count: 5, bonus: 0 },
+      { count: 8, bonus: 2 },
+      { count: 8, bonus: 2 },
+      { count: 10, bonus: 3 }
+    ]);
     expect(state.phase.type).toBe("complete");
+    expect(state.phase).toMatchObject({
+      winnerSeatIds: state.electionHistory.at(-1)!.winnerSeatIds
+    });
   });
 
   it("keeps hands and New Year contents private while publishing their counts", () => {

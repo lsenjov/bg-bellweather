@@ -28,6 +28,7 @@ export interface ElectionPlayer {
   points: number;
   cards: ScoringCard[];
   capitalCard: ScoringCard;
+  finalCardCount: number;
 }
 
 export interface RecordedDistrictDraw {
@@ -41,6 +42,8 @@ export interface ElectionScore {
   seatModifier: number;
   capitalMatches: number;
   capitalScore: number;
+  finalCardCount: number | null;
+  finalCardRankBonus: number;
   pointsChange: number;
   resultingPoints: number;
 }
@@ -137,6 +140,9 @@ export function scoreElectionDay(input: {
       )
     ])
   );
+  const finalCardBonuses = input.finalElection
+    ? finalCardRankBonuses(players)
+    : new Map<string, number>();
   const scores = players.map((player, seatIndex): ElectionScore => {
     const baseDistrictScore = baseScores.get(player.id)!;
     const seatModifier =
@@ -158,13 +164,17 @@ export function scoreElectionDay(input: {
       player.capitalCard,
       input.state.districts["bellweather-centre"]
     );
-    const pointsChange = baseDistrictScore + seatModifier + capitalScore;
+    const finalCardRankBonus = finalCardBonuses.get(player.id) ?? 0;
+    const pointsChange =
+      baseDistrictScore + seatModifier + capitalScore + finalCardRankBonus;
     return {
       playerId: player.id,
       baseDistrictScore,
       seatModifier,
       capitalMatches,
       capitalScore,
+      finalCardCount: input.finalElection ? player.finalCardCount : null,
+      finalCardRankBonus,
       pointsChange,
       resultingPoints: player.points + pointsChange
     };
@@ -180,6 +190,22 @@ export function scoreElectionDay(input: {
     players: scoredPlayers,
     winnerIds: input.finalElection ? determineWinners(scoredPlayers) : []
   };
+}
+
+export function finalCardRankBonuses(
+  players: readonly Pick<ElectionPlayer, "id" | "finalCardCount">[]
+): Map<string, number> {
+  if (players.some(
+    (player) => !Number.isSafeInteger(player.finalCardCount) || player.finalCardCount < 0
+  )) {
+    throw new Error("Final card counts must be non-negative integers");
+  }
+  return new Map(players.map((player) => [
+    player.id,
+    players.filter(
+      (candidate) => candidate.finalCardCount <= player.finalCardCount
+    ).length - 1
+  ]));
 }
 
 export function scoreCapital(

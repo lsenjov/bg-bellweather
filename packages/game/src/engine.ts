@@ -920,7 +920,13 @@ function electionPlayers(
       position: seat.position,
       points: seat.points,
       cards,
-      capitalCard: cards[0]!
+      capitalCard: cards[0]!,
+      finalCardCount:
+        operationCount(seat.operations) +
+        BONUS_CARD_IDS.filter((cardId) => {
+          const location = state.bonusCards[cardId];
+          return location.zone === "hand" && location.seatId === seat.id;
+        }).length
     };
   });
 }
