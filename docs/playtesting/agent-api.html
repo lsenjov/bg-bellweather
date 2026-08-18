@@ -21,7 +21,7 @@
       <p class="intro">Run the application locally at <code>http://127.0.0.1:4317</code>. Every seat receives an opaque bearer token. A command’s acting seat and timestamp come from the server; strict validation rejects unknown fields.</p>
 
       <section>
-        <span class="status decided">Ruleset 20</span>
+        <span class="status decided">Ruleset 21</span>
         <h2>Start and connect</h2>
         <pre><code>npm install
 npm run build
@@ -105,7 +105,7 @@ npm run dev</code></pre>
       <section>
         <h2>Phase and visibility</h2>
         <p><code>publicGame.phase</code> is <code>opening</code>, <code>lobby</code>, <code>closure</code>, <code>election</code>, or <code>complete</code>; <code>phaseData</code> carries the phase cursor. During Openings, <code>turnSeatIds</code> contains ABBA, ABCCBA, or the single clockwise orbit and may repeat a seat. During the Lobby, <code>activeSeatId</code> identifies the only acting seat. A non-null <code>inProgressOperate</code> gives the locked <code>partyId</code> and resolved ordinary and total card counts; the active seat must either continue that Operate action or finish it. During Closure, the phase cursor identifies each opener’s pending optional Bonus-card choice.</p>
-        <p>Public state includes the year, Election number, Early Bird, combined hand and New Year counts, party status and piles, Bonus cards currently at parties, Support, Court Support, Coalition Targets, Lobby actions, resolved Operations, year history, Election history, and chat. Opponents’ exact hands and New Year areas are hidden. A seat projection adds that seat’s exact ordinary inventories, held and New Year Bonus-card IDs, and all three ordered scoring slots. Previously revealed scoring slots remain public; future slots remain concealed.</p>
+        <p>Public state includes the year, Election number, Early Bird, combined hand and New Year counts, party status and piles, Bonus cards currently at parties, Support, Court Support, Coalition Targets, Lobby actions, resolved Operations, year history, Election history, and chat. Each Election score records <code>finalCardCount</code> as <code>null</code> with a zero <code>finalCardRankBonus</code> for Elections 1 and 2; Election 3 records each human player’s post-Cleanup ordinary-plus-held-Bonus count and applied rank bonus. Opponents’ exact hands and New Year areas are hidden. A seat projection adds that seat’s exact ordinary inventories, held and New Year Bonus-card IDs, and all three ordered scoring slots. Previously revealed scoring slots remain public; future slots remain concealed.</p>
         <p>After the game ends, every authenticated participant may fetch the complete event history and canonical final state. If observer admission was enabled, a new observer may still join by invitation code to obtain replay access; this adds no event to the completed history. Random setup and Election draws are recorded, so replay never rerolls.</p>
       </section>
 
