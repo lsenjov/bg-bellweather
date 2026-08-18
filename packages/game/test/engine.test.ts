@@ -536,10 +536,33 @@ describe("cleanup, Elections, visibility, and replay", () => {
 
   it("holds three Elections after two-year cycles and completes after Year 6", () => {
     let state = initializeGame(configuration(4), zeroRandom).state;
+    let finalReplayEvents: GameEvent[] | null = null;
 
     for (const [index, afterYear] of ELECTION_YEARS.entries()) {
       while (state.phase.type !== "election") {
-        state = passThroughYear(state);
+        if (afterYear === 6 && state.year === 6 && state.phase.type === "opening") {
+          state = openAllParties(state);
+          const totalsBeforeCleanup = [4, 8, 8, 9];
+          for (const [seatIndex, seat] of state.seats.entries()) {
+            seat.operations = {
+              organise: totalsBeforeCleanup[seatIndex]!,
+              rally: 0,
+              smear: 0,
+              court: 0
+            };
+          }
+          state.seats[0]!.newYearOperations.organise = 1;
+          state.bonusCards["night-parliament-quiet-hours"] = {
+            zone: "new_year",
+            seatId: "seat-4"
+          };
+          while (state.phase.type === "lobby") {
+            state = act(state, { type: "pass", seatId: state.phase.activeSeatId });
+          }
+          state = resolveClosure(state);
+        } else {
+          state = passThroughYear(state);
+        }
       }
       expect(state.phase).toMatchObject({
         type: "election",
@@ -547,23 +570,33 @@ describe("cleanup, Elections, visibility, and replay", () => {
         afterYear
       });
       if (afterYear === 6) {
-        const totals = [5, 8, 8, 9];
-        for (const [seatIndex, seat] of state.seats.entries()) {
-          seat.operations = {
-            organise: totals[seatIndex]!,
-            rally: 0,
-            smear: 0,
-            court: 0
-          };
-        }
-        state.bonusCards["night-parliament-quiet-hours"] = {
+        expect(state.seats[0]!.operations.organise).toBe(5);
+        expect(state.seats.every((seat) =>
+          Object.values(seat.newYearOperations).every((count) => count === 0)
+        )).toBe(true);
+        expect(state.bonusCards["night-parliament-quiet-hours"]).toEqual({
           zone: "hand",
           seatId: "seat-4"
-        };
+        });
+        expect(state.bonusCards["night-parliament-midnight-leak"]).toEqual({
+          zone: "home"
+        });
+        finalReplayEvents = [{
+          type: "game_initialized",
+          state: structuredClone(state)
+        }];
       }
-      state = act(state, createElectionAction(state, zeroRandom));
+      const completed = executeAction(state, createElectionAction(state, zeroRandom));
+      state = completed.state;
+      finalReplayEvents?.push(...completed.events);
       for (const seat of state.seats) {
-        state = act(state, { type: "set_election_ready", seatId: seat.id, ready: true });
+        const readied = executeAction(state, {
+          type: "set_election_ready",
+          seatId: seat.id,
+          ready: true
+        });
+        state = readied.state;
+        finalReplayEvents?.push(...readied.events);
       }
       if (index < ELECTION_YEARS.length - 1) {
         expect(state.year).toBe(afterYear + 1);
@@ -586,6 +619,17 @@ describe("cleanup, Elections, visibility, and replay", () => {
     expect(state.phase).toMatchObject({
       winnerSeatIds: state.electionHistory.at(-1)!.winnerSeatIds
     });
+    const replayed = replay(finalReplayEvents!);
+    expect(replayed).toEqual(state);
+    expect(projectGameState(replayed, "seat-1").electionHistory.at(-1)!.scores.map((score) => ({
+      count: score.finalCardCount,
+      bonus: score.finalCardRankBonus
+    }))).toEqual([
+      { count: 5, bonus: 0 },
+      { count: 8, bonus: 2 },
+      { count: 8, bonus: 2 },
+      { count: 10, bonus: 3 }
+    ]);
   });
 
   it("keeps hands and New Year contents private while publishing their counts", () => {

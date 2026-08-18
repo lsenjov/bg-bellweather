@@ -224,6 +224,36 @@ describe("Election Day scoring", () => {
     expect(bonuses([2, 7, 7, 7, 9])).toEqual([0, 3, 3, 3, 4]);
     expect(bonuses([5, 5, 8, 10])).toEqual([1, 1, 2, 3]);
     expect(bonuses([6, 6, 6, 6])).toEqual([3, 3, 3, 3]);
+    expect(bonuses([1, 2])).toEqual([0, 1]);
+    expect(bonuses([4, 4, 9])).toEqual([1, 1, 2]);
+    expect(bonuses([0, 1, 1, 3, 4, 5])).toEqual([0, 2, 2, 3, 4, 5]);
+  });
+
+  it("rejects invalid final card counts", () => {
+    const bonuses = (finalCardCount: number) => finalCardRankBonuses([{
+      id: "p1",
+      finalCardCount
+    }]);
+
+    expect(() => bonuses(-1)).toThrow("non-negative integers");
+    expect(() => bonuses(1.5)).toThrow("non-negative integers");
+    expect(() => bonuses(Number.MAX_SAFE_INTEGER + 1)).toThrow("non-negative integers");
+  });
+
+  it("determines final winners after applying unequal card ranks", () => {
+    const result = scoreElectionDay({
+      state: electionState({}),
+      players: [
+        { ...player("p1", 5, card("one", [])), finalCardCount: 1 },
+        { ...player("p2", 4, card("two", [])), finalCardCount: 2 }
+      ],
+      random: () => 0,
+      finalElection: true
+    });
+
+    expect(result.scores.map((score) => score.finalCardRankBonus)).toEqual([0, 1]);
+    expect(result.scores.map((score) => score.resultingPoints)).toEqual([5, 5]);
+    expect(result.winnerIds).toEqual(["p1", "p2"]);
   });
 
   it("maps clockwise relative seats and shares tied wins at any point total", () => {
