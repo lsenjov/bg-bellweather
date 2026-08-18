@@ -10,7 +10,7 @@ After Year 6 Cleanup, rank each human player's combined ordinary Operation and h
 2. [x] Expose the Election 3 card-count and rank-bonus breakdown in the browser and update dependent protocol/server tests.
 3. [x] Update Ruleset 21 rules, examples, glossary, decisions, changelog, player aids, and current print identifiers; archive the replaced final-scoring rule.
 4. [x] Run the complete validation suite, obtain an independent code review, resolve every high and medium finding, and prepare the implementation for publication.
-5. [ ] Push the complete implementation for the PER-31 handoff.
+5. [x] Push the complete implementation for the PER-31 handoff.
 
 ## Validation
 
