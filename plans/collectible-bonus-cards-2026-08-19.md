@@ -10,7 +10,7 @@ Replace the once-per-year party bonus flags with twelve unique Bonus cards that 
 2. [x] Update the protocol, server adapters, web controls, and example agent for Bonus card collection, closure choices, private hands, and standalone play.
 3. [x] Update rules, design history, changelog, component specifications, and current print assets; archive the replaced immediate-bonus material.
 4. [x] Run the complete validation suite, obtain an independent code review, resolve all high and medium findings, and prepare the implementation for publication.
-5. [ ] Push the complete implementation and record the published revision on PER-30.
+5. [x] Push the complete implementation for the PER-30 handoff.
 
 ## Validation
 
