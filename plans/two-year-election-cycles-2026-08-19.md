@@ -23,3 +23,8 @@ Ruleset 19 without saved-game compatibility.
 - `./scripts/export-print-assets.sh`
 - `npm run check`
 
+## Progress
+
+- Step 1 complete: Ruleset 19 engine, types, tests, and browser schedule are updated.
+- Step 2 pending: archives, active documentation, trackers, and print assets.
+- Step 3 pending: full checks, independent review, and delivery.

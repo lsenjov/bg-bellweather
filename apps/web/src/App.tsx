@@ -313,11 +313,11 @@ function EntryDesk(props: {
         <p className="kicker">The Bellweather Register</p>
         <h1>Every whisper<br />leaves a mark.</h1>
         <p className="standfirst">
-          Twelve years of access, operations, and political capital—filed one
+          Six years of access, operations, and political capital—filed one
           party at a time.
         </p>
         <div className="front-page-rule">
-          <span>12 years</span><span>3 elections</span><span>6 parties</span>
+          <span>6 years</span><span>3 elections</span><span>6 parties</span>
         </div>
       </section>
       <section className="entry-form paper-panel">
@@ -392,7 +392,7 @@ export function LobbyDesk(props: {
           <li><b>Openings</b><span>Place Firms in Early Bird order.</span></li>
           <li><b>Lobby</b><span>Operate, Collect, Close, or Pass.</span></li>
           <li><b>Cleanup</b><span>Release the New Year cards and reset.</span></li>
-          <li><b>Election</b><span>After Years 4, 8, and 12.</span></li>
+          <li><b>Election</b><span>After Years 2, 4, and 6.</span></li>
         </ol>
         <dl>
           <div><dt>Players</dt><dd>{playerCount} / {MAX_PLAYER_COUNT}</dd></div>

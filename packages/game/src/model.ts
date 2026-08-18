@@ -1,5 +1,6 @@
 import type {
   DistrictId,
+  ElectionYear,
   FirmId,
   OperationId,
   PartyId,
@@ -101,7 +102,7 @@ export interface LobbyPhase {
 export interface ElectionPhase {
   type: "election";
   electionNumber: 1 | 2 | 3;
-  afterYear: 4 | 8 | 12;
+  afterYear: ElectionYear;
   resultsRecorded: boolean;
   readySeatIds: SeatId[];
 }
@@ -113,7 +114,7 @@ export interface CompletePhase {
 
 export interface ElectionRecord {
   electionNumber: 1 | 2 | 3;
-  afterYear: 4 | 8 | 12;
+  afterYear: ElectionYear;
   scoringCards: Array<{
     seatId: SeatId;
     scoringCardIds: ScoringCardId[];

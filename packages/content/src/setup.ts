@@ -40,5 +40,7 @@ export const INITIAL_SUPPORT_DISTRICTS = deepFreeze([
 ] as const satisfies readonly DistrictId[]);
 
 export const SUPPORT_SUPPLY = "unlimited" as const;
-export const ELECTION_YEARS = deepFreeze([4, 8, 12] as const);
-export const RULESET_VERSION = "18" as const;
+export const ELECTION_YEARS = deepFreeze([2, 4, 6] as const);
+export type ElectionYear = (typeof ELECTION_YEARS)[number];
+export const FINAL_ELECTION_YEAR = ELECTION_YEARS[2];
+export const RULESET_VERSION = "19" as const;

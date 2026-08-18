@@ -323,7 +323,7 @@ describe("yearly browser play surface", () => {
     const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
     view.electionHistory.push({
       electionNumber: 1,
-      afterYear: 4,
+      afterYear: 2,
       scoringCards: [
         { seatId: "seat-1", scoringCardIds: ["SC-01", "SC-02"], capitalCardId: "SC-01" },
         { seatId: "seat-2", scoringCardIds: ["SC-03", "SC-04"], capitalCardId: "SC-03" }

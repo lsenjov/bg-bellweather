@@ -3,6 +3,7 @@ import {
   DISTRICT_IDS,
   DOUBLED_PLAYER_SETUP,
   ELECTION_YEARS,
+  FINAL_ELECTION_YEAR,
   FIRM_IDS,
   INITIAL_SUPPORT_DISTRICTS,
   OPERATION_IDS,
@@ -173,7 +174,7 @@ export function createElectionAction(
       randomValues.push(normalized);
       return normalized;
     },
-    finalElection: phase.afterYear === 12
+    finalElection: phase.afterYear === FINAL_ELECTION_YEAR
   });
   return { type: "complete_election", randomValues };
 }
@@ -515,11 +516,12 @@ function finishYear(
   }
   state.parties = {};
   state.earlyBirdSeatId = endedBySeatId;
-  if ((ELECTION_YEARS as readonly number[]).includes(state.year)) {
+  const electionIndex = ELECTION_YEARS.findIndex((year) => year === state.year);
+  if (electionIndex >= 0) {
     state.phase = {
       type: "election",
-      electionNumber: (state.year / 4) as 1 | 2 | 3,
-      afterYear: state.year as 4 | 8 | 12,
+      electionNumber: (electionIndex + 1) as 1 | 2 | 3,
+      afterYear: ELECTION_YEARS[electionIndex]!,
       resultsRecorded: false,
       readySeatIds: []
     };
@@ -545,7 +547,7 @@ function completeElection(state: GameState, randomValues: number[]): void {
       }
       return value;
     },
-    finalElection: phase.afterYear === 12
+    finalElection: phase.afterYear === FINAL_ELECTION_YEAR
   });
   if (randomIndex !== randomValues.length) {
     throw new GameRuleError("extra_random_value", "Election random values contain unused entries");
@@ -596,7 +598,7 @@ function setElectionReady(
   if (phase.readySeatIds.length !== state.seats.length) {
     return;
   }
-  if (phase.afterYear === 12) {
+  if (phase.afterYear === FINAL_ELECTION_YEAR) {
     state.phase = {
       type: "complete",
       winnerSeatIds: [...state.electionHistory.at(-1)!.winnerSeatIds]

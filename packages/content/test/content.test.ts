@@ -319,8 +319,8 @@ describe("setup constants", () => {
     expect(PARTIES.length * INITIAL_SUPPORT_DISTRICTS.length).toBe(18);
   });
 
-  it("holds elections after years 4, 8, and 12", () => {
-    expect(ELECTION_YEARS).toEqual([4, 8, 12]);
+  it("holds elections after years 2, 4, and 6", () => {
+    expect(ELECTION_YEARS).toEqual([2, 4, 6]);
   });
 });
 

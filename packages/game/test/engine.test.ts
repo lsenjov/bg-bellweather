@@ -1,4 +1,5 @@
 import {
+  ELECTION_YEARS,
   PARTY_IDS,
   RULESET_VERSION,
   SCORING_CARD_IDS,
@@ -25,7 +26,7 @@ import { projectGameState } from "../src/projection.js";
 
 const zeroRandom = { integer: () => 0 };
 
-describe("ruleset 18 setup", () => {
+describe("ruleset 19 setup", () => {
   for (const playerCount of [2, 3, 4, 5, 6]) {
     it(`creates the yearly Operation economy for ${playerCount} players`, () => {
       const state = initializeGame(configuration(playerCount), zeroRandom).state;
@@ -63,8 +64,8 @@ describe("ruleset 18 setup", () => {
 
   it("rejects old saved rulesets", () => {
     const initialized = initializeGame(configuration(4), zeroRandom);
-    initialized.state.rulesetVersion = "17";
-    expect(() => replay([initialized])).toThrow("Only ruleset 18 is supported");
+    initialized.state.rulesetVersion = "18";
+    expect(() => replay([initialized])).toThrow("Only ruleset 19 is supported");
   });
 });
 
@@ -320,9 +321,7 @@ describe("Lobby actions", () => {
 describe("cleanup, Elections, visibility, and replay", () => {
   it("cleans resources before Election scoring and records Capital points separately", () => {
     let state = initializeGame(configuration(4), zeroRandom).state;
-    for (let year = 1; year <= 3; year += 1) {
-      state = passThroughYear(state);
-    }
+    state = passThroughYear(state);
     state = openAllParties(state);
     const capitalCardId = state.seats[0]!.scoringCardIds[0]![0]!;
     const capitalParties = state.seats[0]!.scoringCardIds[0]!.length === 1
@@ -373,8 +372,35 @@ describe("cleanup, Elections, visibility, and replay", () => {
     for (const seat of state.seats) {
       state = act(state, { type: "set_election_ready", seatId: seat.id, ready: true });
     }
-    expect(state.year).toBe(5);
+    expect(state.year).toBe(3);
     expect(state.phase.type).toBe("opening");
+  });
+
+  it("holds three Elections after two-year cycles and completes after Year 6", () => {
+    let state = initializeGame(configuration(4), zeroRandom).state;
+
+    for (const [index, afterYear] of ELECTION_YEARS.entries()) {
+      while (state.phase.type !== "election") {
+        state = passThroughYear(state);
+      }
+      expect(state.phase).toMatchObject({
+        type: "election",
+        electionNumber: index + 1,
+        afterYear
+      });
+      state = act(state, createElectionAction(state, zeroRandom));
+      for (const seat of state.seats) {
+        state = act(state, { type: "set_election_ready", seatId: seat.id, ready: true });
+      }
+      if (index < ELECTION_YEARS.length - 1) {
+        expect(state.year).toBe(afterYear + 1);
+        expect(state.phase.type).toBe("opening");
+      }
+    }
+
+    expect(state.year).toBe(6);
+    expect(state.electionHistory.map((election) => election.afterYear)).toEqual([2, 4, 6]);
+    expect(state.phase.type).toBe("complete");
   });
 
   it("keeps hands and New Year contents private while publishing their counts", () => {
