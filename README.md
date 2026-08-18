@@ -3,9 +3,9 @@
 Working repository for the board game currently titled **Ladder Bidding**.
 
 Rival lobbying Firms use reusable Operation cards to influence six animal
-political parties in the fictional Republic of Bellweather. Across twelve
+political parties in the fictional Republic of Bellweather. Across six
 years, players open parties, Operate, Collect public card piles, and Close
-access before scoring fixed agendas in Elections after Years 4, 8, and 12.
+access before scoring fixed agendas in Elections after Years 2, 4, and 6.
 The repository contains the printable design archive and a local,
 server-authoritative web application for two to six human or API-controlled
 players, including private hands and agendas, persistence, and completed-game

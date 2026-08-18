@@ -232,7 +232,7 @@ main {
 .campaign-cycle {
   display: grid;
   gap: 0.9mm;
-  grid-template-rows: 5.5mm repeat(5, 27mm);
+  grid-template-rows: 5.5mm repeat(3, 27mm);
 }
 
 .campaign-cycle > strong {

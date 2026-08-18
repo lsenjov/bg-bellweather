@@ -19,7 +19,7 @@
       <section class="print-sheet" aria-label="Campaign and public score tracker sheet">
         <header class="sheet-header">
           <div>
-            <p>Republic of Bellweather / public ledger 01</p>
+            <p>Republic of Bellweather / Ruleset 19 / public ledger 01</p>
             <h2>Year register</h2>
           </div>
           <p class="sheet-instruction">Place markers inside spaces<br>Print at 100%</p>
@@ -41,12 +41,12 @@
             <header class="panel-header">
               <div>
                 <p class="eyebrow">National calendar</p>
-                <h3 id="campaign-heading">Twelve years</h3>
+                <h3 id="campaign-heading">Six years</h3>
               </div>
-              <p>Four years<br>then Election</p>
+              <p>Two years<br>then Election</p>
             </header>
-            <div class="campaign-grid" aria-label="Three election cycles of four years and one Election"></div>
-            <p class="campaign-note">Move the year marker down a column. Cleanup comes before each Election.</p>
+            <div class="campaign-grid" aria-label="Three Election cycles of two years and one Election"></div>
+            <p class="campaign-note">Odd years end at thematic midterms. Cleanup is unchanged and comes before every Election.</p>
           </section>
         </div>
 
@@ -83,9 +83,9 @@
       }
 
       const campaignColumns = [
-        ["Y1", "Y2", "Y3", "Y4", "E1"],
-        ["Y5", "Y6", "Y7", "Y8", "E2"],
-        ["Y9", "Y10", "Y11", "Y12", "E3"]
+        ["Y1", "Y2", "E1"],
+        ["Y3", "Y4", "E2"],
+        ["Y5", "Y6", "E3"]
       ];
       const campaignGrid = document.querySelector(".campaign-grid");
       for (const [columnIndex, column] of campaignColumns.entries()) {
