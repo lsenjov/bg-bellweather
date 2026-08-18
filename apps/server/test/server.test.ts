@@ -295,7 +295,7 @@ describe("game server", () => {
     expect(privateSeat(view)).toMatchObject({
       collectionCounters: 4,
       newYearCardCount: 0,
-      operations: { organise: 5, rally: 8, smear: 4, court: 4 }
+      operations: { organise: 7, rally: 8, smear: 4, court: 4 }
     });
     await app.close();
   });

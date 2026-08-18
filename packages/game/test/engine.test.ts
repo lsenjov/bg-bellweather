@@ -25,7 +25,7 @@ import { projectGameState } from "../src/projection.js";
 
 const zeroRandom = { integer: () => 0 };
 
-describe("ruleset 17 setup", () => {
+describe("ruleset 18 setup", () => {
   for (const playerCount of [2, 3, 4, 5, 6]) {
     it(`creates the yearly Operation economy for ${playerCount} players`, () => {
       const state = initializeGame(configuration(playerCount), zeroRandom).state;
@@ -35,7 +35,7 @@ describe("ruleset 17 setup", () => {
       expect(state.seats).toHaveLength(playerCount);
       expect(state.seats.every((seat) => seat.firmIds.length === (doubled ? 2 : 1))).toBe(true);
       expect(state.seats.every((seat) => seat.collectionCounters === (doubled ? 4 : 2))).toBe(true);
-      expect(state.seats.every((seat) => seat.operations.organise === (doubled ? 4 : 2))).toBe(true);
+      expect(state.seats.every((seat) => seat.operations.organise === (doubled ? 6 : 3))).toBe(true);
       expect(state.seats.every((seat) => seat.operations.rally === (doubled ? 8 : 4))).toBe(true);
       expect(state.seats.every((seat) => seat.points === (doubled ? 10 : 5))).toBe(true);
       expect(state.phase.type).toBe("opening");
@@ -63,8 +63,8 @@ describe("ruleset 17 setup", () => {
 
   it("rejects old saved rulesets", () => {
     const initialized = initializeGame(configuration(4), zeroRandom);
-    initialized.state.rulesetVersion = "16";
-    expect(() => replay([initialized])).toThrow("Only ruleset 17 is supported");
+    initialized.state.rulesetVersion = "17";
+    expect(() => replay([initialized])).toThrow("Only ruleset 18 is supported");
   });
 });
 
@@ -223,7 +223,7 @@ describe("Lobby actions", () => {
       }
     })).toThrow("Smear requires rival Support");
     expect(state.support.cloverfield.honeycomb).toBe(1);
-    expect(state.seats[0]!.operations.organise).toBe(1);
+    expect(state.seats[0]!.operations.organise).toBe(2);
     expect(state.parties.honeycomb?.operations.organise).toBe(1);
     expect(() => act(state, { type: "pass", seatId })).toThrow("Finish the current Operate");
     state = act(state, { type: "finish_operate", seatId });
@@ -297,7 +297,7 @@ describe("Lobby actions", () => {
       endReason: "majority_closed",
       endedBySeatId: "seat-3"
     });
-    expect(state.seats[3]!.operations.organise).toBe(2);
+    expect(state.seats[3]!.operations.organise).toBe(3);
   });
 
   it("awards all open parties and Early Bird to the final consecutive passer", () => {
@@ -359,7 +359,7 @@ describe("cleanup, Elections, visibility, and replay", () => {
     const collectorAfter = state.seats.find((seat) => seat.id === collector)!;
     expect(collectorAfter.newYearOperations.organise).toBe(0);
     expect(collectorAfter.collectionCounters).toBe(2);
-    expect(collectorAfter.operations.organise).toBe(3);
+    expect(collectorAfter.operations.organise).toBe(4);
     expect(state.courtSupport.honeycomb.foxglove).toBe(2);
     expect(state.parties).toEqual({});
 

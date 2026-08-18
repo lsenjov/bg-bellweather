@@ -288,6 +288,7 @@ describe("setup constants", () => {
   });
 
   it("doubles firms, Operations, points, and Collection counters at two or three players", () => {
+    expect(STANDARD_PLAYER_SETUP.operations.organise).toBe(3);
     expect(STANDARD_PLAYER_SETUP.operations.court).toBe(2);
     expect(DOUBLED_PLAYER_SETUP.firms).toBe(
       STANDARD_PLAYER_SETUP.firms * 2
