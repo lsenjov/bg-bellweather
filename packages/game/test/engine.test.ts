@@ -283,6 +283,76 @@ describe("Lobby actions", () => {
     });
   });
 
+  it("rejects Bonus cards at a one-way or former coalition partner", () => {
+    const state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
+    const seatId = lobbyPhase(state).activeSeatId;
+    state.bonusCards["old-shell-dig-in"] = { zone: "hand", seatId };
+    state.coalitionTargets["old-shell"] = "honeycomb";
+
+    expect(() => act(state, {
+      type: "operate",
+      seatId,
+      partyId: "honeycomb",
+      play: {
+        cardType: "bonus",
+        bonusCardId: "old-shell-dig-in",
+        choice: {
+          operation: "organise",
+          sourceDistrictId: "harbormouth",
+          destinationDistrictId: "cloverfield"
+        }
+      }
+    })).toThrow("current reciprocal coalition partner");
+
+    state.coalitionTargets["old-shell"] = "foxglove";
+    state.coalitionTargets.honeycomb = "old-shell";
+    expect(() => act(state, {
+      type: "operate",
+      seatId,
+      partyId: "honeycomb",
+      play: {
+        cardType: "bonus",
+        bonusCardId: "old-shell-dig-in",
+        choice: {
+          operation: "organise",
+          sourceDistrictId: "harbormouth",
+          destinationDistrictId: "cloverfield"
+        }
+      }
+    })).toThrow("current reciprocal coalition partner");
+  });
+
+  it("leaves a returned Bonus card at an already closed home without an award", () => {
+    let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
+    const seatId = lobbyPhase(state).activeSeatId;
+    state.parties["old-shell"]!.status = "closed";
+    state.bonusCards["old-shell-dig-in"] = { zone: "hand", seatId };
+    state.coalitionTargets["old-shell"] = "honeycomb";
+    state.coalitionTargets.honeycomb = "old-shell";
+
+    state = act(state, {
+      type: "operate",
+      seatId,
+      partyId: "honeycomb",
+      play: {
+        cardType: "bonus",
+        bonusCardId: "old-shell-dig-in",
+        choice: {
+          operation: "organise",
+          sourceDistrictId: "harbormouth",
+          destinationDistrictId: "cloverfield"
+        }
+      }
+    });
+
+    expect(state.bonusCards["old-shell-dig-in"]).toEqual({ zone: "home" });
+    expect(state.seats.every((seat) =>
+      !Object.values(state.bonusCards).some(
+        (location) => location.zone === "new_year" && location.seatId === seat.id
+      )
+    )).toBe(true);
+  });
+
   it("collects a complete non-empty pile into next year and leaves the party open", () => {
     let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
     const operator = lobbyPhase(state).activeSeatId;
