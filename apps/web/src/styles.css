@@ -122,6 +122,18 @@ select[multiple] { min-height: 116px; border: 1px solid var(--ink); }
 .pile-count span { font: .45rem var(--mono); text-transform: uppercase; }
 .pile-cards, .bonus-flags { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 3px; }
 .pile-cards span, .bonus-flags span { padding: 2px 5px; border: 1px solid var(--rule); font: .46rem var(--mono); text-transform: uppercase; }
+.court-ledger { grid-column: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px; align-items: center; min-height: 25px; padding-top: 6px; border-top: 1px dashed color-mix(in srgb, var(--party) 45%, var(--rule)); }
+.court-ledger-label { color: color-mix(in srgb, var(--party) 70%, var(--ink)); font: 800 .45rem var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.court-support-list { display: flex; min-width: 0; flex-wrap: wrap; gap: 4px; }
+.court-support-entry { display: inline-flex; gap: 2px; align-items: center; padding: 2px 4px 2px 3px; border: 1px solid color-mix(in srgb, var(--court-party) 70%, var(--ink)); background: color-mix(in srgb, var(--court-party) 14%, var(--paper)); }
+.court-support-entry svg, .coalition-status svg { width: 13px; height: 13px; color: var(--court-party); fill: none; stroke: currentColor; stroke-width: 4; }
+.court-support-entry b { font: 800 .55rem var(--mono); }
+.court-support-empty, .coalition-status { color: rgb(23 25 22 / 62%); font: .42rem var(--mono); letter-spacing: .04em; text-transform: uppercase; }
+.coalition-status { display: inline-flex; gap: 4px; align-items: center; justify-content: end; min-width: 57px; padding: 3px 4px; border: 1px solid transparent; }
+.coalition-status small { font: inherit; }
+.coalition-status-prospective { border-color: color-mix(in srgb, var(--court-party) 55%, var(--rule)); }
+.coalition-status-reciprocal { border-color: var(--court-party); color: var(--ink); background: color-mix(in srgb, var(--court-party) 22%, var(--paper)); box-shadow: inset 3px 0 0 var(--court-party); }
+.coalition-status-empty { opacity: .55; }
 .bonus-flags span { border-color: color-mix(in srgb, var(--party) 65%, var(--rule)); }
 .bonus-flags .bonus-used { opacity: .38; text-decoration: line-through; }
 

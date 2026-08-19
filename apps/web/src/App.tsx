@@ -547,6 +547,17 @@ export function PartyBoard({
         const state = view.parties[party.id];
         const owner = view.seats.find((seat) => seat.id === state?.ownerSeatId);
         const pile = state === undefined ? 0 : operationCount(state.operations);
+        const courtPlacements = PARTIES.flatMap((courtedParty) => {
+          const count = view.courtSupport[party.id][courtedParty.id] ?? 0;
+          return count > 0 ? [{ courtedParty, count }] : [];
+        });
+        const coalitionTargetId = view.coalitionTargets[party.id];
+        const coalitionTarget = coalitionTargetId === null
+          ? null
+          : PARTIES_BY_ID[coalitionTargetId];
+        const reciprocal =
+          coalitionTargetId !== null &&
+          view.coalitionTargets[coalitionTargetId] === party.id;
         let stateLabel = "Not opened";
         if (state?.status === "open") {
           stateLabel = `open · ${owner?.displayName ?? "Unknown"}`;
@@ -577,6 +588,36 @@ export function PartyBoard({
             <div className="pile-count"><b>{pile}</b><span>pile</span></div>
             <div className="pile-cards" aria-label={`${pile} Operation cards`}>
               {state !== undefined && OPERATION_IDS.map((operation) => state.operations[operation] > 0 && <span key={operation}>{operation.slice(0, 3)} {state.operations[operation]}</span>)}
+            </div>
+            <div className="court-ledger">
+              <span className="court-ledger-label">Court</span>
+              <span className="court-support-list">
+                {courtPlacements.length === 0 ? (
+                  <span className="court-support-empty">No Support</span>
+                ) : courtPlacements.map(({ courtedParty, count }) => (
+                  <span
+                    key={courtedParty.id}
+                    className="court-support-entry"
+                    aria-label={`${courtedParty.shortName} Court Support: ${count}`}
+                    style={{ "--court-party": courtedParty.color } as CSSProperties}
+                  >
+                    <PartyEmblem partyId={courtedParty.id} />
+                    <b>{count}</b>
+                  </span>
+                ))}
+              </span>
+              {coalitionTarget === null ? (
+                <span className="coalition-status coalition-status-empty">No target</span>
+              ) : (
+                <span
+                  className={`coalition-status ${reciprocal ? "coalition-status-reciprocal" : "coalition-status-prospective"}`}
+                  aria-label={reciprocal ? `Coalition with ${coalitionTarget.shortName}` : `Target: ${coalitionTarget.shortName}`}
+                  style={{ "--court-party": coalitionTarget.color } as CSSProperties}
+                >
+                  <small>{reciprocal ? "Coalition" : "Target"}</small>
+                  <PartyEmblem partyId={coalitionTarget.id} />
+                </span>
+              )}
             </div>
             <div className="bonus-flags">
               {party.bonusCards.map((card) => (

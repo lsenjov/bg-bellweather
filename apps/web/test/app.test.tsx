@@ -152,6 +152,21 @@ describe("yearly browser play surface", () => {
     expect(within(honeycomb).getByText("Waggle Route").className).toContain("bonus-used");
   });
 
+  it("shows Court Support amounts and reciprocal coalition status", () => {
+    const state = initializeGame(configuration(2), random).state;
+    state.courtSupport.honeycomb.foxglove = 2;
+    state.courtSupport.honeycomb.riverworks = 1;
+    state.coalitionTargets.honeycomb = "foxglove";
+    state.coalitionTargets.foxglove = "honeycomb";
+
+    render(<PartyBoard view={privateView(state, "seat-1")} />);
+
+    const honeycomb = screen.getByText("Honeycomb").closest("article")!;
+    expect(within(honeycomb).getByLabelText("Foxglove Court Support: 2").textContent).toBe("2");
+    expect(within(honeycomb).getByLabelText("Riverworks Court Support: 1").textContent).toBe("1");
+    expect(within(honeycomb).getByLabelText("Coalition with Foxglove")).toBeTruthy();
+  });
+
   it("shows that a closed party's opening has returned", () => {
     const state = openEveryParty(initializeGame(configuration(2), random).state);
     state.parties.honeycomb!.status = "closed";
