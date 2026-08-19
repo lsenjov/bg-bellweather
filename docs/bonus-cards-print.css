@@ -20,8 +20,9 @@ main { display: flex; padding-bottom: 36px; justify-content: center; }
 .sheet-label { position: absolute; right: 12mm; bottom: 7mm; margin: 0; color: #666259; font: 800 5pt/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
 .card-grid { display: grid; width: 120mm; height: 244mm; grid-template-columns: repeat(3, 40mm); grid-template-rows: repeat(4, 61mm); }
 .bonus-card { --party: #d7aa12; --tint: #f5e6a6; position: relative; display: grid; width: 40mm; height: 61mm; padding: 3mm; overflow: hidden; border: 0.45mm solid var(--ink); background: repeating-linear-gradient(0deg, transparent 0 7.8mm, rgb(23 23 19 / 4%) 7.8mm 8mm), var(--tint); grid-template-rows: 6mm auto 1fr 7mm; }
-.bonus-card::before { position: absolute; top: 0; right: 0; bottom: 0; width: 3mm; background: var(--party); content: ""; }
-.bonus-card > * { position: relative; }
+.bonus-card::before { position: absolute; z-index: 2; top: 0; right: 0; bottom: 0; width: 3mm; background: var(--party); content: ""; }
+.bonus-card > * { position: relative; z-index: 1; }
+.party-watermark { position: absolute; z-index: 0; right: 4.5mm; bottom: 10mm; width: 26mm; height: 26mm; color: var(--party); opacity: 0.16; fill: none; stroke: currentcolor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3.2; }
 .card-kicker { font: 800 4.6pt/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .bonus-card h2 { margin: 1.5mm 3mm 1.5mm 0; font: 800 12pt/0.92 var(--display); letter-spacing: -0.025em; }
 .bonus-card p { margin: 0 3mm 0 0; font: 700 6.1pt/1.22 var(--body); }
