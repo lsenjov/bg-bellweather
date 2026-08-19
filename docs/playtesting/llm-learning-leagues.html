@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Procedure for Bellweather learning leagues played by persistent LLM-controlled identities through the game API.">
+    <title>LLM Learning Leagues — Ladder Bidding</title>
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / 04.12</a>
+        <h1>LLM learning leagues</h1>
+        <p class="meta">How persistent language-model players play, explain, share lessons, and adapt across a sequence of complete games.</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>LLM learning leagues</nav>
+
+      <section>
+        <span class="status decided">Ruleset-21 process</span>
+        <h2>What this is</h2>
+        <p>An LLM learning league uses persistent language-model identities as the players. Each identity receives its own private game projection, reasons about strategic choices, submits those choices through the authenticated <a href="agent-api.html">game API</a>, and explains its result after the complete replay becomes available. Before the next game, every player receives the cumulative shared lessons from all earlier games.</p>
+        <p>This is not reinforcement learning. There are no learned weight vectors, value functions, reward updates, exploration schedules, or automated policy checkpoints. It is also not a fixed heuristic simulation: mechanical tooling may fetch state, enumerate legal inputs, and submit a selected command, but an LLM must choose the strategic action.</p>
+      </section>
+
+      <section>
+        <h2>Predeclare the league</h2>
+        <ol>
+          <li>Record the code commit, ruleset, player count, number of games, and primary design questions.</li>
+          <li>Create one persistent identity per player. Keep the identity, strategic style, private notes, and cumulative record stable across games.</li>
+          <li>Start with only lessons that still apply to the current rules and map. Mark older observations as historical instead of silently treating them as current facts.</li>
+          <li>Choose a deterministic seat rotation before Game 1. Over a complete rotation, each identity should occupy every seat equally; otherwise report the exact imbalance.</li>
+          <li>Use a durable SQLite database and allow observers. Preserve every invitation code and authenticated player session before starting.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Give each LLM the right context</h2>
+        <p>At the start of every game, give each player the current rules, map and card references, its seat and private projection, its own prior postmortems, and the complete shared learning dossier. Do not reveal another player’s hidden agendas, exact hand, held Bonus cards, or bearer token.</p>
+        <p>Private scoring cards are projected by ID, so the player must resolve those IDs against the current scoring-card reference. The player should plan for all three fixed agendas, while weighting the next Election most heavily. Public final-card counts are legitimate information; opponents’ exact card composition is not.</p>
+      </section>
+
+      <section>
+        <h2>Play every game without shortcuts</h2>
+        <ol>
+          <li>Create or join the lobby through the API, persist the returned session, and verify every intended player has joined before readying and starting.</li>
+          <li>On each decision, fetch the acting player’s fresh private state. Use the projected version when submitting the command.</li>
+          <li>Let the LLM compare the meaningful legal alternatives and choose. Legal-action enumeration may be automated; strategic scoring and selection may not be delegated to a fixed heuristic.</li>
+          <li>After each Operation card, refetch state and let the same LLM decide whether to finish or play another card. Never precommit a multi-card sequence against stale state.</li>
+          <li>Let the owning LLM decide every optional Bonus award, automatic Closure choice, voluntary Close, Collect, and Pass. Do not decline or skip choices for speed.</li>
+          <li>Continue through all six years and all three Elections. A player acknowledges an Election only after inspecting its result.</li>
+        </ol>
+        <div class="note"><p><strong>No pacing constraints:</strong> there is no time limit. Do not cap Operation length, force passes, skip counterplay, suppress Bonus choices, or alter strategy to finish sooner. Parallel controllers reduce waiting; they do not change the rules.</p></div>
+      </section>
+
+      <section>
+        <h2>Learn after every game</h2>
+        <ol>
+          <li>Make the completed replay available to all players.</li>
+          <li>Ask each identity for a first-person explanation of why it won or lost, citing its agendas, timing, map position, card economy, Bonus choices, final-card rank, and decisive opponent actions.</li>
+          <li>Require a small number of concrete lessons and intended changes. Separate observed facts from interpretation.</li>
+          <li>Combine all four postmortems into the cumulative shared dossier without erasing disagreements. Deduplicate repeated lessons and retain the game that supplied each one.</li>
+          <li>Give the updated dossier to every identity before the next game. Preserve identity-specific adjustments privately as well.</li>
+        </ol>
+        <p>Learning is prospective: a lesson affects only later games. Do not rewrite an earlier decision as though the player already knew its result.</p>
+      </section>
+
+      <section>
+        <h2>Record enough evidence</h2>
+        <ul>
+          <li>Invitation code, seat order, ruleset, final scores, Election breakdowns, winner, and final ordinary-plus-held-Bonus card counts.</li>
+          <li>Every accepted and rejected API command, Operation bundle length, Collect size, Closure cause, Pass, Bonus award, and Bonus play.</li>
+          <li>Each player’s complete postmortem, proposed changes, and the dossier supplied to the next game.</li>
+          <li>Patterns by player, seat, game cohort, action family, agenda conversion, card circulation, and final-card ranking.</li>
+        </ul>
+        <p>Keep the canonical SQLite replay. The written report should be sufficient to understand the findings, but summaries cannot replace the event history when a surprising interaction needs verification.</p>
+      </section>
+
+      <section>
+        <h2>Interpretation limits</h2>
+        <ul>
+          <li>Later games are not independent samples: all players share prior lessons and adapt together.</li>
+          <li>An LLM explanation is evidence about its reasoning, not proof that the claimed cause decided the outcome. Check claims against the replay.</li>
+          <li>Seat, agenda deal, Election draws, accumulated lessons, and model variability can all change at once.</li>
+          <li>Use repeated leagues or fixed non-learning comparison games before drawing balance conclusions.</li>
+          <li>Report facilitator interventions, rejected commands, lost sessions, or automated substitutions; any of them can invalidate strategic evidence.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Recommended handoff</h2>
+        <p>A completed league should leave three durable artifacts: the database containing every replay, one session report with all results and player postmortems, and a compact current-rules dossier suitable for the next league. Record obsolete lessons separately instead of carrying them forward after a rules or map change.</p>
+      </section>
+    </main>
+
+    <footer class="page-footer"><div class="page-footer-inner"><a href="agent-api.html">Open the agent API →</a><span class="stamp">Persistent LLM players</span></div></footer>
+  </body>
+</html>
