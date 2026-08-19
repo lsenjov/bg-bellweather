@@ -93,6 +93,19 @@ describe("yearly browser play surface", () => {
     expect(screen.getByText("Operate, Collect, Close, or Pass.")).toBeTruthy();
   });
 
+  it("shows the current campaign schedule after a game starts", async () => {
+    const state = initializeGame(configuration(2), random).state;
+    localStorage.setItem("bellweather-register-session", JSON.stringify(session()));
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      Response.json(activeEnvelope(state, "seat-1"))
+    );
+
+    render(<App />);
+
+    expect(await screen.findByText("Year 1 / 6")).toBeTruthy();
+    expect(screen.getByText("Election years 2 · 4 · 6")).toBeTruthy();
+  });
+
   it("merges only the viewing player's private hand and New Year area", () => {
     const state = initializeGame(configuration(2), random).state;
     state.seats[0]!.newYearOperations.rally = 2;

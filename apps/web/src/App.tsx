@@ -1,6 +1,8 @@
 import {
   BONUS_CARDS_BY_ID,
   DISTRICTS,
+  ELECTION_YEARS,
+  FINAL_ELECTION_YEAR,
   FIRMS_BY_ID,
   OPERATION_IDS,
   PARTIES,
@@ -201,7 +203,7 @@ export function App() {
         </div>
         <div className="edition-stamp">
           <span>{state.publicState.lifecycle}</span>
-          <strong>{view === null ? "Lobby edition" : `Year ${view.year} / 12`}</strong>
+          <strong>{view === null ? "Lobby edition" : `Year ${view.year} / ${FINAL_ELECTION_YEAR}`}</strong>
           <small>Invite {state.publicState.inviteCode}</small>
         </div>
       </header>
@@ -210,7 +212,7 @@ export function App() {
         <span>Players {state.publicState.configuration.playerCount}</span>
         <span>Election {view?.electionNumber ?? 0} / 3</span>
         <span>{view === null ? "Assembling table" : phaseName(view.phase)}</span>
-        <span>Election years 4 · 8 · 12</span>
+        <span>Election years {ELECTION_YEARS.join(" · ")}</span>
       </nav>
 
       {(error ?? viewError) !== null && (
