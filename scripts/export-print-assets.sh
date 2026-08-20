@@ -35,6 +35,8 @@ for font_requirement in "${font_requirements[@]}"; do
   fi
 done
 
+node "$repository_root/scripts/generate-candidate-bonus-cards.mjs"
+
 pdf_page_size_matches() {
   local pdf_file="$1"
   local expected_width="$2"

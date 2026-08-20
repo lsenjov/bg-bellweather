@@ -17,7 +17,7 @@
     "generate:candidate-bonus-cards": "node scripts/generate-candidate-bonus-cards.mjs",
     "dev": "npm run dev --workspace @bellweather/server",
     "dev:web": "npm run dev --workspace @bellweather/web",
-    "docs:check": "node scripts/check-docs.mjs",
+    "docs:check": "node scripts/generate-candidate-bonus-cards.mjs --check && node scripts/check-docs.mjs",
     "start": "npm run start --workspace @bellweather/server",
     "test": "vitest run",
     "test:watch": "vitest",

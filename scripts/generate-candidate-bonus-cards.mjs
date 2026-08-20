@@ -54,7 +54,7 @@ function cardMarkup(card) {
   const densityClass = effectLength > 205 ? " very-dense" : effectLength > 165 ? " dense" : "";
   const titleClass = card.title.length > 22 ? " long-title" : "";
 
-  return `          <article class="bonus-card candidate-print-card ${card.partyClass}${densityClass}${titleClass}"><svg class="party-watermark" aria-hidden="true"><use href="#party-${card.partyClass}"/></svg><span class="card-kicker">${card.partyName} · ${card.family}</span><span class="candidate-mark" aria-label="Candidate card">C</span><h2>${card.title}</h2><p>${card.effect}</p><footer><span>Bonus action</span><span>R21</span></footer></article>`;
+  return `          <article class="bonus-card candidate-print-card ${card.partyClass}${densityClass}${titleClass}"><svg class="party-watermark" aria-hidden="true"><use href="#party-${card.partyClass}"/></svg><span class="card-kicker">${card.partyName} · ${card.family}</span><span class="candidate-mark" role="img" aria-label="Candidate card">C</span><h2>${card.title}</h2><p>${card.effect}</p><footer><span>Bonus action</span><span>R21</span></footer></article>`;
 }
 
 const cardsPerSheet = 12;
@@ -97,6 +97,13 @@ ${sheets}
 </html>
 `;
 
-writeFileSync(outputPath, document);
-process.stdout.write(`Generated ${cards.length} cards across ${sheetCount} sheets.\n`);
+if (process.argv.includes("--check")) {
+  if (readFileSync(outputPath, "utf8") !== document) {
+    throw new Error("Printable candidate Bonus cards are stale. Run npm run generate:candidate-bonus-cards.");
+  }
 
+  process.stdout.write(`Checked ${cards.length} cards across ${sheetCount} sheets; printable HTML is current.\n`);
+} else {
+  writeFileSync(outputPath, document);
+  process.stdout.write(`Generated ${cards.length} cards across ${sheetCount} sheets.\n`);
+}
