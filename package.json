@@ -14,6 +14,7 @@
     "build": "npm run build --workspace @bellweather/protocol && npm run build --workspace @bellweather/content && npm run build --workspace @bellweather/game && npm run build --workspace @bellweather/testkit && npm run build --workspace @bellweather/server && npm run build --workspace @bellweather/web",
     "check": "npm run typecheck && npm run test && npm run docs:check && npm run build",
     "agent:example": "node --conditions=development --import tsx examples/playtest-agent.ts",
+    "generate:candidate-bonus-cards": "node scripts/generate-candidate-bonus-cards.mjs",
     "dev": "npm run dev --workspace @bellweather/server",
     "dev:web": "npm run dev --workspace @bellweather/web",
     "docs:check": "node scripts/check-docs.mjs",

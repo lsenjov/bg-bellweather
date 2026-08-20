@@ -1,0 +1,54 @@
+.candidate-print main {
+  flex-direction: column;
+  gap: 12mm;
+  align-items: center;
+}
+
+.candidate-print-card .card-kicker {
+  padding-right: 5mm;
+}
+
+.candidate-mark {
+  position: absolute;
+  top: 1.8mm;
+  right: 4.4mm;
+  display: grid;
+  width: 4.2mm;
+  height: 4.2mm;
+  border: 0.35mm solid var(--ink);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 72%);
+  font: 900 4.4pt/1 var(--mono);
+  place-items: center;
+}
+
+.candidate-print-card.long-title h2 {
+  font-size: 10.8pt;
+}
+
+.candidate-print-card.dense p {
+  font-size: 5.6pt;
+  line-height: 1.17;
+}
+
+.candidate-print-card.very-dense p {
+  font-size: 5.15pt;
+  line-height: 1.14;
+}
+
+@media print {
+  .candidate-print main {
+    display: block;
+  }
+
+  .candidate-print .print-sheet {
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .candidate-print .print-sheet:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+}
+
