@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="The twelve current Bellweather Bonus cards beside a curated pool of non-duplicate, untested alternatives for every party.">
+    <title>Bonus Card Candidates — Ladder Bidding</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+      :root {
+        --honeycomb: #825500;
+        --old-shell: #397055;
+        --foxglove: #a84057;
+        --riverworks: #176d8a;
+        --many-wings: #6852a3;
+        --night-parliament: #363c69;
+      }
+
+      .party-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        margin: 1.5rem 0 2.5rem;
+      }
+
+      .party-nav a {
+        padding: 0.45rem 0.7rem;
+        border: 2px solid var(--ink);
+        background: var(--paper-bright);
+        font: 800 0.72rem/1 var(--mono);
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .party-section {
+        --party: var(--ink);
+        scroll-margin-top: 1rem;
+      }
+
+      .party-section.honeycomb { --party: var(--honeycomb); }
+      .party-section.old-shell { --party: var(--old-shell); }
+      .party-section.foxglove { --party: var(--foxglove); }
+      .party-section.riverworks { --party: var(--riverworks); }
+      .party-section.many-wings { --party: var(--many-wings); }
+      .party-section.night-parliament { --party: var(--night-parliament); }
+
+      .party-heading {
+        margin-bottom: 1.4rem;
+        padding-top: 0.35rem;
+        border-top: 9px solid var(--party);
+      }
+
+      .party-heading h2 {
+        margin-bottom: 0.2rem;
+      }
+
+      .party-heading p {
+        margin: 0;
+      }
+
+      .current-grid,
+      .candidate-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+        padding: 0;
+      }
+
+      .current-grid {
+        margin: 0 0 1.6rem;
+      }
+
+      .candidate-grid {
+        list-style: none;
+        counter-reset: candidate;
+      }
+
+      .current-card {
+        position: relative;
+        min-height: 9rem;
+        padding: 1.15rem 1.2rem 1.25rem;
+        border: 3px solid var(--party);
+        background: color-mix(in srgb, var(--party) 9%, var(--paper-bright));
+      }
+
+      .current-label {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.38rem 0.5rem;
+        background: var(--party);
+        color: white;
+        font: 800 0.62rem/1 var(--mono);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .candidate-card {
+        position: relative;
+        min-height: 10rem;
+        padding: 1.15rem 1.2rem 1.25rem 4.4rem;
+        border: 2px solid var(--ink);
+        background: var(--paper-bright);
+        box-shadow: 5px 5px 0 color-mix(in srgb, var(--party) 65%, var(--ink));
+        counter-increment: candidate;
+      }
+
+      .candidate-card::before {
+        position: absolute;
+        top: 1.2rem;
+        left: 1.15rem;
+        display: grid;
+        width: 2.3rem;
+        aspect-ratio: 1;
+        place-items: center;
+        border: 2px solid var(--ink);
+        background: color-mix(in srgb, var(--party) 22%, var(--paper-bright));
+        content: counter(candidate, decimal-leading-zero);
+        font: 900 0.7rem/1 var(--mono);
+      }
+
+      .current-card h3,
+      .candidate-card h3 {
+        margin: 0.15rem 0 0.45rem;
+        font-size: 1.35rem;
+      }
+
+      .current-card p,
+      .candidate-card p {
+        margin: 0;
+        font-size: 0.93rem;
+        line-height: 1.5;
+      }
+
+      .family {
+        display: inline-block;
+        padding: 0.28rem 0.45rem;
+        background: var(--party);
+        color: white;
+        font: 800 0.66rem/1 var(--mono);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .status-note {
+        margin: 1rem 0 2rem;
+        padding: 1rem 1.2rem;
+        border-left: 7px solid var(--red);
+        background: var(--paper-bright);
+      }
+
+      @media (max-width: 760px) {
+        .current-grid,
+        .candidate-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media print {
+        html,
+        body {
+          background: white;
+        }
+
+        .page-header::after,
+        .party-nav,
+        .page-footer {
+          display: none;
+        }
+
+        .party-section {
+          break-before: page;
+        }
+
+        .current-card,
+        .candidate-card {
+          break-inside: avoid;
+          box-shadow: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="header-inner">
+        <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / candidate pool</a>
+        <h1>Bonus card candidates</h1>
+        <p class="meta">12 current cards · 46 non-duplicate candidates · curated 2026-08-21</p>
+      </div>
+    </header>
+
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Bonus card candidates</nav>
+      <p class="intro">A curated pool of possible collectible Bonus cards for Bellweather. Each party’s two current Ruleset 21 cards appear first, followed by its remaining non-duplicate candidates for comparison.</p>
+
+      <section>
+        <span class="status hypothesis">Exploration</span>
+        <h2>How to read the pool</h2>
+        <p>These are design hypotheses, not rules. Each card is written as a standalone atomic action using its named Operation family. Unless the text says “may” or “up to,” every part must be possible for the card to be legal. “Acting party” means the open party being operated, as in Ruleset 21.</p>
+        <div class="status-note"><strong>Balance warning:</strong> none of these effects has been costed or playtested. The pool deliberately ranges from conservative ideas to sharp, situational effects so it can be cut down further before testing. It does not change the current two-card-per-party component limit.</div>
+        <p>This audit removed 74 of the original 120 candidates. A candidate was culled when it produced the same board change as a current card or another candidate and differed only by a legality restriction, route phrasing, or renamed target. Current cards always took precedence. When only candidates collided, the version kept was the strongest fit for its party. Effects with materially different token ownership, Operation baseline, quantity, or final board state remain.</p>
+        <p>The remaining effects stay on the map or at Court; they do not change Collection, Closure, card ownership, Election scoring, or year timing.</p>
+        <div class="table-wrap" role="region" aria-label="Remaining candidate counts by party" tabindex="0">
+          <table>
+            <thead><tr><th>Party</th><th>First family</th><th>Second family</th><th>Total candidates</th></tr></thead>
+            <tbody>
+              <tr><td>Honeycomb</td><td>4 Organise</td><td>4 Court</td><td>8</td></tr>
+              <tr><td>Old Shell</td><td>3 Organise</td><td>2 Smear</td><td>5</td></tr>
+              <tr><td>Foxglove</td><td>8 Smear</td><td>6 Court</td><td>14</td></tr>
+              <tr><td>Riverworks</td><td>1 Organise</td><td>2 Rally</td><td>3</td></tr>
+              <tr><td>Many Wings</td><td>2 Rally</td><td>7 Court</td><td>9</td></tr>
+              <tr><td>Night Parliament</td><td>4 Rally</td><td>3 Smear</td><td>7</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <nav class="party-nav" aria-label="Jump to party">
+          <a href="#honeycomb">Honeycomb</a>
+          <a href="#old-shell">Old Shell</a>
+          <a href="#foxglove">Foxglove</a>
+          <a href="#riverworks">Riverworks</a>
+          <a href="#many-wings">Many Wings</a>
+          <a href="#night-parliament">Night Parliament</a>
+        </nav>
+      </section>
+
+      <section class="party-section honeycomb" id="honeycomb">
+        <div class="party-heading">
+          <div>
+            <span class="status hypothesis">Untested bonus pool</span>
+            <h2>Honeycomb Cooperative</h2>
+            <p>Bees · coordinated movement, shared districts, and deliberately built alliances.</p>
+          </div>
+        </div>
+        <div class="current-grid" aria-label="Current Honeycomb Bonus cards">
+          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Organise</span><h3>Waggle Route</h3><p>Resolve Organise. Then add another acting-party Support to a free spot in the destination district.</p></article>
+          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Court</span><h3>Common Cause</h3><p>Resolve Court. The selected party must become the acting party’s Target. Move acting-party Support to a different free district containing selected-party Support.</p></article>
+        </div>
+        <ol class="candidate-grid" aria-label="Curated untested Honeycomb Bonus-card candidates">
+          <li class="candidate-card"><span class="family">Organise</span><h3>Cross-Pollination</h3><p>Resolve Organise into a district containing another party. Then add acting-party Support to a different free district containing that same party.</p></li>
+          <li class="candidate-card"><span class="family">Organise</span><h3>Foraging Circuit</h3><p>Resolve a movement Organise. Then move a different acting-party Support from a neighbor of the source to a free spot in a neighbor of the destination.</p></li>
+          <li class="candidate-card"><span class="family">Organise</span><h3>Neighbourhood Organisers</h3><p>Resolve Organise. Then one other party present at the source or destination moves one of its Support to a free neighboring district.</p></li>
+          <li class="candidate-card"><span class="family">Organise</span><h3>Hex March</h3><p>Move exactly three acting-party Support from one district into three different neighboring districts. Every destination must have a free spot.</p></li>
+
+          <li class="candidate-card"><span class="family">Court</span><h3>Consensus Whip</h3><p>Resolve Court with the acting party’s current Target. Then place a second acting-party Court Support on that party’s space.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Coalition Dividend</h3><p>Resolve Court. If this forms a reciprocal coalition, each partner adds one Support to a different free district where the other partner is present.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Common Petition</h3><p>Resolve Court. Then move one acting-party Support and one selected-party Support from the same district to a common neighboring district with two free spots.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Shared Mandate</h3><p>Resolve Court. Then the acting and selected parties each add one Support to the same district where both are present. It must have two free spots.</p></li>
+        </ol>
+      </section>
+
+      <section class="party-section old-shell" id="old-shell">
+        <div class="party-heading">
+          <div>
+            <span class="status hypothesis">Untested bonus pool</span>
+            <h2>Old Shell Union</h2>
+            <p>Tortoises · slow consolidation, defended positions, and grinding attrition.</p>
+          </div>
+        </div>
+        <div class="current-grid" aria-label="Current Old Shell Bonus cards">
+          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Organise</span><h3>Dig In</h3><p>Resolve a movement Organise. Then add acting-party Support to the vacated source spot. Cannot recover an absent party.</p></article>
+          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Smear</span><h3>Stonewall</h3><p>Resolve Smear. Then remove a second Support belonging to that rival from the same district.</p></article>
+        </div>
+        <ol class="candidate-grid" aria-label="Curated untested Old Shell Bonus-card candidates">
+          <li class="candidate-card"><span class="family">Organise</span><h3>Tortoise Column</h3><p>Move exactly two acting-party Support from one district to the same neighboring district. The source must retain acting-party Support.</p></li>
+          <li class="candidate-card"><span class="family">Organise</span><h3>Rear Guard</h3><p>Resolve a movement Organise. Then remove one rival Support from the source, which must still contain acting-party Support.</p></li>
+          <li class="candidate-card"><span class="family">Organise</span><h3>Relief Column</h3><p>Resolve Organise into a district containing acting-party and rival Support. Then remove one rival Support from the destination.</p></li>
+
+          <li class="candidate-card"><span class="family">Smear</span><h3>Hard Border</h3><p>Choose an acting-party district and two different neighboring districts. Remove one Support belonging to the same rival from each chosen neighbor.</p></li>
+          <li class="candidate-card"><span class="family">Smear</span><h3>Barricade Politics</h3><p>Resolve Smear in a district containing at least two acting-party Support. Then move one acting-party Support from there to a free neighboring district where it is present.</p></li>
+        </ol>
+      </section>
+
+      <section class="party-section foxglove" id="foxglove">
+        <div class="party-heading">
+          <div>
+            <span class="status hypothesis">Untested bonus pool</span>
+            <h2>Foxglove League</h2>
+            <p>Foxes · opportunistic vacancies, redirected rivals, and Court manipulation.</p>
+          </div>
+        </div>
+        <div class="current-grid" aria-label="Current Foxglove Bonus cards">
+          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Smear</span><h3>Spin</h3><p>Resolve Smear. Then add acting-party Support to the spot vacated by the removed rival Support.</p></article>
+          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Court</span><h3>Whisper Network</h3><p>Resolve Court. Move acting-party Court Support from another party’s space to the selected party, then update its Target again.</p></article>
+        </div>
+        <ol class="candidate-grid" aria-label="Curated untested Foxglove Bonus-card candidates">
+          <li class="candidate-card"><span class="family">Smear</span><h3>False Flag</h3><p>Resolve Smear. Then add Support belonging to a third party to the vacated spot.</p></li>
+          <li class="candidate-card"><span class="family">Smear</span><h3>Controlled Burn</h3><p>Resolve Smear. Then move acting-party Support from a neighboring district into the vacated spot.</p></li>
+          <li class="candidate-card"><span class="family">Smear</span><h3>Divide the Vote</h3><p>Resolve Smear. Then move a second matching rival Support from the affected district to a free neighboring district.</p></li>
+          <li class="candidate-card"><span class="family">Smear</span><h3>Wedge Issue</h3><p>Choose an acting-party district containing two rivals. Remove one Support belonging to each of those rivals.</p></li>
+          <li class="candidate-card"><span class="family">Smear</span><h3>Convenient Distraction</h3><p>Resolve Smear. Then place acting-party Court Support on the smeared rival’s space and update the acting party’s Target.</p></li>
+          <li class="candidate-card"><span class="family">Smear</span><h3>Whispered Accusation</h3><p>Resolve Smear. Then move one Court Support belonging to that rival from one party’s space to another and update the rival’s Target.</p></li>
+          <li class="candidate-card"><span class="family">Smear</span><h3>Misdirection</h3><p>Resolve Smear. Then move third-party Support from a neighboring district into the vacated spot.</p></li>
+          <li class="candidate-card"><span class="family">Smear</span><h3>Poisoned Gift</h3><p>Resolve Smear. Then the smeared rival places one Court Support on the acting party’s space and updates its Target.</p></li>
+
+          <li class="candidate-card"><span class="family">Court</span><h3>Kingmaker</h3><p>Resolve Court. Then move one selected-party Court Support from one other party’s space to another and update the selected party’s Target.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Manufactured Consensus</h3><p>Resolve Court. If the acting party’s Court lead is tied, point its Target at the selected party instead of leaving it unchanged.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Opposition Research</h3><p>Resolve Court. Then remove one selected-party Court Support from the acting party’s space and update the selected party’s Target.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Triangle Strategy</h3><p>Resolve Court. Then the selected party places one Court Support on a third party’s space and updates its Target.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Planted Question</h3><p>Resolve Court. Then remove one Court Support belonging to a third party from that party’s selected-party space and update the third party’s Target.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Honeypot</h3><p>Resolve Court. Then move selected-party Support from a district containing acting-party Support to a free neighboring district containing no acting-party Support.</p></li>
+        </ol>
+      </section>
+
+      <section class="party-section riverworks" id="riverworks">
+        <div class="party-heading">
+          <div>
+            <span class="status hypothesis">Untested bonus pool</span>
+            <h2>Riverworks Party</h2>
+            <p>Beavers · connected routes, infrastructure hubs, and outward growth.</p>
+          </div>
+        </div>
+        <div class="current-grid" aria-label="Current Riverworks Bonus cards">
+          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Organise</span><h3>Canal Network</h3><p>Move acting-party Support along a connected route whose source and intermediate districts contain acting-party Support, ending in a free district.</p></article>
+          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Rally</span><h3>Public Works</h3><p>Resolve Rally. Then add acting-party Support to a free spot in a neighboring district.</p></article>
+        </div>
+        <ol class="candidate-grid" aria-label="Curated untested Riverworks Bonus-card candidates">
+          <li class="candidate-card"><span class="family">Organise</span><h3>Hub and Spoke</h3><p>Resolve Organise. Then move acting-party Support from a different neighbor of the destination into the destination.</p></li>
+
+          <li class="candidate-card"><span class="family">Rally</span><h3>Boomtown</h3><p>Resolve Rally in a capacity-six district. Then add a second acting-party Support there.</p></li>
+          <li class="candidate-card"><span class="family">Rally</span><h3>Dredging Project</h3><p>Resolve Rally in a district containing rival Support. Then move one rival Support from there to a free neighboring district.</p></li>
+        </ol>
+      </section>
+
+      <section class="party-section many-wings" id="many-wings">
+        <div class="party-heading">
+          <div>
+            <span class="status hypothesis">Untested bonus pool</span>
+            <h2>Many Wings Coalition</h2>
+            <p>Starlings · wide dispersion, flock movement, and plural partnerships.</p>
+          </div>
+        </div>
+        <div class="current-grid" aria-label="Current Many Wings Bonus cards">
+          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Rally</span><h3>Scatter the Flock</h3><p>Resolve Rally. Move the maximum possible acting-party Support into distinct free neighboring districts. At least one must move.</p></article>
+          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Court</span><h3>Joint Campaign</h3><p>Resolve Court. Then add selected-party Support to a free district containing acting-party Support.</p></article>
+        </div>
+        <ol class="candidate-grid" aria-label="Curated untested Many Wings Bonus-card candidates">
+          <li class="candidate-card"><span class="family">Rally</span><h3>Flock Together</h3><p>Resolve Rally in a district containing the acting party’s Target. Then that party adds one Support there.</p></li>
+          <li class="candidate-card"><span class="family">Rally</span><h3>Feathered Front</h3><p>Resolve Rally. Then move acting-party Support from a different district into the rallied district.</p></li>
+
+          <li class="candidate-card"><span class="family">Court</span><h3>Open Letter</h3><p>Resolve Court. Then the selected party places one Court Support on the acting party’s space and updates its Target.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Broad Church</h3><p>Resolve Court. Then move one acting-party Court Support from its current Target’s space to a third party’s space and update the Target again.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Swing Vote</h3><p>Resolve Court with a party targeted by a third party. Then that third party places one Court Support on the acting party’s space and updates its Target.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Coalition Conference</h3><p>Resolve Court. Then the acting party’s current reciprocal partner places one Court Support on the selected party’s space and updates its Target.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>People’s Assembly</h3><p>Choose one to three other parties that each share a district with the acting party. Place one acting-party Court Support on each chosen party’s space, then update its Target.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Second Preference</h3><p>Resolve Court with a party whose Target is a third party. Then place acting-party Court Support on that third party’s space.</p></li>
+          <li class="candidate-card"><span class="family">Court</span><h3>Unity in Diversity</h3><p>Resolve Court. Then add acting-party Support to a free district containing Support from at least two other parties.</p></li>
+        </ol>
+      </section>
+
+      <section class="party-section night-parliament" id="night-parliament">
+        <div class="party-heading">
+          <div>
+            <span class="status hypothesis">Untested bonus pool</span>
+            <h2>Night Parliament</h2>
+            <p>Owls · remote footholds, isolated districts, and covert disruption.</p>
+          </div>
+        </div>
+        <div class="current-grid" aria-label="Current Night Parliament Bonus cards">
+          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Rally</span><h3>Quiet Hours</h3><p>Resolve Rally. Then add acting-party Support to an otherwise empty district, including an empty Bellweather Centre.</p></article>
+          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Smear</span><h3>Midnight Leak</h3><p>Resolve Smear. Then remove one Court Support belonging to that rival and update the rival’s Target.</p></article>
+        </div>
+        <ol class="candidate-grid" aria-label="Curated untested Night Parliament Bonus-card candidates">
+          <li class="candidate-card"><span class="family">Rally</span><h3>Remote Outpost</h3><p>Add acting-party Support to an empty non-Centre district not neighboring acting-party Support.</p></li>
+          <li class="candidate-card"><span class="family">Rally</span><h3>Shadow Cabinet</h3><p>Resolve Rally in a district containing exactly one rival party. Then place acting-party Court Support on that rival’s space and update the acting party’s Target.</p></li>
+          <li class="candidate-card"><span class="family">Rally</span><h3>Watch Posts</h3><p>Resolve Rally. Then move acting-party Support from a different district into an empty district neighboring the rallied district.</p></li>
+          <li class="candidate-card"><span class="family">Rally</span><h3>Closed Session</h3><p>Resolve Rally in a district containing one rival party. Then that rival places Court Support on the acting party’s space and updates its Target.</p></li>
+
+          <li class="candidate-card"><span class="family">Smear</span><h3>Anonymous Tip</h3><p>Remove rival Support from any district containing no acting-party Support, even if the acting party is present elsewhere on the map.</p></li>
+          <li class="candidate-card"><span class="family">Smear</span><h3>Midnight Filibuster</h3><p>Resolve Smear. Then remove one acting-party Court Support from the smeared rival’s space and update the acting party’s Target.</p></li>
+          <li class="candidate-card"><span class="family">Smear</span><h3>Secret Ballot</h3><p>Resolve Smear in a district containing no acting-party Support. Then add acting-party Support to a different empty district.</p></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <div class="page-footer-inner">
+        <a href="../rules/current-rules.html">Compare with current rules →</a>
+        <span>12 current · 46 non-duplicate candidates · candidates untested</span>
+      </div>
+    </footer>
+  </body>
+</html>
