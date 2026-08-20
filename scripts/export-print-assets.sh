@@ -104,6 +104,7 @@ html_exports=(
   "player-folios|docs/components/player-folios.html|assets/print/player-folios-a4.pdf|3|594.96|841.92"
   "operation-cards|docs/components/operation-cards.html|assets/print/operation-cards-a4.pdf|5|594.96|841.92"
   "bonus-cards|docs/components/bonus-cards.html|assets/print/bonus-cards-a4.pdf|1|594.96|841.92"
+  "bonus-card-candidates|docs/design/printable-bonus-card-candidates.html|assets/print/bonus-card-candidates-a4.pdf|9|594.96|841.92"
   "scoring-cards|docs/components/printable-scoring-cards.html|assets/print/scoring-cards-a4.pdf|2|594.96|841.92"
   "shared-state-tokens|docs/components/shared-state-tokens.html|assets/print/shared-state-tokens-a4.pdf|1|841.92|594.96"
   "campaign-score-trackers|docs/components/campaign-score-trackers.html|assets/print/campaign-score-trackers-a4.pdf|1|841.92|594.96"
