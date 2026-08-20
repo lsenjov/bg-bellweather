@@ -160,7 +160,6 @@ main {
 
 .party-number,
 .animals,
-.bonus-family,
 .coalition-target-kicker,
 .state-kicker {
   font: 800 6.5pt/1.2 var(--mono);
@@ -219,18 +218,14 @@ main {
 
 .bonus {
   position: relative;
-  display: flex;
   width: 40mm;
   height: 61mm;
-  padding: 3mm;
   justify-self: center;
   overflow: hidden;
   border: 0.55mm solid var(--ink);
   background:
     linear-gradient(135deg, transparent 0 47%, rgb(23 22 18 / 5%) 48% 52%, transparent 53%),
     var(--tint);
-  flex-direction: column;
-  text-align: center;
 }
 
 .bonus::before {
@@ -238,27 +233,6 @@ main {
   inset: 1.5mm;
   border: 0.35mm dashed var(--accent);
   content: "";
-}
-
-.bonus > * {
-  position: relative;
-}
-
-.bonus-family {
-  display: block;
-  max-width: none;
-  color: var(--ink);
-}
-
-.bonus h3 {
-  margin: auto 1mm;
-  font: 800 12pt/0.95 var(--display);
-  letter-spacing: -0.025em;
-}
-
-.bonus-text {
-  margin: 0;
-  font: 750 4.7pt/1.18 var(--body);
 }
 
 .party-workspace {
