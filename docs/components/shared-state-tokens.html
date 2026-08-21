@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="One A4 sheet containing the annual register, Firm, Collection, score, and Coalition Target pieces for Bellweather Ruleset 21.">
+    <meta name="description" content="One A4 sheet containing the annual register, Firm, Collection, score, Coalition Target, and Coalition summary pieces for Bellweather Ruleset 21.">
     <title>Printable State and Player Pieces — Ladder Bidding</title>
     <link rel="stylesheet" href="../shared-state-tokens.css">
   </head>
@@ -11,7 +11,7 @@
     <header class="screen-header">
       <a href="tokens.html">← Token specification</a>
       <h1>Ruleset 21 state and player pieces</h1>
-      <p>Print at actual size on one A4 landscape sheet. It contains the complete six-Firm supply: six exact 40 × 61 mm annual opening markers, twelve 14 mm Collection counters, six 25 mm score markers, Early Bird and Year markers, and six Coalition Targets.</p>
+      <p>Print at actual size on one A4 landscape sheet. It contains the complete six-Firm supply: six exact 40 × 61 mm annual opening markers, twelve 14 mm Collection counters, six 25 mm score markers, Early Bird and Year markers, six Coalition Targets, and six Coalition summary tokens.</p>
       <p>At four to six players, take one opening, two Collection counters, and one score marker from one Firm. At two or three players, combine two Firm sets for two openings and four counters, but use only one score marker.</p>
       <p><a href="../../assets/print/shared-state-tokens-a4.pdf">Open print-ready PDF →</a></p>
     </header>
@@ -24,6 +24,12 @@
       <symbol id="emblem-vested" viewBox="0 0 64 64"><path d="M18 8l14 19L46 8l8 10-5 38H15l-5-38zM18 8v17l14 31 14-31V8"/><circle cx="32" cy="31" r="1.8"/><circle cx="32" cy="37" r="1.8"/><circle cx="32" cy="43" r="1.8"/><circle cx="32" cy="49" r="1.8"/><circle cx="32" cy="55" r="1.8"/></symbol>
       <symbol id="emblem-vip" viewBox="0 0 64 64"><path d="M18 9h28v7l5 5v22l-5 5v7H18v-7l-5-5V21l5-5zM25 20v24M39 20v24M25 32h14M20 9h4M28 9h4M36 9h4M44 9h2"/></symbol>
       <symbol id="emblem-bird" viewBox="0 0 64 64"><path d="M9 39c13-2 20-10 24-24 6 8 14 12 24 12-7 4-12 9-15 16l8 8-13-4c-7 4-16 3-28-8zM41 22l7-9 1 12"/></symbol>
+      <symbol id="party-honeycomb" viewBox="0 0 64 64"><path d="M32 7l21 12v26L32 57 11 45V19z"/></symbol>
+      <symbol id="party-old-shell" viewBox="0 0 64 64"><path d="M9 48c0-20 10-34 27-34 13 0 21 9 21 21 0 13-9 21-21 21-10 0-17-6-17-15 0-8 6-14 14-14 7 0 12 4 12 10 0 5-4 9-9 9-4 0-7-2-7-6"/></symbol>
+      <symbol id="party-foxglove" viewBox="0 0 64 64"><path d="M12 10l15 10h10l15-10-5 19c5 5 7 10 7 16-7 8-14 12-22 12S17 53 10 45c0-6 2-11 7-16zM24 38l8 6 8-6M23 31h1M40 31h1"/></symbol>
+      <symbol id="party-riverworks" viewBox="0 0 64 64"><path d="M7 16h42l8 9-8 9H7l8-9zM7 38h42l8 9-8 9H7l8-9zM21 16v18M43 38v18"/></symbol>
+      <symbol id="party-many-wings" viewBox="0 0 64 64"><path d="M5 18q8-8 16 0M25 12q8-8 16 0M43 20q8-8 16 0M13 37q8-8 16 0M35 43q8-8 16 0"/></symbol>
+      <symbol id="party-night-parliament" viewBox="0 0 64 64"><path d="M8 12l13 8h22l13-8-4 20v17L40 57H24L12 49V32zM17 30a9 9 0 1 0 18 0 9 9 0 1 0-18 0M29 30a9 9 0 1 0 18 0 9 9 0 1 0-18 0M28 44l4 5 4-5"/></symbol>
     </svg>
 
     <main>
@@ -61,15 +67,15 @@
             </div>
           </section>
 
-          <section class="component-row party-pieces" aria-label="Six Coalition Target markers">
-            <header><span>Party state</span><strong>Targets</strong><small>Match each party workspace</small></header>
+          <section class="component-row party-pieces" aria-label="Six Coalition Target markers and six Coalition summary tokens">
+            <header><span>Party state</span><strong>Target + summary</strong><small>Two 14 mm markers per party</small></header>
             <div class="six-column-grid">
-              <article class="party-cut-kit party-honeycomb"><strong>Honeycomb</strong><div><span>Target</span></div></article>
-              <article class="party-cut-kit party-old-shell"><strong>Old Shell</strong><div><span>Target</span></div></article>
-              <article class="party-cut-kit party-foxglove"><strong>Foxglove</strong><div><span>Target</span></div></article>
-              <article class="party-cut-kit party-riverworks"><strong>Riverworks</strong><div><span>Target</span></div></article>
-              <article class="party-cut-kit party-many-wings"><strong>Many Wings</strong><div><span>Target</span></div></article>
-              <article class="party-cut-kit party-night"><strong>Night</strong><div><span>Target</span></div></article>
+              <article class="party-cut-kit party-honeycomb"><strong>Honeycomb</strong><div><span aria-label="Honeycomb Coalition Target marker">Target</span><span class="coalition-summary-token" aria-label="Honeycomb Coalition summary token"><svg aria-hidden="true"><use href="#party-honeycomb"/></svg></span></div></article>
+              <article class="party-cut-kit party-old-shell"><strong>Old Shell</strong><div><span aria-label="Old Shell Coalition Target marker">Target</span><span class="coalition-summary-token" aria-label="Old Shell Coalition summary token"><svg aria-hidden="true"><use href="#party-old-shell"/></svg></span></div></article>
+              <article class="party-cut-kit party-foxglove"><strong>Foxglove</strong><div><span aria-label="Foxglove Coalition Target marker">Target</span><span class="coalition-summary-token" aria-label="Foxglove Coalition summary token"><svg aria-hidden="true"><use href="#party-foxglove"/></svg></span></div></article>
+              <article class="party-cut-kit party-riverworks"><strong>Riverworks</strong><div><span aria-label="Riverworks Coalition Target marker">Target</span><span class="coalition-summary-token" aria-label="Riverworks Coalition summary token"><svg aria-hidden="true"><use href="#party-riverworks"/></svg></span></div></article>
+              <article class="party-cut-kit party-many-wings"><strong>Many Wings</strong><div><span aria-label="Many Wings Coalition Target marker">Target</span><span class="coalition-summary-token" aria-label="Many Wings Coalition summary token"><svg aria-hidden="true"><use href="#party-many-wings"/></svg></span></div></article>
+              <article class="party-cut-kit party-night"><strong>Night</strong><div><span aria-label="Night Parliament Coalition Target marker">Target</span><span class="coalition-summary-token" aria-label="Night Parliament Coalition summary token"><svg aria-hidden="true"><use href="#party-night-parliament"/></svg></span></div></article>
             </div>
           </section>
 

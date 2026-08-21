@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="396mm" height="297mm" viewBox="0 0 1600 1200" role="img" aria-labelledby="title description">
   <title id="title">Territorial district map of Bellweather</title>
-  <desc id="description">Sixteen named districts form an irregular land ring and three causeways across Crownwater to Bellweather Centre. Shared black borders define adjacency. Clockwise from north, the outer ring is Northreach with 2 Support spots, Cloverfield with 4, Harbormouth with 6, Millbank with 4, Reedwater with 2, Sunmeadow with 4, Grand Market with 6, Red Orchard with 4, Westgate with 2, Mossfield with 4, Ironwood with 6, and High Pastures with 4. Crown Road has 2 spots and borders Harbormouth and Bellweather Centre. Canal Ward has 2 spots and borders Grand Market and Bellweather Centre. Old Quarter has 2 spots and borders Ironwood and Bellweather Centre. Bellweather Centre has 3 spots and borders the three causeways.</desc>
+  <desc id="description">Sixteen named districts form an irregular land ring and three causeways across Crownwater to Bellweather Centre. Shared black borders define adjacency. Clockwise from north, the outer ring is Northreach with 2 Support spots, Cloverfield with 4, Harbormouth with 6, Millbank with 4, Reedwater with 2, Sunmeadow with 4, Grand Market with 6, Red Orchard with 4, Westgate with 2, Mossfield with 4, Ironwood with 6, and High Pastures with 4. Crown Road has 2 spots and borders Harbormouth and Bellweather Centre. Canal Ward has 2 spots and borders Grand Market and Bellweather Centre. Old Quarter has 2 spots and borders Ironwood and Bellweather Centre. Bellweather Centre has 3 spots and borders the three causeways. A compact right-side tracker holds three reciprocal coalition pairs and reserves unpaired party tokens.</desc>
   <defs>
     <pattern id="water" width="52" height="28" patternUnits="userSpaceOnUse">
       <rect width="52" height="28" fill="#c9d9da"/>
@@ -24,6 +24,11 @@
     .eyebrow { fill: #9f2c1e; font: 900 15px "Noto Sans Mono", monospace; letter-spacing: 3px; }
     .map-note { fill: #625f57; font: 900 14px "Noto Sans Mono", monospace; letter-spacing: 2px; }
     .water-label { fill: #314e54; font: italic 900 15px "Noto Serif", serif; letter-spacing: 4px; text-anchor: middle; }
+    .coalition-tracker-frame { fill: #fffaf0; stroke: #171612; stroke-width: 4; }
+    .coalition-tracker-title { fill: #171612; font: 900 17px "Noto Sans Mono", monospace; letter-spacing: 2px; text-anchor: middle; }
+    .coalition-pair-line { stroke: #171612; stroke-width: 7; }
+    .coalition-token-well { fill: #f2eadb; stroke: #171612; stroke-width: 4; }
+    .coalition-reserve-label { fill: #625f57; font: 900 13px "Noto Sans Mono", monospace; letter-spacing: 1.5px; text-anchor: middle; text-transform: uppercase; }
     .registration { fill: none; stroke: #d9432f; stroke-width: 3; }
   </style>
 
@@ -32,6 +37,35 @@
   <text class="eyebrow" x="60" y="62">REPUBLIC OF BELLWEATHER / DISTRICT ATLAS 01</text>
   <text class="heading" x="60" y="103">The sixteen districts</text>
   <text class="map-note" x="1540" y="62" text-anchor="end">16 DISTRICTS / 57 SUPPORT SPOTS</text>
+
+  <g aria-label="Coalitions summary tracker">
+    <text class="coalition-tracker-title" x="1480" y="154">COALITIONS</text>
+    <g aria-label="Coalition pair">
+      <path class="coalition-pair-line" d="M1463 210H1497"/>
+      <circle class="coalition-token-well" cx="1435" cy="210" r="28"/>
+      <circle class="coalition-token-well" cx="1525" cy="210" r="28"/>
+    </g>
+    <g aria-label="Coalition pair">
+      <path class="coalition-pair-line" d="M1463 275H1497"/>
+      <circle class="coalition-token-well" cx="1435" cy="275" r="28"/>
+      <circle class="coalition-token-well" cx="1525" cy="275" r="28"/>
+    </g>
+    <g aria-label="Coalition pair">
+      <path class="coalition-pair-line" d="M1463 340H1497"/>
+      <circle class="coalition-token-well" cx="1435" cy="340" r="28"/>
+      <circle class="coalition-token-well" cx="1525" cy="340" r="28"/>
+    </g>
+    <g aria-label="No coalition reserve">
+      <rect class="coalition-tracker-frame" x="1382" y="380" width="196" height="152" rx="8"/>
+      <text class="coalition-reserve-label" x="1480" y="400">NO COALITION</text>
+      <circle class="coalition-token-well" cx="1418" cy="433" r="28"/>
+      <circle class="coalition-token-well" cx="1480" cy="433" r="28"/>
+      <circle class="coalition-token-well" cx="1542" cy="433" r="28"/>
+      <circle class="coalition-token-well" cx="1418" cy="494" r="28"/>
+      <circle class="coalition-token-well" cx="1480" cy="494" r="28"/>
+      <circle class="coalition-token-well" cx="1542" cy="494" r="28"/>
+    </g>
+  </g>
 
   <g class="map-art" transform="translate(96 70) scale(.88)">
   <ellipse cx="800" cy="610" rx="375" ry="305" fill="url(#water)" stroke="#171612" stroke-width="5"/>
