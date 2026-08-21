@@ -3,24 +3,24 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="A4 landscape year, Election, and public score trackers for Bellweather.">
-    <title>Printable Year and Score Trackers — Ladder Bidding</title>
+    <meta name="description" content="Map-integrated Year register and A4 landscape public score tracker for Bellweather.">
+    <title>Printable Year and Score Trackers — Bellweather</title>
     <link rel="stylesheet" href="../campaign-score-trackers.css">
   </head>
   <body>
     <header class="screen-header">
       <a href="board.html#district-map">← Board specification</a>
       <h1>Year and score trackers</h1>
-      <p>Print at actual size on one A4 landscape sheet. The 27 mm spaces fit the 25 mm Firm score markers and 22 mm Year marker.</p>
-      <p><a href="../../assets/print/campaign-score-trackers-a4.pdf">Open print-ready PDF →</a></p>
+      <p>The six 27 mm Year spaces now occupy the A3 map’s lower-right corner and fit the 22 mm Year marker. The separate A4 landscape sheet retains 27 mm spaces for the six 25 mm Firm score markers.</p>
+      <p><a href="../../assets/print/ring-and-cross-district-map-a3.pdf">Open the map PDF →</a> · <a href="../../assets/print/public-score-tracker-a4.pdf">Open the score PDF →</a></p>
     </header>
 
     <main>
-      <section class="print-sheet" aria-label="Campaign and public score tracker sheet">
+      <section class="print-sheet" aria-label="Public score tracker sheet">
         <header class="sheet-header">
           <div>
-            <p>Republic of Bellweather / Ruleset 21 / public ledger 01</p>
-            <h2>Year register</h2>
+            <p>Republic of Bellweather / Ruleset 22 / public ledger 02</p>
+            <h2>Score register</h2>
           </div>
           <p class="sheet-instruction">Place markers inside spaces<br>Print at 100%</p>
         </header>
@@ -36,20 +36,7 @@
             </header>
             <div class="score-grid" aria-label="Score spaces from 0 through 40 in a six-row snake"></div>
           </section>
-
-          <section class="campaign-panel" aria-labelledby="campaign-heading">
-            <header class="panel-header">
-              <div>
-                <p class="eyebrow">National calendar</p>
-                <h3 id="campaign-heading">Six years</h3>
-              </div>
-              <p>Two years<br>then Election</p>
-            </header>
-            <div class="campaign-grid" aria-label="Three Election cycles of two years and one Election"></div>
-            <p class="campaign-note">After E3: rank held ordinary + Bonus cards 0–N−1. Ties score the higher occupied rank.</p>
-          </section>
         </div>
-
       </section>
     </main>
 
@@ -80,28 +67,6 @@
           space.setAttribute("aria-label", `Score ${value}`);
           scoreGrid.append(space);
         }
-      }
-
-      const campaignColumns = [
-        ["Y1", "Y2", "E1"],
-        ["Y3", "Y4", "E2"],
-        ["Y5", "Y6", "E3"]
-      ];
-      const campaignGrid = document.querySelector(".campaign-grid");
-      for (const [columnIndex, column] of campaignColumns.entries()) {
-        const cycle = document.createElement("section");
-        cycle.className = "campaign-cycle";
-        cycle.setAttribute("aria-label", `Election cycle ${columnIndex + 1}`);
-        const heading = document.createElement("strong");
-        heading.textContent = `Election ${columnIndex + 1}`;
-        cycle.append(heading);
-        for (const value of column) {
-          const space = document.createElement("span");
-          space.className = `tracker-space campaign-space${value.startsWith("E") ? " election-space" : ""}`;
-          space.textContent = value;
-          cycle.append(space);
-        }
-        campaignGrid.append(cycle);
       }
     </script>
   </body>

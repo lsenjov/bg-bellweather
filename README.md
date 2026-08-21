@@ -93,7 +93,7 @@ physical-size checks pass.
 | PDF | Contents |
 | --- | --- |
 | `assets/print/ring-and-cross-district-map-a3.pdf` | One A3 landscape district map |
-| `assets/print/campaign-score-trackers-a4.pdf` | One A4 landscape campaign and 0–40 score tracker sheet |
+| `assets/print/public-score-tracker-a4.pdf` | One A4 landscape 0–40 public score tracker sheet; the Year register is on the A3 map |
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
 | `assets/print/player-folios-a4.pdf` | Three A4 portrait player-folio sheets |
 | `assets/print/operation-cards-a4.pdf` | Five A4 portrait sheets containing the current 66-card Operation supply |

@@ -70,9 +70,7 @@ main {
   height: 210mm;
   padding: 4.5mm 6.5mm;
   overflow: hidden;
-  background:
-    linear-gradient(90deg, transparent 0 69.5%, rgb(32 57 71 / 5%) 69.5% 100%),
-    var(--paper);
+  background: var(--paper);
   box-shadow: 0 10px 35px rgb(0 0 0 / 35%);
   grid-template-rows: 20mm 1fr;
   print-color-adjust: exact;
@@ -111,8 +109,7 @@ main {
 }
 
 .sheet-header p,
-.panel-header p,
-.campaign-note {
+.panel-header p {
   margin: 0;
   font-family: var(--mono);
   font-weight: 900;
@@ -139,14 +136,13 @@ main {
 }
 
 .tracker-layout {
-  display: grid;
+  display: flex;
   padding-top: 1.5mm;
-  grid-template-columns: 194.4mm 82.8mm;
-  gap: 5.5mm;
+  justify-content: center;
 }
 
-.score-panel,
-.campaign-panel {
+.score-panel {
+  width: 194.4mm;
   min-width: 0;
 }
 
@@ -211,54 +207,6 @@ main {
   border: 0.3mm dashed rgb(98 95 87 / 28%);
   background:
     repeating-linear-gradient(135deg, transparent 0 4mm, rgb(98 95 87 / 6%) 4mm 4.3mm);
-}
-
-.campaign-panel {
-  padding: 0 0 2mm;
-  border-left: 0.7mm solid var(--navy);
-}
-
-.campaign-panel .panel-header {
-  padding-left: 2.5mm;
-}
-
-.campaign-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 27mm);
-  gap: 0.9mm;
-  padding-left: 1.8mm;
-}
-
-.campaign-cycle {
-  display: grid;
-  gap: 0.9mm;
-  grid-template-rows: 5.5mm repeat(3, 27mm);
-}
-
-.campaign-cycle > strong {
-  display: grid;
-  color: var(--red);
-  font: 900 3.6pt/1 var(--mono);
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  text-transform: uppercase;
-  place-items: center;
-}
-
-.campaign-space {
-  border-color: var(--navy);
-}
-
-.election-space {
-  border-color: var(--ink);
-  background: var(--yellow);
-}
-
-.campaign-note {
-  margin: 2.4mm 1.8mm 0;
-  color: var(--muted);
-  font-size: 4.2pt;
-  line-height: 1.35;
 }
 
 @page {
