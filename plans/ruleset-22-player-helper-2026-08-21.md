@@ -20,7 +20,7 @@ Replace pass-ended years with mandatory personal Closure before Pass, allow Coll
 
 1. [x] Remove pass-orbit state and endings, enforce returned-Firm Pass eligibility, allow empty Collects, update Ruleset 22 state and dependent digital surfaces, and cover the behavior with focused tests.
 2. [x] Update the current rules, glossary, examples, player-aid and player-kit specifications, decisions, open questions, changelog, and playtest/API references; archive the replaced Ruleset 21 rules and folio specification.
-3. [ ] Create the three-up printable helper, reduce and reorder the player folios, update print export checks, export only the helper and folio PDFs, and inspect both at print resolution.
+3. [x] Create the three-up printable helper, reduce and reorder the player folios, update print export checks, export only the helper and folio PDFs, and inspect both at print resolution.
 4. [ ] Run the complete validation suite, obtain an independent review, resolve every high and medium issue, record any low issues before continuing, and complete the plan.
 
 ## Validation

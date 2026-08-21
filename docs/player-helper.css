@@ -1,0 +1,64 @@
+* { box-sizing: border-box; }
+
+:root {
+  color-scheme: light;
+  --paper: #f6f1e7;
+  --paper-bright: #fffdf8;
+  --ink: #171713;
+  --navy: #233541;
+  --line: #8b887f;
+  --display: "Liberation Serif", serif;
+  --body: "Liberation Sans", sans-serif;
+  --mono: "Noto Sans Mono", monospace;
+}
+
+html { background: #1b1b18; }
+body { min-width: 210mm; margin: 0; color: var(--ink); background: #1b1b18; font-family: var(--body); }
+
+.screen-header { width: min(210mm, calc(100vw - 40px)); min-width: 180mm; margin: 0 auto; padding: 26px 0 22px; color: var(--paper-bright); }
+.screen-header a { color: #f1b84a; font: 800 0.76rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.screen-header h1 { margin: 18px 0 4px; font: 800 clamp(2.4rem, 6vw, 5rem) / 0.9 var(--display); letter-spacing: -0.045em; }
+.screen-header p { max-width: 70ch; margin: 12px 0 0; color: #d7d0c4; line-height: 1.5; }
+
+.print-sheet { width: 210mm; height: 297mm; margin: 0 auto 36px; background: #fff; box-shadow: 0 10px 35px rgb(0 0 0 / 35%); }
+.player-helper { position: relative; width: 210mm; height: 99mm; padding: 4mm 5mm; overflow: hidden; border-bottom: 0.25mm dashed #666; background: repeating-linear-gradient(0deg, transparent 0 7.8mm, rgb(23 23 19 / 2.5%) 7.8mm 8mm), var(--paper-bright); print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.player-helper:last-child { border-bottom: 0; }
+
+.year-band { display: grid; height: 19mm; border: 0.4mm solid var(--navy); background: var(--paper); grid-template-columns: 34mm 43mm 30mm 69mm 24mm; }
+.year-band > * { min-width: 0; padding: 1.7mm 2mm; border-left: 0.25mm solid var(--line); }
+.year-band header { display: flex; padding: 1.7mm 2.4mm; color: #fff; border-left: 0; background: var(--navy); flex-direction: column; justify-content: center; }
+.year-band header span { font: 800 5.4pt/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; }
+.year-band h2 { margin: 0.6mm 0 0; font: 800 13pt/0.85 var(--display); letter-spacing: -0.035em; }
+.year-band header b { position: absolute; top: 5.6mm; left: 31mm; color: rgb(255 255 255 / 70%); font: 800 5.2pt/1 var(--mono); }
+.year-band div { display: flex; flex-direction: column; justify-content: center; }
+.year-band strong { font: 800 6.5pt/1.08 var(--mono); letter-spacing: 0.02em; text-transform: uppercase; }
+.year-band span { margin-top: 0.8mm; font: 700 6.5pt/1.14 var(--body); }
+
+.reference-grid { display: grid; height: 69.5mm; margin-top: 2mm; grid-template-columns: 58mm 68mm 70mm; gap: 2mm; }
+.reference-grid > section { min-width: 0; padding: 0 2mm; border-left: 0.35mm solid var(--navy); }
+.reference-grid > section:first-child { padding-left: 0; border-left: 0; }
+.reference-grid > section:last-child { padding-right: 0; }
+h3 { margin: 0 0 1.3mm; padding-bottom: 0.7mm; color: var(--navy); border-bottom: 0.35mm solid var(--navy); font: 800 8pt/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+dl, dd, ol, p { margin: 0; }
+dl > div { display: grid; margin-bottom: 0.75mm; grid-template-columns: 18mm 1fr; gap: 1mm; }
+dt { font: 800 6.5pt/1.14 var(--mono); }
+dd, li, .callout, .low-player, .victory { font: 700 6.5pt/1.14 var(--body); }
+.shared-result { margin: 1mm 0; padding: 0.8mm 0; border-block: 0.25mm solid var(--line); }
+.shared-result dt { letter-spacing: -0.04em; }
+.callout { margin-top: 1.2mm; padding: 1.2mm; color: #fff; background: var(--navy); }
+.operations-reference h3:nth-of-type(2) { margin-top: 1.8mm; }
+.operations-reference dl > div { grid-template-columns: 17mm 1fr; }
+.operations-reference .keywords > div { margin-bottom: 0.55mm; grid-template-columns: 19mm 1fr; }
+.operations-reference .keywords dt { letter-spacing: -0.025em; }
+.election-reference ol { padding-left: 4.5mm; }
+.election-reference li { margin-bottom: 0.85mm; padding-left: 0.5mm; }
+.low-player, .victory { margin-top: 1.1mm; padding: 1mm 1.2mm; border: 0.25mm solid var(--line); background: var(--paper); }
+.victory { margin-top: 0.8mm; color: #fff; border-color: var(--navy); background: var(--navy); }
+
+@page { size: A4 portrait; margin: 0; }
+
+@media print {
+  html, body { min-width: 0; background: #fff; }
+  .screen-header { display: none; }
+  .print-sheet { margin: 0; box-shadow: none; }
+}

@@ -40,8 +40,8 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
   width: 210mm;
   height: 297mm;
   flex: 0 0 auto;
-  grid-template-rows: repeat(2, 120mm);
-  padding: 15mm 5mm;
+  grid-template-rows: repeat(3, 90mm);
+  padding: 6mm 5mm;
   background: #fff;
   box-shadow: 0 10px 35px rgb(0 0 0 / 35%);
   align-content: space-between;
@@ -54,19 +54,20 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
   position: relative;
   display: grid;
   width: 200mm;
-  height: 120mm;
-  grid-template-columns: 41mm 68mm 40mm 34mm;
-  grid-template-rows: 61mm 48mm;
+  height: 90mm;
+  grid-template-columns: 39mm 68mm 40mm 32.5mm;
+  grid-template-rows: 61mm;
   gap: 3mm;
   padding: 4mm;
   overflow: hidden;
   border: 0.65mm solid var(--ink);
   background: repeating-linear-gradient(0deg, transparent 0 7.8mm, rgb(23 23 19 / 3%) 7.8mm 8mm), var(--paper-bright);
+  align-content: center;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }
 
-.player-folio::after { position: absolute; right: 2mm; bottom: 1.5mm; color: rgb(23 23 19 / 38%); content: "BELLWEATHER REGISTERED INFLUENCE BUREAU"; font: 800 4.5pt/1 var(--mono); letter-spacing: 0.12em; }
+.player-folio::after { position: absolute; right: 2mm; bottom: 1.5mm; color: rgb(23 23 19 / 38%); content: "BELLWEATHER REGISTERED INFLUENCE BUREAU · R22"; font: 800 4.5pt/1 var(--mono); letter-spacing: 0.12em; }
 .pairliament { --accent: #d4e1eb; --tint: #eaf1f5; }
 .triumvirat { --accent: #eeddb8; --tint: #f7efdc; }
 .ivy-league { --accent: #d8e4d1; --tint: #edf3e9; }
@@ -75,14 +76,15 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
 
 .identity {
   position: relative;
-  display: flex;
+  display: grid;
   min-width: 0;
-  grid-row: 1 / 3;
-  padding: 4mm 3.5mm;
+  height: 61mm;
+  padding: 3mm;
   overflow: hidden;
   border: 0.5mm solid var(--ink);
   background: var(--accent);
-  flex-direction: column;
+  grid-template-rows: auto auto 1fr;
+  justify-items: start;
 }
 
 .identity::before { position: absolute; inset: 0; opacity: 0.18; content: ""; pointer-events: none; }
@@ -94,15 +96,11 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
 .vip-access .identity::before { background: linear-gradient(30deg, transparent 44%, currentColor 45% 50%, transparent 51%) 0 0 / 11mm 19mm, linear-gradient(150deg, transparent 44%, currentColor 45% 50%, transparent 51%) 0 0 / 11mm 19mm; }
 .identity > * { position: relative; z-index: 1; }
 
-.emblem { width: 25mm; height: 25mm; margin-bottom: 3mm; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.8; }
-.firm-index, .motto, .private-note strong, .new-year > span, .counter-bank > span, .agenda-slot span, .agenda-slot b, .reference-heading, .action-reference b { font: 800 5.5pt/1.1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
-.firm-index { margin: 0 0 1.5mm; }
-.identity h2 { margin: 0; font: 800 15pt/0.91 var(--display); letter-spacing: -0.035em; }
+.emblem { width: 18mm; height: 18mm; margin-bottom: 1.5mm; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.8; }
+.identity h2 { margin: 0; font: 800 12pt/0.9 var(--display); letter-spacing: -0.035em; }
 .identity h2 span, .identity h2 small { display: block; }
-.identity h2 small { margin-top: 1mm; font: 800 8pt/1 var(--mono); letter-spacing: 0.02em; text-transform: uppercase; }
-.motto { margin: 3mm 0 0; line-height: 1.35; }
-.firm-number { margin: auto 0 0; font: 800 43pt/0.74 var(--display); letter-spacing: -0.08em; }
-.private-note { margin: 3mm 0 0; padding-top: 2mm; border-top: 0.4mm solid currentColor; font: 750 6.2pt/1.25 var(--body); }
+.identity h2 small { margin-top: 0.8mm; font: 800 6.2pt/1 var(--mono); letter-spacing: 0.02em; text-transform: uppercase; }
+.motto { align-self: end; margin: 0; font: 800 5.6pt/1.3 var(--mono); letter-spacing: 0.055em; text-transform: uppercase; }
 
 .agenda-rack { position: relative; width: 68mm; height: 61mm; }
 .agenda-slot {
@@ -120,17 +118,14 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
 }
 .agenda-slot::before { position: absolute; inset: 1.6mm; border: 0.35mm dashed var(--detail); content: ""; }
 .agenda-slot > * { position: relative; }
-.agenda-slot span { width: 11mm; padding: 1mm 0.8mm; color: var(--paper-bright); background: var(--detail); text-align: center; }
-.agenda-slot strong { margin: auto; font: 800 12pt/1 var(--display); }
-.agenda-slot b { margin-top: auto; padding: 1mm; background: var(--paper); text-align: center; }
-.election-one { left: 0; z-index: 1; }
+.agenda-slot span { width: 11mm; padding: 1mm 0.8mm; color: var(--paper-bright); background: var(--detail); font: 800 5.5pt/1.1 var(--mono); letter-spacing: 0.08em; text-align: center; text-transform: uppercase; writing-mode: vertical-rl; transform: rotate(180deg); }
+.agenda-slot strong { margin: auto; font: 800 12pt/1 var(--display); text-align: center; }
+.election-three { left: 0; z-index: 1; }
 .election-two { left: 14mm; z-index: 2; }
-.election-three { left: 28mm; z-index: 3; }
-.election-one span, .election-two span { writing-mode: vertical-rl; transform: rotate(180deg); }
-.election-one b, .election-two b { position: absolute; bottom: 3mm; left: 3mm; padding: 0; background: transparent; font-size: 4.4pt; writing-mode: vertical-rl; transform: rotate(180deg); }
+.election-one { left: 28mm; z-index: 3; }
 
 .new-year {
-  display: flex;
+  display: grid;
   width: 40mm;
   height: 61mm;
   padding: 3mm;
@@ -138,28 +133,15 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
   outline: 0.35mm dashed var(--detail);
   outline-offset: -2mm;
   background: var(--tint);
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
+  place-items: center;
   text-align: center;
 }
-.new-year > span { position: absolute; margin-top: -49mm; font-size: 4.5pt; }
 .new-year strong { font: 800 16pt/0.9 var(--display); letter-spacing: -0.04em; }
-.new-year small { margin-top: 3mm; font: 750 5.4pt/1.25 var(--body); }
 
-.counter-bank { display: flex; width: 34mm; height: 61mm; padding: 2mm; border: 0.5mm solid var(--ink); background: var(--paper-bright); align-items: center; flex-direction: column; }
-.counter-wells { display: grid; margin: auto 0; grid-template-columns: repeat(2, 14mm); gap: 2mm; }
-.counter-wells i { display: grid; width: 14mm; height: 14mm; border: 0.45mm dashed var(--detail); border-radius: 50%; background: var(--tint); place-items: center; font: 800 6pt/1 var(--mono); font-style: normal; }
-.counter-wells .low-player { opacity: 0.6; background: repeating-linear-gradient(135deg, var(--tint) 0 1.5mm, var(--paper) 1.5mm 3mm); }
-.counter-bank small { font: 750 4.5pt/1 var(--body); text-align: center; }
-
-.action-reference { display: grid; min-width: 0; grid-column: 2 / 5; grid-row: 2; padding: 2.5mm; border: 0.5mm solid var(--ink); background: var(--paper-bright); grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto 1fr; gap: 1.5mm; }
-.reference-heading { display: flex; grid-column: 1 / 5; color: var(--detail); justify-content: space-between; }
-.reference-heading strong { font: inherit; }
-.reference-heading span { letter-spacing: 0.04em; }
-.action-reference > div:not(.reference-heading) { min-width: 0; padding: 1.5mm; border-left: 1.3mm solid var(--detail); background: var(--tint); }
-.action-reference b { display: block; margin-bottom: 1mm; font-size: 5.7pt; }
-.action-reference p { margin: 0; font: 750 5.5pt/1.2 var(--body); }
+.counter-bank { display: flex; width: 32.5mm; height: 61mm; padding: 2mm 1.5mm; border: 0.5mm solid var(--ink); background: var(--paper-bright); align-items: center; flex-direction: column; }
+.counter-bank > span { font: 800 5.5pt/1.1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.counter-wells { display: grid; margin: auto 0; grid-template-columns: repeat(2, 14mm); gap: 2mm 0.5mm; }
+.counter-wells i { display: block; width: 14mm; height: 14mm; border: 0.45mm dashed var(--detail); border-radius: 50%; background: var(--tint); }
 
 @page { size: A4 portrait; margin: 0; }
 
