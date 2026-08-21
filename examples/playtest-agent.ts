@@ -1,9 +1,7 @@
 import { AgentClient, AgentClientError } from "@bellweather/testkit";
 import {
-  DISTRICTS,
   PARTIES,
-  type FirmId,
-  type PartyId
+  type FirmId
 } from "@bellweather/content";
 import {
   type GameCommand,
@@ -12,6 +10,7 @@ import {
   type ViewerStateEnvelope
 } from "@bellweather/protocol";
 import { parsePlayerTarget } from "./playtest-settings.js";
+import { chooseLobbyAction } from "./playtest-actions.js";
 
 const baseUrl = process.env["BELLWEATHER_URL"] ?? "http://127.0.0.1:4317";
 const inviteCode = process.env["BELLWEATHER_INVITE"];
@@ -147,12 +146,11 @@ async function takeTurn(
       });
       return;
     }
-    const operation = chooseRally(game, ownSeat);
     await gameAction(
       client,
       session.gameId,
       publicState.version,
-      operation ?? chooseClose(game, phase, session.seatId) ?? { type: "pass" }
+      chooseLobbyAction(game, ownSeat, phase, session.seatId)
     );
     return;
   }
@@ -178,68 +176,6 @@ async function takeTurn(
       });
     }
   }
-}
-
-function chooseRally(
-  game: Record<string, unknown>,
-  ownSeat: Record<string, unknown>
-): Record<string, unknown> | null {
-  const operations = objectValue(ownSeat["operations"]);
-  if (Number(operations["rally"] ?? 0) < 1) {
-    return null;
-  }
-  const parties = objectValue(game["parties"]);
-  const support = objectValue(game["support"]);
-  for (const [partyValue, partyState] of Object.entries(parties)) {
-    const partyId = partyValue as PartyId;
-    if (objectValue(partyState)["status"] !== "open") {
-      continue;
-    }
-    const hasSupport = DISTRICTS.some(
-      (district) => Number(objectValue(support[district.id])[partyId] ?? 0) > 0
-    );
-    const district = DISTRICTS.find((candidate) => {
-      const districtSupport = objectValue(support[candidate.id]);
-      const occupied = Object.values(districtSupport).reduce<number>(
-        (total, count) => total + Number(count ?? 0),
-        0
-      );
-      return (
-        occupied < candidate.capacity &&
-        (!hasSupport || Number(districtSupport[partyId] ?? 0) > 0)
-      );
-    });
-    if (district !== undefined) {
-      return {
-        type: "operate",
-        partyId,
-        play: {
-          cardType: "operation",
-          operation: "rally",
-          choice: { operation: "rally", districtId: district.id }
-        }
-      };
-    }
-  }
-  return null;
-}
-
-function chooseClose(
-  game: Record<string, unknown>,
-  phase: Record<string, unknown>,
-  seatId: string
-): Record<string, unknown> | null {
-  const turnsTaken = objectValue(phase["turnsTaken"]);
-  if (Number(turnsTaken[seatId] ?? 0) === 0) {
-    return null;
-  }
-  for (const [partyId, partyValue] of Object.entries(objectValue(game["parties"]))) {
-    const party = objectValue(partyValue);
-    if (party["ownerSeatId"] === seatId && party["status"] === "open") {
-      return { type: "close", partyId };
-    }
-  }
-  return null;
 }
 
 function openingSeatId(phase: Record<string, unknown>): unknown {
