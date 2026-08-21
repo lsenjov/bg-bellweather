@@ -36,7 +36,7 @@
   <path class="registration" d="M28 52V28h24 M1548 28h24v24 M28 1172v18h24 M1548 1190h24v-18"/>
   <text class="eyebrow" x="60" y="62">REPUBLIC OF BELLWEATHER / DISTRICT ATLAS 01</text>
   <text class="heading" x="60" y="103">The sixteen districts</text>
-  <text class="map-note" x="1540" y="62" text-anchor="end">16 DISTRICTS / 57 SUPPORT SPOTS</text>
+  <text class="map-note" x="1540" y="62" text-anchor="end">R21</text>
 
   <g aria-label="Coalitions summary tracker">
     <text class="coalition-tracker-title" x="1480" y="154">COALITIONS</text>
