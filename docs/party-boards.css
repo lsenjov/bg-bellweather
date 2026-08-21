@@ -81,7 +81,7 @@ main {
   display: grid;
   width: 287mm;
   height: 100mm;
-  grid-template-columns: 52mm 58mm 58mm minmax(0, 1fr);
+  grid-template-columns: 52mm repeat(3, 40mm) minmax(0, 1fr);
   grid-template-rows: 63mm 24mm;
   gap: 3mm;
   padding: 4mm;
@@ -301,7 +301,7 @@ main {
   display: grid;
   min-width: 0;
   height: 24mm;
-  grid-column: 2 / 5;
+  grid-column: 2 / 6;
   grid-template-columns: 32mm minmax(0, 1fr);
   gap: 2mm;
   padding: 2.5mm;
