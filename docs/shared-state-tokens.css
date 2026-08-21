@@ -102,8 +102,8 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
 .party-riverworks { --party: #377aa1; --party-ink: #fffaf0; }
 .party-many-wings { --party: #ce7038; --party-ink: #fffaf0; }
 .party-night { --party: #242426; --party-ink: #fffaf0; }
-.party-cut-kit { display: flex; width: 40mm; height: 28mm; padding: 2mm 0; align-items: center; flex-direction: column; }
-.party-cut-kit > div { display: flex; width: 40mm; margin-top: auto; align-items: center; justify-content: space-between; }
+.party-cut-kit { display: flex; width: 40mm; height: 28mm; padding: 2mm; align-items: center; flex-direction: column; }
+.party-cut-kit > div { display: flex; width: 36mm; margin-top: auto; align-items: center; justify-content: space-between; }
 .party-cut-kit span { display: grid; border: 0.45mm solid var(--ink); border-radius: 50%; color: var(--party-ink); background: var(--party); place-items: center; font: 800 4pt/1 var(--mono); text-transform: uppercase; }
 .party-cut-kit span { width: 14mm; height: 14mm; }
 .party-cut-kit .coalition-summary-token svg { width: 9mm; height: 9mm; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3.2; }
