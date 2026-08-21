@@ -141,7 +141,8 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
 .counter-bank { display: flex; width: 32.5mm; height: 61mm; padding: 2mm 1.5mm; border: 0.5mm solid var(--ink); background: var(--paper-bright); align-items: center; flex-direction: column; }
 .counter-bank > span { font: 800 5.5pt/1.1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .counter-wells { display: grid; margin: auto 0; grid-template-columns: repeat(2, 14mm); gap: 2mm 0.5mm; }
-.counter-wells i { display: block; width: 14mm; height: 14mm; border: 0.45mm dashed var(--detail); border-radius: 50%; background: var(--tint); }
+.counter-wells i { display: grid; width: 14mm; height: 14mm; border: 0.45mm dashed var(--detail); border-radius: 50%; background: var(--tint); place-items: center; font: 800 4.5pt/1 var(--mono); font-style: normal; }
+.counter-wells .low-player { background: repeating-linear-gradient(135deg, var(--tint) 0 1.5mm, var(--paper) 1.5mm 3mm); }
 
 @page { size: A4 portrait; margin: 0; }
 
