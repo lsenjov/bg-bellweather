@@ -66,19 +66,14 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
   justify-content: center;
   text-align: center;
 }
-.opening-marker::before { position: absolute; inset: 0; opacity: 0.13; content: ""; pointer-events: none; }
-.opening-marker > * { position: relative; z-index: 1; }
-.opening-marker.swoop::before { background: repeating-linear-gradient(153deg, transparent 0 7mm, currentColor 7mm 7.5mm); }
-.opening-marker.pairliament::before { background: repeating-linear-gradient(90deg, transparent 0 8mm, currentColor 8mm 8.5mm); }
-.opening-marker.triumvirat::before { background: radial-gradient(circle, currentColor 0 0.8mm, transparent 0.9mm) 0 0 / 8mm 8mm; }
-.opening-marker.ivy-league::before { background: linear-gradient(45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 10mm 10mm, linear-gradient(-45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 10mm 10mm; }
-.opening-marker.vested::before { background: linear-gradient(135deg, transparent 43%, currentColor 44% 49%, transparent 50%) 0 0 / 12mm 12mm, linear-gradient(225deg, transparent 43%, currentColor 44% 49%, transparent 50%) 0 0 / 12mm 12mm; }
-.opening-marker.vip-access::before { background: linear-gradient(30deg, transparent 44%, currentColor 45% 50%, transparent 51%) 0 0 / 11mm 19mm, linear-gradient(150deg, transparent 44%, currentColor 45% 50%, transparent 51%) 0 0 / 11mm 19mm; }
-.pairliament { --accent: #d4e1eb; --tint: #eaf1f5; }
-.triumvirat { --accent: #eeddb8; --tint: #f7efdc; }
-.ivy-league { --accent: #d8e4d1; --tint: #edf3e9; }
-.vested { --accent: #e5d4e1; --tint: #f3eaf1; }
-.vip-access { --accent: #cfe4df; --tint: #e8f2ef; }
+.opening-marker::before, .score-marker::before { position: absolute; inset: 0; opacity: 0.13; content: ""; pointer-events: none; }
+.opening-marker > *, .score-marker > * { position: relative; z-index: 1; }
+.opening-marker.swoop::before, .firm-cut-kit.swoop .score-marker::before { background: repeating-linear-gradient(153deg, transparent 0 7mm, currentColor 7mm 7.5mm); }
+.opening-marker.pairliament::before, .firm-cut-kit.pairliament .score-marker::before { background: repeating-linear-gradient(90deg, transparent 0 8mm, currentColor 8mm 8.5mm); }
+.opening-marker.triumvirat::before, .firm-cut-kit.triumvirat .score-marker::before { background: radial-gradient(circle, currentColor 0 0.8mm, transparent 0.9mm) 0 0 / 8mm 8mm; }
+.opening-marker.ivy-league::before, .firm-cut-kit.ivy-league .score-marker::before { background: linear-gradient(45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 10mm 10mm, linear-gradient(-45deg, transparent 47%, currentColor 48% 52%, transparent 53%) 0 0 / 10mm 10mm; }
+.opening-marker.vested::before, .firm-cut-kit.vested .score-marker::before { background: linear-gradient(135deg, transparent 43%, currentColor 44% 49%, transparent 50%) 0 0 / 12mm 12mm, linear-gradient(225deg, transparent 43%, currentColor 44% 49%, transparent 50%) 0 0 / 12mm 12mm; }
+.opening-marker.vip-access::before, .firm-cut-kit.vip-access .score-marker::before { background: linear-gradient(30deg, transparent 44%, currentColor 45% 50%, transparent 51%) 0 0 / 11mm 19mm, linear-gradient(150deg, transparent 44%, currentColor 45% 50%, transparent 51%) 0 0 / 11mm 19mm; }
 .opening-marker > span { position: absolute; top: 3mm; font: 800 4.6pt/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
 .opening-marker svg { width: 20mm; height: 20mm; margin-bottom: 2mm; }
 .opening-marker svg, .score-marker svg, .early-bird svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.8; }
@@ -86,15 +81,20 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
 .opening-marker small { margin-top: 1.5mm; font: 750 5pt/1 var(--body); }
 .opening-marker > b { position: absolute; right: 3mm; bottom: 2.5mm; left: 3mm; padding-top: 1.5mm; border-top: 0.3mm solid var(--ink); font: 800 4.5pt/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
 
-.firm-cut-kit { --tint: #f7e9e6; display: flex; width: 40mm; height: 52mm; padding: 2mm; border-right: 0.25mm solid var(--ink); background: var(--paper-bright); align-items: center; flex-direction: column; }
+.firm-cut-kit { --accent: #efcfca; --tint: #f7e9e6; display: flex; width: 40mm; height: 52mm; padding: 2mm; border-right: 0.25mm solid var(--ink); background: var(--paper-bright); align-items: center; flex-direction: column; }
+.pairliament { --accent: #d4e1eb; --tint: #eaf1f5; }
+.triumvirat { --accent: #eeddb8; --tint: #f7efdc; }
+.ivy-league { --accent: #d8e4d1; --tint: #edf3e9; }
+.vested { --accent: #e5d4e1; --tint: #f3eaf1; }
+.vip-access { --accent: #cfe4df; --tint: #e8f2ef; }
 .firm-cut-kit > strong, .party-cut-kit > strong { font: 800 4.7pt/1 var(--mono); letter-spacing: 0.07em; text-transform: uppercase; }
 .firm-cut-kit > div { display: flex; width: 40mm; margin: auto 0; align-items: center; justify-content: center; gap: 1mm; }
 .firm-cut-kit > small { font: 750 4.4pt/1 var(--body); }
-.score-marker { display: flex; width: 25mm; height: 25mm; border: 0.55mm solid var(--ink); border-radius: 50%; background: var(--tint); align-items: center; flex-direction: column; justify-content: center; }
+.score-marker { position: relative; display: flex; width: 25mm; height: 25mm; overflow: hidden; border: 0.55mm solid var(--ink); border-radius: 50%; background: var(--tint); align-items: center; flex-direction: column; justify-content: center; }
 .score-marker svg { width: 10mm; height: 10mm; }
 .score-marker b { margin-top: 0.5mm; font: 800 5pt/1 var(--mono); }
 .collect-pair { display: flex; height: 29mm; flex-direction: column; justify-content: space-between; }
-.collect-pair i { display: grid; width: 14mm; height: 14mm; border: 0.55mm solid var(--ink); border-radius: 50%; outline: 0.25mm dashed var(--ink); outline-offset: -1.4mm; background: var(--tint); place-items: center; font: 800 7pt/1 var(--mono); font-style: normal; }
+.collect-pair i { display: grid; width: 14mm; height: 14mm; border: 0.55mm solid var(--ink); border-radius: 50%; outline: 0.25mm dashed var(--ink); outline-offset: -1.4mm; background: var(--paper); place-items: center; font: 800 7pt/1 var(--mono); font-style: normal; }
 
 .party-honeycomb { --party: #e9b72b; --party-ink: #171612; }
 .party-old-shell { --party: #64815d; --party-ink: #fffaf0; }
