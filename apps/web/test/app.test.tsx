@@ -342,7 +342,7 @@ describe("yearly browser play surface", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "collect" }));
     expect(screen.getByRole("button", { name: /^Honeycomb open/ }).hasAttribute("aria-disabled")).toBe(false);
-    expect(screen.getByRole("button", { name: /^Old Shell open/ }).getAttribute("aria-disabled")).toBe("true");
+    expect(screen.getByRole("button", { name: /^Old Shell open/ }).hasAttribute("aria-disabled")).toBe(false);
     fireEvent.change(screen.getByLabelText("Bonus card"), {
       target: { value: "honeycomb-waggle-route" }
     });
@@ -357,7 +357,7 @@ describe("yearly browser play surface", () => {
     });
   });
 
-  it("blocks first-turn closure and explains consecutive passing", () => {
+  it("blocks first-turn closure and Pass while the player's Firms remain open", () => {
     const state = openEveryParty(initializeGame(configuration(2), random).state);
     const view = privateView(state, "seat-1");
     const onCommand = vi.fn(async () => true);
@@ -369,29 +369,33 @@ describe("yearly browser play surface", () => {
     expect(screen.getByRole("button", { name: /^Honeycomb open/ }).getAttribute("aria-disabled")).toBe("true");
     expect(screen.getByText(/cannot Close on your first Lobby turn/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "pass" }));
-    expect(screen.getByText(/every party closes to its opening Firm/)).toBeTruthy();
+    expect(screen.getByText(/return all your Firm markers before passing/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Pass this turn" }).hasAttribute("disabled")).toBe(true);
   });
 
   it("lets each opener choose a Bonus card during automatic Closure", () => {
     let state = openEveryParty(initializeGame(configuration(2), random).state);
-    state = apply(state, { type: "pass", seatId: "seat-1" });
-    state = apply(state, { type: "pass", seatId: "seat-2" });
-    const view = privateView(state, "seat-1");
+    state = apply(state, { type: "collect", seatId: "seat-1", partyId: "honeycomb" });
+    state = apply(state, { type: "collect", seatId: "seat-2", partyId: "honeycomb" });
+    state = apply(state, { type: "close", seatId: "seat-1", partyId: "honeycomb" });
+    state = apply(state, { type: "close", seatId: "seat-2", partyId: "old-shell" });
+    state = apply(state, { type: "close", seatId: "seat-1", partyId: "riverworks" });
+    const view = privateView(state, "seat-2");
     const onCommand = vi.fn(async () => true);
     render(
-      <ActionDesk view={view} seat={view.seats[0]!} seatId="seat-1" busy={false} onCommand={onCommand} />
+      <ActionDesk view={view} seat={view.seats[1]!} seatId="seat-2" busy={false} onCommand={onCommand} />
     );
 
     fireEvent.change(screen.getByLabelText("Bonus card"), {
-      target: { value: "honeycomb-common-cause" }
+      target: { value: "foxglove-spin" }
     });
     fireEvent.click(screen.getByRole("button", { name: "Confirm Closure choice" }));
     expect(onCommand).toHaveBeenCalledWith({
       type: "game_action",
       action: {
         type: "choose_closure_bonus",
-        partyId: "honeycomb",
-        bonusCardId: "honeycomb-common-cause"
+        partyId: "foxglove",
+        bonusCardId: "foxglove-spin"
       }
     });
   });

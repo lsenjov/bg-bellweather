@@ -105,7 +105,6 @@ export interface LobbyPhase {
   activeSeatId: SeatId;
   turn: number;
   turnsTaken: Record<SeatId, number>;
-  consecutivePasses: number;
   inProgressOperate: {
     partyId: PartyId;
     operationCount: number;
@@ -116,7 +115,6 @@ export interface LobbyPhase {
 export interface ClosurePhase {
   type: "closure";
   endedBySeatId: SeatId;
-  endReason: "passes" | "majority_closed";
   pendingPartyIds: PartyId[];
 }
 
@@ -166,7 +164,6 @@ export interface YearRecord {
   year: number;
   earlyBirdSeatId: SeatId;
   endedBySeatId: SeatId;
-  endReason: "passes" | "majority_closed";
   parties: Partial<Record<PartyId, PartyYearState>>;
   actions: LobbyActionRecord[];
   operations: ResolvedOperation[];

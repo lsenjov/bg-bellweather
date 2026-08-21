@@ -351,8 +351,6 @@ function operate(
     choice: structuredClone(choice),
     bonusCardReturnedHome: play.cardType === "bonus"
   });
-  phase.consecutivePasses = 0;
-
   const cardCount = (phase.inProgressOperate?.cardCount ?? 0) + 1;
   const operationCount =
     (phase.inProgressOperate?.operationCount ?? 0) +
@@ -417,9 +415,6 @@ function collect(
   const party = requireOpenParty(state, partyId);
   const seat = getSeat(state, seatId);
   const cardCount = operationCount(party.operations);
-  if (cardCount === 0) {
-    throw new GameRuleError("empty_party_pile", "Collect requires a non-empty party pile");
-  }
   if (seat.collectionCounters < 1) {
     throw new GameRuleError("no_collection_counter", "No Collection counter is available");
   }
@@ -475,13 +470,12 @@ function close(
     bonusCardId: awardedBonusCardId
   });
   markTurnTaken(phase, seatId);
-  phase.consecutivePasses = 0;
   const parties = Object.values(state.parties).filter(
     (candidate): candidate is PartyYearState => candidate !== undefined
   );
   const closedCount = parties.filter((candidate) => candidate.status === "closed").length;
   if (closedCount > parties.length / 2) {
-    beginClosure(state, seatId, "majority_closed");
+    beginClosure(state, seatId);
     return;
   }
   advanceLobbyTurn(state, phase);
@@ -490,6 +484,15 @@ function close(
 function pass(state: GameState, seatId: SeatId): void {
   const phase = requireLobbyTurn(state, seatId);
   requireNoOperateInProgress(phase);
+  const hasOpenFirm = Object.values(state.parties).some(
+    (party) => party?.ownerSeatId === seatId && party.status === "open"
+  );
+  if (hasOpenFirm) {
+    throw new GameRuleError(
+      "open_firm_party",
+      "Pass requires all of your Firm markers to have returned"
+    );
+  }
   recordLobbyAction(state, phase, {
     seatId,
     type: "pass",
@@ -499,11 +502,6 @@ function pass(state: GameState, seatId: SeatId): void {
     bonusCardId: null
   });
   markTurnTaken(phase, seatId);
-  phase.consecutivePasses += 1;
-  if (phase.consecutivePasses === state.seats.length) {
-    beginClosure(state, seatId, "passes");
-    return;
-  }
   advanceLobbyTurn(state, phase);
 }
 
@@ -512,7 +510,6 @@ function finishLobbyTurn(
   phase: LobbyPhase
 ): void {
   markTurnTaken(phase, phase.activeSeatId);
-  phase.consecutivePasses = 0;
   advanceLobbyTurn(state, phase);
 }
 
@@ -536,8 +533,7 @@ function closeEveryParty(state: GameState): void {
 
 function beginClosure(
   state: GameState,
-  endedBySeatId: SeatId,
-  endReason: "passes" | "majority_closed"
+  endedBySeatId: SeatId
 ): void {
   const pendingPartyIds = PARTY_IDS.filter((partyId) => {
     const party = state.parties[partyId];
@@ -545,13 +541,12 @@ function beginClosure(
   });
   closeEveryParty(state);
   if (pendingPartyIds.length === 0) {
-    finishYear(state, endedBySeatId, endReason);
+    finishYear(state, endedBySeatId);
     return;
   }
   state.phase = {
     type: "closure",
     endedBySeatId,
-    endReason,
     pendingPartyIds
   };
 }
@@ -579,20 +574,18 @@ function chooseClosureBonus(
   awardBonusCard(state, seatId, partyId, bonusCardId);
   phase.pendingPartyIds.shift();
   if (phase.pendingPartyIds.length === 0) {
-    finishYear(state, phase.endedBySeatId, phase.endReason);
+    finishYear(state, phase.endedBySeatId);
   }
 }
 
 function finishYear(
   state: GameState,
-  endedBySeatId: SeatId,
-  endReason: "passes" | "majority_closed"
+  endedBySeatId: SeatId
 ): void {
   state.yearHistory.push({
     year: state.year,
     earlyBirdSeatId: state.earlyBirdSeatId,
     endedBySeatId,
-    endReason,
     parties: structuredClone(state.parties),
     actions: structuredClone(state.lobbyActions),
     operations: structuredClone(state.resolvedOperations)
@@ -968,7 +961,6 @@ function lobbyPhase(
     activeSeatId: earlyBirdSeatId,
     turn: 1,
     turnsTaken: Object.fromEntries(seats.map((seat) => [seat.id, 0])),
-    consecutivePasses: 0,
     inProgressOperate: null
   };
 }

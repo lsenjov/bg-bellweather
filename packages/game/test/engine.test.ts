@@ -27,7 +27,7 @@ import { projectGameState } from "../src/projection.js";
 
 const zeroRandom = { integer: () => 0 };
 
-describe("ruleset 21 setup", () => {
+describe("ruleset 22 setup", () => {
   for (const playerCount of [2, 3, 4, 5, 6]) {
     it(`creates the yearly Operation economy for ${playerCount} players`, () => {
       const state = initializeGame(configuration(playerCount), zeroRandom).state;
@@ -67,7 +67,7 @@ describe("ruleset 21 setup", () => {
   it("rejects old saved rulesets", () => {
     const initialized = initializeGame(configuration(4), zeroRandom);
     initialized.state.rulesetVersion = "18";
-    expect(() => replay([initialized])).toThrow("Only ruleset 21 is supported");
+    expect(() => replay([initialized])).toThrow("Only ruleset 22 is supported");
   });
 });
 
@@ -116,8 +116,12 @@ describe("party openings", () => {
       activeSeatId: "seat-1",
       turn: 1
     });
-    const passed = act(state, { type: "pass", seatId: "seat-1" });
-    expect(passed.phase).toMatchObject({ type: "lobby", activeSeatId: "seat-2" });
+    const collected = act(state, {
+      type: "collect",
+      seatId: "seat-1",
+      partyId: "honeycomb"
+    });
+    expect(collected.phase).toMatchObject({ type: "lobby", activeSeatId: "seat-2" });
   });
 });
 
@@ -353,7 +357,7 @@ describe("Lobby actions", () => {
     )).toBe(true);
   });
 
-  it("collects a complete non-empty pile into next year and leaves the party open", () => {
+  it("collects complete piles, including empty piles, and leaves the party open", () => {
     let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
     const operator = lobbyPhase(state).activeSeatId;
     state = act(state, {
@@ -381,11 +385,18 @@ describe("Lobby actions", () => {
       status: "open",
       operations: { organise: 0, rally: 0, smear: 0, court: 0 }
     });
-    expect(() => act(state, {
+    const emptyCollectorId = lobbyPhase(state).activeSeatId;
+    const emptyCollectorBefore = state.seats.find(
+      (seat) => seat.id === emptyCollectorId
+    )!.collectionCounters;
+    state = act(state, {
       type: "collect",
-      seatId: lobbyPhase(state).activeSeatId,
+      seatId: emptyCollectorId,
       partyId: "honeycomb"
-    })).toThrow("non-empty");
+    });
+    expect(state.seats.find((seat) => seat.id === emptyCollectorId)!.collectionCounters)
+      .toBe(emptyCollectorBefore - 1);
+    expect(state.parties.honeycomb?.status).toBe("open");
   });
 
   it("forbids first-turn closure and lets a strict majority end mid-orbit", () => {
@@ -396,9 +407,9 @@ describe("Lobby actions", () => {
       partyId: partyOpenedBy(state, "seat-1")
     })).toThrow("first Lobby turn");
 
-    state = act(state, { type: "pass", seatId: "seat-1" });
-    state = act(state, { type: "pass", seatId: "seat-2" });
-    state = act(state, { type: "pass", seatId: "seat-3" });
+    state = act(state, { type: "collect", seatId: "seat-1", partyId: "honeycomb" });
+    state = act(state, { type: "collect", seatId: "seat-2", partyId: "honeycomb" });
+    state = act(state, { type: "collect", seatId: "seat-3", partyId: "honeycomb" });
     state = act(state, {
       type: "operate",
       seatId: "seat-4",
@@ -436,49 +447,47 @@ describe("Lobby actions", () => {
     expect(state.earlyBirdSeatId).toBe("seat-3");
     expect(state.phase.type).toBe("opening");
     expect(state.yearHistory[0]).toMatchObject({
-      endReason: "majority_closed",
       endedBySeatId: "seat-3"
     });
     expect(state.seats[3]!.operations.organise).toBe(3);
   });
 
-  it("awards all open parties and Early Bird to the final consecutive passer", () => {
-    let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
-    for (const seatId of ["seat-1", "seat-2", "seat-3", "seat-4"]) {
-      state = act(state, { type: "pass", seatId });
-    }
+  it("allows Pass only after all of the player's Firm markers return", () => {
+    let state = openAllParties(initializeGame(configuration(2), zeroRandom).state);
+    expect(() => act(state, { type: "pass", seatId: "seat-1" }))
+      .toThrow("Firm markers to have returned");
+
+    state = act(state, { type: "collect", seatId: "seat-1", partyId: "honeycomb" });
+    state = act(state, { type: "collect", seatId: "seat-2", partyId: "honeycomb" });
+    state = act(state, {
+      type: "close",
+      seatId: "seat-1",
+      partyId: partyOpenedBy(state, "seat-1")
+    });
+    state = act(state, { type: "collect", seatId: "seat-2", partyId: firstOpenParty(state) });
+    expect(() => act(state, { type: "pass", seatId: "seat-1" }))
+      .toThrow("Firm markers to have returned");
+    state = act(state, {
+      type: "close",
+      seatId: "seat-1",
+      partyId: partyOpenedBy(state, "seat-1")
+    });
+    state = act(state, { type: "collect", seatId: "seat-2", partyId: firstOpenParty(state) });
+    state = act(state, { type: "pass", seatId: "seat-1" });
+
     expect(state.phase).toMatchObject({
-      type: "closure",
-      pendingPartyIds: PARTY_IDS.slice(0, 4)
+      type: "lobby",
+      activeSeatId: "seat-2"
     });
-    state = resolveClosure(state, {
-      honeycomb: "honeycomb-waggle-route",
-      "old-shell": "old-shell-dig-in"
-    });
-    expect(state.year).toBe(2);
-    expect(state.earlyBirdSeatId).toBe("seat-4");
-    expect(state.yearHistory[0]).toMatchObject({
-      endReason: "passes",
-      endedBySeatId: "seat-4"
-    });
-    expect(Object.values(state.yearHistory[0]!.parties).every(
-      (party) => party?.status === "closed"
-    )).toBe(true);
-    expect(state.bonusCards["honeycomb-waggle-route"]).toEqual({
-      zone: "hand",
-      seatId: "seat-1"
-    });
-    expect(state.bonusCards["old-shell-dig-in"]).toEqual({
-      zone: "hand",
-      seatId: "seat-2"
-    });
+    expect(() => act(state, { type: "pass", seatId: "seat-2" }))
+      .toThrow("Firm markers to have returned");
   });
 });
 
 describe("cleanup, Elections, visibility, and replay", () => {
   it("cleans resources before Election scoring and records Capital points separately", () => {
     let state = initializeGame(configuration(4), zeroRandom).state;
-    state = passThroughYear(state);
+    state = closeThroughYear(state);
     state = openAllParties(state);
     const capitalCardId = state.seats[0]!.scoringCardIds[0]![0]!;
     const capitalParties = state.seats[0]!.scoringCardIds[0]!.length === 1
@@ -505,12 +514,7 @@ describe("cleanup, Elections, visibility, and replay", () => {
     });
     const collectorBefore = state.seats.find((seat) => seat.id === collector)!;
     expect(collectorBefore.newYearOperations.organise).toBe(1);
-    const passers: string[] = [];
-    while (state.phase.type === "lobby") {
-      passers.push(state.phase.activeSeatId);
-      state = act(state, { type: "pass", seatId: state.phase.activeSeatId });
-    }
-    expect(passers).toHaveLength(4);
+    state = closeThroughLobby(state);
     state = resolveClosure(state);
     expect(state.phase).toMatchObject({ type: "election", resultsRecorded: false });
     const collectorAfter = state.seats.find((seat) => seat.id === collector)!;
@@ -556,12 +560,10 @@ describe("cleanup, Elections, visibility, and replay", () => {
             zone: "new_year",
             seatId: "seat-4"
           };
-          while (state.phase.type === "lobby") {
-            state = act(state, { type: "pass", seatId: state.phase.activeSeatId });
-          }
+          state = closeThroughLobby(state);
           state = resolveClosure(state);
         } else {
-          state = passThroughYear(state);
+          state = closeThroughYear(state);
         }
       }
       expect(state.phase).toMatchObject({
@@ -719,12 +721,32 @@ function openAllParties(initial: GameState): GameState {
   return state;
 }
 
-function passThroughYear(initial: GameState): GameState {
-  let state = openAllParties(initial);
-  while (state.phase.type === "lobby") {
-    state = act(state, { type: "pass", seatId: state.phase.activeSeatId });
-  }
+function closeThroughYear(initial: GameState): GameState {
+  const state = closeThroughLobby(openAllParties(initial));
   return resolveClosure(state);
+}
+
+function closeThroughLobby(initial: GameState): GameState {
+  let state = initial;
+  while (state.phase.type === "lobby") {
+    const phase = state.phase;
+    const seatId = phase.activeSeatId;
+    const openParty = Object.values(state.parties).find(
+      (party) => party?.ownerSeatId === seatId && party.status === "open"
+    );
+    if ((phase.turnsTaken[seatId] ?? 0) === 0) {
+      state = act(state, {
+        type: "collect",
+        seatId,
+        partyId: PARTY_IDS.find((partyId) => state.parties[partyId]?.status === "open")!
+      });
+    } else if (openParty !== undefined) {
+      state = act(state, { type: "close", seatId, partyId: openParty.partyId });
+    } else {
+      state = act(state, { type: "pass", seatId });
+    }
+  }
+  return state;
 }
 
 function resolveClosure(
@@ -762,6 +784,14 @@ function partyOpenedBy(state: GameState, seatId: string): PartyId {
   );
   if (party === undefined) throw new Error(`No open party for ${seatId}`);
   return party.partyId;
+}
+
+function firstOpenParty(state: GameState): PartyId {
+  const partyId = PARTY_IDS.find(
+    (candidate) => state.parties[candidate]?.status === "open"
+  );
+  if (partyId === undefined) throw new Error("No open party");
+  return partyId;
 }
 
 function partyOpenedByAnyStatus(state: GameState, seatId: string): PartyId {

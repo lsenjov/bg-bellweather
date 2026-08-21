@@ -870,12 +870,15 @@ function LobbyActionDesk(props: {
   const firstTurn = props.view.phaseData.type === "lobby" && (props.view.phaseData.turnsTaken[props.seatId] ?? 0) === 0;
   const collectTargetPartyIds = props.seat.collectionCounters < 1
     ? []
-    : openPartyIds.filter((candidate) => operationCount(props.view.parties[candidate]!.operations) > 0);
+    : openPartyIds;
   const closeTargetPartyIds = firstTurn
     ? []
     : openPartyIds.filter((candidate) => props.view.parties[candidate]?.ownerSeatId === props.seatId);
-  const collectLegal = party !== undefined && operationCount(party.operations) > 0 && props.seat.collectionCounters > 0;
+  const collectLegal = party !== undefined && props.seat.collectionCounters > 0;
   const closeLegal = party !== undefined && party.ownerSeatId === props.seatId && !firstTurn;
+  const passLegal = !openPartyIds.some(
+    (candidate) => props.view.parties[candidate]?.ownerSeatId === props.seatId
+  );
   return (
     <div className="lobby-action-desk">
       <div className="action-tabs" role="tablist" aria-label="Lobby actions">
@@ -887,13 +890,13 @@ function LobbyActionDesk(props: {
         <OperationComposer view={props.view} seat={props.seat} partyId={partyId} onPartyId={setPartyId} busy={props.busy} onInteraction={props.onInteraction} onSubmit={(play) => props.onCommand({ type: "game_action", action: { type: "operate", partyId, play } })} onFinish={() => props.onCommand({ type: "game_action", action: { type: "finish_operate" } })} />
       )}
       {mode === "collect" && (
-        <SimplePartyAction title="Collect" copy="Spend one Collection counter and take the complete public pile into your New Year area. You may also take one available Bonus card. The party stays open." partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={collectTargetPartyIds} bonusCardIds={props.view.bonusCardsAtParties[partyId]} disabled={props.busy || !collectLegal} button={`Collect ${party === undefined ? 0 : operationCount(party.operations)} cards`} onInteraction={props.onInteraction} onSubmit={(bonusCardId) => props.onCommand({ type: "game_action", action: { type: "collect", partyId, ...(bonusCardId === undefined ? {} : { bonusCardId }) } })} />
+        <SimplePartyAction title="Collect" copy="Spend one Collection counter and take the complete public pile, even when empty, into your New Year area. You may also take one available Bonus card. The party stays open." partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={collectTargetPartyIds} bonusCardIds={props.view.bonusCardsAtParties[partyId]} disabled={props.busy || !collectLegal} button={`Collect ${party === undefined ? 0 : operationCount(party.operations)} cards`} onInteraction={props.onInteraction} onSubmit={(bonusCardId) => props.onCommand({ type: "game_action", action: { type: "collect", partyId, ...(bonusCardId === undefined ? {} : { bonusCardId }) } })} />
       )}
       {mode === "close" && (
-        <SimplePartyAction title="Close" copy={firstTurn ? "You cannot Close on your first Lobby turn, even if you previously passed." : "Only the opening Firm may Close. Its owner takes the pile, may take one Bonus card, and gets the opening back."} partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={closeTargetPartyIds} bonusCardIds={props.view.bonusCardsAtParties[partyId]} disabled={props.busy || !closeLegal} button="Close party" onInteraction={props.onInteraction} onSubmit={(bonusCardId) => props.onCommand({ type: "game_action", action: { type: "close", partyId, ...(bonusCardId === undefined ? {} : { bonusCardId }) } })} />
+        <SimplePartyAction title="Close" copy={firstTurn ? "You cannot Close on your first Lobby turn." : "Only the opening Firm may Close. Its owner takes the pile, may take one Bonus card, and gets the opening back."} partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={closeTargetPartyIds} bonusCardIds={props.view.bonusCardsAtParties[partyId]} disabled={props.busy || !closeLegal} button="Close party" onInteraction={props.onInteraction} onSubmit={(bonusCardId) => props.onCommand({ type: "game_action", action: { type: "close", partyId, ...(bonusCardId === undefined ? {} : { bonusCardId }) } })} />
       )}
       {mode === "pass" && (
-        <PassAction busy={props.busy} onInteraction={props.onInteraction} onPass={() => props.onCommand({ type: "game_action", action: { type: "pass" } })} />
+        <PassAction busy={props.busy} eligible={passLegal} onInteraction={props.onInteraction} onPass={() => props.onCommand({ type: "game_action", action: { type: "pass" } })} />
       )}
     </div>
   );
@@ -980,6 +983,7 @@ function BonusCardChoice(props: {
 
 function PassAction(props: {
   busy: boolean;
+  eligible: boolean;
   onInteraction?: ((interaction: TableInteraction | null) => void) | undefined;
   onPass(): Promise<boolean | void>;
 }) {
@@ -989,8 +993,8 @@ function PassAction(props: {
   return (
     <div className="action-copy">
       <h3>Pass</h3>
-      <p>If every player passes consecutively, every party closes to its opening Firm, all openings return, and the year ends.</p>
-      <button className="red-button" disabled={props.busy} onClick={() => void props.onPass()}>Pass this turn</button>
+      <p>{props.eligible ? "All your Firm markers have returned. Take no action this turn." : "Close every party you opened and return all your Firm markers before passing."}</p>
+      <button className="red-button" disabled={props.busy || !props.eligible} onClick={() => void props.onPass()}>Pass this turn</button>
     </div>
   );
 }
@@ -1198,7 +1202,7 @@ function YearArchive({ view }: { view: GameView }) {
     <section className="year-archive paper-panel">
       <SectionHeading label="Annual record" title="Year archive" slug={`${view.yearHistory.length} closed`} />
       {view.yearHistory.length === 0 ? <p>No year has closed.</p> : (
-        <ol>{[...view.yearHistory].reverse().map((record) => <li key={record.year}><b>Year {record.year}</b><span>{seatName(view, record.endedBySeatId)} ended the year · {record.endReason === "passes" ? "all passed" : "majority closed"}</span><small>{record.actions.length} Lobby actions · {record.operations.length} Operations</small></li>)}</ol>
+        <ol>{[...view.yearHistory].reverse().map((record) => <li key={record.year}><b>Year {record.year}</b><span>{seatName(view, record.endedBySeatId)} closed the majority</span><small>{record.actions.length} Lobby actions · {record.operations.length} Operations</small></li>)}</ol>
       )}
     </section>
   );

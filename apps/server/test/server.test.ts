@@ -162,7 +162,7 @@ describe("game server", () => {
     }
   );
 
-  it("runs ABBA openings, Lobby Operations, collection, passes, and cleanup", async () => {
+  it("runs ABBA openings, Lobby Operations, collection, Closures, and cleanup", async () => {
     const directory = temporaryDirectory();
     const app = createAppServer({
       databasePath: resolve(directory, "game.sqlite"),
@@ -286,28 +286,26 @@ describe("game server", () => {
       body: { error: { code: "invalid_request" } }
     });
 
-    await gameAction(baseUrl, game, 0, "pass-a", { type: "pass" });
-    await gameAction(baseUrl, game, 1, "pass-b", { type: "pass" });
-    await gameAction(baseUrl, game, 0, "closure-honeycomb", {
-      type: "choose_closure_bonus",
+    await gameAction(baseUrl, game, 0, "close-honeycomb", {
+      type: "close",
       partyId: "honeycomb"
     });
-    await gameAction(baseUrl, game, 1, "closure-old-shell", {
-      type: "choose_closure_bonus",
+    await gameAction(baseUrl, game, 1, "close-old-shell", {
+      type: "close",
       partyId: "old-shell"
+    });
+    await gameAction(baseUrl, game, 0, "close-riverworks", {
+      type: "close",
+      partyId: "riverworks"
     });
     await gameAction(baseUrl, game, 1, "closure-foxglove", {
       type: "choose_closure_bonus",
       partyId: "foxglove"
     });
-    await gameAction(baseUrl, game, 0, "closure-riverworks", {
-      type: "choose_closure_bonus",
-      partyId: "riverworks"
-    });
     view = await state(baseUrl, game, 1);
     expect(view.publicState.publicGame).toMatchObject({
       year: 2,
-      earlyBirdSeatId: game.sessions[1]!.seatId,
+      earlyBirdSeatId: game.sessions[0]!.seatId,
       phase: "opening"
     });
     expect(privateSeat(view)).toMatchObject({

@@ -152,7 +152,7 @@ async function takeTurn(
       client,
       session.gameId,
       publicState.version,
-      operation ?? { type: "pass" }
+      operation ?? chooseClose(game, phase, session.seatId) ?? { type: "pass" }
     );
     return;
   }
@@ -219,6 +219,24 @@ function chooseRally(
           choice: { operation: "rally", districtId: district.id }
         }
       };
+    }
+  }
+  return null;
+}
+
+function chooseClose(
+  game: Record<string, unknown>,
+  phase: Record<string, unknown>,
+  seatId: string
+): Record<string, unknown> | null {
+  const turnsTaken = objectValue(phase["turnsTaken"]);
+  if (Number(turnsTaken[seatId] ?? 0) === 0) {
+    return null;
+  }
+  for (const [partyId, partyValue] of Object.entries(objectValue(game["parties"]))) {
+    const party = objectValue(partyValue);
+    if (party["ownerSeatId"] === seatId && party["status"] === "open") {
+      return { type: "close", partyId };
     }
   }
   return null;
