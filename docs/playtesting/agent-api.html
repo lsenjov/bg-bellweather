@@ -21,7 +21,7 @@
       <p class="intro">Run the application locally at <code>http://127.0.0.1:4317</code>. Every seat receives an opaque bearer token. A command’s acting seat and timestamp come from the server; strict validation rejects unknown fields.</p>
 
       <section>
-        <span class="status decided">Ruleset 21</span>
+        <span class="status decided">Ruleset 22</span>
         <h2>Start and connect</h2>
         <pre><code>npm install
 npm run build
@@ -76,10 +76,10 @@ npm run dev</code></pre>
               <tr><td><code>open_party</code></td><td><code>firmId</code> and an unopened <code>partyId</code>. Submit only while the projected opening cursor names the seat.</td></tr>
               <tr><td><code>operate</code></td><td><code>partyId</code> and one <code>play</code>. An ordinary play contains <code>cardType: "operation"</code>, a matching <code>operation</code>, and <code>choice</code>. A Bonus play contains <code>cardType: "bonus"</code>, a held <code>bonusCardId</code>, and <code>choice</code>. The card resolves immediately; a second or third play must use the same party, and the third ends the action automatically.</td></tr>
               <tr><td><code>finish_operate</code></td><td>No additional fields. Submit after the first or second resolved card to finish the sequence and pass play clockwise.</td></tr>
-              <tr><td><code>collect</code></td><td><code>partyId</code> for an open party with a nonempty pile and optional <code>bonusCardId</code> for at most one card home there. The engine spends one Collection counter.</td></tr>
+              <tr><td><code>collect</code></td><td><code>partyId</code> for any open party and optional <code>bonusCardId</code> for at most one card there. The engine spends one Collection counter even when the pile is empty and no Bonus card is taken.</td></tr>
               <tr><td><code>close</code></td><td><code>partyId</code> for an open party whose Firm marker belongs to the acting player and optional <code>bonusCardId</code> home there. Illegal on that player’s first Lobby turn of the year.</td></tr>
               <tr><td><code>choose_closure_bonus</code></td><td><code>partyId</code> for the current automatic-Closure choice and optional <code>bonusCardId</code>. Omit the card to decline. Only that party’s opener may submit it.</td></tr>
-              <tr><td><code>pass</code></td><td>No additional fields.</td></tr>
+              <tr><td><code>pass</code></td><td>No additional fields. Legal only after every Firm marker controlled by the acting player has returned; it does not end the year.</td></tr>
               <tr><td><code>set_election_ready</code></td><td>Boolean <code>ready</code>, after <code>phaseData.resultsRecorded</code> is true.</td></tr>
             </tbody>
           </table>
