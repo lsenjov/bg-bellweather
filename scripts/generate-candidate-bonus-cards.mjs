@@ -39,8 +39,8 @@ for (const sectionMatch of candidateSource.matchAll(sectionPattern)) {
   }
 }
 
-if (cards.length !== 106) {
-  throw new Error(`Expected 106 candidates, found ${cards.length}.`);
+if (cards.length !== 100) {
+  throw new Error(`Expected 100 remaining candidates, found ${cards.length}.`);
 }
 
 for (const [partyClass, partyName] of partyNames) {
@@ -77,7 +77,7 @@ const document = `<!doctype html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Nine printable A4 sheets containing all 106 untested Bellweather Ruleset 21 Bonus-card candidates.">
+    <meta name="description" content="Nine printable A4 sheets containing all 100 remaining Bellweather Bonus-card candidates after the Ruleset 23 selections.">
     <title>Printable Candidate Bonus Cards — Ladder Bidding</title>
     <link rel="stylesheet" href="../bonus-cards-print.css">
     <link rel="stylesheet" href="../candidate-bonus-cards-print.css">
@@ -86,8 +86,8 @@ const document = `<!doctype html>
 ${symbolBlock}
     <header class="screen-header">
       <a href="bonus-card-candidates.html">← Candidate report</a>
-      <h1>Ruleset 21 candidate Bonus cards</h1>
-      <p>Print these nine front-only A4 portrait sheets at actual size. All 106 untested candidates use the current 40 × 61 mm Bonus-card format. The small outlined C distinguishes them from the twelve current cards; the R21 footer identifies the rules vocabulary they use.</p>
+      <h1>Remaining Bonus-card candidates</h1>
+      <p>Print these nine front-only A4 portrait sheets at actual size. All 100 unselected candidates use the current 40 × 61 mm Bonus-card format. The small outlined C distinguishes them from the eighteen current Ruleset 23 cards; the R21 footer preserves the rules vocabulary in which these candidates were drafted.</p>
       <p><a href="../../assets/print/bonus-card-candidates-a4.pdf">Open print-ready PDF →</a></p>
     </header>
     <main>

@@ -24,5 +24,5 @@ Expand the collectible Bonus-card supply from twelve to eighteen cards. Each par
 
 1. [x] Expand canonical content and protocol types, implement the six Unbound resolutions and returned-Firm year-end rule in the game engine, and add focused content, legality, resolution, circulation, ownership, and timing tests.
 2. [x] Update protocol consumers, server/testkit adapters, projections, and the browser Operate workflow for Unbound card choices; add focused integration and UI tests.
-3. [ ] Update current rules, examples, glossary, design decisions, open questions, component specifications, candidate archive status, changelog, and the eighteen-card printable sheet/PDF.
+3. [x] Update current rules, examples, glossary, design decisions, open questions, component specifications, candidate archive status, changelog, and the eighteen-card printable sheet/PDF.
 4. [ ] Run the complete repository check, conduct an independent code review, fix all high and medium findings plus low documentation findings, and repeat review until no high or medium issues remain.

@@ -62,22 +62,50 @@
         <div class="note">
           <h3>Only the opener may Close</h3>
           <p><strong>State:</strong> Ada opened Honeycomb. On Bert’s turn, Honeycomb holds a valuable pile. Ada has already taken one Lobby turn this year.</p>
-          <p><strong>Resolution:</strong> Bert cannot Close Honeycomb, although he may Collect its pile. On Ada’s next turn she may Close it, take its current pile into her New Year area, optionally take one Bonus card still home there, and return her Firm marker face up. This Bonus choice is available even if Honeycomb’s pile is empty. No one may Operate or Collect there for the rest of the year, and Ada cannot reuse the returned marker this year.</p>
-          <p><strong>Why:</strong> Closure and automatic closure always award the pile to the player who placed the opening Firm marker.</p>
+          <p><strong>Resolution:</strong> Bert cannot Close Honeycomb, although he may Collect its pile. On Ada’s next turn she may Close it, take its current pile into her New Year area, optionally take one Bonus card still home there, and return her Firm marker face up. This Bonus choice is available even if Honeycomb’s pile is empty. Honeycomb remains closed unless a later card opens it again.</p>
+          <p><strong>Why:</strong> Closure and automatic closure award the pile to the current owner of the Firm marker on that party.</p>
         </div>
 
         <div class="note">
-          <h3>A strict majority ends the Lobby mid-orbit</h3>
+          <h3>A strict majority ends the Lobby at turn end</h3>
           <p><strong>State:</strong> Six parties opened. Two are already closed. Ada legally closes a third.</p>
-          <p><strong>Resolution:</strong> Three returned Firm markers among six openings is not more than half, so play continues. If Bert closes a fourth and returns its marker, the Lobby ends immediately. Unclosed party piles are awarded to their openers; later players do not finish the orbit.</p>
-          <p><strong>Why:</strong> The end trigger is a strict majority of opened parties, checked after each closure.</p>
+          <p><strong>Resolution:</strong> Three returned Firm markers among six openings is not more than half, so play continues. If Bert closes a fourth and returns its marker, finish that Close, then end the Lobby before the next player acts. Unclosed party piles are awarded to their current Firm owners; later players do not finish the orbit.</p>
+          <p><strong>Why:</strong> The end trigger is a strict majority of returned Firm markers, checked at the end of every Lobby turn rather than between cards in an Operate action.</p>
         </div>
 
         <div class="note">
           <h3>Pass waits for every personal Closure</h3>
           <p><strong>State:</strong> In a two-player game, Ada opened Honeycomb and Riverworks. She has closed Honeycomb, while Riverworks remains open.</p>
-          <p><strong>Resolution:</strong> Ada cannot Pass because one of her two Firm markers is still on a party. After a later Close returns her Riverworks marker, she may Pass on future turns. Her Pass does nothing and cannot end the year; play continues until a Close returns a strict majority of all four Firm markers.</p>
-          <p><strong>Why:</strong> Pass becomes available only after the player has finished every personal Closure. The strict majority is the sole Lobby-ending trigger.</p>
+          <p><strong>Resolution:</strong> Ada cannot Pass because one of her two Firm markers is still on a party. After a later Close returns her Riverworks marker, she may Pass on future turns. Her Pass changes no Firm markers; apply the ordinary end-of-turn majority check, then continue if the year remains active.</p>
+          <p><strong>Why:</strong> Pass becomes available only after every Firm marker that player controls has returned. The returned-Firm majority remains the sole Lobby-ending state.</p>
+        </div>
+
+        <div class="note">
+          <h3>Institutional Memory may resolve only part of a card</h3>
+          <p><strong>State:</strong> SC-01 is face up from an earlier Election. Honeycomb Support can legally move into its Ironwood objective and Old Shell Support can legally move into its Millbank objective, but Canal Ward is full for Foxglove.</p>
+          <p><strong>Resolution:</strong> Ada may choose only the Honeycomb objective, only the Old Shell objective, or both. She cannot choose the blocked Foxglove objective. At least one objective must be chosen.</p>
+          <p><strong>Why:</strong> Institutional Memory explicitly permits a non-empty legal subset; “for each chosen objective” does not require all three.</p>
+        </div>
+
+        <div class="note">
+          <h3>Shell Firm can move an opponent’s Firm to a closed party</h3>
+          <p><strong>State:</strong> Ada operates at Foxglove, whose Firm belongs to Bert and whose pile contains two cards. Old Shell closed earlier and currently has no Firm marker.</p>
+          <p><strong>Resolution:</strong> Ada plays Shell Firm and moves Bert’s Foxglove Firm marker and both pile cards to Old Shell. Foxglove now has no marker; Old Shell is open under Bert’s Firm ownership. Ada’s Lobby action ends immediately. The number of returned markers has not changed.</p>
+          <p><strong>Why:</strong> Shell Firm moves the physical marker and pile, not their owner, and a closed party satisfies “without a Firm marker.”</p>
+        </div>
+
+        <div class="note">
+          <h3>Mass Transit vacates its first district</h3>
+          <p><strong>State:</strong> Northreach contains Honeycomb Support, Cloverfield contains Old Shell Support, Harbormouth contains Foxglove Support, and Millbank has a free spot. Those four districts form a path in that order.</p>
+          <p><strong>Resolution:</strong> Move Honeycomb from Northreach to Cloverfield, Old Shell from Cloverfield to Harbormouth, and Foxglove from Harbormouth to Millbank. Resolve the shifts together: Northreach loses one Support, the intermediate districts keep the same occupancy, and the route stops in Millbank.</p>
+          <p><strong>Why:</strong> The chosen free spot is the endpoint, not the start of a loop.</p>
+        </div>
+
+        <div class="note">
+          <h3>Midnight Session changes the end-of-turn count</h3>
+          <p><strong>State:</strong> Four Firm markers were placed during Party Openings and three are currently returned. On Ada’s turn, she plays Midnight Session at an eligible acting party. Old Shell is closed and Ada has a returned Firm marker.</p>
+          <p><strong>Resolution:</strong> Ada puts her returned marker on Old Shell, which opens empty under her ownership. Only two of the four opening markers are now returned, so finishing the Operate action does not end the year. If Old Shell closes later, its pile and another optional Bonus card can be awarded again.</p>
+          <p><strong>Why:</strong> The majority is checked after the complete turn using current marker locations, and earlier Closure awards are not undone.</p>
         </div>
 
         <div class="note">
@@ -106,7 +134,7 @@
     <footer class="page-footer">
       <div class="page-footer-inner">
         <a href="current-rules.html">Back to current rules →</a>
-        <span class="stamp">11 worked examples</span>
+        <span class="stamp">15 worked examples</span>
       </div>
     </footer>
   </body>

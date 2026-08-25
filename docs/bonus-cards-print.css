@@ -39,4 +39,5 @@ main { display: flex; padding-bottom: 36px; justify-content: center; }
   .screen-header { display: none; }
   main { display: block; padding: 0; }
   .print-sheet { box-shadow: none; }
+  .print-sheet:not(:last-child) { break-after: page; }
 }

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="The twelve current Bellweather Bonus cards beside forty-six curated Operation-family candidates and sixty unbound party-themed experiments.">
+    <meta name="description" content="The eighteen current Bellweather Bonus cards beside one hundred remaining archived candidates.">
     <title>Bonus Card Candidates — Ladder Bidding</title>
     <link rel="stylesheet" href="../styles.css">
     <style>
@@ -154,6 +154,21 @@
         font: 900 0.7rem/1 var(--mono);
       }
 
+      .candidate-card.selected {
+        border-color: var(--party);
+        background: color-mix(in srgb, var(--party) 14%, var(--paper-bright));
+        box-shadow: none;
+      }
+
+      .selected-label {
+        display: inline-block;
+        margin-left: 0.35rem;
+        color: var(--party);
+        font: 900 0.66rem/1 var(--mono);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
       .current-card h3,
       .candidate-card h3 {
         margin: 0.15rem 0 0.45rem;
@@ -224,32 +239,32 @@
       <div class="header-inner">
         <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / candidate pool</a>
         <h1>Bonus card candidates</h1>
-        <p class="meta">12 current · 46 Operation-family candidates · 60 unbound experiments · 2026-08-21</p>
+        <p class="meta">18 current · 46 Operation-family candidates · 54 remaining unbound experiments · 2026-08-25</p>
       </div>
     </header>
 
     <main>
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Bonus card candidates</nav>
-      <p class="intro">A broad pool of possible collectible Bonus cards for Bellweather. Each party’s two current Ruleset 21 cards appear first, followed by its curated Operation-family candidates and ten new unbound experiments.</p>
-      <p><a class="action-link" href="printable-bonus-card-candidates.html">Print all 106 candidates →</a></p>
+      <p class="intro">A broad archived pool of collectible Bonus cards for Bellweather. Each party’s three current Ruleset 23 cards appear first, followed by its curated Operation-family candidates and the remaining unbound experiments. The six selected source candidates remain marked in place so their earlier wording is not lost.</p>
+      <p><a class="action-link" href="printable-bonus-card-candidates.html">Print the 100 remaining candidates →</a></p>
 
       <section>
         <span class="status hypothesis">Exploration</span>
         <h2>How to read the pool</h2>
-        <p>These are design hypotheses, not rules. Each card is written as a standalone atomic action. A card labelled Organise, Rally, Smear, or Court uses that named Operation family; a card labelled Unbound resolves only its own text and invokes none of the four baselines. Unless the text says “may” or “up to,” every part must be possible for the card to be legal. “Acting party” means the open party being operated, as in Ruleset 21.</p>
-        <div class="status-note"><strong>Balance warning:</strong> none of these effects has been costed or playtested. The pool deliberately ranges from conservative ideas to sharp, situational effects so it can be cut down further before testing. It does not change the current two-card-per-party component limit.</div>
+        <p>The unselected cards are design hypotheses, not rules. Each card is written as a standalone atomic action. A card labelled Organise, Rally, Smear, or Court uses that named Operation family; a card labelled Unbound resolves only its own text and invokes none of the four baselines. Unless the text says “may” or “up to,” every part must be possible for the card to be legal. “Acting party” means the open party being operated, as in Ruleset 23.</p>
+        <div class="status-note"><strong>Selection update:</strong> Ruleset 23 selected Every Bee Counts, Institutional Memory, Shell Firm, Mass Transit, Empty Every Nest, and Midnight Session after wording review. Their marked entries preserve the original candidate text; the current cards above and the <a href="../components/bonus-cards.html">printable deck</a> are authoritative. The remaining one hundred effects are still uncosted and untested.</div>
         <p>This audit removed 74 of the original 120 candidates. A candidate was culled when it produced the same board change as a current card or another candidate and differed only by a legality restriction, route phrasing, or renamed target. Current cards always took precedence. When only candidates collided, the version kept was the strongest fit for its party. Effects with materially different token ownership, Operation baseline, quantity, or final board state remain.</p>
         <p>The 46 curated family candidates stay on the map or at Court. The 60 unbound experiments deliberately range into piles, private cards, Firm markers, Closure, turn order, points, and Election state. Their extra timing and ownership interactions are open questions if any survive curation.</p>
         <div class="table-wrap" role="region" aria-label="Remaining candidate counts by party" tabindex="0">
           <table>
             <thead><tr><th>Party</th><th>First family</th><th>Second family</th><th>Family subtotal</th><th>Unbound</th><th>Total</th></tr></thead>
             <tbody>
-              <tr><td>Honeycomb</td><td>4 Organise</td><td>4 Court</td><td>8</td><td>10</td><td>18</td></tr>
-              <tr><td>Old Shell</td><td>3 Organise</td><td>2 Smear</td><td>5</td><td>10</td><td>15</td></tr>
-              <tr><td>Foxglove</td><td>8 Smear</td><td>6 Court</td><td>14</td><td>10</td><td>24</td></tr>
-              <tr><td>Riverworks</td><td>1 Organise</td><td>2 Rally</td><td>3</td><td>10</td><td>13</td></tr>
-              <tr><td>Many Wings</td><td>2 Rally</td><td>7 Court</td><td>9</td><td>10</td><td>19</td></tr>
-              <tr><td>Night Parliament</td><td>4 Rally</td><td>3 Smear</td><td>7</td><td>10</td><td>17</td></tr>
+              <tr><td>Honeycomb</td><td>4 Organise</td><td>4 Court</td><td>8</td><td>9</td><td>17</td></tr>
+              <tr><td>Old Shell</td><td>3 Organise</td><td>2 Smear</td><td>5</td><td>9</td><td>14</td></tr>
+              <tr><td>Foxglove</td><td>8 Smear</td><td>6 Court</td><td>14</td><td>9</td><td>23</td></tr>
+              <tr><td>Riverworks</td><td>1 Organise</td><td>2 Rally</td><td>3</td><td>9</td><td>12</td></tr>
+              <tr><td>Many Wings</td><td>2 Rally</td><td>7 Court</td><td>9</td><td>9</td><td>18</td></tr>
+              <tr><td>Night Parliament</td><td>4 Rally</td><td>3 Smear</td><td>7</td><td>9</td><td>16</td></tr>
             </tbody>
           </table>
         </div>
@@ -272,8 +287,9 @@
           </div>
         </div>
         <div class="current-grid" aria-label="Current Honeycomb Bonus cards">
-          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Organise</span><h3>Waggle Route</h3><p>Resolve Organise. Then add another acting-party Support to a free spot in the destination district.</p></article>
-          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Court</span><h3>Common Cause</h3><p>Resolve Court. The selected party must become the acting party’s Target. Move acting-party Support to a different free district containing selected-party Support.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family">Organise</span><h3>Waggle Route</h3><p>Resolve Organise. Then add another acting-party Support to a free spot in the destination district.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family">Court</span><h3>Common Cause</h3><p>Resolve Court. The selected party must become the acting party’s Target. Move acting-party Support to a different free district containing selected-party Support.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family unbound">Unbound</span><h3>Every Bee Counts</h3><p>Add acting-party Support to every district that contains exactly one acting-party Support and has a free spot.</p></article>
         </div>
         <ol class="candidate-grid" aria-label="Curated untested Honeycomb Bonus-card candidates">
           <li class="candidate-card"><span class="family">Organise</span><h3>Cross-Pollination</h3><p>Resolve Organise into a district containing another party. Then add acting-party Support to a different free district containing that same party.</p></li>
@@ -286,7 +302,7 @@
           <li class="candidate-card"><span class="family">Court</span><h3>Common Petition</h3><p>Resolve Court. Then move one acting-party Support and one selected-party Support from the same district to a common neighboring district with two free spots.</p></li>
           <li class="candidate-card"><span class="family">Court</span><h3>Shared Mandate</h3><p>Resolve Court. Then the acting and selected parties each add one Support to the same district where both are present. It must have two free spots.</p></li>
         </ol>
-        <div class="unbound-heading"><h3>Unbound actions</h3><p>No Operation baseline · 10 experiments</p></div>
+        <div class="unbound-heading"><h3>Unbound actions</h3><p>No Operation baseline · 9 remaining + 1 selected</p></div>
         <ol class="candidate-grid wild-grid" aria-label="Ten unbound Honeycomb Bonus-card candidates">
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Full Comb</h3><p>Choose a district containing at least three parties and one free spot for every party present. Every party there adds one Support.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Mutual Aid Exchange</h3><p>Return one other Bonus card from your hand to its home. Take one available Bonus card belonging to a different party directly into hand.</p></li>
@@ -294,7 +310,7 @@
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Coalition Web</h3><p>Choose another party. Point the acting and selected parties’ Coalition Targets at each other without changing their Court Support.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Swarm Lift</h3><p>Choose a district containing acting-party Support. Move every acting-party Support there into different free districts containing Support belonging to the acting party’s current Target.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Democratic Sortition</h3><p>Choose two adjacent districts. Combine and randomize their Support, then redeal the original number to each district.</p></li>
-          <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Every Bee Counts</h3><p>Add acting-party Support to every district that contains exactly one acting-party Support and has a free spot.</p></li>
+          <li class="candidate-card selected"><span class="family unbound">Unbound</span><span class="selected-label">Selected R23</span><h3>Every Bee Counts</h3><p>Add acting-party Support to every district that contains exactly one acting-party Support and has a free spot.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Common Treasury</h3><p>Each player with an ordinary card in hand contributes one face down. Shuffle, reveal, and place every contributed card in the acting party’s pile.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Worker Solidarity</h3><p>Choose another party. In every district containing both parties, the party with fewer Support there adds one; on a tie, both add one.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Queenless Assembly</h3><p>The acting party must have Court Support. Remove all of it, then replace the same number across the five party spaces as evenly as possible. Choose ties, then update its Target.</p></li>
@@ -310,8 +326,9 @@
           </div>
         </div>
         <div class="current-grid" aria-label="Current Old Shell Bonus cards">
-          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Organise</span><h3>Dig In</h3><p>Resolve a movement Organise. Then add acting-party Support to the vacated source spot. Cannot recover an absent party.</p></article>
-          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Smear</span><h3>Stonewall</h3><p>Resolve Smear. Then remove a second Support belonging to that rival from the same district.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family">Organise</span><h3>Dig In</h3><p>Resolve a movement Organise. Then add acting-party Support to the vacated source spot. Cannot recover an absent party.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family">Smear</span><h3>Stonewall</h3><p>Resolve Smear. Then remove a second Support belonging to that rival from the same district.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family unbound">Unbound</span><h3>Institutional Memory</h3><p>Choose a revealed scoring card. For each chosen objective, move one Support belonging to the named party from another district to the objective’s district. Each destination must have a free spot.</p></article>
         </div>
         <ol class="candidate-grid" aria-label="Curated untested Old Shell Bonus-card candidates">
           <li class="candidate-card"><span class="family">Organise</span><h3>Tortoise Column</h3><p>Move exactly two acting-party Support from one district to the same neighboring district. The source must retain acting-party Support.</p></li>
@@ -321,7 +338,7 @@
           <li class="candidate-card"><span class="family">Smear</span><h3>Hard Border</h3><p>Choose an acting-party district and two different neighboring districts. Remove one Support belonging to the same rival from each chosen neighbor.</p></li>
           <li class="candidate-card"><span class="family">Smear</span><h3>Barricade Politics</h3><p>Resolve Smear in a district containing at least two acting-party Support. Then move one acting-party Support from there to a free neighboring district where it is present.</p></li>
         </ol>
-        <div class="unbound-heading"><h3>Unbound actions</h3><p>No Operation baseline · 10 experiments</p></div>
+        <div class="unbound-heading"><h3>Unbound actions</h3><p>No Operation baseline · 9 remaining + 1 selected</p></div>
         <ol class="candidate-grid wild-grid" aria-label="Ten unbound Old Shell Bonus-card candidates">
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Sit-In</h3><p>Choose a district containing acting-party Support. Fill every free spot there with acting-party Support.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>General Strike</h3><p>End the year as though every player had passed consecutively. Resolve every remaining Closure and Cleanup normally; you become the next Early Bird.</p></li>
@@ -330,7 +347,7 @@
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Unbreakable Majority</h3><p>Choose a district containing acting-party Support. Add acting-party Support until it strictly outnumbers every rival Support there combined.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Ancient Boundary</h3><p>Choose two adjacent districts containing acting-party Support. Swap their complete acting-party Support counts; every resulting stack must fit.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Union Dues</h3><p>Each other player with an ordinary card in hand chooses one and gives it face down to the acting player’s New Year area.</p></li>
-          <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Institutional Memory</h3><p>Choose a previously revealed scoring card. For each objective on it, move one named-party Support from anywhere to that objective’s district.</p></li>
+          <li class="candidate-card selected"><span class="family unbound">Unbound</span><span class="selected-label">Selected R23</span><h3>Institutional Memory</h3><p>Choose a previously revealed scoring card. For each objective on it, move one named-party Support from anywhere to that objective’s district.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Pension Reserve</h3><p>Lose any positive number of points. For each point lost, take one chosen ordinary card from the acting party’s pile directly into hand.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Slow Vote</h3><p>Reverse the direction of Lobby turns immediately and for the rest of the current year. A later Slow Vote reverses it again.</p></li>
         </ol>
@@ -345,8 +362,9 @@
           </div>
         </div>
         <div class="current-grid" aria-label="Current Foxglove Bonus cards">
-          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Smear</span><h3>Spin</h3><p>Resolve Smear. Then add acting-party Support to the spot vacated by the removed rival Support.</p></article>
-          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Court</span><h3>Whisper Network</h3><p>Resolve Court. Move acting-party Court Support from another party’s space to the selected party, then update its Target again.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family">Smear</span><h3>Spin</h3><p>Resolve Smear. Then add acting-party Support to the spot vacated by the removed rival Support.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family">Court</span><h3>Whisper Network</h3><p>Resolve Court. Move acting-party Court Support from another party’s space to the selected party, then update its Target again.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family unbound">Unbound</span><h3>Shell Firm</h3><p>Choose another party without a Firm marker. Move the acting party’s Firm marker and complete Operation pile to it. Then end this Lobby action.</p></article>
         </div>
         <ol class="candidate-grid" aria-label="Curated untested Foxglove Bonus-card candidates">
           <li class="candidate-card"><span class="family">Smear</span><h3>False Flag</h3><p>Resolve Smear. Then add Support belonging to a third party to the vacated spot.</p></li>
@@ -365,11 +383,11 @@
           <li class="candidate-card"><span class="family">Court</span><h3>Planted Question</h3><p>Resolve Court. Then remove one Court Support belonging to a third party from that party’s selected-party space and update the third party’s Target.</p></li>
           <li class="candidate-card"><span class="family">Court</span><h3>Honeypot</h3><p>Resolve Court. Then move selected-party Support from a district containing acting-party Support to a free neighboring district containing no acting-party Support.</p></li>
         </ol>
-        <div class="unbound-heading"><h3>Unbound actions</h3><p>No Operation baseline · 10 experiments</p></div>
+        <div class="unbound-heading"><h3>Unbound actions</h3><p>No Operation baseline · 9 remaining + 1 selected</p></div>
         <ol class="candidate-grid wild-grid" aria-label="Ten unbound Foxglove Bonus-card candidates">
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Identity Theft</h3><p>Choose another party. Across the map, replace every acting-party Support with selected-party Support and every selected-party Support with acting-party Support.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Stolen File</h3><p>Exchange one ordinary card from hand with one face-up ordinary card in the acting party’s pile. The card entering the pile is revealed.</p></li>
-          <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Shell Firm</h3><p>Move the acting party’s Firm marker and complete pile to a party not opened this year. The acting party closes, the new party opens, and this is not a Closure.</p></li>
+          <li class="candidate-card selected"><span class="family unbound">Unbound</span><span class="selected-label">Selected R23</span><h3>Shell Firm</h3><p>Move the acting party’s Firm marker and complete pile to a party not opened this year. The acting party closes, the new party opens, and this is not a Closure.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>False Majority</h3><p>Choose a district containing acting-party Support and two rivals. Swap those rivals’ complete Support counts in that district.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Agenda Leak</h3><p>Choose another player. Secretly inspect their next unrevealed scoring card or registered pair, then exchange it with your own card or pair in the same slot.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Counterfeit Mandate</h3><p>Choose another player and swap your complete point totals.</p></li>
@@ -389,8 +407,9 @@
           </div>
         </div>
         <div class="current-grid" aria-label="Current Riverworks Bonus cards">
-          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Organise</span><h3>Canal Network</h3><p>Move acting-party Support along a connected route whose source and intermediate districts contain acting-party Support, ending in a free district.</p></article>
-          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Rally</span><h3>Public Works</h3><p>Resolve Rally. Then add acting-party Support to a free spot in a neighboring district.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family">Organise</span><h3>Canal Network</h3><p>Move acting-party Support along a connected route whose source and intermediate districts contain acting-party Support, ending in a free district.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family">Rally</span><h3>Public Works</h3><p>Resolve Rally. Then add acting-party Support to a free spot in a neighboring district.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family unbound">Unbound</span><h3>Mass Transit</h3><p>Choose a path of two to five districts with a free spot at one end. Every other district must contain Support. Shift one Support from each of those districts one step toward the free spot.</p></article>
         </div>
         <ol class="candidate-grid" aria-label="Curated untested Riverworks Bonus-card candidates">
           <li class="candidate-card"><span class="family">Organise</span><h3>Hub and Spoke</h3><p>Resolve Organise. Then move acting-party Support from a different neighbor of the destination into the destination.</p></li>
@@ -398,9 +417,9 @@
           <li class="candidate-card"><span class="family">Rally</span><h3>Boomtown</h3><p>Resolve Rally in a capacity-six district. Then add a second acting-party Support there.</p></li>
           <li class="candidate-card"><span class="family">Rally</span><h3>Dredging Project</h3><p>Resolve Rally in a district containing rival Support. Then move one rival Support from there to a free neighboring district.</p></li>
         </ol>
-        <div class="unbound-heading"><h3>Unbound actions</h3><p>No Operation baseline · 10 experiments</p></div>
+        <div class="unbound-heading"><h3>Unbound actions</h3><p>No Operation baseline · 9 remaining + 1 selected</p></div>
         <ol class="candidate-grid wild-grid" aria-label="Ten unbound Riverworks Bonus-card candidates">
-          <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Mass Transit</h3><p>Choose a connected path of two to five districts. Simultaneously move one chosen Support from each district to the next, and the last district’s chosen Support to the first.</p></li>
+          <li class="candidate-card selected"><span class="family unbound">Unbound</span><span class="selected-label">Selected R23</span><h3>Mass Transit</h3><p>Choose a connected path of two to five districts. Simultaneously move one chosen Support from each district to the next, and the last district’s chosen Support to the first.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Floodgate</h3><p>Choose a district. Move every Support there into free neighboring spots, distributing them as you choose until the source is empty.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Eminent Domain</h3><p>Choose two non-Centre districts with the same capacity and swap their complete Support populations.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Capital Works</h3><p>List every party absent from Bellweather Centre in an order you choose. In that order, each adds one Support until the Centre is full or the list ends.</p></li>
@@ -422,8 +441,9 @@
           </div>
         </div>
         <div class="current-grid" aria-label="Current Many Wings Bonus cards">
-          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Rally</span><h3>Scatter the Flock</h3><p>Resolve Rally. Move the maximum possible acting-party Support into distinct free neighboring districts. At least one must move.</p></article>
-          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Court</span><h3>Joint Campaign</h3><p>Resolve Court. Then add selected-party Support to a free district containing acting-party Support.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family">Rally</span><h3>Scatter the Flock</h3><p>Resolve Rally. Move the maximum possible acting-party Support into distinct free neighboring districts. At least one must move.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family">Court</span><h3>Joint Campaign</h3><p>Resolve Court. Then add selected-party Support to a free district containing acting-party Support.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family unbound">Unbound</span><h3>Empty Every Nest</h3><p>Move one acting-party Support from every district containing at least two acting-party Support to the same number of different districts with no acting-party Support and a free spot.</p></article>
         </div>
         <ol class="candidate-grid" aria-label="Curated untested Many Wings Bonus-card candidates">
           <li class="candidate-card"><span class="family">Rally</span><h3>Flock Together</h3><p>Resolve Rally in a district containing the acting party’s Target. Then that party adds one Support there.</p></li>
@@ -437,13 +457,13 @@
           <li class="candidate-card"><span class="family">Court</span><h3>Second Preference</h3><p>Resolve Court with a party whose Target is a third party. Then place acting-party Court Support on that third party’s space.</p></li>
           <li class="candidate-card"><span class="family">Court</span><h3>Unity in Diversity</h3><p>Resolve Court. Then add acting-party Support to a free district containing Support from at least two other parties.</p></li>
         </ol>
-        <div class="unbound-heading"><h3>Unbound actions</h3><p>No Operation baseline · 10 experiments</p></div>
+        <div class="unbound-heading"><h3>Unbound actions</h3><p>No Operation baseline · 9 remaining + 1 selected</p></div>
         <ol class="candidate-grid wild-grid" aria-label="Ten unbound Many Wings Bonus-card candidates">
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>General Migration</h3><p>Move every acting-party Support on the map to a different district. Every Support must move, every destination must be free, and no destination may receive more than one.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Mass Defection</h3><p>Choose one to five rival district Support belonging to different parties and in different districts. Replace every chosen Support with acting-party Support.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Musical Chairs</h3><p>Every player passes their complete private hand to the player on their left. New Year areas do not move.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Parliament of Birds</h3><p>Every other party places one of its Support on the acting party’s Court space, then updates its Target.</p></li>
-          <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Empty Every Nest</h3><p>Remove one acting-party Support from every district containing at least two, then place one in each of the same number of different districts that were empty before this action.</p></li>
+          <li class="candidate-card selected"><span class="family unbound">Unbound</span><span class="selected-label">Selected R23</span><h3>Empty Every Nest</h3><p>Remove one acting-party Support from every district containing at least two, then place one in each of the same number of different districts that were empty before this action.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Shared Victory</h3><p>Give every other player 1 point. Then gain 1 point for every other player.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Sudden Swarm</h3><p>Add acting-party Support to every non-Centre district with a free spot.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Split the Flock</h3><p>Choose any positive number of acting-party Support in one district. Move them to free spots anywhere, with no more than one entering each destination.</p></li>
@@ -461,8 +481,9 @@
           </div>
         </div>
         <div class="current-grid" aria-label="Current Night Parliament Bonus cards">
-          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Rally</span><h3>Quiet Hours</h3><p>Resolve Rally. Then add acting-party Support to an otherwise empty district, including an empty Bellweather Centre.</p></article>
-          <article class="current-card"><span class="current-label">Current R21</span><span class="family">Smear</span><h3>Midnight Leak</h3><p>Resolve Smear. Then remove one Court Support belonging to that rival and update the rival’s Target.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family">Rally</span><h3>Quiet Hours</h3><p>Resolve Rally. Then add acting-party Support to an otherwise empty district, including an empty Bellweather Centre.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family">Smear</span><h3>Midnight Leak</h3><p>Resolve Smear. Then remove one Court Support belonging to that rival and update the rival’s Target.</p></article>
+          <article class="current-card"><span class="current-label">Current R23</span><span class="family unbound">Unbound</span><h3>Midnight Session</h3><p>Choose a closed party. Place one of your returned Firm markers there. That party opens with an empty Operation pile.</p></article>
         </div>
         <ol class="candidate-grid" aria-label="Curated untested Night Parliament Bonus-card candidates">
           <li class="candidate-card"><span class="family">Rally</span><h3>Remote Outpost</h3><p>Add acting-party Support to an empty non-Centre district not neighboring acting-party Support.</p></li>
@@ -474,10 +495,10 @@
           <li class="candidate-card"><span class="family">Smear</span><h3>Midnight Filibuster</h3><p>Resolve Smear. Then remove one acting-party Court Support from the smeared rival’s space and update the acting party’s Target.</p></li>
           <li class="candidate-card"><span class="family">Smear</span><h3>Secret Ballot</h3><p>Resolve Smear in a district containing no acting-party Support. Then add acting-party Support to a different empty district.</p></li>
         </ol>
-        <div class="unbound-heading"><h3>Unbound actions</h3><p>No Operation baseline · 10 experiments</p></div>
+        <div class="unbound-heading"><h3>Unbound actions</h3><p>No Operation baseline · 9 remaining + 1 selected</p></div>
         <ol class="candidate-grid wild-grid" aria-label="Ten unbound Night Parliament Bonus-card candidates">
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Blackout Shuffle</h3><p>Combine at least two non-empty open Operation piles, shuffle the cards, then redeal each pile its original size and reveal every new pile.</p></li>
-          <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Midnight Session</h3><p>Reopen the most recently closed party by returning its Firm marker. Its awarded pile stays with its recipient and the party reopens empty.</p></li>
+          <li class="candidate-card selected"><span class="family unbound">Unbound</span><span class="selected-label">Selected R23</span><h3>Midnight Session</h3><p>Reopen the most recently closed party by returning its Firm marker. Its awarded pile stays with its recipient and the party reopens empty.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Eclipse District</h3><p>Place this card beside a non-Centre district instead of returning it home. During the next Election, skip every scoring objective there and skip that district’s Support draw and retention. Then return this card home.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Vanishing District</h3><p>Choose a non-Centre district and return every Support there to its supply.</p></li>
           <li class="candidate-card"><span class="family unbound">Unbound</span><h3>Missing Quorum</h3><p>The next player skips their next Lobby turn. The skipped turn does not count as a Pass.</p></li>
@@ -493,7 +514,7 @@
     <footer class="page-footer">
       <div class="page-footer-inner">
         <a href="../rules/current-rules.html">Compare with current rules →</a>
-        <span>12 current · 46 family candidates · 60 unbound · all candidates untested</span>
+        <span>18 current · 46 family candidates · 54 unbound candidates · 100 remaining untested</span>
       </div>
     </footer>
   </body>

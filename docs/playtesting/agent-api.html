@@ -21,7 +21,7 @@
       <p class="intro">Run the application locally at <code>http://127.0.0.1:4317</code>. Every seat receives an opaque bearer token. A command’s acting seat and timestamp come from the server; strict validation rejects unknown fields.</p>
 
       <section>
-        <span class="status decided">Ruleset 22</span>
+        <span class="status decided">Ruleset 23</span>
         <h2>Start and connect</h2>
         <pre><code>npm install
 npm run build
@@ -85,7 +85,8 @@ npm run dev</code></pre>
           </table>
         </div>
 
-        <p>Operation choices follow the selected family. Organise uses <code>destinationDistrictId</code> and optional <code>sourceDistrictId</code>; Rally uses <code>districtId</code>; Smear uses <code>districtId</code> and <code>rivalParty</code>; Court uses <code>targetParty</code>. Each Bonus card uses its printed baseline family plus the additional fields required by its complete action, including <code>bonusDistrictId</code>, <code>bonusDistrictIds</code>, <code>bonusCourtParty</code>, <code>bonusSourceDistrictId</code>, or <code>bonusCourtSourceParty</code>. Refetch after each accepted play so the next choice uses the resulting state.</p>
+        <p>Operation choices follow the selected family. Organise uses <code>destinationDistrictId</code> and optional <code>sourceDistrictId</code>; Rally uses <code>districtId</code>; Smear uses <code>districtId</code> and <code>rivalParty</code>; Court uses <code>targetParty</code>. Bound Bonus cards use their printed baseline family plus the additional fields required by the complete action, including <code>bonusDistrictId</code>, <code>bonusDistrictIds</code>, <code>bonusCourtParty</code>, <code>bonusSourceDistrictId</code>, or <code>bonusCourtSourceParty</code>.</p>
+        <p>Unbound Bonus choices use an <code>effect</code> discriminant: <code>every_bee_counts</code> needs no other field; <code>institutional_memory</code> uses a revealed <code>scoringCardId</code> and one to three <code>moves</code> containing a unique <code>objectiveIndex</code> and <code>sourceDistrictId</code>; <code>shell_firm</code> uses <code>targetPartyId</code>; <code>mass_transit</code> uses ordered <code>districtIds</code> and one <code>supportPartyIds</code> entry for each source; <code>empty_every_nest</code> uses <code>destinationDistrictIds</code>; and <code>midnight_session</code> uses <code>targetPartyId</code> and <code>firmId</code>. Refetch after each accepted play so the next choice uses the resulting state.</p>
         <pre><code>{
   "type": "operate",
   "partyId": "night-parliament",
@@ -96,6 +97,21 @@ npm run dev</code></pre>
       "operation": "rally",
       "districtId": "harbormouth",
       "bonusDistrictId": "reedwater"
+    }
+  }
+}</code></pre>
+        <pre><code>{
+  "type": "operate",
+  "partyId": "old-shell",
+  "play": {
+    "cardType": "bonus",
+    "bonusCardId": "old-shell-institutional-memory",
+    "choice": {
+      "effect": "institutional_memory",
+      "scoringCardId": "SC-01",
+      "moves": [
+        { "objectiveIndex": 0, "sourceDistrictId": "reedwater" }
+      ]
     }
   }
 }</code></pre>

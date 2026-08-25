@@ -27,17 +27,17 @@
           <tbody>
             <tr><td>Capital card</td><td>The scoring card whose three parties determine a player’s Bellweather Centre score. It is the only card at four to six players and the fixed first card of a registered pair at two or three.</td><td>A separate component or a card chosen at Election time</td></tr>
             <tr><td>Capital score</td><td>An additional Election score of 0 for zero or one named party present in Bellweather Centre, 1 for two, or 3 for all three.</td><td>Ordinary district scoring or coalition matching</td></tr>
-            <tr><td>Bonus card</td><td>One of twelve unique collectible cards, with two homes at each party. It provides one atomic standalone action, may be held indefinitely, and returns home immediately after a successful play.</td><td>An ordinary Operation card or a recurring party-board state</td></tr>
+            <tr><td>Bonus card</td><td>One of eighteen unique collectible cards, with three homes at each party: two preferred-Operation cards and one Unbound card. It provides one standalone action, may be held indefinitely, and returns home immediately after a successful play.</td><td>An ordinary Operation card or a recurring party-board state</td></tr>
             <tr><td>Cleanup</td><td>The end-of-year procedure that closes remaining parties, resolves their optional Bonus-card awards, releases New Year cards, returns Collection counters, and assigns next year’s Early Bird.</td><td>An Election; scheduled Elections happen afterward</td></tr>
-            <tr><td>Close</td><td>A Lobby action available only to a party’s opener after that player’s first Lobby turn. The opener takes its pile and optionally one available Bonus card into New Year, then returns its Firm marker, leaving the party unavailable for the year.</td><td>Collect, which leaves the party open</td></tr>
+            <tr><td>Close</td><td>A Lobby action available only to a party’s current Firm owner after that player’s first Lobby turn. The owner takes its pile and optionally one available Bonus card into New Year, then returns its Firm marker. The party is closed unless a later card opens it again.</td><td>Collect, which leaves the party open</td></tr>
             <tr><td>Coalition</td><td>The mutual state formed while two parties’ Coalition Targets point at each other. Coalition partners match ordinary district objectives but never Capital parties.</td><td>The Many Wings Coalition party</td></tr>
             <tr><td>Coalition summary token</td><td>One of six emblem-only party tokens used to copy reciprocal Coalition Target pairs onto the physical map tracker.</td><td>A Coalition Target or the authoritative game state</td></tr>
             <tr><td>Collect</td><td>A Lobby action that spends a Collection counter to move one open party’s complete Operation pile and optionally one available Bonus card into the acting player’s New Year area. The pile may be empty and the party remains open.</td><td>Close or drawing cards from a deck</td></tr>
             <tr><td>Collection counter</td><td>One of a player’s two annual Collect uses, doubled to four at two or three players. It returns during Cleanup.</td><td>A bid marker or ownership marker</td></tr>
             <tr><td>Court</td><td>An Operation that places acting-party Support on another party’s Court space and may change the acting party’s Coalition Target.</td><td>A coalition or direct target selection</td></tr>
-            <tr><td>Early Bird</td><td>The player who acts first during Party Openings and the Lobby. The player whose Close creates the strict majority becomes Early Bird next year.</td><td>The last player guaranteed an action in the current year</td></tr>
+            <tr><td>Early Bird</td><td>The player who acts first during Party Openings and the Lobby. The player whose Lobby turn ends with a strict majority of Firm markers returned becomes Early Bird next year.</td><td>The last player guaranteed an action in the current year</td></tr>
             <tr><td>Election</td><td>The scoring and whole-map thinning procedure after Cleanup in Years 2, 4, and 6.</td><td>A year or Lobby action</td></tr>
-            <tr><td>Firm marker</td><td>A player-identity marker placed to open a party and returned when it closes. Markers returned during the Lobby show the public Closure count and cannot be reused until the next year.</td><td>A competitive bid or a separate Closed marker</td></tr>
+            <tr><td>Firm marker</td><td>A player-identity marker placed to open a party and returned when it closes. Its current location determines whether its party is open and whether the marker counts as returned; card effects may move it or place it again during the same year.</td><td>A competitive bid or a separate Closed marker</td></tr>
             <tr><td>Final card rank bonus</td><td>The Election 3 score for a human player’s ordinary and held Bonus cards after Year 6 Cleanup: one point for every other player whose final count is less than or equal to theirs. Ties therefore take the highest occupied rank.</td><td>Separate Firm hands or Bonus cards at party homes</td></tr>
             <tr><td>Lobby</td><td>The annual clockwise action stage in which players Operate, Collect, Close, or Pass.</td><td>A physical room or the pregame lobby</td></tr>
             <tr><td>Midterm</td><td>The thematic boundary after Years 1, 3, and 5. It has no additional procedure or mechanical effect beyond ordinary Cleanup.</td><td>An Election or separate game phase</td></tr>
@@ -46,9 +46,10 @@
             <tr><td>Operation card</td><td>A reusable Organise, Rally, Smear, or Court card resolved at a party and then left in that party’s public pile.</td><td>A scoring card</td></tr>
             <tr><td>Operation pile</td><td>The public cards accumulated at an open party until a player Collects them or the party closes.</td><td>A player’s New Year area</td></tr>
             <tr><td>Party Opening</td><td>Placement of a Firm marker on a party without one. The annual order is ABBA at two players, ABCCBA at three, and once clockwise at four to six.</td><td>A bid, ownership of the party, or the Lobby turn order</td></tr>
-            <tr><td>Pass</td><td>A Lobby action that does nothing and continues play clockwise. It is legal only after all of that player’s Firm markers have returned, and never ends the year.</td><td>Closing a party or withdrawing from the rest of the year</td></tr>
+            <tr><td>Pass</td><td>A Lobby action that changes nothing. It is legal only after all of that player’s Firm markers have returned; the ordinary end-of-turn check still follows.</td><td>Closing a party or withdrawing from the rest of the year</td></tr>
             <tr><td>Scoring card</td><td>A hidden agenda with three district–party objectives and relative-seat references. Each player has one per Election at four to six players or a registered pair at two or three.</td><td>An Operation card</td></tr>
             <tr><td>Support</td><td>Public party pieces that occupy limited map or Court spaces.</td><td>A lobbying firm, Operation card, or score</td></tr>
+            <tr><td>Unbound</td><td>A Bonus-card family with no Organise, Rally, Smear, or Court baseline. The card resolves only its printed effect.</td><td>An unrestricted or optional effect</td></tr>
             <tr><td>Year</td><td>One Party Openings stage, one Lobby, and one Cleanup. An Election follows every second year.</td><td>An Election cycle, which contains two years</td></tr>
           </tbody>
         </table>
@@ -62,7 +63,7 @@
     </main>
 
     <footer class="page-footer">
-      <div class="page-footer-inner"><a href="examples.html">Next: Rules examples →</a><span>25 live terms</span></div>
+      <div class="page-footer-inner"><a href="examples.html">Next: Rules examples →</a><span>26 live terms</span></div>
     </footer>
   </body>
 </html>
