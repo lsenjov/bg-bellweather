@@ -75,7 +75,7 @@ export interface ResolvedOperation {
   seatId: SeatId;
   partyId: PartyId;
   cardType: "operation" | "bonus";
-  operation: OperationId;
+  operation: OperationId | null;
   bonusCardId: BonusCardId | null;
   bonusHomePartyId: PartyId | null;
   choice: unknown;

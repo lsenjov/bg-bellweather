@@ -21,23 +21,29 @@ export type PartyId = (typeof PARTY_IDS)[number];
 export const BONUS_CARD_IDS = deepFreeze([
   "honeycomb-waggle-route",
   "honeycomb-common-cause",
+  "honeycomb-every-bee-counts",
   "old-shell-dig-in",
   "old-shell-stonewall",
+  "old-shell-institutional-memory",
   "foxglove-spin",
   "foxglove-whisper-network",
+  "foxglove-shell-firm",
   "riverworks-canal-network",
   "riverworks-public-works",
+  "riverworks-mass-transit",
   "many-wings-scatter-the-flock",
   "many-wings-joint-campaign",
+  "many-wings-empty-every-nest",
   "night-parliament-quiet-hours",
-  "night-parliament-midnight-leak"
+  "night-parliament-midnight-leak",
+  "night-parliament-midnight-session"
 ] as const);
 export type BonusCardId = (typeof BONUS_CARD_IDS)[number];
 
 export interface BonusCardDefinition {
   readonly id: BonusCardId;
   readonly homePartyId: PartyId;
-  readonly operation: OperationId;
+  readonly operation: OperationId | null;
   readonly name: string;
   readonly effect: string;
 }
@@ -49,7 +55,11 @@ export interface PartyDefinition {
   readonly animal: string;
   readonly color: `#${string}`;
   readonly favoredOperations: readonly [OperationId, OperationId];
-  readonly bonusCards: readonly [BonusCardDefinition, BonusCardDefinition];
+  readonly bonusCards: readonly [
+    BonusCardDefinition,
+    BonusCardDefinition,
+    BonusCardDefinition
+  ];
 }
 
 export const PARTIES = deepFreeze([
@@ -76,6 +86,14 @@ export const PARTIES = deepFreeze([
         name: "Common Cause",
         effect:
           "Resolve Court for the acting party. The selected party must become its Coalition Target; then move acting-party Support to a different free district containing selected-party Support."
+      },
+      {
+        id: "honeycomb-every-bee-counts",
+        homePartyId: "honeycomb",
+        operation: null,
+        name: "Every Bee Counts",
+        effect:
+          "Add acting-party Support to every district that contains exactly one acting-party Support and has a free spot."
       }
     ]
   },
@@ -102,6 +120,14 @@ export const PARTIES = deepFreeze([
         name: "Stonewall",
         effect:
           "Resolve Smear for the acting party, then remove a second Support belonging to the same rival from that district."
+      },
+      {
+        id: "old-shell-institutional-memory",
+        homePartyId: "old-shell",
+        operation: null,
+        name: "Institutional Memory",
+        effect:
+          "Choose a revealed scoring card. For each chosen objective, move one Support belonging to the named party from another district to the objective's district. Each destination must have a free spot."
       }
     ]
   },
@@ -128,6 +154,14 @@ export const PARTIES = deepFreeze([
         name: "Whisper Network",
         effect:
           "Resolve Court for the acting party, then move its Court Support from another party's space to the selected party and update its Coalition Target again."
+      },
+      {
+        id: "foxglove-shell-firm",
+        homePartyId: "foxglove",
+        operation: null,
+        name: "Shell Firm",
+        effect:
+          "Choose another party without a Firm marker. Move the acting party's Firm marker and complete Operation pile to it. Then end this Lobby action."
       }
     ]
   },
@@ -154,6 +188,14 @@ export const PARTIES = deepFreeze([
         name: "Public Works",
         effect:
           "Resolve Rally for the acting party, then add acting-party Support to a free neighboring district."
+      },
+      {
+        id: "riverworks-mass-transit",
+        homePartyId: "riverworks",
+        operation: null,
+        name: "Mass Transit",
+        effect:
+          "Choose a path of two to five districts with a free spot at one end. Every other district must contain Support. Shift one Support from each of those districts one step toward the free spot."
       }
     ]
   },
@@ -180,6 +222,14 @@ export const PARTIES = deepFreeze([
         name: "Joint Campaign",
         effect:
           "Resolve Court for the acting party, then add selected-party Support to a free district containing acting-party Support."
+      },
+      {
+        id: "many-wings-empty-every-nest",
+        homePartyId: "many-wings",
+        operation: null,
+        name: "Empty Every Nest",
+        effect:
+          "Move one acting-party Support from every district containing at least two acting-party Support to the same number of different districts with no acting-party Support and a free spot."
       }
     ]
   },
@@ -206,6 +256,14 @@ export const PARTIES = deepFreeze([
         name: "Midnight Leak",
         effect:
           "Resolve Smear for the acting party, then remove rival Court Support and update that rival's Coalition Target."
+      },
+      {
+        id: "night-parliament-midnight-session",
+        homePartyId: "night-parliament",
+        operation: null,
+        name: "Midnight Session",
+        effect:
+          "Choose a closed party. Place one of your returned Firm markers there. That party opens with an empty Operation pile."
       }
     ]
   }

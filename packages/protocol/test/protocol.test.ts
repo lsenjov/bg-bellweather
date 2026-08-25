@@ -150,6 +150,52 @@ describe("commands", () => {
     ).toBe(false);
   });
 
+  it("accepts all six Unbound Bonus choice shapes", () => {
+    const choices = [
+      ["honeycomb-every-bee-counts", { effect: "every_bee_counts" }],
+      ["old-shell-institutional-memory", {
+        effect: "institutional_memory",
+        scoringCardId: "SC-01",
+        moves: [{ objectiveIndex: 0, sourceDistrictId: "cloverfield" }]
+      }],
+      ["foxglove-shell-firm", { effect: "shell_firm", targetPartyId: "old-shell" }],
+      ["riverworks-mass-transit", {
+        effect: "mass_transit",
+        districtIds: ["northreach", "cloverfield"],
+        supportPartyIds: ["honeycomb"]
+      }],
+      ["many-wings-empty-every-nest", {
+        effect: "empty_every_nest",
+        destinationDistrictIds: ["northreach"]
+      }],
+      ["night-parliament-midnight-session", {
+        effect: "midnight_session",
+        targetPartyId: "old-shell",
+        firmId: "one-fell-swoop"
+      }]
+    ] as const;
+    for (const [bonusCardId, choice] of choices) {
+      expect(PlayerGameActionSchema.safeParse({
+        type: "operate",
+        partyId: "honeycomb",
+        play: { cardType: "bonus", bonusCardId, choice }
+      }).success).toBe(true);
+    }
+    expect(PlayerGameActionSchema.safeParse({
+      type: "operate",
+      partyId: "old-shell",
+      play: {
+        cardType: "bonus",
+        bonusCardId: "old-shell-institutional-memory",
+        choice: {
+          effect: "institutional_memory",
+          scoringCardId: "SC-01",
+          moves: []
+        }
+      }
+    }).success).toBe(false);
+  });
+
   it("accepts documented game actions and rejects unknown shapes", () => {
     expect(
       CommandEnvelopeSchema.parse({

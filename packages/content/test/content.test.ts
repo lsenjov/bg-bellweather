@@ -110,13 +110,14 @@ describe("parties and firms", () => {
     }
   });
 
-  it("gives each party two unique cards matching its favored operations", () => {
-    expect(BONUS_CARDS).toHaveLength(12);
-    expect(new Set(BONUS_CARD_IDS).size).toBe(12);
+  it("gives each party two preferred-Operation cards and one Unbound card", () => {
+    expect(BONUS_CARDS).toHaveLength(18);
+    expect(new Set(BONUS_CARD_IDS).size).toBe(18);
     for (const party of PARTIES) {
-      expect(party.bonusCards.map((card) => card.operation)).toEqual(
-        party.favoredOperations
-      );
+      expect(party.bonusCards.map((card) => card.operation)).toEqual([
+        ...party.favoredOperations,
+        null
+      ]);
       expect(party.bonusCards.every((card) => card.homePartyId === party.id)).toBe(true);
     }
   });

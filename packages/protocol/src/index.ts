@@ -280,16 +280,22 @@ export const OperationIdSchema = z.enum([
 export const BonusCardIdSchema = z.enum([
   "honeycomb-waggle-route",
   "honeycomb-common-cause",
+  "honeycomb-every-bee-counts",
   "old-shell-dig-in",
   "old-shell-stonewall",
+  "old-shell-institutional-memory",
   "foxglove-spin",
   "foxglove-whisper-network",
+  "foxglove-shell-firm",
   "riverworks-canal-network",
   "riverworks-public-works",
+  "riverworks-mass-transit",
   "many-wings-scatter-the-flock",
   "many-wings-joint-campaign",
+  "many-wings-empty-every-nest",
   "night-parliament-quiet-hours",
-  "night-parliament-midnight-leak"
+  "night-parliament-midnight-leak",
+  "night-parliament-midnight-session"
 ]);
 const OrganiseChoiceSchema = z
   .object({
@@ -333,6 +339,53 @@ export const OperationChoiceSchema = z.discriminatedUnion("operation", [
   CourtChoiceSchema
 ]);
 export type OperationChoice = z.infer<typeof OperationChoiceSchema>;
+const InstitutionalMemoryMoveSchema = z
+  .object({
+    objectiveIndex: z.union([z.literal(0), z.literal(1), z.literal(2)]),
+    sourceDistrictId: z.string().trim().min(1).max(100)
+  })
+  .strict();
+export const UnboundBonusChoiceSchema = z.discriminatedUnion("effect", [
+  z.object({ effect: z.literal("every_bee_counts") }).strict(),
+  z
+    .object({
+      effect: z.literal("institutional_memory"),
+      scoringCardId: z.enum([
+        "SC-01", "SC-02", "SC-03", "SC-04", "SC-05", "SC-06",
+        "SC-07", "SC-08", "SC-09", "SC-10", "SC-11", "SC-12",
+        "SC-13", "SC-14", "SC-15", "SC-16", "SC-17", "SC-18",
+        "SC-19", "SC-20", "SC-21", "SC-22", "SC-23", "SC-24"
+      ]),
+      moves: z.array(InstitutionalMemoryMoveSchema).min(1).max(3)
+    })
+    .strict(),
+  z.object({ effect: z.literal("shell_firm"), targetPartyId: PartyIdSchema }).strict(),
+  z
+    .object({
+      effect: z.literal("mass_transit"),
+      districtIds: z.array(z.string().trim().min(1).max(100)).min(2).max(5),
+      supportPartyIds: z.array(PartyIdSchema).min(1).max(4)
+    })
+    .strict(),
+  z
+    .object({
+      effect: z.literal("empty_every_nest"),
+      destinationDistrictIds: z.array(z.string().trim().min(1).max(100)).min(1).max(16)
+    })
+    .strict(),
+  z
+    .object({
+      effect: z.literal("midnight_session"),
+      targetPartyId: PartyIdSchema,
+      firmId: FirmIdSchema
+    })
+    .strict()
+]);
+export type UnboundBonusChoice = z.infer<typeof UnboundBonusChoiceSchema>;
+export const BonusCardChoiceSchema = z.union([
+  OperationChoiceSchema,
+  UnboundBonusChoiceSchema
+]);
 const OperationCardPlaySchema = z
   .object({
     cardType: z.literal("operation"),
@@ -348,7 +401,7 @@ const BonusCardPlaySchema = z
   .object({
     cardType: z.literal("bonus"),
     bonusCardId: BonusCardIdSchema,
-    choice: OperationChoiceSchema
+    choice: BonusCardChoiceSchema
   })
   .strict();
 export const OperationPlaySchema = z.union([

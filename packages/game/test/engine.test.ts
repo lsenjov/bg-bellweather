@@ -1,4 +1,5 @@
 import {
+  DISTRICT_IDS,
   ELECTION_YEARS,
   PARTY_IDS,
   RULESET_VERSION,
@@ -27,7 +28,7 @@ import { projectGameState } from "../src/projection.js";
 
 const zeroRandom = { integer: () => 0 };
 
-describe("ruleset 22 setup", () => {
+describe("ruleset 23 setup", () => {
   for (const playerCount of [2, 3, 4, 5, 6]) {
     it(`creates the yearly Operation economy for ${playerCount} players`, () => {
       const state = initializeGame(configuration(playerCount), zeroRandom).state;
@@ -67,7 +68,7 @@ describe("ruleset 22 setup", () => {
   it("rejects old saved rulesets", () => {
     const initialized = initializeGame(configuration(4), zeroRandom);
     initialized.state.rulesetVersion = "18";
-    expect(() => replay([initialized])).toThrow("Only ruleset 22 is supported");
+    expect(() => replay([initialized])).toThrow("Only ruleset 23 is supported");
   });
 });
 
@@ -285,6 +286,175 @@ describe("Lobby actions", () => {
       operationCount: 0,
       cardCount: 2
     });
+  });
+
+  it("resolves the three district-based Unbound cards", () => {
+    let beeState = openAllParties(initializeGame(configuration(4), zeroRandom).state);
+    clearSupport(beeState);
+    beeState.support.northreach.honeycomb = 1;
+    beeState.support.cloverfield = { honeycomb: 1, "old-shell": 3 };
+    beeState.support.harbormouth.honeycomb = 2;
+    beeState = playUnbound(
+      beeState,
+      "honeycomb",
+      "honeycomb-every-bee-counts",
+      { effect: "every_bee_counts" }
+    );
+    expect(beeState.support.northreach.honeycomb).toBe(2);
+    expect(beeState.support.cloverfield.honeycomb).toBe(1);
+    expect(beeState.support.harbormouth.honeycomb).toBe(2);
+    expect(beeState.resolvedOperations.at(-1)).toMatchObject({
+      operation: null,
+      bonusCardReturnedHome: true
+    });
+
+    let transitState = openAllParties(initializeGame(configuration(4), zeroRandom).state);
+    clearSupport(transitState);
+    transitState.support.northreach.honeycomb = 1;
+    transitState.support.cloverfield["old-shell"] = 1;
+    transitState.support.harbormouth.foxglove = 1;
+    transitState = playUnbound(
+      transitState,
+      "riverworks",
+      "riverworks-mass-transit",
+      {
+        effect: "mass_transit",
+        districtIds: ["northreach", "cloverfield", "harbormouth", "millbank"],
+        supportPartyIds: ["honeycomb", "old-shell", "foxglove"]
+      }
+    );
+    expect(transitState.support.northreach).toEqual({});
+    expect(transitState.support.cloverfield).toEqual({ honeycomb: 1 });
+    expect(transitState.support.harbormouth).toEqual({ "old-shell": 1 });
+    expect(transitState.support.millbank).toEqual({ foxglove: 1 });
+
+    let nestState = openAllParties(initializeGame(configuration(6), zeroRandom).state);
+    clearSupport(nestState);
+    nestState.support.harbormouth["many-wings"] = 2;
+    nestState.support["grand-market"]["many-wings"] = 3;
+    nestState = playUnbound(
+      nestState,
+      "many-wings",
+      "many-wings-empty-every-nest",
+      {
+        effect: "empty_every_nest",
+        destinationDistrictIds: ["northreach", "reedwater"]
+      }
+    );
+    expect(nestState.support.harbormouth["many-wings"]).toBe(1);
+    expect(nestState.support["grand-market"]["many-wings"]).toBe(2);
+    expect(nestState.support.northreach["many-wings"]).toBe(1);
+    expect(nestState.support.reedwater["many-wings"]).toBe(1);
+  });
+
+  it("allows Institutional Memory to complete a legal subset of a revealed card", () => {
+    let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
+    clearSupport(state);
+    state.support.cloverfield.honeycomb = 1;
+    state.support.northreach["old-shell"] = 1;
+    state.electionHistory = [{
+      scoringCards: [{
+        seatId: "seat-1",
+        scoringCardIds: ["SC-01"],
+        capitalCardId: "SC-01"
+      }]
+    } as GameState["electionHistory"][number]];
+
+    state = playUnbound(
+      state,
+      "old-shell",
+      "old-shell-institutional-memory",
+      {
+        effect: "institutional_memory",
+        scoringCardId: "SC-01",
+        moves: [
+          { objectiveIndex: 0, sourceDistrictId: "cloverfield" },
+          { objectiveIndex: 1, sourceDistrictId: "northreach" }
+        ]
+      }
+    );
+
+    expect(state.support.cloverfield.honeycomb).toBeUndefined();
+    expect(state.support.ironwood.honeycomb).toBe(1);
+    expect(state.support.northreach["old-shell"]).toBeUndefined();
+    expect(state.support.millbank["old-shell"]).toBe(1);
+    expect(state.support["canal-ward"].foxglove).toBeUndefined();
+  });
+
+  it("moves another player's Firm and pile with Shell Firm, then ends the action", () => {
+    let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
+    state.parties["old-shell"]!.status = "closed";
+    const source = state.parties.foxglove!;
+    source.operations.organise = 2;
+    const firmId = source.firmId;
+    const ownerSeatId = source.ownerSeatId;
+
+    state = playUnbound(
+      state,
+      "foxglove",
+      "foxglove-shell-firm",
+      { effect: "shell_firm", targetPartyId: "old-shell" }
+    );
+
+    expect(state.parties.foxglove).toMatchObject({
+      status: "closed",
+      operations: { organise: 0 }
+    });
+    expect(state.parties["old-shell"]).toMatchObject({
+      status: "open",
+      firmId,
+      ownerSeatId,
+      operations: { organise: 2 }
+    });
+    expect(lobbyPhase(state)).toMatchObject({
+      activeSeatId: "seat-2",
+      inProgressOperate: null
+    });
+    expect(state.lobbyActions.at(-1)).toMatchObject({
+      type: "operate",
+      partyId: "foxglove",
+      cardCount: 1
+    });
+  });
+
+  it("checks returned Firms only at turn end and lets Midnight Session reduce them", () => {
+    const base = openAllParties(initializeGame(configuration(4), zeroRandom).state);
+    base.parties.honeycomb!.status = "closed";
+    base.parties["old-shell"]!.status = "closed";
+    base.parties.foxglove!.status = "closed";
+
+    let withoutSession = act(base, {
+      type: "operate",
+      seatId: "seat-1",
+      partyId: "riverworks",
+      play: organise("harbormouth", "cloverfield")
+    });
+    expect(withoutSession.phase.type).toBe("lobby");
+    withoutSession = act(withoutSession, { type: "finish_operate", seatId: "seat-1" });
+    expect(withoutSession.phase.type).toBe("closure");
+
+    let state = structuredClone(base);
+    state.coalitionTargets["night-parliament"] = "riverworks";
+    state.coalitionTargets.riverworks = "night-parliament";
+    const returnedFirmId = state.seats[0]!.firmIds[0]!;
+    state = playUnbound(
+      state,
+      "riverworks",
+      "night-parliament-midnight-session",
+      {
+        effect: "midnight_session",
+        targetPartyId: "old-shell",
+        firmId: returnedFirmId
+      }
+    );
+    expect(state.parties["old-shell"]).toMatchObject({
+      status: "open",
+      firmId: returnedFirmId,
+      ownerSeatId: "seat-1",
+      operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+    });
+    state = act(state, { type: "finish_operate", seatId: "seat-1" });
+    expect(state.phase).toMatchObject({ type: "lobby", activeSeatId: "seat-2" });
   });
 
   it("rejects Bonus cards at a one-way or former coalition partner", () => {
@@ -658,7 +828,8 @@ describe("cleanup, Elections, visibility, and replay", () => {
     expect(rival.seats[1]!.bonusCardIds).toBeNull();
     expect(rival.seats[1]!.newYearBonusCardIds).toBeNull();
     expect(rival.bonusCardsAtParties.honeycomb).toEqual([
-      "honeycomb-common-cause"
+      "honeycomb-common-cause",
+      "honeycomb-every-bee-counts"
     ]);
     expect(rival.seats[1]!.scoringCardIds).toBeNull();
   });
@@ -704,6 +875,28 @@ function configuration(playerCount: number): GameConfiguration {
 
 function act(state: GameState, action: GameAction): GameState {
   return executeAction(state, action).state;
+}
+
+function playUnbound(
+  state: GameState,
+  partyId: PartyId,
+  bonusCardId: BonusCardId,
+  choice: unknown
+): GameState {
+  const seatId = lobbyPhase(state).activeSeatId;
+  state.bonusCards[bonusCardId] = { zone: "hand", seatId };
+  return act(state, {
+    type: "operate",
+    seatId,
+    partyId,
+    play: { cardType: "bonus", bonusCardId, choice }
+  });
+}
+
+function clearSupport(state: GameState): void {
+  for (const districtId of DISTRICT_IDS) {
+    state.support[districtId] = {};
+  }
 }
 
 function openAllParties(initial: GameState): GameState {

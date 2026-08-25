@@ -271,9 +271,11 @@ describe("operation baselines", () => {
   });
 });
 
-describe("all twelve Bonus card actions", () => {
-  it("defines exactly two Bonus cards for every party", () => {
-    expect(BONUS_CARDS).toHaveLength(PARTIES.length * 2);
+describe("all twelve Operation-bound Bonus card actions", () => {
+  it("defines exactly two Operation-bound Bonus cards for every party", () => {
+    expect(BONUS_CARDS.filter((card) => card.operation !== null)).toHaveLength(
+      PARTIES.length * 2
+    );
   });
 
   it("applies Honeycomb Waggle Route and Common Cause", () => {

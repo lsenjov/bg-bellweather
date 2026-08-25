@@ -50,6 +50,7 @@ import {
   type OperationChoice,
   type OperationState
 } from "./operations.js";
+import { resolveUnboundBonus } from "./unbound.js";
 
 export function initializeGame(
   configuration: GameConfiguration,
@@ -298,9 +299,52 @@ function operate(
   const bonusCard = play.cardType === "bonus"
     ? requirePlayableBonusCard(state, seatId, partyId, play.bonusCardId)
     : null;
+  if (play.cardType === "bonus" && bonusCard?.operation === null) {
+    const resolution = resolveUnboundBonus(
+      state,
+      seatId,
+      partyId,
+      play.bonusCardId,
+      play.choice
+    );
+    state.bonusCards[play.bonusCardId] = { zone: "home" };
+    state.resolvedOperations.push({
+      year: state.year,
+      turn: phase.turn,
+      seatId,
+      partyId,
+      cardType: "bonus",
+      operation: null,
+      bonusCardId: play.bonusCardId,
+      bonusHomePartyId: bonusCard.homePartyId,
+      choice: structuredClone(resolution.choice),
+      bonusCardReturnedHome: true
+    });
+    const cardCount = (phase.inProgressOperate?.cardCount ?? 0) + 1;
+    const operationCount = phase.inProgressOperate?.operationCount ?? 0;
+    if (resolution.endsLobbyAction || cardCount === 3) {
+      completeOperateAction(
+        state,
+        phase,
+        partyId,
+        operationCount,
+        cardCount as 1 | 2 | 3
+      );
+      return;
+    }
+    phase.inProgressOperate = {
+      partyId,
+      operationCount,
+      cardCount: cardCount as 1 | 2
+    };
+    return;
+  }
   const operation = play.cardType === "operation"
     ? play.operation
-    : bonusCard!.operation;
+    : bonusCard?.operation;
+  if (operation === null || operation === undefined) {
+    throw new GameRuleError("unknown_operation", "The Operation does not exist");
+  }
   if (!(OPERATION_IDS as readonly string[]).includes(operation)) {
     throw new GameRuleError("unknown_operation", "The Operation does not exist");
   }
@@ -356,7 +400,7 @@ function operate(
     (phase.inProgressOperate?.operationCount ?? 0) +
     (play.cardType === "operation" ? 1 : 0);
   if (cardCount === 3) {
-    completeOperateAction(state, phase, operationCount, 3);
+    completeOperateAction(state, phase, partyId, operationCount, 3);
     return;
   }
   phase.inProgressOperate = {
@@ -377,6 +421,7 @@ function finishOperate(state: GameState, seatId: SeatId): void {
   completeOperateAction(
     state,
     phase,
+    phase.inProgressOperate.partyId,
     phase.inProgressOperate.operationCount,
     phase.inProgressOperate.cardCount
   );
@@ -385,13 +430,10 @@ function finishOperate(state: GameState, seatId: SeatId): void {
 function completeOperateAction(
   state: GameState,
   phase: LobbyPhase,
+  partyId: PartyId,
   operationCount: number,
   cardCount: 1 | 2 | 3
 ): void {
-  const partyId = phase.inProgressOperate?.partyId;
-  if (partyId === undefined) {
-    throw new GameRuleError("no_operate_in_progress", "No Operate action is in progress");
-  }
   recordLobbyAction(state, phase, {
     seatId: phase.activeSeatId,
     type: "operate",
@@ -469,16 +511,7 @@ function close(
     cardCount,
     bonusCardId: awardedBonusCardId
   });
-  markTurnTaken(phase, seatId);
-  const parties = Object.values(state.parties).filter(
-    (candidate): candidate is PartyYearState => candidate !== undefined
-  );
-  const closedCount = parties.filter((candidate) => candidate.status === "closed").length;
-  if (closedCount > parties.length / 2) {
-    beginClosure(state, seatId);
-    return;
-  }
-  advanceLobbyTurn(state, phase);
+  finishLobbyTurn(state, phase);
 }
 
 function pass(state: GameState, seatId: SeatId): void {
@@ -501,8 +534,7 @@ function pass(state: GameState, seatId: SeatId): void {
     cardCount: 0,
     bonusCardId: null
   });
-  markTurnTaken(phase, seatId);
-  advanceLobbyTurn(state, phase);
+  finishLobbyTurn(state, phase);
 }
 
 function finishLobbyTurn(
@@ -510,6 +542,19 @@ function finishLobbyTurn(
   phase: LobbyPhase
 ): void {
   markTurnTaken(phase, phase.activeSeatId);
+  const totalFirmCount = state.seats.reduce(
+    (total, seat) => total + seat.firmIds.length,
+    0
+  );
+  const activeFirmCount = new Set(
+    Object.values(state.parties).flatMap((party) =>
+      party?.status === "open" ? [party.firmId] : []
+    )
+  ).size;
+  if ((totalFirmCount - activeFirmCount) * 2 > totalFirmCount) {
+    beginClosure(state, phase.activeSeatId);
+    return;
+  }
   advanceLobbyTurn(state, phase);
 }
 
