@@ -1,6 +1,7 @@
 import {
   BONUS_CARDS_BY_ID,
   DISTRICTS,
+  DISTRICTS_BY_ID,
   ELECTION_YEARS,
   FINAL_ELECTION_YEAR,
   FIRMS_BY_ID,
@@ -23,6 +24,7 @@ import {
   type OperationPlay,
   type ParticipantSession,
   type ReplayResponse,
+  type UnboundBonusChoice,
   type ViewerStateEnvelope
 } from "@bellweather/protocol";
 import {
@@ -73,6 +75,17 @@ interface OperationDraft {
   bonusCourtSourceParty: PartyId | "";
   bonusCourtParty: PartyId | "";
   bonusCardId: BonusCardId | "";
+  unbound: UnboundDraft;
+}
+
+interface UnboundDraft {
+  scoringCardId: ScoringCardId | "";
+  objectiveSourceDistrictIds: [string, string, string];
+  targetPartyId: PartyId | "";
+  firmId: FirmId | "";
+  transitDistrictIds: string[];
+  transitSupportPartyIds: Array<PartyId | "">;
+  destinationDistrictIds: string[];
 }
 
 type OperationTarget =
@@ -993,7 +1006,7 @@ function PassAction(props: {
   return (
     <div className="action-copy">
       <h3>Pass</h3>
-      <p>{props.eligible ? "All your Firm markers have returned. Take no action this turn." : "Close every party you opened and return all your Firm markers before passing."}</p>
+      <p>{props.eligible ? "All your Firm markers have returned. Take no action this turn." : "Return all your Firm markers before passing."}</p>
       <button className="red-button" disabled={props.busy || !props.eligible} onClick={() => void props.onPass()}>Pass this turn</button>
     </div>
   );
@@ -1027,8 +1040,14 @@ export function OperationComposer(props: {
   }, [props.partyId, props.view.year, lobbyTurn, resolvedCount]);
   const operationState = useMemo(() => toOperationState(props.view), [props.view]);
   const preview = useMemo(
-    () => previewDraft(operationState, props.partyId, draft, props.seat.operations),
-    [operationState, props.partyId, draft, props.seat.operations]
+    () => previewDraft(
+      props.view,
+      operationState,
+      props.seat,
+      props.partyId,
+      draft
+    ),
+    [props.view, operationState, props.seat, props.partyId, draft]
   );
   const openPartyIds = PARTIES.map((party) => party.id).filter((partyId) => props.view.parties[partyId]?.status === "open");
   const playableBonusCardIds = (props.seat.bonusCardIds ?? []).filter((cardId) =>
@@ -1041,6 +1060,13 @@ export function OperationComposer(props: {
   };
   const chooseBonusCard = (bonusCardId: BonusCardId) => {
     const operation = BONUS_CARDS_BY_ID[bonusCardId].operation;
+    if (operation === null) {
+      setDraft({
+        ...emptyOperationDraft(nextId.current++, draft.operation, props.partyId),
+        bonusCardId
+      });
+      return;
+    }
     setDraft({
       ...emptyOperationDraft(nextId.current++, operation, props.partyId),
       bonusCardId
@@ -1060,6 +1086,13 @@ export function OperationComposer(props: {
   ]);
   useEffect(() => {
     if (props.onInteraction === undefined) return;
+    if (
+      draft.bonusCardId !== "" &&
+      BONUS_CARDS_BY_ID[draft.bonusCardId].operation === null
+    ) {
+      props.onInteraction(null);
+      return;
+    }
     props.onInteraction(operationTableInteraction({
       state: operationState,
       partyId: props.partyId,
@@ -1096,6 +1129,8 @@ export function OperationComposer(props: {
       <OperationDraftCard
         index={resolvedCount}
         draft={draft}
+        view={props.view}
+        seat={props.seat}
         partyId={props.partyId}
         armedTarget={armedTarget}
         onArm={setArmedTarget}
@@ -1113,6 +1148,8 @@ export function OperationComposer(props: {
 function OperationDraftCard(props: {
   index: number;
   draft: OperationDraft;
+  view: GameView;
+  seat: ViewSeat;
   partyId: PartyId;
   armedTarget: OperationTarget;
   onArm(target: OperationTarget): void;
@@ -1121,6 +1158,21 @@ function OperationDraftCard(props: {
   const bonus = props.draft.bonusCardId === ""
     ? null
     : BONUS_CARDS_BY_ID[props.draft.bonusCardId];
+  if (bonus?.operation === null) {
+    return (
+      <UnboundDraftCard
+        index={props.index}
+        cardId={bonus.id}
+        draft={props.draft.unbound}
+        view={props.view}
+        seat={props.seat}
+        partyId={props.partyId}
+        onUpdate={(patch) => props.onUpdate({
+          unbound: { ...props.draft.unbound, ...patch }
+        })}
+      />
+    );
+  }
   return (
     <fieldset className="operation-card">
       <legend>{props.index + 1}. {props.draft.operation}</legend>
@@ -1132,6 +1184,164 @@ function OperationDraftCard(props: {
       {props.draft.operation === "court" && <PartyField label="Court target" value={props.draft.targetParty} actingParty={props.partyId} active={props.armedTarget === "targetParty"} onArm={() => props.onArm("targetParty")} onChange={(targetParty) => { if (targetParty !== "") props.onUpdate({ targetParty }); }} />}
       {bonus !== null && <p className="bonus-check"><span><b>{bonus.name}</b>{bonus.effect}</span></p>}
       {bonus !== null && <BonusFields draft={props.draft} homePartyId={bonus.homePartyId} actingPartyId={props.partyId} armedTarget={props.armedTarget} onArm={props.onArm} onUpdate={props.onUpdate} />}
+    </fieldset>
+  );
+}
+
+function UnboundDraftCard(props: {
+  index: number;
+  cardId: BonusCardId;
+  draft: UnboundDraft;
+  view: GameView;
+  seat: ViewSeat;
+  partyId: PartyId;
+  onUpdate(patch: Partial<UnboundDraft>): void;
+}) {
+  const card = BONUS_CARDS_BY_ID[props.cardId];
+  const revealedCardIds = revealedScoringCardIds(props.view);
+  const scoringCard = props.draft.scoringCardId === ""
+    ? null
+    : SCORING_CARDS_BY_ID[props.draft.scoringCardId];
+  const shellTargets = PARTIES.filter(
+    (party) =>
+      party.id !== props.partyId &&
+      props.view.parties[party.id]?.status !== "open"
+  ).map((party) => party.id);
+  const closedTargets = PARTIES.filter(
+    (party) => props.view.parties[party.id]?.status === "closed"
+  ).map((party) => party.id);
+  const activeFirmIds = new Set(
+    Object.values(props.view.parties).flatMap((party) =>
+      party?.status === "open" ? [party.firmId] : []
+    )
+  );
+  const returnedFirmIds = props.seat.firmIds.filter(
+    (firmId): firmId is FirmId => !activeFirmIds.has(firmId as FirmId)
+  );
+  const updateObjectiveSource = (index: number, districtId: string) => {
+    const next = [...props.draft.objectiveSourceDistrictIds] as [string, string, string];
+    next[index] = districtId;
+    props.onUpdate({ objectiveSourceDistrictIds: next });
+  };
+
+  return (
+    <fieldset className="operation-card">
+      <legend>{props.index + 1}. Unbound</legend>
+      <p className="bonus-check"><span><b>{card.name}</b>{card.effect}</span></p>
+      {props.cardId === "honeycomb-every-bee-counts" && (
+        <p className="empty-copy">This card resolves every eligible district automatically.</p>
+      )}
+      {props.cardId === "old-shell-institutional-memory" && (
+        <div className="unbound-fields">
+          <label>
+            Revealed scoring card
+            <select
+              aria-label="Revealed scoring card"
+              value={props.draft.scoringCardId}
+              onChange={(event) => props.onUpdate({
+                scoringCardId: event.target.value as ScoringCardId | "",
+                objectiveSourceDistrictIds: ["", "", ""]
+              })}
+            >
+              <option value="">Choose revealed card</option>
+              {revealedCardIds.map((cardId) => (
+                <option key={cardId} value={cardId}>{cardId}</option>
+              ))}
+            </select>
+          </label>
+          {scoringCard?.objectives.map((objective, index) => (
+            <DistrictSelect
+              key={`${scoringCard.id}-${index}`}
+              label={`${PARTIES_BY_ID[objective.partyId].shortName} to ${DISTRICTS_BY_ID[objective.districtId].name}`}
+              optional
+              emptyLabel="Skip objective"
+              value={props.draft.objectiveSourceDistrictIds[index]!}
+              onChange={(districtId) => updateObjectiveSource(index, districtId)}
+            />
+          ))}
+        </div>
+      )}
+      {props.cardId === "foxglove-shell-firm" && (
+        <PartyChoiceSelect
+          label="Destination party"
+          value={props.draft.targetPartyId}
+          partyIds={shellTargets}
+          onChange={(targetPartyId) => props.onUpdate({ targetPartyId })}
+        />
+      )}
+      {props.cardId === "riverworks-mass-transit" && (
+        <div className="unbound-fields">
+          {props.draft.transitDistrictIds.map((districtId, index) => (
+            <div className="transit-step" key={index}>
+              <DistrictSelect
+                label={index === props.draft.transitDistrictIds.length - 1
+                  ? `District ${index + 1} · free endpoint`
+                  : `District ${index + 1}`}
+                value={districtId}
+                onChange={(nextDistrictId) => {
+                  const transitDistrictIds = [...props.draft.transitDistrictIds];
+                  transitDistrictIds[index] = nextDistrictId;
+                  props.onUpdate({ transitDistrictIds });
+                }}
+              />
+              {index < props.draft.transitDistrictIds.length - 1 && (
+                <PartyChoiceSelect
+                  label="Support moved onward"
+                  value={props.draft.transitSupportPartyIds[index] ?? ""}
+                  partyIds={PARTIES.map((party) => party.id)}
+                  onChange={(partyId) => {
+                    const transitSupportPartyIds = [...props.draft.transitSupportPartyIds];
+                    transitSupportPartyIds[index] = partyId;
+                    props.onUpdate({ transitSupportPartyIds });
+                  }}
+                />
+              )}
+            </div>
+          ))}
+          <div className="button-row">
+            <button
+              type="button"
+              className="ink-button"
+              disabled={props.draft.transitDistrictIds.length === 5}
+              onClick={() => props.onUpdate({
+                transitDistrictIds: [...props.draft.transitDistrictIds, ""],
+                transitSupportPartyIds: [...props.draft.transitSupportPartyIds, ""]
+              })}
+            >Add district</button>
+            <button
+              type="button"
+              className="ink-button"
+              disabled={props.draft.transitDistrictIds.length === 2}
+              onClick={() => props.onUpdate({
+                transitDistrictIds: props.draft.transitDistrictIds.slice(0, -1),
+                transitSupportPartyIds: props.draft.transitSupportPartyIds.slice(0, -1)
+              })}
+            >Remove district</button>
+          </div>
+        </div>
+      )}
+      {props.cardId === "many-wings-empty-every-nest" && (
+        <MultiDistrictSelect
+          label="Different destination districts"
+          value={props.draft.destinationDistrictIds}
+          onChange={(destinationDistrictIds) => props.onUpdate({ destinationDistrictIds })}
+        />
+      )}
+      {props.cardId === "night-parliament-midnight-session" && (
+        <div className="field-grid">
+          <PartyChoiceSelect
+            label="Closed party"
+            value={props.draft.targetPartyId}
+            partyIds={closedTargets}
+            onChange={(targetPartyId) => props.onUpdate({ targetPartyId })}
+          />
+          <FirmChoiceSelect
+            value={props.draft.firmId}
+            firmIds={returnedFirmIds}
+            onChange={(firmId) => props.onUpdate({ firmId })}
+          />
+        </div>
+      )}
     </fieldset>
   );
 }
@@ -1163,9 +1373,37 @@ function BonusFields(props: { draft: OperationDraft; homePartyId: PartyId; actin
   return null;
 }
 
-function DistrictSelect(props: { label: string; value: string; optional?: boolean; active?: boolean; onArm?(): void; onChange(value: string): void }) {
+function PartyChoiceSelect(props: {
+  label: string;
+  value: PartyId | "";
+  partyIds: PartyId[];
+  onChange(value: PartyId | ""): void;
+}) {
   const id = useId();
-  return <div className={`target-field ${props.active ? "target-field-active" : ""}`}><div className="target-field-heading"><label htmlFor={id}>{props.label}</label>{props.onArm !== undefined && <button type="button" className="target-arm" onClick={props.onArm}>Select on map</button>}</div><select id={id} value={props.value} onFocus={props.onArm} onChange={(event) => props.onChange(event.target.value)}><option value="">{props.optional ? "None / recovery" : "Choose district"}</option>{DISTRICTS.map((district) => <option key={district.id} value={district.id}>{district.name}</option>)}</select></div>;
+  return <label htmlFor={id}>{props.label}<select id={id} value={props.value} onChange={(event) => props.onChange(event.target.value as PartyId | "")}><option value="">Choose party</option>{props.partyIds.map((partyId) => <option key={partyId} value={partyId}>{PARTIES_BY_ID[partyId].name}</option>)}</select></label>;
+}
+
+function FirmChoiceSelect(props: {
+  value: FirmId | "";
+  firmIds: FirmId[];
+  onChange(value: FirmId | ""): void;
+}) {
+  const id = useId();
+  return <label htmlFor={id}>Returned Firm marker<select id={id} value={props.value} onChange={(event) => props.onChange(event.target.value as FirmId | "")}><option value="">Choose Firm</option>{props.firmIds.map((firmId) => <option key={firmId} value={firmId}>{FIRMS_BY_ID[firmId].name}</option>)}</select></label>;
+}
+
+function MultiDistrictSelect(props: {
+  label: string;
+  value: string[];
+  onChange(value: string[]): void;
+}) {
+  const id = useId();
+  return <label htmlFor={id}>{props.label}<select id={id} multiple value={props.value} onChange={(event) => props.onChange([...event.currentTarget.selectedOptions].map((option) => option.value))}>{DISTRICTS.map((district) => <option key={district.id} value={district.id}>{district.name}</option>)}</select></label>;
+}
+
+function DistrictSelect(props: { label: string; value: string; optional?: boolean; emptyLabel?: string; active?: boolean; onArm?(): void; onChange(value: string): void }) {
+  const id = useId();
+  return <div className={`target-field ${props.active ? "target-field-active" : ""}`}><div className="target-field-heading"><label htmlFor={id}>{props.label}</label>{props.onArm !== undefined && <button type="button" className="target-arm" onClick={props.onArm}>Select on map</button>}</div><select id={id} value={props.value} onFocus={props.onArm} onChange={(event) => props.onChange(event.target.value)}><option value="">{props.emptyLabel ?? (props.optional ? "None / recovery" : "Choose district")}</option>{DISTRICTS.map((district) => <option key={district.id} value={district.id}>{district.name}</option>)}</select></div>;
 }
 
 function PartyField(props: { label: string; value: PartyId | ""; optional?: boolean; actingParty: PartyId; allowActingParty?: boolean; active?: boolean; onArm?(): void; onChange(value: PartyId | ""): void }) {
@@ -1202,7 +1440,7 @@ function YearArchive({ view }: { view: GameView }) {
     <section className="year-archive paper-panel">
       <SectionHeading label="Annual record" title="Year archive" slug={`${view.yearHistory.length} closed`} />
       {view.yearHistory.length === 0 ? <p>No year has closed.</p> : (
-        <ol>{[...view.yearHistory].reverse().map((record) => <li key={record.year}><b>Year {record.year}</b><span>{seatName(view, record.endedBySeatId)} closed the majority</span><small>{record.actions.length} Lobby actions · {record.operations.length} Operations</small></li>)}</ol>
+        <ol>{[...view.yearHistory].reverse().map((record) => <li key={record.year}><b>Year {record.year}</b><span>{seatName(view, record.endedBySeatId)} ended the year</span><small>{record.actions.length} Lobby actions · {record.operations.length} resolved cards</small></li>)}</ol>
       )}
     </section>
   );
@@ -1252,15 +1490,39 @@ export function extractView(envelope: ViewerStateEnvelope): GameView | null {
 }
 
 function previewDraft(
+  view: GameView,
   initial: OperationState,
+  seat: ViewSeat,
   partyId: PartyId,
-  draft: OperationDraft,
-  inventory: ViewSeat["operations"]
+  draft: OperationDraft
 ): {
   play: OperationPlay | null;
   message: string | null;
 } {
+  const inventory = seat.operations;
   if (inventory === null) return { play: null, message: "Your private hand is unavailable." };
+  if (
+    draft.bonusCardId !== "" &&
+    BONUS_CARDS_BY_ID[draft.bonusCardId].operation === null
+  ) {
+    const result = unboundDraftChoice(
+      view,
+      seat,
+      partyId,
+      draft.bonusCardId,
+      draft.unbound
+    );
+    return result.choice === null
+      ? { play: null, message: result.message }
+      : {
+          play: {
+            cardType: "bonus",
+            bonusCardId: draft.bonusCardId,
+            choice: result.choice
+          },
+          message: "Ready to resolve this card."
+        };
+  }
   if (draft.bonusCardId === "" && inventory[draft.operation] < 1) {
     return { play: null, message: `You do not have a ${draft.operation} card.` };
   }
@@ -1285,6 +1547,168 @@ function previewDraft(
     },
     message: "Ready to resolve this card."
   };
+}
+
+function unboundDraftChoice(
+  view: GameView,
+  seat: ViewSeat,
+  actingPartyId: PartyId,
+  cardId: BonusCardId,
+  draft: UnboundDraft
+): { choice: UnboundBonusChoice | null; message: string } {
+  if (cardId === "honeycomb-every-bee-counts") {
+    const eligible = DISTRICTS.some(
+      (district) =>
+        (view.support[district.id][actingPartyId] ?? 0) === 1 &&
+        districtHasFreeSpot(view, district.id)
+    );
+    return eligible
+      ? { choice: { effect: "every_bee_counts" }, message: "" }
+      : { choice: null, message: "No district currently has exactly one acting-party Support and a free spot." };
+  }
+
+  if (cardId === "old-shell-institutional-memory") {
+    if (
+      draft.scoringCardId === "" ||
+      !revealedScoringCardIds(view).includes(draft.scoringCardId)
+    ) {
+      return { choice: null, message: "Choose a revealed scoring card." };
+    }
+    const scoringCard = SCORING_CARDS_BY_ID[draft.scoringCardId];
+    const moves = draft.objectiveSourceDistrictIds.flatMap((sourceDistrictId, index) => {
+      if (sourceDistrictId === "") return [];
+      return [{
+        objectiveIndex: index as 0 | 1 | 2,
+        sourceDistrictId: sourceDistrictId as DistrictId
+      }];
+    });
+    if (moves.length === 0) {
+      return { choice: null, message: "Choose a source for at least one objective." };
+    }
+    const legal = moves.every((move) => {
+      const objective = scoringCard.objectives[move.objectiveIndex];
+      return (
+        move.sourceDistrictId !== objective.districtId &&
+        (view.support[move.sourceDistrictId][objective.partyId] ?? 0) > 0 &&
+        districtHasFreeSpot(view, objective.districtId)
+      );
+    });
+    return legal
+      ? {
+          choice: {
+            effect: "institutional_memory",
+            scoringCardId: draft.scoringCardId,
+            moves
+          },
+          message: ""
+        }
+      : { choice: null, message: "Every selected objective needs a legal source and a free destination spot." };
+  }
+
+  if (cardId === "foxglove-shell-firm") {
+    if (
+      draft.targetPartyId === "" ||
+      draft.targetPartyId === actingPartyId ||
+      view.parties[draft.targetPartyId]?.status === "open"
+    ) {
+      return { choice: null, message: "Choose another party without a Firm marker." };
+    }
+    return {
+      choice: { effect: "shell_firm", targetPartyId: draft.targetPartyId },
+      message: ""
+    };
+  }
+
+  if (cardId === "riverworks-mass-transit") {
+    if (
+      draft.transitDistrictIds.some((districtId) => districtId === "") ||
+      draft.transitSupportPartyIds.some((partyId) => partyId === "")
+    ) {
+      return { choice: null, message: "Choose every path district and each Support moved onward." };
+    }
+    const districtIds = draft.transitDistrictIds as DistrictId[];
+    const supportPartyIds = draft.transitSupportPartyIds as PartyId[];
+    if (new Set(districtIds).size !== districtIds.length) {
+      return { choice: null, message: "Mass Transit cannot revisit a district." };
+    }
+    const legalSteps = supportPartyIds.every((partyId, index) => {
+      const sourceId = districtIds[index]!;
+      const destinationId = districtIds[index + 1]!;
+      return (
+        (DISTRICTS_BY_ID[sourceId].adjacentDistrictIds as readonly DistrictId[])
+          .includes(destinationId) &&
+        (view.support[sourceId][partyId] ?? 0) > 0
+      );
+    });
+    if (!legalSteps || !districtHasFreeSpot(view, districtIds.at(-1)!)) {
+      return { choice: null, message: "The path must be connected, each source must contain the selected Support, and the final district needs a free spot." };
+    }
+    return {
+      choice: { effect: "mass_transit", districtIds, supportPartyIds },
+      message: ""
+    };
+  }
+
+  if (cardId === "many-wings-empty-every-nest") {
+    const sources = DISTRICTS.filter(
+      (district) => (view.support[district.id][actingPartyId] ?? 0) >= 2
+    );
+    const destinationDistrictIds = draft.destinationDistrictIds as DistrictId[];
+    const legal =
+      sources.length > 0 &&
+      destinationDistrictIds.length === sources.length &&
+      new Set(destinationDistrictIds).size === destinationDistrictIds.length &&
+      destinationDistrictIds.every(
+        (districtId) =>
+          (view.support[districtId][actingPartyId] ?? 0) === 0 &&
+          districtHasFreeSpot(view, districtId)
+      );
+    return legal
+      ? {
+          choice: { effect: "empty_every_nest", destinationDistrictIds },
+          message: ""
+        }
+      : { choice: null, message: `Choose ${sources.length} different free district${sources.length === 1 ? "" : "s"} with no acting-party Support.` };
+  }
+
+  if (cardId === "night-parliament-midnight-session") {
+    const activeFirmIds = new Set(
+      Object.values(view.parties).flatMap((party) =>
+        party?.status === "open" ? [party.firmId] : []
+      )
+    );
+    if (
+      draft.targetPartyId === "" ||
+      view.parties[draft.targetPartyId]?.status !== "closed" ||
+      draft.firmId === "" ||
+      !seat.firmIds.includes(draft.firmId) ||
+      activeFirmIds.has(draft.firmId)
+    ) {
+      return { choice: null, message: "Choose a closed party and one of your returned Firm markers." };
+    }
+    return {
+      choice: {
+        effect: "midnight_session",
+        targetPartyId: draft.targetPartyId,
+        firmId: draft.firmId
+      },
+      message: ""
+    };
+  }
+
+  return { choice: null, message: "That Bonus card is not Unbound." };
+}
+
+function revealedScoringCardIds(view: GameView): ScoringCardId[] {
+  return [...new Set(
+    view.electionHistory.flatMap((election) =>
+      election.scoringCards.flatMap((cards) => cards.scoringCardIds)
+    )
+  )];
+}
+
+function districtHasFreeSpot(view: GameView, districtId: DistrictId): boolean {
+  return districtOccupancy(view.support[districtId]) < DISTRICTS_BY_ID[districtId].capacity;
 }
 
 function operationTableInteraction(input: {
@@ -1489,7 +1913,30 @@ function emptyOperationDraft(
   actingParty: PartyId
 ): OperationDraft {
   const target = PARTIES.find((party) => party.id !== actingParty)!.id;
-  return { id, operation, sourceDistrictId: "", destinationDistrictId: "", districtId: "", rivalParty: target, targetParty: target, bonusDistrictId: "", bonusDistrictIds: [], bonusSourceDistrictId: "", bonusCourtSourceParty: "", bonusCourtParty: "", bonusCardId: "" };
+  return {
+    id,
+    operation,
+    sourceDistrictId: "",
+    destinationDistrictId: "",
+    districtId: "",
+    rivalParty: target,
+    targetParty: target,
+    bonusDistrictId: "",
+    bonusDistrictIds: [],
+    bonusSourceDistrictId: "",
+    bonusCourtSourceParty: "",
+    bonusCourtParty: "",
+    bonusCardId: "",
+    unbound: {
+      scoringCardId: "",
+      objectiveSourceDistrictIds: ["", "", ""],
+      targetPartyId: "",
+      firmId: "",
+      transitDistrictIds: ["", ""],
+      transitSupportPartyIds: [""],
+      destinationDistrictIds: []
+    }
+  };
 }
 
 function canPlayBonusCardAtParty(

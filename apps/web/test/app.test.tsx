@@ -1,7 +1,12 @@
 /** @vitest-environment jsdom */
 
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { RULESET_VERSION, type PartyId } from "@bellweather/content";
+import {
+  PARTY_IDS,
+  RULESET_VERSION,
+  type BonusCardId,
+  type PartyId
+} from "@bellweather/content";
 import {
   executeAction,
   initializeGame,
@@ -18,6 +23,7 @@ import {
   DistrictMap,
   GameDesk,
   LobbyDesk,
+  OperationComposer,
   PartyBoard,
   extractView,
   type GameView
@@ -300,6 +306,166 @@ describe("yearly browser play surface", () => {
     })).toBeTruthy();
   });
 
+  it("submits Every Bee Counts without extra choices", () => {
+    const state = sixPartyState();
+    state.support.northreach.honeycomb = 1;
+    const { onSubmit } = renderUnboundComposer(
+      state,
+      "honeycomb",
+      "honeycomb-every-bee-counts"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Every Bee Counts Bonus/ }));
+    expect(screen.getByText("Ready to resolve this card.")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Resolve Every Bee Counts" }));
+    expect(onSubmit).toHaveBeenCalledWith({
+      cardType: "bonus",
+      bonusCardId: "honeycomb-every-bee-counts",
+      choice: { effect: "every_bee_counts" }
+    });
+  });
+
+  it("submits a partial Institutional Memory choice", () => {
+    const state = sixPartyState();
+    state.support.ironwood = {};
+    state.support.cloverfield.honeycomb = 1;
+    state.electionHistory = [{
+      scoringCards: [{
+        seatId: "seat-1",
+        scoringCardIds: ["SC-01"],
+        capitalCardId: "SC-01"
+      }]
+    } as GameState["electionHistory"][number]];
+    const { onSubmit } = renderUnboundComposer(
+      state,
+      "old-shell",
+      "old-shell-institutional-memory"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Institutional Memory Bonus/ }));
+    fireEvent.change(screen.getByLabelText("Revealed scoring card"), {
+      target: { value: "SC-01" }
+    });
+    fireEvent.change(screen.getByLabelText("Honeycomb to Ironwood"), {
+      target: { value: "cloverfield" }
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Resolve Institutional Memory" }));
+    expect(onSubmit).toHaveBeenCalledWith({
+      cardType: "bonus",
+      bonusCardId: "old-shell-institutional-memory",
+      choice: {
+        effect: "institutional_memory",
+        scoringCardId: "SC-01",
+        moves: [{ objectiveIndex: 0, sourceDistrictId: "cloverfield" }]
+      }
+    });
+  });
+
+  it("offers closed parties to Shell Firm", () => {
+    const state = sixPartyState();
+    state.parties["old-shell"]!.status = "closed";
+    const { onSubmit } = renderUnboundComposer(
+      state,
+      "foxglove",
+      "foxglove-shell-firm"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Shell Firm Bonus/ }));
+    fireEvent.change(screen.getByLabelText("Destination party"), {
+      target: { value: "old-shell" }
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Resolve Shell Firm" }));
+    expect(onSubmit).toHaveBeenCalledWith({
+      cardType: "bonus",
+      bonusCardId: "foxglove-shell-firm",
+      choice: { effect: "shell_firm", targetPartyId: "old-shell" }
+    });
+  });
+
+  it("submits Mass Transit in movement order toward its endpoint", () => {
+    const state = sixPartyState();
+    state.support.northreach = { honeycomb: 1 };
+    state.support.cloverfield = {};
+    const { onSubmit } = renderUnboundComposer(
+      state,
+      "riverworks",
+      "riverworks-mass-transit"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Mass Transit Bonus/ }));
+    fireEvent.change(screen.getByLabelText("District 1"), {
+      target: { value: "northreach" }
+    });
+    fireEvent.change(screen.getByLabelText("Support moved onward"), {
+      target: { value: "honeycomb" }
+    });
+    fireEvent.change(screen.getByLabelText("District 2 · free endpoint"), {
+      target: { value: "cloverfield" }
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Resolve Mass Transit" }));
+    expect(onSubmit).toHaveBeenCalledWith({
+      cardType: "bonus",
+      bonusCardId: "riverworks-mass-transit",
+      choice: {
+        effect: "mass_transit",
+        districtIds: ["northreach", "cloverfield"],
+        supportPartyIds: ["honeycomb"]
+      }
+    });
+  });
+
+  it("requires one Empty Every Nest destination per qualifying district", () => {
+    const state = sixPartyState();
+    state.support.harbormouth["many-wings"] = 2;
+    const { onSubmit } = renderUnboundComposer(
+      state,
+      "many-wings",
+      "many-wings-empty-every-nest"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Empty Every Nest Bonus/ }));
+    const destinations = screen.getByLabelText("Different destination districts") as HTMLSelectElement;
+    within(destinations).getByRole("option", { name: "Northreach" }).setAttribute("selected", "");
+    fireEvent.change(destinations);
+    fireEvent.click(screen.getByRole("button", { name: "Resolve Empty Every Nest" }));
+    expect(onSubmit).toHaveBeenCalledWith({
+      cardType: "bonus",
+      bonusCardId: "many-wings-empty-every-nest",
+      choice: {
+        effect: "empty_every_nest",
+        destinationDistrictIds: ["northreach"]
+      }
+    });
+  });
+
+  it("offers returned Firms and closed parties to Midnight Session", () => {
+    const state = sixPartyState();
+    state.parties.honeycomb!.status = "closed";
+    const { onSubmit } = renderUnboundComposer(
+      state,
+      "night-parliament",
+      "night-parliament-midnight-session"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Midnight Session Bonus/ }));
+    fireEvent.change(screen.getByLabelText("Closed party"), {
+      target: { value: "honeycomb" }
+    });
+    fireEvent.change(screen.getByLabelText("Returned Firm marker"), {
+      target: { value: "one-fell-swoop" }
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Resolve Midnight Session" }));
+    expect(onSubmit).toHaveBeenCalledWith({
+      cardType: "bonus",
+      bonusCardId: "night-parliament-midnight-session",
+      choice: {
+        effect: "midnight_session",
+        targetPartyId: "honeycomb",
+        firmId: "one-fell-swoop"
+      }
+    });
+  });
+
   it("offers another card or Finish after each resolved Operation", () => {
     let state = openEveryParty(initializeGame(configuration(2), random).state);
     state = apply(state, organiseAction("seat-1"));
@@ -369,7 +535,7 @@ describe("yearly browser play surface", () => {
     expect(screen.getByRole("button", { name: /^Honeycomb open/ }).getAttribute("aria-disabled")).toBe("true");
     expect(screen.getByText(/cannot Close on your first Lobby turn/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "pass" }));
-    expect(screen.getByText(/return all your Firm markers before passing/)).toBeTruthy();
+    expect(screen.getByText(/Return all your Firm markers before passing/)).toBeTruthy();
     expect(screen.getByRole("button", { name: "Pass this turn" }).hasAttribute("disabled")).toBe(true);
   });
 
@@ -481,6 +647,35 @@ function configuration(playerCount: number) {
       controller: "human" as const
     }))
   };
+}
+
+function sixPartyState(): GameState {
+  return openEveryParty(
+    initializeGame(configuration(6), random).state,
+    [...PARTY_IDS]
+  );
+}
+
+function renderUnboundComposer(
+  state: GameState,
+  partyId: PartyId,
+  bonusCardId: BonusCardId
+) {
+  state.bonusCards[bonusCardId] = { zone: "hand", seatId: "seat-1" };
+  const view = privateView(state, "seat-1");
+  const onSubmit = vi.fn(async () => true);
+  render(
+    <OperationComposer
+      view={view}
+      seat={view.seats[0]!}
+      partyId={partyId}
+      onPartyId={() => undefined}
+      busy={false}
+      onSubmit={onSubmit}
+      onFinish={async () => true}
+    />
+  );
+  return { onSubmit };
 }
 
 function openEveryParty(

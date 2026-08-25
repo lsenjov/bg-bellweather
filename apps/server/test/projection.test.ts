@@ -72,7 +72,11 @@ describe("yearly game projections", () => {
       operations: { organise: 1, rally: 0, smear: 0, court: 0 }
     });
     expect(publicState.bonusCardsAtParties).toMatchObject({
-      honeycomb: ["honeycomb-waggle-route", "honeycomb-common-cause"]
+      honeycomb: [
+        "honeycomb-waggle-route",
+        "honeycomb-common-cause",
+        "honeycomb-every-bee-counts"
+      ]
     });
   });
 
