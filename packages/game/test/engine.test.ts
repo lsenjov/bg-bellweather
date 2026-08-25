@@ -422,6 +422,11 @@ describe("Lobby actions", () => {
     base.parties.honeycomb!.status = "closed";
     base.parties["old-shell"]!.status = "closed";
     base.parties.foxglove!.status = "closed";
+    const originalOldShellOwner = base.parties["old-shell"]!.ownerSeatId;
+    base.bonusCards["old-shell-stonewall"] = {
+      zone: "new_year",
+      seatId: originalOldShellOwner
+    };
 
     let withoutSession = act(base, {
       type: "operate",
@@ -455,6 +460,29 @@ describe("Lobby actions", () => {
     });
     state = act(state, { type: "finish_operate", seatId: "seat-1" });
     expect(state.phase).toMatchObject({ type: "lobby", activeSeatId: "seat-2" });
+
+    state = act(state, { type: "pass", seatId: "seat-2" });
+    state = act(state, { type: "pass", seatId: "seat-3" });
+    state = act(state, {
+      type: "collect",
+      seatId: "seat-4",
+      partyId: "riverworks"
+    });
+    state = act(state, {
+      type: "close",
+      seatId: "seat-1",
+      partyId: "old-shell",
+      bonusCardId: "old-shell-dig-in"
+    });
+    expect(state.phase.type).toBe("closure");
+    expect(state.bonusCards["old-shell-stonewall"]).toEqual({
+      zone: "new_year",
+      seatId: originalOldShellOwner
+    });
+    expect(state.bonusCards["old-shell-dig-in"]).toEqual({
+      zone: "new_year",
+      seatId: "seat-1"
+    });
   });
 
   it("rejects Bonus cards at a one-way or former coalition partner", () => {

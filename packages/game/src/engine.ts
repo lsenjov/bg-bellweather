@@ -493,7 +493,7 @@ function close(
   }
   const party = requireOpenParty(state, partyId);
   if (party.ownerSeatId !== seatId) {
-    throw new GameRuleError("not_party_opener", "Only the opening player can close this party");
+    throw new GameRuleError("not_firm_owner", "Only the current Firm owner can close this party");
   }
   const cardCount = operationCount(party.operations);
   closeParty(state, party);
@@ -612,8 +612,8 @@ function chooseClosureBonus(
   const party = state.parties[partyId];
   if (party === undefined || party.ownerSeatId !== seatId) {
     throw new GameRuleError(
-      "not_party_opener",
-      "Only the opening player can choose this Closure Bonus card"
+      "not_firm_owner",
+      "Only the current Firm owner can choose this Closure Bonus card"
     );
   }
   awardBonusCard(state, seatId, partyId, bonusCardId);
