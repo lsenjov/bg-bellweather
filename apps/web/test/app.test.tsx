@@ -144,6 +144,97 @@ describe("yearly browser play surface", () => {
     expect(screen.getByLabelText("Harbormouth: 6 of 6 Support spaces occupied")).toBeTruthy();
   });
 
+  it("renders every latest Support change as its own accessible map glyph", async () => {
+    const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
+    render(
+      <DistrictMap
+        view={view}
+        supportChanges={[
+          {
+            type: "move",
+            partyId: "honeycomb",
+            sourceDistrictId: "harbormouth",
+            destinationDistrictId: "cloverfield"
+          },
+          { type: "add", partyId: "honeycomb", destinationDistrictId: "cloverfield" },
+          { type: "add", partyId: "honeycomb", destinationDistrictId: "cloverfield" }
+        ]}
+      />
+    );
+    await waitFor(() => {
+      expect(document.querySelectorAll('[data-map-change="move"]')).toHaveLength(1);
+      expect(document.querySelectorAll('[data-map-change="add"]')).toHaveLength(2);
+    });
+    expect(within(screen.getByLabelText("Latest map changes")).getAllByText("Honeycomb added to Cloverfield")).toHaveLength(2);
+  });
+
+  it("summarizes every completed Lobby action beside the map", () => {
+    const view = privateView(openEveryParty(initializeGame(configuration(2), random).state), "seat-1");
+    const action = (overrides: Partial<GameView["lobbyActions"][number]>): GameView["lobbyActions"][number] => ({
+      id: "action-1",
+      year: 1,
+      turn: 1,
+      seatId: "seat-1",
+      type: "pass",
+      partyId: null,
+      operationCount: 0,
+      cardCount: 0,
+      bonusCardId: null,
+      supportChanges: [],
+      ...overrides
+    });
+    view.lobbyActions = [action({
+      type: "collect",
+      partyId: "honeycomb",
+      bonusCardId: "honeycomb-waggle-route"
+    })];
+    const { rerender } = render(
+      <GameDesk view={view} ownSeat={undefined} ownSeatId={undefined} spectator busy={false} onCommand={async () => true} />
+    );
+    let latest = screen.getByLabelText("Latest Lobby action");
+    expect(within(latest).getByText("Player 1 collected Honeycomb Cooperative")).toBeTruthy();
+    expect(within(latest).getByText("Bonus · Waggle Route")).toBeTruthy();
+
+    view.lobbyActions = [action({ type: "close", partyId: "honeycomb" })];
+    rerender(<GameDesk view={view} ownSeat={undefined} ownSeatId={undefined} spectator busy={false} onCommand={async () => true} />);
+    latest = screen.getByLabelText("Latest Lobby action");
+    expect(within(latest).getByText("Player 1 closed Honeycomb Cooperative")).toBeTruthy();
+    expect(within(latest).getByText("No Bonus card")).toBeTruthy();
+
+    view.lobbyActions = [action({ type: "pass" })];
+    rerender(<GameDesk view={view} ownSeat={undefined} ownSeatId={undefined} spectator busy={false} onCommand={async () => true} />);
+    expect(within(screen.getByLabelText("Latest Lobby action")).getByText("Player 1 passed")).toBeTruthy();
+
+    view.lobbyActions = [action({
+      type: "operate",
+      partyId: "honeycomb",
+      operationCount: 1,
+      cardCount: 1,
+      supportChanges: [{
+        type: "add",
+        partyId: "honeycomb",
+        destinationDistrictId: "cloverfield"
+      }]
+    })];
+    view.resolvedOperations = [{
+      year: 1,
+      turn: 1,
+      seatId: "seat-1",
+      partyId: "honeycomb",
+      cardType: "operation",
+      operation: "rally",
+      bonusCardId: null,
+      bonusHomePartyId: null,
+      choice: { operation: "rally", districtId: "cloverfield" },
+      bonusCardReturnedHome: false
+    }];
+    rerender(<GameDesk view={view} ownSeat={undefined} ownSeatId={undefined} spectator busy={false} onCommand={async () => true} />);
+    latest = screen.getByLabelText("Latest Lobby action");
+    expect(within(latest).getByText("Player 1 operated Honeycomb Cooperative")).toBeTruthy();
+    expect(within(latest).getByText("Rally")).toBeTruthy();
+    expect(within(latest).getByText("Honeycomb added to Cloverfield")).toBeTruthy();
+  });
+
   it("shows exact public party piles and Bonus card locations", () => {
     let state = openEveryParty(initializeGame(configuration(2), random).state);
     state = apply(state, organiseAction("seat-1"));

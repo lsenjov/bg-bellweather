@@ -34,14 +34,17 @@ import {
   type GameView as EngineGameView,
   type OperationChoice,
   type OperationState,
-  type ProjectedSeat
+  type ProjectedSeat,
+  type SupportChange
 } from "@bellweather/game";
 import {
   type CSSProperties,
   type FormEvent,
+  type RefObject,
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState
@@ -430,6 +433,10 @@ export function GameDesk(props: {
   onCommand(command: GameCommand): Promise<boolean | void>;
 }) {
   const latestElection = props.view.electionHistory.at(-1);
+  const latestAction = props.view.lobbyActions.at(-1) ?? null;
+  const supportChanges = props.view.phase === "election" || props.view.phase === "complete"
+    ? []
+    : latestAction?.supportChanges ?? [];
   const [interaction, setInteraction] = useState<TableInteraction | null>(null);
   return (
     <main className="game-grid">
@@ -437,8 +444,13 @@ export function GameDesk(props: {
       <section className="map-desk paper-panel">
         <SectionHeading label="Constituency wire" title="Bellweather map" slug={`Year ${props.view.year}`} />
         {interaction !== null && <p className="map-instruction">{interaction.prompt}</p>}
+        <LatestLobbyAction view={props.view} action={latestAction} />
         <PartyBoard view={props.view} interaction={interaction} />
-        <DistrictMap view={props.view} interaction={interaction} />
+        <DistrictMap
+          view={props.view}
+          interaction={interaction}
+          supportChanges={supportChanges}
+        />
       </section>
       <aside className="action-desk paper-panel">
         <SectionHeading label="Active desk" title={phaseName(props.view.phase)} slug={turnSlug(props.view)} />
@@ -647,16 +659,92 @@ export function PartyBoard({
   );
 }
 
+function LatestLobbyAction({
+  view,
+  action
+}: {
+  view: GameView;
+  action: GameView["lobbyActions"][number] | null;
+}) {
+  if (action === null) {
+    return (
+      <aside className="latest-action" aria-label="Latest Lobby action">
+        <p className="section-label">Latest action</p>
+        <strong>No Lobby action yet this year</strong>
+      </aside>
+    );
+  }
+  const actor = view.seats.find((seat) => seat.id === action.seatId)?.displayName ?? "Unknown player";
+  const party = action.partyId === null ? null : PARTIES_BY_ID[action.partyId];
+  const bonusCard = action.bonusCardId === null ? null : BONUS_CARDS_BY_ID[action.bonusCardId];
+  const cards = action.type === "operate"
+    ? view.resolvedOperations.filter(
+        (record) =>
+          record.year === action.year &&
+          record.turn === action.turn &&
+          record.seatId === action.seatId
+      )
+    : [];
+  const actionCopy = action.type === "operate"
+    ? `operated ${party?.name ?? "an unknown party"}`
+    : action.type === "collect"
+      ? `collected ${party?.name ?? "an unknown party"}`
+      : action.type === "close"
+        ? `closed ${party?.name ?? "an unknown party"}`
+        : "passed";
+  return (
+    <aside className="latest-action" aria-label="Latest Lobby action">
+      <div>
+        <p className="section-label">Latest action</p>
+        <strong>{actor} {actionCopy}</strong>
+      </div>
+      {cards.length > 0 && (
+        <ol className="latest-action-cards" aria-label="Cards resolved">
+          {cards.map((record, index) => (
+            <li key={`${record.turn}-${index}`}>
+              {record.bonusCardId === null
+                ? titleCase(record.operation ?? "operation")
+                : BONUS_CARDS_BY_ID[record.bonusCardId].name}
+            </li>
+          ))}
+        </ol>
+      )}
+      {(action.type === "collect" || action.type === "close") && (
+        <div className="latest-action-bonus">
+          {bonusCard === null ? (
+            <span>No Bonus card</span>
+          ) : (
+            <>
+              <PartyEmblem partyId={bonusCard.homePartyId} />
+              <span>Bonus · {bonusCard.name}</span>
+            </>
+          )}
+        </div>
+      )}
+      {action.supportChanges.length > 0 && (
+        <ul className="latest-action-changes" aria-label="Support changes">
+          {action.supportChanges.map((change, index) => (
+            <li key={`${supportChangeKey(change)}-${index}`}>{supportChangeLabel(change)}</li>
+          ))}
+        </ul>
+      )}
+    </aside>
+  );
+}
+
 export function DistrictMap({
   view,
-  interaction = null
+  interaction = null,
+  supportChanges = []
 }: {
   view: GameView;
   interaction?: TableInteraction | null;
+  supportChanges?: SupportChange[];
 }) {
   const targeting = interaction?.onDistrictClick !== undefined;
+  const mapRef = useRef<HTMLDivElement>(null);
   return (
-    <div className="district-map" aria-label="Bellweather district map">
+    <div ref={mapRef} className="district-map" aria-label="Bellweather district map">
       {DISTRICTS.map((district) => {
         const support = view.support[district.id] ?? {};
         const occupied = PARTIES.reduce((total, party) => total + (support[party.id] ?? 0), 0);
@@ -666,6 +754,7 @@ export function DistrictMap({
         return (
           <article
             key={district.id}
+            data-district-id={district.id}
             className={`district district-${district.id} ${targeting ? "table-target" : ""} ${targeting && !selectable ? "table-unavailable" : ""} ${selectable ? "table-selectable" : ""} ${selected ? "table-selected" : ""}`}
             aria-label={targeting ? undefined : summary}
           >
@@ -710,8 +799,188 @@ export function DistrictMap({
           </article>
         );
       })}
+      <MapChangeLayer mapRef={mapRef} supportChanges={supportChanges} />
     </div>
   );
+}
+
+interface MapPoint {
+  x: number;
+  y: number;
+}
+
+interface MapGeometry {
+  width: number;
+  height: number;
+  points: Partial<Record<DistrictId, MapPoint>>;
+}
+
+function MapChangeLayer({
+  mapRef,
+  supportChanges
+}: {
+  mapRef: RefObject<HTMLDivElement | null>;
+  supportChanges: SupportChange[];
+}) {
+  const [geometry, setGeometry] = useState<MapGeometry>({
+    width: 0,
+    height: 0,
+    points: {}
+  });
+  useLayoutEffect(() => {
+    const map = mapRef.current;
+    if (map === null) return;
+    const measure = () => {
+      const mapRect = map.getBoundingClientRect();
+      const points = Object.fromEntries(
+        DISTRICTS.flatMap((district) => {
+          const element = map.querySelector<HTMLElement>(`[data-district-id="${district.id}"]`);
+          if (element === null) return [];
+          const rect = element.getBoundingClientRect();
+          return [[district.id, {
+            x: rect.left - mapRect.left + map.scrollLeft + rect.width / 2,
+            y: rect.top - mapRect.top + map.scrollTop + rect.height / 2
+          }]];
+        })
+      ) as Partial<Record<DistrictId, MapPoint>>;
+      setGeometry({
+        width: map.scrollWidth,
+        height: map.scrollHeight,
+        points
+      });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    const observer = typeof ResizeObserver === "undefined"
+      ? null
+      : new ResizeObserver(measure);
+    observer?.observe(map);
+    return () => {
+      window.removeEventListener("resize", measure);
+      observer?.disconnect();
+    };
+  }, [mapRef, supportChanges]);
+
+  const totals = new Map<string, number>();
+  for (const change of supportChanges) {
+    const key = supportChangeKey(change);
+    totals.set(key, (totals.get(key) ?? 0) + 1);
+  }
+  const occurrences = new Map<string, number>();
+
+  return (
+    <>
+      <svg
+        className="map-change-layer"
+        width={geometry.width}
+        height={geometry.height}
+        viewBox={`0 0 ${geometry.width} ${geometry.height}`}
+        aria-hidden="true"
+      >
+        <defs>
+          {PARTIES.map((party) => (
+            <marker
+              key={party.id}
+              id={`map-arrow-${party.id}`}
+              markerWidth="8"
+              markerHeight="8"
+              refX="7"
+              refY="4"
+              orient="auto"
+            >
+              <path d="M0 0 L8 4 L0 8 Z" fill={party.color} />
+            </marker>
+          ))}
+        </defs>
+        {supportChanges.map((change, index) => {
+          const key = supportChangeKey(change);
+          const occurrence = occurrences.get(key) ?? 0;
+          occurrences.set(key, occurrence + 1);
+          const total = totals.get(key) ?? 1;
+          const offset = (occurrence - (total - 1) / 2) * 8;
+          const party = PARTIES_BY_ID[change.partyId];
+          if (change.type === "move") {
+            const source = geometry.points[change.sourceDistrictId];
+            const destination = geometry.points[change.destinationDistrictId];
+            if (source === undefined || destination === undefined) {
+              return <g key={`${key}-${index}`} data-map-change="move" />;
+            }
+            const dx = destination.x - source.x;
+            const dy = destination.y - source.y;
+            const distance = Math.hypot(dx, dy) || 1;
+            const normalX = -dy / distance;
+            const normalY = dx / distance;
+            const insetX = dx / distance * 16;
+            const insetY = dy / distance * 16;
+            return (
+              <g
+                key={`${key}-${index}`}
+                data-map-change="move"
+              >
+                <line
+                  x1={source.x + insetX + normalX * offset}
+                  y1={source.y + insetY + normalY * offset}
+                  x2={destination.x - insetX + normalX * offset}
+                  y2={destination.y - insetY + normalY * offset}
+                  stroke={party.color}
+                  markerEnd={`url(#map-arrow-${party.id})`}
+                />
+              </g>
+            );
+          }
+          const districtId = change.type === "add"
+            ? change.destinationDistrictId
+            : change.sourceDistrictId;
+          const point = geometry.points[districtId];
+          if (point === undefined) {
+            return <g key={`${key}-${index}`} data-map-change={change.type} />;
+          }
+          const yDirection = change.type === "add" ? 1 : -1;
+          return (
+            <g
+              key={`${key}-${index}`}
+              data-map-change={change.type}
+              transform={`translate(${point.x + offset} ${point.y})`}
+              stroke={party.color}
+            >
+              <circle r="10" />
+              <path d={`M0 ${-7 * yDirection} V${6 * yDirection} M-4 ${2 * yDirection} L0 ${6 * yDirection} L4 ${2 * yDirection}`} />
+            </g>
+          );
+        })}
+      </svg>
+      {supportChanges.length > 0 && (
+        <ul className="sr-only" aria-label="Latest map changes">
+          {supportChanges.map((change, index) => (
+            <li key={`${supportChangeKey(change)}-${index}`}>{supportChangeLabel(change)}</li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+}
+
+function supportChangeKey(change: SupportChange): string {
+  return change.type === "move"
+    ? `${change.type}-${change.partyId}-${change.sourceDistrictId}-${change.destinationDistrictId}`
+    : change.type === "add"
+      ? `${change.type}-${change.partyId}-${change.destinationDistrictId}`
+      : `${change.type}-${change.partyId}-${change.sourceDistrictId}`;
+}
+
+function supportChangeLabel(change: SupportChange): string {
+  const party = PARTIES_BY_ID[change.partyId].shortName;
+  if (change.type === "move") {
+    return `${party} moved from ${DISTRICTS_BY_ID[change.sourceDistrictId].name} to ${DISTRICTS_BY_ID[change.destinationDistrictId].name}`;
+  }
+  if (change.type === "add") {
+    return `${party} added to ${DISTRICTS_BY_ID[change.destinationDistrictId].name}`;
+  }
+  return `${party} removed from ${DISTRICTS_BY_ID[change.sourceDistrictId].name}`;
+}
+
+function titleCase(value: string): string {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 export function PlayerLedger({ view }: { view: GameView }) {
