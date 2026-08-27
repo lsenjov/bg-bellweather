@@ -173,12 +173,21 @@ describe("yearly browser play surface", () => {
     expect(within(honeycomb).getByLabelText("Coalition with Foxglove")).toBeTruthy();
   });
 
-  it("shows that a closed party's opening has returned", () => {
+  it("styles parties without an opening as closed", () => {
+    const state = initializeGame(configuration(2), random).state;
+    render(<PartyBoard view={privateView(state, "seat-1")} />);
+    const honeycomb = screen.getByText("Honeycomb").closest("article")!;
+    expect(within(honeycomb).getByText("Closed")).toBeTruthy();
+    expect(honeycomb.className).toContain("party-file-closed");
+  });
+
+  it("styles explicitly closed parties the same way", () => {
     const state = openEveryParty(initializeGame(configuration(2), random).state);
     state.parties.honeycomb!.status = "closed";
     render(<PartyBoard view={privateView(state, "seat-1")} />);
     const honeycomb = screen.getByText("Honeycomb").closest("article")!;
-    expect(within(honeycomb).getByText("Closed · opening returned")).toBeTruthy();
+    expect(within(honeycomb).getByText("Closed")).toBeTruthy();
+    expect(honeycomb.className).toContain("party-file-closed");
   });
 
   it("selects an opening party on the table before confirming its Firm", () => {
@@ -187,7 +196,7 @@ describe("yearly browser play surface", () => {
     render(
       <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={onCommand} />
     );
-    fireEvent.click(screen.getByRole("button", { name: /^Night Not opened/ }));
+    fireEvent.click(screen.getByRole("button", { name: /^Night Closed/ }));
     expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe("night-parliament");
     fireEvent.click(screen.getByRole("button", { name: "Open party access" }));
     expect(onCommand).toHaveBeenCalledWith({
@@ -507,8 +516,8 @@ describe("yearly browser play surface", () => {
       <GameDesk view={view} ownSeat={view.seats[1]} ownSeatId="seat-2" spectator={false} busy={false} onCommand={onCommand} />
     );
     fireEvent.click(screen.getByRole("button", { name: "collect" }));
-    expect(screen.getByRole("button", { name: /^Honeycomb open/ }).hasAttribute("aria-disabled")).toBe(false);
-    expect(screen.getByRole("button", { name: /^Old Shell open/ }).hasAttribute("aria-disabled")).toBe(false);
+    expect(screen.getByRole("button", { name: /^Honeycomb Open/ }).hasAttribute("aria-disabled")).toBe(false);
+    expect(screen.getByRole("button", { name: /^Old Shell Open/ }).hasAttribute("aria-disabled")).toBe(false);
     fireEvent.change(screen.getByLabelText("Bonus card"), {
       target: { value: "honeycomb-waggle-route" }
     });
@@ -532,7 +541,7 @@ describe("yearly browser play surface", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "close" }));
     expect(screen.getByRole("button", { name: "Close party" }).hasAttribute("disabled")).toBe(true);
-    expect(screen.getByRole("button", { name: /^Honeycomb open/ }).getAttribute("aria-disabled")).toBe("true");
+    expect(screen.getByRole("button", { name: /^Honeycomb Open/ }).getAttribute("aria-disabled")).toBe("true");
     expect(screen.getByText(/cannot Close on your first Lobby turn/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "pass" }));
     expect(screen.getByText(/Return all your Firm markers before passing/)).toBeTruthy();

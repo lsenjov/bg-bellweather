@@ -571,18 +571,16 @@ export function PartyBoard({
         const reciprocal =
           coalitionTargetId !== null &&
           view.coalitionTargets[coalitionTargetId] === party.id;
-        let stateLabel = "Not opened";
-        if (state?.status === "open") {
-          stateLabel = `open · ${owner?.displayName ?? "Unknown"}`;
-        } else if (state?.status === "closed") {
-          stateLabel = "Closed · opening returned";
-        }
+        const open = state?.status === "open";
+        const stateLabel = open
+          ? `Open · ${owner?.displayName ?? "Unknown"}`
+          : "Closed";
         const selectable = interaction?.partyIds?.includes(party.id) === true;
         const selected = interaction?.selectedPartyIds?.includes(party.id) === true;
         return (
           <article
             key={party.id}
-            className={`party-file ${state?.status === "closed" ? "party-file-closed" : ""} ${targeting ? "table-target" : ""} ${selectable ? "table-selectable" : ""} ${selected ? "table-selected" : ""}`}
+            className={`party-file ${open ? "" : "party-file-closed"} ${targeting ? "table-target" : ""} ${selectable ? "table-selectable" : ""} ${selected ? "table-selected" : ""}`}
             style={{ "--party": party.color } as CSSProperties}
             role={targeting ? "button" : undefined}
             tabIndex={selectable ? 0 : undefined}
