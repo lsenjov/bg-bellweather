@@ -29,3 +29,9 @@ party-coloured map glyph without numeric compression.
 
 Each completed step is committed separately. The complete commit series is pushed
 only after all checks and review findings are resolved.
+
+## Completion
+
+All three steps are complete. `npm run check` passes, the browser smoke test
+exercised one movement and two repeated additions on the rendered map, and the
+independent review reported no high, medium, or low findings.
