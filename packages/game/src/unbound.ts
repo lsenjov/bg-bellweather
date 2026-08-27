@@ -12,7 +12,12 @@ import {
   type PartyId,
   type ScoringCardId
 } from "@bellweather/content";
-import type { GameState, OperationInventory, SeatId } from "./model.js";
+import type {
+  GameState,
+  OperationInventory,
+  SeatId,
+  SupportChange
+} from "./model.js";
 import { GameRuleError } from "./model.js";
 
 export type UnboundBonusChoice =
@@ -34,6 +39,7 @@ export type UnboundBonusChoice =
 export interface UnboundBonusResolution {
   choice: UnboundBonusChoice;
   endsLobbyAction: boolean;
+  supportChanges: SupportChange[];
 }
 
 const UNBOUND_EFFECTS = {
@@ -53,6 +59,7 @@ export function resolveUnboundBonus(
   value: unknown
 ): UnboundBonusResolution {
   const choice = unboundBonusChoice(value);
+  const supportChanges: SupportChange[] = [];
   if (UNBOUND_EFFECTS[bonusCardId as keyof typeof UNBOUND_EFFECTS] !== choice.effect) {
     throw new GameRuleError(
       "unbound_choice_mismatch",
@@ -61,26 +68,36 @@ export function resolveUnboundBonus(
   }
 
   if (choice.effect === "every_bee_counts") {
-    everyBeeCounts(state, actingPartyId);
+    everyBeeCounts(state, actingPartyId, supportChanges);
   } else if (choice.effect === "institutional_memory") {
-    institutionalMemory(state, choice);
+    institutionalMemory(state, choice, supportChanges);
   } else if (choice.effect === "shell_firm") {
     shellFirm(state, actingPartyId, choice.targetPartyId);
   } else if (choice.effect === "mass_transit") {
-    massTransit(state, choice);
+    massTransit(state, choice, supportChanges);
   } else if (choice.effect === "empty_every_nest") {
-    emptyEveryNest(state, actingPartyId, choice.destinationDistrictIds);
+    emptyEveryNest(
+      state,
+      actingPartyId,
+      choice.destinationDistrictIds,
+      supportChanges
+    );
   } else {
     midnightSession(state, seatId, choice.targetPartyId, choice.firmId);
   }
 
   return {
     choice,
-    endsLobbyAction: choice.effect === "shell_firm"
+    endsLobbyAction: choice.effect === "shell_firm",
+    supportChanges
   };
 }
 
-function everyBeeCounts(state: GameState, partyId: PartyId): void {
+function everyBeeCounts(
+  state: GameState,
+  partyId: PartyId,
+  supportChanges: SupportChange[]
+): void {
   const eligible = DISTRICT_IDS.filter(
     (districtId) =>
       (state.support[districtId][partyId] ?? 0) === 1 &&
@@ -90,13 +107,14 @@ function everyBeeCounts(state: GameState, partyId: PartyId): void {
     illegalBonus("Every Bee Counts requires at least one eligible district");
   }
   for (const districtId of eligible) {
-    addSupport(state, districtId, partyId);
+    addSupport(state, districtId, partyId, supportChanges);
   }
 }
 
 function institutionalMemory(
   state: GameState,
-  choice: Extract<UnboundBonusChoice, { effect: "institutional_memory" }>
+  choice: Extract<UnboundBonusChoice, { effect: "institutional_memory" }>,
+  supportChanges: SupportChange[]
 ): void {
   const revealed = new Set(
     state.electionHistory.flatMap((election) =>
@@ -126,8 +144,13 @@ function institutionalMemory(
   }
   for (const move of choice.moves) {
     const objective = scoringCard.objectives[move.objectiveIndex];
-    removeSupport(state, move.sourceDistrictId, objective.partyId);
-    addSupport(state, objective.districtId, objective.partyId);
+    moveSupport(
+      state,
+      move.sourceDistrictId,
+      objective.districtId,
+      objective.partyId,
+      supportChanges
+    );
   }
 }
 
@@ -161,7 +184,8 @@ function shellFirm(
 
 function massTransit(
   state: GameState,
-  choice: Extract<UnboundBonusChoice, { effect: "mass_transit" }>
+  choice: Extract<UnboundBonusChoice, { effect: "mass_transit" }>,
+  supportChanges: SupportChange[]
 ): void {
   const { districtIds, supportPartyIds } = choice;
   if (
@@ -190,17 +214,21 @@ function massTransit(
   }
 
   for (let index = 0; index < supportPartyIds.length; index += 1) {
-    removeSupport(state, districtIds[index]!, supportPartyIds[index]!);
-  }
-  for (let index = 0; index < supportPartyIds.length; index += 1) {
-    addSupport(state, districtIds[index + 1]!, supportPartyIds[index]!);
+    moveSupport(
+      state,
+      districtIds[index]!,
+      districtIds[index + 1]!,
+      supportPartyIds[index]!,
+      supportChanges
+    );
   }
 }
 
 function emptyEveryNest(
   state: GameState,
   actingPartyId: PartyId,
-  destinationDistrictIds: DistrictId[]
+  destinationDistrictIds: DistrictId[],
+  supportChanges: SupportChange[]
 ): void {
   const sources = DISTRICT_IDS.filter(
     (districtId) => (state.support[districtId][actingPartyId] ?? 0) >= 2
@@ -219,11 +247,17 @@ function emptyEveryNest(
       "Empty Every Nest requires one different eligible destination for every qualifying district"
     );
   }
-  for (const districtId of sources) {
-    removeSupport(state, districtId, actingPartyId);
-  }
-  for (const districtId of destinationDistrictIds) {
-    addSupport(state, districtId, actingPartyId);
+  const destinations = [...destinationDistrictIds].sort(
+    (left, right) => DISTRICT_IDS.indexOf(left) - DISTRICT_IDS.indexOf(right)
+  );
+  for (let index = 0; index < sources.length; index += 1) {
+    moveSupport(
+      state,
+      sources[index]!,
+      destinations[index]!,
+      actingPartyId,
+      supportChanges
+    );
   }
 }
 
@@ -359,19 +393,39 @@ function districtTotal(state: GameState, districtId: DistrictId): number {
   );
 }
 
-function addSupport(state: GameState, districtId: DistrictId, partyId: PartyId): void {
+function addSupport(
+  state: GameState,
+  districtId: DistrictId,
+  partyId: PartyId,
+  supportChanges: SupportChange[]
+): void {
   const support = state.support[districtId];
   support[partyId] = (support[partyId] ?? 0) + 1;
+  supportChanges.push({ type: "add", partyId, destinationDistrictId: districtId });
 }
 
-function removeSupport(state: GameState, districtId: DistrictId, partyId: PartyId): void {
-  const support = state.support[districtId];
+function moveSupport(
+  state: GameState,
+  sourceDistrictId: DistrictId,
+  destinationDistrictId: DistrictId,
+  partyId: PartyId,
+  supportChanges: SupportChange[]
+): void {
+  const support = state.support[sourceDistrictId];
   const next = (support[partyId] ?? 0) - 1;
   if (next <= 0) {
     delete support[partyId];
   } else {
     support[partyId] = next;
   }
+  const destination = state.support[destinationDistrictId];
+  destination[partyId] = (destination[partyId] ?? 0) + 1;
+  supportChanges.push({
+    type: "move",
+    partyId,
+    sourceDistrictId,
+    destinationDistrictId
+  });
 }
 
 function emptyOperationInventory(): OperationInventory {

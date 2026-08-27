@@ -2,8 +2,10 @@ import {
   BONUS_CARDS_BY_ID,
   PARTY_IDS,
   type BonusCardId,
+  type DistrictId,
   type PartyId
 } from "@bellweather/content";
+import type { SupportChange } from "./model.js";
 
 export const PARTIES = PARTY_IDS;
 export type Party = PartyId;
@@ -56,6 +58,7 @@ export interface OperationRequest {
 
 export interface OperationResolution {
   state: OperationState;
+  supportChanges: SupportChange[];
   baselineApplied: boolean;
   bonusApplied: boolean;
   bonusName: string | null;
@@ -72,6 +75,7 @@ export function resolveOperation(
   request: OperationRequest
 ): OperationResolution {
   const state = cloneState(initialState);
+  const supportChanges: SupportChange[] = [];
   const operation = request.choice.operation;
   const bonusCard = request.bonusCardId === undefined
     ? undefined
@@ -84,24 +88,26 @@ export function resolveOperation(
       false,
       bonusName,
       "The Bonus card choice must match its printed action",
-      null
+      null,
+      supportChanges
     );
   }
   const baseline = applyBaseline(
     state,
     request.party,
     request.choice,
-    request.bonusCardId === "riverworks-canal-network"
+    request.bonusCardId === "riverworks-canal-network",
+    supportChanges
   );
 
   if (!baseline.applied) {
-    return result(state, false, false, bonusName, baseline.failure, null);
+    return result(state, false, false, bonusName, baseline.failure, null, supportChanges);
   }
   if (request.bonusCardId === undefined) {
-    return result(state, true, false, bonusName, null, null);
+    return result(state, true, false, bonusName, null, null, supportChanges);
   }
 
-  const bonus = applyBonus(state, request, baseline);
+  const bonus = applyBonus(state, request, baseline, supportChanges);
   if (!bonus.applied) {
     return result(
       cloneState(initialState),
@@ -109,7 +115,8 @@ export function resolveOperation(
       false,
       bonusName,
       "The claimed immediate bonus cannot resolve",
-      bonus.failure
+      bonus.failure,
+      []
     );
   }
   return result(
@@ -118,7 +125,8 @@ export function resolveOperation(
     bonus.applied,
     bonusName,
     null,
-    bonus.failure
+    bonus.failure,
+    supportChanges
   );
 }
 
@@ -147,7 +155,8 @@ export function isOperationChoiceLegal(
     cloneState(initialState),
     party,
     choice,
-    options.allowCanalNetwork === true
+    options.allowCanalNetwork === true,
+    []
   ).applied;
 }
 
@@ -236,7 +245,8 @@ function applyBaseline(
   state: OperationState,
   party: Party,
   choice: OperationChoice,
-  allowCanalNetwork: boolean
+  allowCanalNetwork: boolean,
+  supportChanges: SupportChange[]
 ): BaselineResult {
   const wasAbsent = supportCount(state, party) === 0;
   if (choice.operation === "organise") {
@@ -245,7 +255,7 @@ function applyBaseline(
       return failed(wasAbsent, "Organise requires a free destination spot");
     }
     if (wasAbsent) {
-      addSupport(destination, party);
+      addSupport(destination, party, supportChanges);
       return {
         applied: true,
         failure: null,
@@ -273,8 +283,7 @@ function applyBaseline(
     ) {
       return failed(wasAbsent, "Organise destination must neighbor the source");
     }
-    removeSupport(source, party);
-    addSupport(destination, party);
+    moveSupport(source, destination, party, supportChanges);
     return {
       applied: true,
       failure: null,
@@ -298,7 +307,7 @@ function applyBaseline(
           : "Rally requires a free spot where the party is present"
       );
     }
-    addSupport(district, party);
+    addSupport(district, party, supportChanges);
     return {
       applied: true,
       failure: null,
@@ -326,7 +335,7 @@ function applyBaseline(
     if (!inRange) {
       return failed(wasAbsent, "Smear target is outside the party's range");
     }
-    removeSupport(district, choice.rivalParty);
+    removeSupport(district, choice.rivalParty, supportChanges);
     return {
       applied: true,
       failure: null,
@@ -350,7 +359,8 @@ function applyBaseline(
 function applyBonus(
   state: OperationState,
   request: OperationRequest,
-  baseline: BaselineResult
+  baseline: BaselineResult,
+  supportChanges: SupportChange[]
 ): {
   applied: boolean;
   failure: string | null;
@@ -361,7 +371,8 @@ function applyBonus(
       state,
       baseline.destinationDistrictId,
       party,
-      "Waggle Route requires another free destination spot"
+      "Waggle Route requires another free destination spot",
+      supportChanges
     );
   }
   if (bonusCardId === "honeycomb-common-cause" && choice.operation === "court") {
@@ -380,8 +391,7 @@ function applyBonus(
         "Common Cause requires the acting party's selected Coalition Target, an acting-party source, and a distinct free district containing that target's Support"
       );
     }
-    removeSupport(source, party);
-    addSupport(destination, party);
+    moveSupport(source, destination, party, supportChanges);
     return bonusApplied();
   }
   if (bonusCardId === "old-shell-dig-in") {
@@ -391,14 +401,16 @@ function applyBonus(
           state,
           baseline.sourceDistrictId,
           party,
-          "Dig In requires a free source spot"
+          "Dig In requires a free source spot",
+          supportChanges
         );
   }
   if (bonusCardId === "old-shell-stonewall") {
     return removeBonusSupport(
       state,
       baseline.affectedDistrictId,
-      baseline.rivalParty
+      baseline.rivalParty,
+      supportChanges
     );
   }
   if (bonusCardId === "foxglove-spin") {
@@ -406,7 +418,8 @@ function applyBonus(
       state,
       baseline.affectedDistrictId,
       party,
-      null
+      null,
+      supportChanges
     );
   }
   if (bonusCardId === "foxglove-whisper-network" && choice.operation === "court") {
@@ -440,7 +453,7 @@ function applyBonus(
     ) {
       return bonusFailed("Public Works requires a neighboring district");
     }
-    return addBonusSupport(state, destination.id, party, null);
+    return addBonusSupport(state, destination.id, party, null, supportChanges);
   }
   if (bonusCardId === "many-wings-scatter-the-flock" && choice.operation === "rally") {
     const source = state.districts[baseline.destinationDistrictId ?? ""];
@@ -464,8 +477,7 @@ function applyBonus(
       );
     }
     for (const districtId of destinations) {
-      removeSupport(source, party);
-      addSupport(state.districts[districtId]!, party);
+      moveSupport(source, state.districts[districtId]!, party, supportChanges);
     }
     return bonusApplied();
   }
@@ -480,7 +492,7 @@ function applyBonus(
         "Joint Campaign requires a free district containing acting-party Support"
       );
     }
-    addSupport(district, choice.targetParty);
+    addSupport(district, choice.targetParty, supportChanges);
     return bonusApplied();
   }
   if (
@@ -491,7 +503,7 @@ function applyBonus(
     if (destination === undefined || districtTotal(destination) !== 0) {
       return bonusFailed("Quiet Hours requires an otherwise empty district");
     }
-    addSupport(destination, party);
+    addSupport(destination, party, supportChanges);
     return bonusApplied();
   }
   if (bonusCardId === "night-parliament-midnight-leak" && choice.operation === "smear") {
@@ -517,20 +529,22 @@ function addBonusSupport(
   state: OperationState,
   districtId: string | undefined,
   party: Party,
-  failure: string | null
+  failure: string | null,
+  supportChanges: SupportChange[]
 ) {
   const district = state.districts[districtId ?? ""];
   if (district === undefined || !hasFreeSpot(district)) {
     return bonusFailed(failure ?? "The bonus requires another free spot");
   }
-  addSupport(district, party);
+  addSupport(district, party, supportChanges);
   return bonusApplied();
 }
 
 function removeBonusSupport(
   state: OperationState,
   districtId: string | undefined,
-  party: Party | undefined
+  party: Party | undefined,
+  supportChanges: SupportChange[]
 ) {
   const district = state.districts[districtId ?? ""];
   if (
@@ -540,7 +554,7 @@ function removeBonusSupport(
   ) {
     return bonusFailed("The bonus requires another matching rival Support");
   }
-  removeSupport(district, party);
+  removeSupport(district, party, supportChanges);
   return bonusApplied();
 }
 
@@ -587,10 +601,12 @@ function result(
   bonusAppliedValue: boolean,
   bonusName: string | null,
   failure: string | null,
-  bonusFailure: string | null
+  bonusFailure: string | null,
+  supportChanges: SupportChange[]
 ): OperationResolution {
   return {
     state,
+    supportChanges,
     baselineApplied,
     bonusApplied: bonusAppliedValue,
     bonusName,
@@ -670,11 +686,53 @@ function districtTotal(district: DistrictState): number {
   );
 }
 
-function addSupport(district: DistrictState, party: Party): void {
+function addSupport(
+  district: DistrictState,
+  party: Party,
+  supportChanges: SupportChange[]
+): void {
+  incrementSupport(district, party);
+  supportChanges.push({
+    type: "add",
+    partyId: party,
+    destinationDistrictId: district.id as DistrictId
+  });
+}
+
+function removeSupport(
+  district: DistrictState,
+  party: Party,
+  supportChanges: SupportChange[]
+): void {
+  decrementSupport(district, party);
+  supportChanges.push({
+    type: "remove",
+    partyId: party,
+    sourceDistrictId: district.id as DistrictId
+  });
+}
+
+function moveSupport(
+  source: DistrictState,
+  destination: DistrictState,
+  party: Party,
+  supportChanges: SupportChange[]
+): void {
+  decrementSupport(source, party);
+  incrementSupport(destination, party);
+  supportChanges.push({
+    type: "move",
+    partyId: party,
+    sourceDistrictId: source.id as DistrictId,
+    destinationDistrictId: destination.id as DistrictId
+  });
+}
+
+function incrementSupport(district: DistrictState, party: Party): void {
   district.support[party] = (district.support[party] ?? 0) + 1;
 }
 
-function removeSupport(district: DistrictState, party: Party): void {
+function decrementSupport(district: DistrictState, party: Party): void {
   const next = (district.support[party] ?? 0) - 1;
   if (next <= 0) {
     delete district.support[party];

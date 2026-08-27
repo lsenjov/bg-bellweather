@@ -42,7 +42,8 @@ import type {
   RandomSource,
   ScoringCardSlots,
   SeatId,
-  SeatState
+  SeatState,
+  SupportChange
 } from "./model.js";
 import { GameRuleError } from "./model.js";
 import {
@@ -322,20 +323,26 @@ function operate(
     });
     const cardCount = (phase.inProgressOperate?.cardCount ?? 0) + 1;
     const operationCount = phase.inProgressOperate?.operationCount ?? 0;
+    const supportChanges = [
+      ...(phase.inProgressOperate?.supportChanges ?? []),
+      ...resolution.supportChanges
+    ];
     if (resolution.endsLobbyAction || cardCount === 3) {
       completeOperateAction(
         state,
         phase,
         partyId,
         operationCount,
-        cardCount as 1 | 2 | 3
+        cardCount as 1 | 2 | 3,
+        supportChanges
       );
       return;
     }
     phase.inProgressOperate = {
       partyId,
       operationCount,
-      cardCount: cardCount as 1 | 2
+      cardCount: cardCount as 1 | 2,
+      supportChanges
     };
     return;
   }
@@ -399,14 +406,26 @@ function operate(
   const operationCount =
     (phase.inProgressOperate?.operationCount ?? 0) +
     (play.cardType === "operation" ? 1 : 0);
+  const supportChanges = [
+    ...(phase.inProgressOperate?.supportChanges ?? []),
+    ...resolution.supportChanges
+  ];
   if (cardCount === 3) {
-    completeOperateAction(state, phase, partyId, operationCount, 3);
+    completeOperateAction(
+      state,
+      phase,
+      partyId,
+      operationCount,
+      3,
+      supportChanges
+    );
     return;
   }
   phase.inProgressOperate = {
     partyId,
     operationCount,
-    cardCount: cardCount as 1 | 2
+    cardCount: cardCount as 1 | 2,
+    supportChanges
   };
 }
 
@@ -423,7 +442,8 @@ function finishOperate(state: GameState, seatId: SeatId): void {
     phase,
     phase.inProgressOperate.partyId,
     phase.inProgressOperate.operationCount,
-    phase.inProgressOperate.cardCount
+    phase.inProgressOperate.cardCount,
+    phase.inProgressOperate.supportChanges
   );
 }
 
@@ -432,7 +452,8 @@ function completeOperateAction(
   phase: LobbyPhase,
   partyId: PartyId,
   operationCount: number,
-  cardCount: 1 | 2 | 3
+  cardCount: 1 | 2 | 3,
+  supportChanges: SupportChange[]
 ): void {
   recordLobbyAction(state, phase, {
     seatId: phase.activeSeatId,
@@ -440,7 +461,8 @@ function completeOperateAction(
     partyId,
     operationCount,
     cardCount,
-    bonusCardId: null
+    bonusCardId: null,
+    supportChanges
   });
   phase.inProgressOperate = null;
   finishLobbyTurn(state, phase);
@@ -475,7 +497,8 @@ function collect(
     partyId,
     operationCount: 0,
     cardCount,
-    bonusCardId: awardedBonusCardId
+    bonusCardId: awardedBonusCardId,
+    supportChanges: []
   });
   finishLobbyTurn(state, phase);
 }
@@ -509,7 +532,8 @@ function close(
     partyId,
     operationCount: 0,
     cardCount,
-    bonusCardId: awardedBonusCardId
+    bonusCardId: awardedBonusCardId,
+    supportChanges: []
   });
   finishLobbyTurn(state, phase);
 }
@@ -532,7 +556,8 @@ function pass(state: GameState, seatId: SeatId): void {
     partyId: null,
     operationCount: 0,
     cardCount: 0,
-    bonusCardId: null
+    bonusCardId: null,
+    supportChanges: []
   });
   finishLobbyTurn(state, phase);
 }

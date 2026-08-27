@@ -82,6 +82,24 @@ export interface ResolvedOperation {
   bonusCardReturnedHome: boolean;
 }
 
+export type SupportChange =
+  | {
+      type: "move";
+      partyId: PartyId;
+      sourceDistrictId: DistrictId;
+      destinationDistrictId: DistrictId;
+    }
+  | {
+      type: "add";
+      partyId: PartyId;
+      destinationDistrictId: DistrictId;
+    }
+  | {
+      type: "remove";
+      partyId: PartyId;
+      sourceDistrictId: DistrictId;
+    };
+
 export interface LobbyActionRecord {
   id: string;
   year: number;
@@ -92,6 +110,7 @@ export interface LobbyActionRecord {
   operationCount: number;
   cardCount: number;
   bonusCardId: BonusCardId | null;
+  supportChanges: SupportChange[];
 }
 
 export interface OpeningPhase {
@@ -109,6 +128,7 @@ export interface LobbyPhase {
     partyId: PartyId;
     operationCount: number;
     cardCount: 1 | 2;
+    supportChanges: SupportChange[];
   } | null;
 }
 

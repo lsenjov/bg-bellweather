@@ -123,6 +123,10 @@ describe("party openings", () => {
       partyId: "honeycomb"
     });
     expect(collected.phase).toMatchObject({ type: "lobby", activeSeatId: "seat-2" });
+    expect(collected.lobbyActions.at(-1)).toMatchObject({
+      type: "collect",
+      supportChanges: []
+    });
   });
 });
 
@@ -200,9 +204,31 @@ describe("Lobby actions", () => {
     expect(state.resolvedOperations).toHaveLength(3);
     expect(before.support.cloverfield.honeycomb).toBeUndefined();
     expect(lobbyPhase(state).activeSeatId).not.toBe(seatId);
-    expect(state.lobbyActions).toEqual([
-      expect.objectContaining({ type: "operate", operationCount: 2, cardCount: 3 })
-    ]);
+    expect(state.lobbyActions).toEqual([expect.objectContaining({
+      type: "operate",
+      operationCount: 2,
+      cardCount: 3,
+      supportChanges: [
+        {
+          type: "move",
+          partyId: "honeycomb",
+          sourceDistrictId: "harbormouth",
+          destinationDistrictId: "cloverfield"
+        },
+        {
+          type: "add",
+          partyId: "honeycomb",
+          destinationDistrictId: "cloverfield"
+        },
+        {
+          type: "add",
+          partyId: "honeycomb",
+          destinationDistrictId: "cloverfield"
+        }
+      ]
+    })]);
+    expect(projectGameState(state, null).lobbyActions.at(-1)?.supportChanges)
+      .toEqual(state.lobbyActions.at(-1)?.supportChanges);
   });
 
   it("keeps an earlier resolved card when a later choice is illegal", () => {
@@ -327,6 +353,26 @@ describe("Lobby actions", () => {
     expect(transitState.support.cloverfield).toEqual({ honeycomb: 1 });
     expect(transitState.support.harbormouth).toEqual({ "old-shell": 1 });
     expect(transitState.support.millbank).toEqual({ foxglove: 1 });
+    expect(lobbyPhase(transitState).inProgressOperate?.supportChanges).toEqual([
+      {
+        type: "move",
+        partyId: "honeycomb",
+        sourceDistrictId: "northreach",
+        destinationDistrictId: "cloverfield"
+      },
+      {
+        type: "move",
+        partyId: "old-shell",
+        sourceDistrictId: "cloverfield",
+        destinationDistrictId: "harbormouth"
+      },
+      {
+        type: "move",
+        partyId: "foxglove",
+        sourceDistrictId: "harbormouth",
+        destinationDistrictId: "millbank"
+      }
+    ]);
 
     let nestState = openAllParties(initializeGame(configuration(6), zeroRandom).state);
     clearSupport(nestState);
@@ -345,6 +391,20 @@ describe("Lobby actions", () => {
     expect(nestState.support["grand-market"]["many-wings"]).toBe(2);
     expect(nestState.support.northreach["many-wings"]).toBe(1);
     expect(nestState.support.reedwater["many-wings"]).toBe(1);
+    expect(lobbyPhase(nestState).inProgressOperate?.supportChanges).toEqual([
+      {
+        type: "move",
+        partyId: "many-wings",
+        sourceDistrictId: "harbormouth",
+        destinationDistrictId: "northreach"
+      },
+      {
+        type: "move",
+        partyId: "many-wings",
+        sourceDistrictId: "grand-market",
+        destinationDistrictId: "reedwater"
+      }
+    ]);
   });
 
   it("allows Institutional Memory to complete a legal subset of a revealed card", () => {
