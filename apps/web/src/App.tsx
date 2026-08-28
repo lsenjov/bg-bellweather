@@ -40,7 +40,6 @@ import {
 import {
   type CSSProperties,
   type FormEvent,
-  type RefObject,
   useCallback,
   useEffect,
   useId,
@@ -742,9 +741,8 @@ export function DistrictMap({
   supportChanges?: SupportChange[];
 }) {
   const targeting = interaction?.onDistrictClick !== undefined;
-  const mapRef = useRef<HTMLDivElement>(null);
   return (
-    <div ref={mapRef} className="district-map" aria-label="Bellweather district map">
+    <div className="district-map" aria-label="Bellweather district map">
       {DISTRICTS.map((district) => {
         const support = view.support[district.id] ?? {};
         const occupied = PARTIES.reduce((total, party) => total + (support[party.id] ?? 0), 0);
@@ -799,7 +797,7 @@ export function DistrictMap({
           </article>
         );
       })}
-      <MapChangeLayer mapRef={mapRef} supportChanges={supportChanges} />
+      <MapChangeLayer supportChanges={supportChanges} />
     </div>
   );
 }
@@ -816,20 +814,19 @@ interface MapGeometry {
 }
 
 function MapChangeLayer({
-  mapRef,
   supportChanges
 }: {
-  mapRef: RefObject<HTMLDivElement | null>;
   supportChanges: SupportChange[];
 }) {
+  const layerRef = useRef<SVGSVGElement>(null);
   const [geometry, setGeometry] = useState<MapGeometry>({
     width: 0,
     height: 0,
     points: {}
   });
   useLayoutEffect(() => {
-    const map = mapRef.current;
-    if (map === null) return;
+    const map = layerRef.current?.parentElement;
+    if (map === undefined || map === null) return;
     const measure = () => {
       const mapRect = map.getBoundingClientRect();
       const points = Object.fromEntries(
@@ -859,11 +856,11 @@ function MapChangeLayer({
       window.removeEventListener("resize", measure);
       observer?.disconnect();
     };
-  }, [mapRef, supportChanges]);
+  }, [supportChanges]);
 
   const totals = new Map<string, number>();
   for (const change of supportChanges) {
-    const key = supportChangeKey(change);
+    const key = supportChangeLayoutKey(change);
     totals.set(key, (totals.get(key) ?? 0) + 1);
   }
   const occurrences = new Map<string, number>();
@@ -871,6 +868,7 @@ function MapChangeLayer({
   return (
     <>
       <svg
+        ref={layerRef}
         className="map-change-layer"
         width={geometry.width}
         height={geometry.height}
@@ -893,17 +891,18 @@ function MapChangeLayer({
           ))}
         </defs>
         {supportChanges.map((change, index) => {
-          const key = supportChangeKey(change);
-          const occurrence = occurrences.get(key) ?? 0;
-          occurrences.set(key, occurrence + 1);
-          const total = totals.get(key) ?? 1;
-          const offset = (occurrence - (total - 1) / 2) * 8;
+          const changeKey = supportChangeKey(change);
+          const layoutKey = supportChangeLayoutKey(change);
+          const occurrence = occurrences.get(layoutKey) ?? 0;
+          occurrences.set(layoutKey, occurrence + 1);
+          const total = totals.get(layoutKey) ?? 1;
+          const offset = (occurrence - (total - 1) / 2) * 16;
           const party = PARTIES_BY_ID[change.partyId];
           if (change.type === "move") {
             const source = geometry.points[change.sourceDistrictId];
             const destination = geometry.points[change.destinationDistrictId];
             if (source === undefined || destination === undefined) {
-              return <g key={`${key}-${index}`} data-map-change="move" />;
+              return <g key={`${changeKey}-${index}`} data-map-change="move" />;
             }
             const dx = destination.x - source.x;
             const dy = destination.y - source.y;
@@ -914,7 +913,7 @@ function MapChangeLayer({
             const insetY = dy / distance * 16;
             return (
               <g
-                key={`${key}-${index}`}
+                key={`${changeKey}-${index}`}
                 data-map-change="move"
               >
                 <line
@@ -933,12 +932,12 @@ function MapChangeLayer({
             : change.sourceDistrictId;
           const point = geometry.points[districtId];
           if (point === undefined) {
-            return <g key={`${key}-${index}`} data-map-change={change.type} />;
+            return <g key={`${changeKey}-${index}`} data-map-change={change.type} />;
           }
           const yDirection = change.type === "add" ? 1 : -1;
           return (
             <g
-              key={`${key}-${index}`}
+              key={`${changeKey}-${index}`}
               data-map-change={change.type}
               transform={`translate(${point.x + offset} ${point.y})`}
               stroke={party.color}
@@ -966,6 +965,12 @@ function supportChangeKey(change: SupportChange): string {
     : change.type === "add"
       ? `${change.type}-${change.partyId}-${change.destinationDistrictId}`
       : `${change.type}-${change.partyId}-${change.sourceDistrictId}`;
+}
+
+function supportChangeLayoutKey(change: SupportChange): string {
+  return change.type === "move"
+    ? `move-${change.sourceDistrictId}-${change.destinationDistrictId}`
+    : `district-${change.type === "add" ? change.destinationDistrictId : change.sourceDistrictId}`;
 }
 
 function supportChangeLabel(change: SupportChange): string {

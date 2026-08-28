@@ -168,6 +168,25 @@ describe("yearly browser play surface", () => {
     expect(within(screen.getByLabelText("Latest map changes")).getAllByText("Honeycomb added to Cloverfield")).toHaveLength(2);
   });
 
+  it("separates Support change glyphs from different parties at one district", async () => {
+    const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
+    render(
+      <DistrictMap
+        view={view}
+        supportChanges={[
+          { type: "add", partyId: "honeycomb", destinationDistrictId: "cloverfield" },
+          { type: "remove", partyId: "foxglove", sourceDistrictId: "cloverfield" },
+          { type: "add", partyId: "riverworks", destinationDistrictId: "cloverfield" }
+        ]}
+      />
+    );
+
+    await waitFor(() => {
+      const glyphs = [...document.querySelectorAll('[data-map-change="add"], [data-map-change="remove"]')];
+      expect(new Set(glyphs.map((glyph) => glyph.getAttribute("transform"))).size).toBe(3);
+    });
+  });
+
   it("summarizes every completed Lobby action beside the map", () => {
     const view = privateView(openEveryParty(initializeGame(configuration(2), random).state), "seat-1");
     const action = (overrides: Partial<GameView["lobbyActions"][number]>): GameView["lobbyActions"][number] => ({
