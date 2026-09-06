@@ -9,3 +9,11 @@ Design: white paper, dark navy ink (#19354b), blue urban (#d5e7f5), green mixed 
 The three studies compare a compact hub, a rural fringe, and a city corridor. All use urban 6+6+6, mixed 6+4+4+2+2, and outlying 4+4+2+2+2+2+2. Centre retains its current capacity of 3 as a prototype assumption. Boundaries and names remain proposals. The design uses territorial polygons rather than a generic network diagram so shared borders can be reviewed directly.
 
 Validation completed: all three district and region graphs are connected; capacities and Centre contacts verified during generation and independently from final SVGs. All three SVGs inspected in browser; HTML checked at a 546px viewport with all images loaded and no horizontal overflow. `npm run docs:check` passes (113 HTML files). Independent review: no high, medium, or low findings.
+
+## Revision: density and distance
+
+- [x] Archive the first concepts; redraw compact connected city districts and broader rural areas, separate the mixed region's city from the urban cluster, update explanations, validate and review, then commit.
+
+Keep all regions and districts connected. Preserve each region's 18 Support and the Centre's contact with all three. Physical size represents density rather than vote allocation; movement distance still counts shared district borders.
+
+Revision validation: inspected all three SVGs in the browser; comparison page loads all maps without overflow at 390px. Generator assertions verify capacities, connected districts and regions, Centre contacts, and the separation of Northgate from the urban cluster. Exact SVG regeneration verified. `npm run docs:check` passes (114 HTML files). Independent review found no high, medium, or low issues and verified the archived SVGs match the originals.
