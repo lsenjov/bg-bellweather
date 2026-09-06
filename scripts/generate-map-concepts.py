@@ -6,7 +6,7 @@ import json
 import math
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = json.loads((ROOT/'scripts/map-atlas-concepts.json').read_text())
+DATA = json.loads((ROOT/'scripts/map-concepts.json').read_text())
 DISTRICTS = DATA['districts']
 COLORS = {'Urban':'#d5e7f5','Mixed':'#dbeaca','Outlying':'#f5e7ac','Centre':'#e4dfea'}
 MATERIALS = {'water':'#a9d9ec','wetland':'#c3e1d9','mountain':'#cfc6b8','ridge':'#d4c6b0','wall':'#8e969b','rail':'#b6bdc3','industry':'#c8cbd0','forest':'#9fbd94'}
@@ -261,9 +261,76 @@ def render(study,edges,facts):
             svg.append(f'<circle cx="{sx}" cy="{sy}" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>')
         svg.append('</g>')
     svg.extend(['<text x="40" y="934" font-size="14">Only printed routes create adjacency. Every route joins its two endpoint districts for all effects.</text>',
-        '<text x="40" y="959" font-size="13">Nearby footprints are not adjacent. Double-railed spans mark bridges, gates, passes, or viaducts.</text>',
+        '<text x="40" y="959" font-size="13">Nearby footprints are not adjacent. Double-railed spans mark the special crossings and corridors listed in the companion notes.</text>',
         f'<text x="40" y="984" font-size="13">Experimental concept · {len(edges)} connections · '+('No dead ends' if not facts['dead_ends'] else f'{len(facts["dead_ends"])} dead-end districts: see study notes')+' · District elections remain local</text>','</svg>'])
     return '\n'.join(svg)+'\n'
+
+
+PAGE_CSS = '''
+*{box-sizing:border-box}body{margin:0;background:#edf2f6;color:#19354b;font:17px/1.6 system-ui,sans-serif}main{max-width:1240px;margin:auto;padding:30px 28px 60px}a{color:#174f7b;text-underline-offset:4px}a:focus-visible,summary:focus-visible{outline:3px solid #176c92;outline-offset:5px}h1,h2{font-family:Georgia,serif;line-height:1.17}h1{font-size:clamp(35px,5vw,56px);margin:25px 0 18px}h2{font-size:26px;margin:0 0 12px}p{max-width:78ch;margin:0 0 16px}.lede{font-size:20px}.top-nav{display:flex;flex-wrap:wrap;gap:12px 26px;font-size:15px}.concept-number{margin:24px 0 -12px}.legend{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}.legend span{border:1px solid #19354b;padding:7px 12px;font-size:15px}.urban{background:#d5e7f5}.mixed{background:#dbeaca}.outlying{background:#f5e7ac}.centre{background:#e4dfea}.large-map{margin:24px 0;background:white;padding:18px}.large-map img{display:block;width:100%;height:auto}figcaption{font-size:14px;margin-top:15px;max-width:85ch}.reading-rule{border-left:5px solid #56839d;background:#f9fcfe;padding:24px 28px}.study-notes{display:grid;grid-template-columns:1fr 1fr;gap:36px}section{margin:30px 0}ul{padding-left:24px;max-width:85ch}.adjacency{margin:36px 0;background:white;border:1px solid #b1c6d3;padding:18px}summary{cursor:pointer;font-size:19px;font-weight:600}.table-wrap{overflow-x:auto;margin-top:20px}table{border-collapse:collapse;width:100%;font-size:15px;min-width:640px}caption{text-align:left;padding-bottom:12px}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #c5d4de;padding:11px 12px}th[scope="row"]{white-space:nowrap}footer{margin-top:42px;padding-top:22px;border-top:1px solid #a7bfce}code{overflow-wrap:anywhere}@media(max-width:700px){main{padding:20px 14px 44px}.study-notes{grid-template-columns:1fr;gap:0}.reading-rule{padding:18px}.large-map{padding:5px}.lede{font-size:18px}.legend span{font-size:13px;padding:6px 9px}}@media print{body{background:white;font-size:12px}main{padding:0}.top-nav{display:none}h1{font-size:32px}.lede{font-size:15px}.large-map{padding:0;break-inside:avoid}.large-map img{max-height:220mm}.reading-rule{padding:12px}.adjacency{break-before:page}a{color:inherit}}
+'''
+
+
+def esc(value):
+    return html.escape(str(value))
+
+
+def names(keys):
+    return ', '.join(DISTRICTS[key]['name'] for key in keys) or 'None'
+
+
+def filename(study):
+    return f'{study["id"]:02d}-{study["slug"]}'
+
+
+def head(title,description):
+    return f'''<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="{esc(description)}"><title>{esc(title)} — Bellweather map concept</title><style>{PAGE_CSS}</style></head><body><main>
+'''
+
+
+def legend():
+    return '<div class="legend" aria-label="Shared scoring-region key"><span class="urban">Urban · 18 Support</span><span class="mixed">Mixed · 18 Support</span><span class="outlying">Outlying · 18 Support</span><span class="centre">Bellweather · 3 separate</span></div>'
+
+
+def study_page(study,report):
+    image=f'../../assets/map-concepts/{filename(study)}.svg'
+    page=[head(study['title'],study['purpose']),'<nav class="top-nav" aria-label="Breadcrumb"><a href="../../index.html">Bellweather design archive</a><a href="../region-map-prototypes.html">Earlier map studies</a></nav>',
+        f'<header><p class="concept-number">Concept {study["id"]}</p><h1>{esc(study["title"])}</h1><p class="lede">{esc(study["purpose"])}</p>{legend()}</header>',
+        f'<figure class="large-map"><a href="{image}" aria-label="Open full-size {esc(study["title"])} SVG"><img src="{image}" width="1200" height="1020" alt="{esc(study["purpose"])} Colored named districts contain Support spaces; explicit routes show every adjacency."></a><figcaption><a href="{image}">Open or save the full-size SVG</a>. Districts need not have equal land area. These are experimental route maps, not adopted game rules.</figcaption></figure>',
+        '<section class="reading-rule"><h2>How to read this map</h2><p><strong>Only printed routes create adjacency, for every effect.</strong> A route joins its two endpoint districts. Nearby footprints, touching terrain, and visual proximity across water create no additional connection. White roads with dark edges show ordinary routes; double-railed spans mark the special crossings and corridors listed below. There are no unmarked route intersections.</p><p>This explicit-route convention deliberately differs from the earlier shared-border maps. Each map retains the same 15 regional districts, three regions of 18 Support (up to 9 votes each), and Bellweather with 3 separate Support. Elections still happen district by district. No travel costs, changing water levels, gate ownership, or other special mechanics are assumed.</p></section>',
+        f'<div class="study-notes"><section><h2>Deliberate departures</h2><p>{esc(study["departures"])}</p></section><section><h2>What to watch in play</h2><p>{esc(study["watch"])}</p></section></div>',
+        f'<section><h2>What the connections imply</h2><p>This map has <strong>{report["connections"]} connections</strong>. Bellweather connects to {esc(names(report["centre_neighbors"]))}.</p>']
+    if report['dead_ends']:
+        page.append(f'<p><strong>One-route destinations:</strong> {esc(names(report["dead_ends"]))}. These intentionally remain available for testing protected destinations; they depart from the earlier no-dead-ends preference.</p>')
+    else:
+        page.append('<p>Every district has at least two connections.</p>')
+    if report['cut_districts']:
+        page.append(f'<p><strong>Sole gateways in the printed graph:</strong> {esc(names(report["cut_districts"]))}. Removing any one of these districts would disconnect part of the map. That is a structural vulnerability, not a rule that occupying a district automatically blocks travel.</p>')
+    else:
+        page.append('<p>No single district is the sole gateway joining parts of the map.</p>')
+    if report['cut_routes']:
+        routes='; '.join(names(pair).replace(', ','–') for pair in report['cut_routes'])
+        page.append(f'<p><strong>Connections without an alternative route:</strong> {esc(routes)}. These are the routes to watch for excessive dependence.</p>')
+    else:
+        page.append('<p>Every connection has an alternative route through the network.</p>')
+    split={region:groups for region,groups in report['region_components'].items() if len(groups)>1}
+    if split:
+        page.append('<p><strong>Scoring regions split across travel areas:</strong> '+esc('; '.join(f'{region}: {len(groups)} separate groups' for region,groups in split.items()))+'. Travelling between those groups requires entering another scoring region.</p>')
+    else:
+        page.append('<p>Each scoring region is connected internally by its own districts.</p>')
+    page.append('<p>These checks describe the printed graph. Occupied Support spaces and the cost of establishing party presence can still make a route difficult to use.</p></section>')
+    if study['required']:
+        page.append('<section><h2>Special crossings and main corridors</h2><ul>')
+        for edge in study['required']:
+            page.append(f'<li>{esc(names([edge["a"],edge["b"]]).replace(", ","–"))}: {esc(edge["kind"])}.</li>')
+        page.append('</ul></section>')
+    page.append('<details class="adjacency"><summary>Inspect every district and its neighbors</summary><div class="table-wrap"><table><caption>Complete adjacency; no additional connections are implied by the drawing.</caption><thead><tr><th scope="col">District</th><th scope="col">Scoring region</th><th scope="col">Support / votes</th><th scope="col">Connected districts</th></tr></thead><tbody>')
+    for key,district in DISTRICTS.items():
+        capacity=str(district['capacity'])+' / '+('separate' if key=='X' else str(district['capacity']//2))
+        page.append(f'<tr><th scope="row">{esc(district["name"])}</th><td>{district["region"]}</td><td>{capacity}</td><td>{esc(names(report["neighbors"][key]))}</td></tr>')
+    page.append('</tbody></table></div></details><footer><p>Experimental concept; no production map is adopted. Generate this file and its SVG with <code>python scripts/generate-map-concepts.py</code>.</p></footer></main></body></html>')
+    return '\n'.join(page)+'\n'
 
 
 def main():
@@ -293,14 +360,23 @@ def main():
         edges,graph=build_edges(study)
         facts=graph_facts(study,edges,graph)
         output=render(study,edges,facts)
-        path=ROOT/f'docs/assets/map-atlas/{study["id"]:02d}-{study["slug"]}.svg'
+        path=ROOT/f'docs/assets/map-concepts/{study["id"]:02d}-{study["slug"]}.svg'
         if args.check:
             assert path.read_text()==output, str(path)+' is stale'
         else:
+            path.parent.mkdir(parents=True,exist_ok=True)
             path.write_text(output)
         reports.append(dict(id=study['id'],slug=study['slug'],title=study['title'],edges=edges,neighbors={k:sorted(v) for k,v in graph.items()},**facts))
         print(f'{study["id"]:02d} {study["title"]}: {len(edges)} routes, {len(facts["dead_ends"])} dead ends, {len(facts["cut_districts"])} sole-gateway districts')
-    report_path=ROOT/'docs/assets/map-atlas/topology.json'
+    for study,report in zip(DATA['studies'],reports):
+        page_path=ROOT/f'docs/design/map-concepts/{filename(study)}.html'
+        content=study_page(study,report)
+        if args.check:
+            assert page_path.read_text()==content,str(page_path)+' is stale'
+        else:
+            page_path.parent.mkdir(parents=True,exist_ok=True)
+            page_path.write_text(content)
+    report_path=ROOT/'docs/assets/map-concepts/topology.json'
     output=json.dumps(reports,indent=2)+'\n'
     if args.check:
         assert report_path.read_text()==output,'topology.json is stale'

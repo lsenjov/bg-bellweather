@@ -1,4 +1,4 @@
-# Experimental map atlas
+# Seventeen experimental map concepts
 
 Implement concepts 1–10 and 14–20: seventeen detailed maps, one per concept.
 
@@ -20,10 +20,14 @@ The visual focus is the geography: confluences, shorelines, gates, ridges, and t
 ## Steps
 
 1. [x] Build seventeen concept datasets, a reproducible SVG generator, and graph/geometry validation. Inspect representative renders, obtain independent review, resolve findings, and commit the map assets.
-2. [ ] Build the HTML atlas and individual study pages, link documentation, inspect all seventeen maps and mobile layout, obtain independent review, resolve findings, and commit the finished atlas.
+2. [x] Consolidate generation into scripts/generate-map-concepts.py and produce separate SVG and HTML files, with no atlas/gallery wrapper. Inspect all seventeen maps and mobile layout, review, resolve findings, and commit.
 
 ## Validation
 
 Check requested concept IDs, names/capacities, connectivity, route endpoints, no duplicate routes, route clearance from unrelated district footprints, no unmarked route crossings, and Support/label fit. Report region connectivity, Centre access, degree, cut edges, and cut vertices per map. Check reproducible output, relative links and documentation invariants. Check all seventeen geographic renderings visually; these checks establish map legibility, not gameplay balance.
 
 Step 1 validation: seventeen SVGs and topology reports generate reproducibly. Geometry checks reject overlapping districts, districts on blocked terrain, roads through unrelated districts, and unmarked road crossings. Independent review matched all seventeen connectivity and vulnerability reports and inspected Island chain rendering. No high/medium findings. Two low descriptions confusing dense cities with Urban-region membership were corrected; generated Python cache files were removed.
+
+User refinement: produce separate files, not an atlas/gallery. One script in scripts/ regenerates every SVG, companion HTML note, and topology report. Remove the uncommitted gallery and its filtering UI. The shared JSON dataset also lives in scripts/.
+
+Step 2 validation: all seventeen SVGs and standalone HTML notes pass reproducibility checks; documentation checks pass for 131 HTML files. Inspected all map renders and the Island chain notes at mobile width. Independent review found no issues in generation, links, topology descriptions, or mobile CSS.

@@ -124,6 +124,6 @@
 <circle cx="1036.5" cy="801" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 </g>
 <text x="40" y="934" font-size="14">Only printed routes create adjacency. Every route joins its two endpoint districts for all effects.</text>
-<text x="40" y="959" font-size="13">Nearby footprints are not adjacent. Double-railed spans mark bridges, gates, passes, or viaducts.</text>
+<text x="40" y="959" font-size="13">Nearby footprints are not adjacent. Double-railed spans mark the special crossings and corridors listed in the companion notes.</text>
 <text x="40" y="984" font-size="13">Experimental concept · 24 connections · No dead ends · District elections remain local</text>
 </svg>
