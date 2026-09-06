@@ -89,6 +89,37 @@ for slug,title,rows,description,play,watch in studies:
                         neighbors[k].add(other); neighbors[other].add(k)
                         edge=((x+1,y),(x+1,y+1)) if dx else ((x,y+1),(x+1,y+1))
                         edges.append((edge,region(k)!=region(other)))
+    land_border_count = sum(map(len, neighbors.values())) // 2
+    if slug == 'outer-country':
+        assert 'H' in neighbors['J']
+        neighbors['J'].remove('H')
+        neighbors['H'].remove('J')
+        assert {'G', 'H'} <= neighbors['D']
+        assert 'G' in neighbors['E']
+        neighbors['E'].remove('G')
+        neighbors['G'].remove('E')
+        assert 'O' in neighbors['G']
+        neighbors['G'].remove('O')
+        neighbors['O'].remove('G')
+        assert 'L' in neighbors['I'] and 'G' in neighbors['F'] and 'O' in neighbors['H']
+
+        def reachable(omit_node=None, omit_edge=None):
+            nodes = set(cells) - {omit_node}
+            seen = {next(iter(nodes))}
+            pending = list(seen)
+            while pending:
+                node = pending.pop()
+                for other in neighbors[node] & nodes - seen:
+                    if frozenset((node, other)) == omit_edge:
+                        continue
+                    seen.add(other)
+                    pending.append(other)
+            return seen == nodes
+
+        assert all(len(adjacent) >= 2 for adjacent in neighbors.values()), 'dead-end district'
+        assert reachable(), 'disconnected movement graph'
+        assert all(reachable(omit_node=k) for k in cells), 'district is a sole gateway'
+        assert all(reachable(omit_edge=frozenset((k, other))) for k in cells for other in neighbors[k]), 'connection is a sole gateway'
     centre_regions = {region(k) for k in neighbors['X']}
     expected_centre = {'Urban', 'Mixed'} if slug == 'outer-country' else {'Urban', 'Mixed', 'Outlying'}
     assert centre_regions == expected_centre
@@ -112,11 +143,12 @@ for slug,title,rows,description,play,watch in studies:
             ox = oy = 0
         return (left+x*scale+ox,top+y*scale+oy)
     def coords(p): return f'{p[0]:.1f},{p[1]:.1f}'
-    sw=w*scale+70; sh=h*scale+160
+    sw=w*scale+70; sh=h*scale+(195 if slug == 'outer-country' else 160)
     centre_description = 'Bellweather Centre borders only the urban and mixed regions.' if slug == 'outer-country' else 'Bellweather Centre borders all three regions.'
+    adjacency_description = 'Water blocks movement except at the three marked crossings; the river removes Canal Ward–Orchard and Orchard–Coast adjacency and the lake removes Eastfield–Meadow adjacency. Every district lies on a loop.' if slug == 'outer-country' else 'Shared border segments define adjacency; corners do not.'
     svg=[f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {sw} {sh}" role="img" aria-labelledby="title desc">',
          f'<title id="title">{title}: three regions of eighteen Support</title>',
-         f'<desc id="desc">{description} Shared border segments define adjacency; corners do not. {centre_description}</desc>',
+         f'<desc id="desc">{description} {adjacency_description} {centre_description}</desc>',
          '<style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:11px}</style>',
          f'<rect width="{sw}" height="{sh}" fill="white"/>',
          f'<text x="35" y="34" font-size="24" font-weight="700">{title}</text>',
@@ -148,10 +180,34 @@ for slug,title,rows,description,play,watch in studies:
             a = (px+dx*12-dy*4, py+dy*12+dx*4)
             b = (px+dx*12+dy*4, py+dy*12-dx*4)
             svg.append(f'<path d="M {coords((px+dx*5,py+dy*5))} L {coords(tip)} M {coords(a)} L {coords(tip)} L {coords(b)}" fill="none" stroke="#19354b" stroke-width="1.5"/>')
+    if slug == 'outer-country':
+        river_points = [(8,y) for y in range(11)] + [(x,10) for x in range(9,17)]
+        river = 'M ' + ' L '.join(coords(point(x,y)) for x,y in river_points)
+        svg.append(f'<g id="water" aria-label="Proposed water barriers"><path d="{river}" fill="none" stroke="#34758d" stroke-width="18" stroke-linejoin="round"/>')
+        svg.append(f'<path d="{river}" fill="none" stroke="#a9d9ec" stroke-width="13" stroke-linejoin="round"/>')
+        lake_points = [(11.55,1.62),(14.35,1.62),(14.5,2.2),(14.1,3.2),(13.6,4.12),(12.15,4.22),(11.55,3.65)]
+        lake = 'M ' + ' L '.join(coords(point(x,y)) for x,y in lake_points) + ' Z'
+        svg.append(f'<path id="market-lake" d="{lake}" fill="#a9d9ec" stroke="#34758d" stroke-width="2.5"/>')
+        px,py = point(13,2.8)
+        svg.append(f'<text x="{px:.1f}" y="{py:.1f}" text-anchor="middle" font-size="14" font-style="italic">Market Lake</text>')
+        px,py = point(8.4,5.1)
+        svg.append(f'<text x="{px:.1f}" y="{py:.1f}" font-size="13" font-style="italic" transform="rotate(90 {px:.1f} {py:.1f})">Bellwater River</text>')
+        for y, label, pair in [(1,'North crossing','Westfield–Heath'),(8.1,'South crossing','Crown Road–Orchard')]:
+            px,py=point(8,y)
+            svg.append(f'<g aria-label="{label}: {pair}"><rect x="{px-22:.1f}" y="{py-8:.1f}" width="44" height="16" fill="#faf3df" stroke="#19354b" stroke-width="2"/>')
+            svg.append(f'<path d="M {px-22:.1f},{py-10:.1f} h 44 M {px-22:.1f},{py+10:.1f} h 44" stroke="#19354b" stroke-width="3"/>')
+            label_y = py+38 if y == 1 else py+4
+            svg.append(f'<text x="{px+32:.1f}" y="{label_y:.1f}" font-size="12">{label}</text></g>')
+        px,py=point(14,10)
+        svg.append(f'<g aria-label="Coast crossing: Meadow–Coast"><rect x="{px-8:.1f}" y="{py-22:.1f}" width="16" height="44" fill="#faf3df" stroke="#19354b" stroke-width="2"/>')
+        svg.append(f'<path d="M {px-10:.1f},{py-22:.1f} v 44 M {px+10:.1f},{py-22:.1f} v 44" stroke="#19354b" stroke-width="3"/>')
+        svg.append(f'<text x="{px:.1f}" y="{py+42:.1f}" text-anchor="middle" font-size="12">Coast crossing</text></g>')
+        svg.append('</g>')
     for k,group in sorted(cells.items()):
         cx=sum(x+.5 for x,y in group)/len(group); cy=sum(y+.5 for x,y in group)/len(group)
         px,py=point(cx,cy)
         label_positions = {
+            ('outer-country', 'I'): (6.8, 1),
             ('outer-country', 'E'): (5, 3),
             ('outer-country', 'F'): (5, 9),
             ('outer-country', 'H'): (14, 8),
@@ -177,9 +233,12 @@ for slug,title,rows,description,play,watch in studies:
             dx=(i%columns-(columns-1)/2)*19; dy=(i//columns)*19
             svg.append(f'<circle cx="{px+dx:.1f}" cy="{py+7+dy:.1f}" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>')
         svg.append('</g>')
+    if slug == 'outer-country':
+        svg.append(f'<text x="35" y="{sh-65}" font-size="13">Water blocks movement except at crossings. Blocked: Canal Ward–Orchard; Orchard–Coast; Eastfield–Meadow.</text>')
+        svg.append(f'<text x="35" y="{sh-48}" font-size="12">28 movement connections; every district lies on a loop. Crossings add no within-district movement rule.</text>')
     edge_note = 'Dashed edge / arrows: countryside continues beyond the frame; no extra playable spaces.' if slug == 'outer-country' else 'Concept only · District elections remain local · Territory size does not indicate capacity'
     svg.extend([f'<text x="35" y="{sh-35}" font-size="13">Circles = Support spaces. Heavy lines = region borders. Thin lines = district borders.</text>',
                 f'<text x="35" y="{sh-15}" font-size="12">{edge_note}</text>','</svg>'])
     (assets/f'region-prototype-{slug}.svg').write_text('\n'.join(svg)+'\n')
-    summary.append(dict(slug=slug,title=title,description=description,play=play,watch=watch,centre=', '.join(names[k] for k in sorted(neighbors['X'])),borders=sum(map(len,neighbors.values()))//2, outlying_perimeter=f"{perimeter}/{2*(w+h)}"))
+    summary.append(dict(slug=slug,title=title,description=description,play=play,watch=watch,centre=', '.join(names[k] for k in sorted(neighbors['X'])),borders=land_border_count, movement_connections=sum(map(len,neighbors.values()))//2, outlying_perimeter=f"{perimeter}/{2*(w+h)}"))
 print(json.dumps(summary,indent=2))

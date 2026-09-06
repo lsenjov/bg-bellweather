@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1110 975" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1110 940" role="img" aria-labelledby="title desc">
 <title id="title">Outer country: three regions of eighteen Support</title>
-<desc id="desc">Outlying districts wrap around the northern, western, and southern edges. Compact cities sit inland; Bellweather Centre borders only the urban and mixed regions. Water blocks movement except at the three marked crossings; the river removes Canal Ward–Orchard and Orchard–Coast adjacency and the lake removes Eastfield–Meadow adjacency. Every district lies on a loop. Bellweather Centre borders only the urban and mixed regions.</desc>
+<desc id="desc">Outlying districts wrap around the northern, western, and southern edges. Compact cities sit inland; Bellweather Centre borders only the urban and mixed regions. Shared border segments define adjacency; corners do not. Bellweather Centre borders only the urban and mixed regions.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:11px}</style>
-<rect width="1110" height="975" fill="white"/>
+<rect width="1110" height="940" fill="white"/>
 <text x="35" y="34" font-size="24" font-weight="700">Outer country</text>
 <text x="35" y="59" font-size="13">Urban: 18 / 9 votes     Mixed: 18 / 9 votes     Outlying: 18 / 9 votes     Centre: 3 separate Support</text>
 <polygon points="35.0,155.0 102.4,156.9 96.5,219.2 35.0,220.0" fill="#f5e7ac" stroke="#f5e7ac" stroke-width="1"/>
@@ -391,21 +391,6 @@
 <path d="M 1010.0,85.0 L 1010.0,71.0 M 1014.0,78.0 L 1010.0,71.0 L 1006.0,78.0" fill="none" stroke="#19354b" stroke-width="1.5"/>
 <path d="M 30.0,545.0 L 16.0,545.0 M 23.0,541.0 L 16.0,545.0 L 23.0,549.0" fill="none" stroke="#19354b" stroke-width="1.5"/>
 <path d="M 750.0,875.0 L 750.0,889.0 M 746.0,882.0 L 750.0,889.0 L 754.0,882.0" fill="none" stroke="#19354b" stroke-width="1.5"/>
-<g id="water" aria-label="Proposed water barriers"><path d="M 555.0,90.0 L 558.9,157.0 L 553.5,223.8 L 551.5,288.8 L 557.4,352.0 L 557.9,414.3 L 551.9,476.9 L 552.9,541.0 L 558.7,607.0 L 556.1,674.4 L 551.1,742.1 L 616.8,737.6 L 684.5,736.2 L 752.5,739.7 L 819.0,743.6 L 883.1,742.9 L 945.3,738.5 L 1007.3,736.0 L 1075.0,740.0" fill="none" stroke="#34758d" stroke-width="18" stroke-linejoin="round"/>
-<path d="M 555.0,90.0 L 558.9,157.0 L 553.5,223.8 L 551.5,288.8 L 557.4,352.0 L 557.9,414.3 L 551.9,476.9 L 552.9,541.0 L 558.7,607.0 L 556.1,674.4 L 551.1,742.1 L 616.8,737.6 L 684.5,736.2 L 752.5,739.7 L 819.0,743.6 L 883.1,742.9 L 945.3,738.5 L 1007.3,736.0 L 1075.0,740.0" fill="none" stroke="#a9d9ec" stroke-width="13" stroke-linejoin="round"/>
-<path id="market-lake" d="M 783.6,195.9 L 971.7,193.8 L 978.9,232.4 L 948.1,301.4 L 915.7,360.9 L 821.0,361.1 L 786.8,323.4 Z" fill="#a9d9ec" stroke="#34758d" stroke-width="2.5"/>
-<text x="882.1" y="275.5" text-anchor="middle" font-size="14" font-style="italic">Market Lake</text>
-<text x="582.3" y="422.4" font-size="13" font-style="italic" transform="rotate(90 582.3 422.4)">Bellwater River</text>
-<g aria-label="North crossing: Westfield–Heath"><rect x="536.9" y="149.0" width="44" height="16" fill="#faf3df" stroke="#19354b" stroke-width="2"/>
-<path d="M 536.9,147.0 h 44 M 536.9,167.0 h 44" stroke="#19354b" stroke-width="3"/>
-<text x="590.9" y="195.0" font-size="12">North crossing</text></g>
-<g aria-label="South crossing: Crown Road–Orchard"><rect x="536.9" y="605.7" width="44" height="16" fill="#faf3df" stroke="#19354b" stroke-width="2"/>
-<path d="M 536.9,603.7 h 44 M 536.9,623.7 h 44" stroke="#19354b" stroke-width="3"/>
-<text x="590.9" y="617.7" font-size="12">South crossing</text></g>
-<g aria-label="Coast crossing: Meadow–Coast"><rect x="937.3" y="716.5" width="16" height="44" fill="#faf3df" stroke="#19354b" stroke-width="2"/>
-<path d="M 935.3,716.5 v 44 M 955.3,716.5 v 44" stroke="#19354b" stroke-width="3"/>
-<text x="945.3" y="780.5" text-anchor="middle" font-size="12">Coast crossing</text></g>
-</g>
 <g text-anchor="middle"><text class="name" x="226.0" y="391.4">Harbormouth</text>
 <text class="detail" x="226.0" y="407.4">Urban · 3 votes</text>
 <circle cx="207.0" cy="422.4" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
@@ -466,12 +451,12 @@
 <circle cx="934.2" cy="613.1" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 <circle cx="953.2" cy="613.1" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 </g>
-<g text-anchor="middle"><text class="name" x="480.0" y="134.7">Westfield</text>
-<text class="detail" x="480.0" y="150.7">Outlying · 2 votes</text>
-<circle cx="451.5" cy="165.7" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
-<circle cx="470.5" cy="165.7" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
-<circle cx="489.5" cy="165.7" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
-<circle cx="508.5" cy="165.7" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
+<g text-anchor="middle"><text class="name" x="493.4" y="135.0">Westfield</text>
+<text class="detail" x="493.4" y="151.0">Outlying · 2 votes</text>
+<circle cx="464.9" cy="166.0" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
+<circle cx="483.9" cy="166.0" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
+<circle cx="502.9" cy="166.0" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
+<circle cx="521.9" cy="166.0" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 </g>
 <g text-anchor="middle"><text class="name" x="878.2" y="133.9">Eastfield</text>
 <text class="detail" x="878.2" y="149.9">Outlying · 2 votes</text>
@@ -511,8 +496,6 @@
 <circle cx="359.2" cy="555.6" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 <circle cx="378.2" cy="555.6" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 </g>
-<text x="35" y="910" font-size="13">Water blocks movement except at crossings. Blocked: Canal Ward–Orchard; Orchard–Coast; Eastfield–Meadow.</text>
-<text x="35" y="927" font-size="12">28 movement connections; every district lies on a loop. Crossings add no within-district movement rule.</text>
-<text x="35" y="940" font-size="13">Circles = Support spaces. Heavy lines = region borders. Thin lines = district borders.</text>
-<text x="35" y="960" font-size="12">Dashed edge / arrows: countryside continues beyond the frame; no extra playable spaces.</text>
+<text x="35" y="905" font-size="13">Circles = Support spaces. Heavy lines = region borders. Thin lines = district borders.</text>
+<text x="35" y="925" font-size="12">Dashed edge / arrows: countryside continues beyond the frame; no extra playable spaces.</text>
 </svg>
