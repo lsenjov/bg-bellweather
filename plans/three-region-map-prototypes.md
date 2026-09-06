@@ -17,3 +17,9 @@ Validation completed: all three district and region graphs are connected; capaci
 Keep all regions and districts connected. Preserve each region's 18 Support and the Centre's contact with all three. Physical size represents density rather than vote allocation; movement distance still counts shared district borders.
 
 Revision validation: inspected all three SVGs in the browser; comparison page loads all maps without overflow at 390px. Generator assertions verify capacities, connected districts and regions, Centre contacts, and the separation of Northgate from the urban cluster. Exact SVG regeneration verified. `npm run docs:check` passes (114 HTML files). Independent review found no high, medium, or low issues and verified the archived SVGs match the originals.
+
+## Fourth study: outer country
+
+- [x] Add an outer-country prototype with a connected outlying region covering at least half the map perimeter, without Centre adjacency. Use cropped edge districts and continuation marks. Preserve all district capacities, connected regions, and the three earlier studies; update the comparison page, validate, obtain independent review, and commit.
+
+Fourth-study validation: 48/56 perimeter units (85.7%) belong to the connected outlying region. Centre neighbors are Grand Market, Ironwood, and Crown Road; no outlying contact. Verified connected districts/regions, 18 Support each, 57 circles including Centre, and 31 district adjacencies. Inspected SVG rendering and all four comparison-page images. Exact regeneration passes and prior three SVGs remain byte-identical. `npm run docs:check` and `git diff --check` pass. Independent review: no high, medium, or low findings.

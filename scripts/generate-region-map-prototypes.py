@@ -50,6 +50,16 @@ studies = [
     'A small southwestern city cluster anchors a southern mixed corridor. Northgate lies at the opposite end, while scattered suburbs punctuate a much larger northern rural region.',
     'The two outlying suburbs, Westfield and Eastfield, share no border. Moving between those denser footholds requires crossing lower-capacity territory.',
     'Northgate has only one neighboring district, Meadow. That gateway could become a useful contest or shelter the city too effectively.'),
+    ('outer-country', 'Outer country', layout([
+        ('A',2,4,4,6),('B',4,4,6,6),('C',2,6,4,8),('X',4,6,6,8),
+        ('E',2,2,8,4),('E',6,4,8,6),('F',2,8,8,10),('F',6,6,8,8),
+        ('G',8,2,12,10),('D',12,4,14,6),('H',12,2,16,4),('H',14,4,16,6),('H',12,6,16,10),
+        ('K',0,0,6,2),('K',0,2,2,4),('I',6,0,8,2),('L',8,0,12,2),('J',12,0,14,2),
+        ('M',14,0,16,2),('N',0,4,2,10),('N',0,10,6,12),('O',6,10,16,12)
+    ]),
+    'Outlying districts wrap around the northern, western, and southern edges. Compact cities sit inland; Bellweather Centre borders only the urban and mixed regions.',
+    'The outlying region occupies about 86% of the map perimeter without touching the Centre. Reaching the Centre from the countryside requires passing through an urban or mixed district.',
+    'The western rural district, Vale, connects the northern and southern stretches. Test whether this long district creates useful interaction or makes the countryside too easy to traverse.'),
 ]
 summary=[]
 for slug,title,rows,description,play,watch in studies:
@@ -79,7 +89,15 @@ for slug,title,rows,description,play,watch in studies:
                         neighbors[k].add(other); neighbors[other].add(k)
                         edge=((x+1,y),(x+1,y+1)) if dx else ((x,y+1),(x+1,y+1))
                         edges.append((edge,region(k)!=region(other)))
-    assert {region(k) for k in neighbors['X']} == {'Urban','Mixed','Outlying'}
+    centre_regions = {region(k) for k in neighbors['X']}
+    expected_centre = {'Urban', 'Mixed'} if slug == 'outer-country' else {'Urban', 'Mixed', 'Outlying'}
+    assert centre_regions == expected_centre
+    perimeter = sum(
+        (x == 0) + (x == w-1) + (y == 0) + (y == h-1)
+        for k, group in cells.items() if region(k) == 'Outlying' for x, y in group
+    )
+    if slug == 'outer-country':
+        assert perimeter >= w+h, 'outlying region covers less than half the perimeter'
     assert not neighbors['D'] & set('ABC'), (slug, 'mixed city touches urban cluster')
     for r in ['Urban','Mixed','Outlying']:
         group={k for k in cells if region(k)==r}; seen={next(iter(group))}; todo=list(seen)
@@ -90,12 +108,15 @@ for slug,title,rows,description,play,watch in studies:
     def point(x,y):
         ox=4*math.sin(y*1.7+x*.8) if 0<x<w else 0
         oy=4*math.sin(x*1.2-y*.7) if 0<y<h else 0
+        if slug == 'outer-country' and (x in (0, w) or y in (0, h)):
+            ox = oy = 0
         return (left+x*scale+ox,top+y*scale+oy)
     def coords(p): return f'{p[0]:.1f},{p[1]:.1f}'
     sw=w*scale+70; sh=h*scale+160
+    centre_description = 'Bellweather Centre borders only the urban and mixed regions.' if slug == 'outer-country' else 'Bellweather Centre borders all three regions.'
     svg=[f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {sw} {sh}" role="img" aria-labelledby="title desc">',
          f'<title id="title">{title}: three regions of eighteen Support</title>',
-         f'<desc id="desc">{description} Shared border segments define adjacency; corners do not. Bellweather Centre borders all three regions.</desc>',
+         f'<desc id="desc">{description} Shared border segments define adjacency; corners do not. {centre_description}</desc>',
          '<style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:11px}</style>',
          f'<rect width="{sw}" height="{sh}" fill="white"/>',
          f'<text x="35" y="34" font-size="24" font-weight="700">{title}</text>',
@@ -107,10 +128,35 @@ for slug,title,rows,description,play,watch in studies:
     for (a,b),thick in sorted(edges,key=lambda e:e[1]):
         svg.append(f'<path d="M {coords(point(*a))} L {coords(point(*b))}" stroke="#19354b" stroke-width="{4 if thick else 1.5}" fill="none"/>')
     svg.append(f'<rect x="{left}" y="{top}" width="{w*scale}" height="{h*scale}" fill="none" stroke="#19354b" stroke-width="4"/>')
+    if slug == 'outer-country':
+        for k, group in cells.items():
+            if region(k) != 'Outlying':
+                continue
+            for x, y in group:
+                boundary = []
+                if x == 0: boundary.append(((x,y),(x,y+1)))
+                if x == w-1: boundary.append(((x+1,y),(x+1,y+1)))
+                if y == 0: boundary.append(((x,y),(x+1,y)))
+                if y == h-1: boundary.append(((x,y+1),(x+1,y+1)))
+                for a, b in boundary:
+                    path = f'M {coords(point(*a))} L {coords(point(*b))}'
+                    svg.append(f'<path d="{path}" fill="none" stroke="white" stroke-width="6"/>')
+                    svg.append(f'<path d="{path}" fill="none" stroke="#19354b" stroke-width="3" stroke-dasharray="8 5"/>')
+        for x, y, dx, dy in [(3,0,0,-1),(10,0,0,-1),(15,0,0,-1),(0,7,-1,0),(11,12,0,1)]:
+            px, py = point(x,y)
+            tip = (px+dx*19, py+dy*19)
+            a = (px+dx*12-dy*4, py+dy*12+dx*4)
+            b = (px+dx*12+dy*4, py+dy*12-dx*4)
+            svg.append(f'<path d="M {coords((px+dx*5,py+dy*5))} L {coords(tip)} M {coords(a)} L {coords(tip)} L {coords(b)}" fill="none" stroke="#19354b" stroke-width="1.5"/>')
     for k,group in sorted(cells.items()):
         cx=sum(x+.5 for x,y in group)/len(group); cy=sum(y+.5 for x,y in group)/len(group)
         px,py=point(cx,cy)
         label_positions = {
+            ('outer-country', 'E'): (5, 3),
+            ('outer-country', 'F'): (5, 9),
+            ('outer-country', 'H'): (14, 8),
+            ('outer-country', 'K'): (3, 1),
+            ('outer-country', 'N'): (1, 7),
             ('compact-hub', 'M'): (13, 7.5),
             ('rural-fringe', 'G'): (14, 4),
             ('rural-fringe', 'L'): (3, 9),
@@ -131,8 +177,9 @@ for slug,title,rows,description,play,watch in studies:
             dx=(i%columns-(columns-1)/2)*19; dy=(i//columns)*19
             svg.append(f'<circle cx="{px+dx:.1f}" cy="{py+7+dy:.1f}" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>')
         svg.append('</g>')
+    edge_note = 'Dashed edge / arrows: countryside continues beyond the frame; no extra playable spaces.' if slug == 'outer-country' else 'Concept only · District elections remain local · Territory size does not indicate capacity'
     svg.extend([f'<text x="35" y="{sh-35}" font-size="13">Circles = Support spaces. Heavy lines = region borders. Thin lines = district borders.</text>',
-                f'<text x="35" y="{sh-15}" font-size="12">Concept only · District elections remain local · Territory size does not indicate capacity</text>','</svg>'])
+                f'<text x="35" y="{sh-15}" font-size="12">{edge_note}</text>','</svg>'])
     (assets/f'region-prototype-{slug}.svg').write_text('\n'.join(svg)+'\n')
-    summary.append(dict(slug=slug,title=title,description=description,play=play,watch=watch,centre=', '.join(names[k] for k in sorted(neighbors['X'])),borders=sum(map(len,neighbors.values()))//2))
+    summary.append(dict(slug=slug,title=title,description=description,play=play,watch=watch,centre=', '.join(names[k] for k in sorted(neighbors['X'])),borders=sum(map(len,neighbors.values()))//2, outlying_perimeter=f"{perimeter}/{2*(w+h)}"))
 print(json.dumps(summary,indent=2))
