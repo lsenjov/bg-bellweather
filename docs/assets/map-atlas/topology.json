@@ -1,0 +1,4311 @@
+[
+  {
+    "id": 1,
+    "slug": "river-confluence",
+    "title": "River confluence",
+    "edges": [
+      {
+        "a": "X",
+        "b": "E",
+        "kind": "bridge"
+      },
+      {
+        "a": "X",
+        "b": "I",
+        "kind": "bridge"
+      },
+      {
+        "a": "H",
+        "b": "N",
+        "kind": "bridge"
+      },
+      {
+        "a": "C",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "K",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "K",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "C"
+      ],
+      "B": [
+        "A",
+        "C"
+      ],
+      "C": [
+        "A",
+        "B",
+        "X"
+      ],
+      "X": [
+        "C",
+        "E",
+        "I"
+      ],
+      "D": [
+        "E",
+        "F"
+      ],
+      "E": [
+        "D",
+        "F",
+        "G",
+        "H",
+        "X"
+      ],
+      "F": [
+        "D",
+        "E",
+        "G"
+      ],
+      "G": [
+        "E",
+        "F",
+        "H"
+      ],
+      "H": [
+        "E",
+        "G",
+        "N"
+      ],
+      "I": [
+        "J",
+        "K",
+        "L",
+        "X"
+      ],
+      "J": [
+        "I",
+        "L",
+        "M"
+      ],
+      "K": [
+        "I",
+        "L",
+        "N"
+      ],
+      "L": [
+        "I",
+        "J",
+        "K",
+        "M",
+        "O"
+      ],
+      "M": [
+        "J",
+        "L",
+        "O"
+      ],
+      "N": [
+        "H",
+        "K",
+        "O"
+      ],
+      "O": [
+        "L",
+        "M",
+        "N"
+      ]
+    },
+    "connections": 25,
+    "centre_neighbors": [
+      "C",
+      "E",
+      "I"
+    ],
+    "dead_ends": [],
+    "cut_districts": [
+      "C",
+      "X"
+    ],
+    "cut_routes": [
+      [
+        "C",
+        "X"
+      ]
+    ],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G",
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "slug": "lake-city",
+    "title": "Lake city",
+    "edges": [
+      {
+        "a": "D",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "A",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "D",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "K",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "J",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "X": [
+        "A",
+        "O"
+      ],
+      "A": [
+        "B",
+        "X"
+      ],
+      "B": [
+        "A",
+        "C",
+        "N"
+      ],
+      "C": [
+        "B",
+        "E"
+      ],
+      "E": [
+        "C",
+        "F"
+      ],
+      "F": [
+        "E",
+        "G"
+      ],
+      "G": [
+        "D",
+        "F",
+        "J"
+      ],
+      "D": [
+        "G",
+        "H"
+      ],
+      "H": [
+        "D",
+        "I"
+      ],
+      "I": [
+        "H",
+        "J"
+      ],
+      "J": [
+        "G",
+        "I",
+        "K"
+      ],
+      "K": [
+        "J",
+        "L"
+      ],
+      "L": [
+        "K",
+        "M"
+      ],
+      "M": [
+        "L",
+        "N"
+      ],
+      "N": [
+        "B",
+        "M",
+        "O"
+      ],
+      "O": [
+        "N",
+        "X"
+      ]
+    },
+    "connections": 18,
+    "centre_neighbors": [
+      "A",
+      "O"
+    ],
+    "dead_ends": [],
+    "cut_districts": [],
+    "cut_routes": [],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G",
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "slug": "mountain-pass",
+    "title": "Mountain pass",
+    "edges": [
+      {
+        "a": "B",
+        "b": "A",
+        "kind": "pass"
+      },
+      {
+        "a": "A",
+        "b": "D",
+        "kind": "pass"
+      },
+      {
+        "a": "E",
+        "b": "X",
+        "kind": "pass"
+      },
+      {
+        "a": "X",
+        "b": "F",
+        "kind": "pass"
+      },
+      {
+        "a": "J",
+        "b": "O",
+        "kind": "pass"
+      },
+      {
+        "a": "H",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "K",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "L",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "D"
+      ],
+      "B": [
+        "A",
+        "C",
+        "E",
+        "G"
+      ],
+      "C": [
+        "B",
+        "G"
+      ],
+      "X": [
+        "E",
+        "F"
+      ],
+      "D": [
+        "A",
+        "F",
+        "K",
+        "L"
+      ],
+      "E": [
+        "B",
+        "G",
+        "H",
+        "I",
+        "X"
+      ],
+      "F": [
+        "D",
+        "L",
+        "N",
+        "X"
+      ],
+      "G": [
+        "B",
+        "C",
+        "E",
+        "H"
+      ],
+      "H": [
+        "E",
+        "G",
+        "I"
+      ],
+      "I": [
+        "E",
+        "H",
+        "J"
+      ],
+      "J": [
+        "I",
+        "O"
+      ],
+      "K": [
+        "D",
+        "L"
+      ],
+      "L": [
+        "D",
+        "F",
+        "K",
+        "M"
+      ],
+      "M": [
+        "L",
+        "N"
+      ],
+      "N": [
+        "F",
+        "M",
+        "O"
+      ],
+      "O": [
+        "J",
+        "N"
+      ]
+    },
+    "connections": 24,
+    "centre_neighbors": [
+      "E",
+      "F"
+    ],
+    "dead_ends": [],
+    "cut_districts": [],
+    "cut_routes": [],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "F"
+        ],
+        [
+          "E",
+          "G",
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "slug": "river-delta",
+    "title": "River delta",
+    "edges": [
+      {
+        "a": "B",
+        "b": "D",
+        "kind": "bridge"
+      },
+      {
+        "a": "G",
+        "b": "M",
+        "kind": "bridge"
+      },
+      {
+        "a": "N",
+        "b": "K",
+        "kind": "bridge"
+      },
+      {
+        "a": "C",
+        "b": "H",
+        "kind": "bridge"
+      },
+      {
+        "a": "A",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "N",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "C",
+        "X"
+      ],
+      "B": [
+        "A",
+        "D",
+        "X"
+      ],
+      "C": [
+        "A",
+        "H",
+        "X"
+      ],
+      "X": [
+        "A",
+        "B",
+        "C"
+      ],
+      "D": [
+        "B",
+        "E",
+        "F"
+      ],
+      "E": [
+        "D",
+        "F",
+        "G"
+      ],
+      "F": [
+        "D",
+        "E",
+        "G"
+      ],
+      "G": [
+        "E",
+        "F",
+        "M"
+      ],
+      "H": [
+        "C",
+        "I",
+        "J",
+        "K"
+      ],
+      "I": [
+        "H",
+        "K"
+      ],
+      "J": [
+        "H",
+        "K"
+      ],
+      "K": [
+        "H",
+        "I",
+        "J",
+        "N"
+      ],
+      "L": [
+        "M",
+        "N"
+      ],
+      "M": [
+        "G",
+        "L",
+        "N",
+        "O"
+      ],
+      "N": [
+        "K",
+        "L",
+        "M",
+        "O"
+      ],
+      "O": [
+        "M",
+        "N"
+      ]
+    },
+    "connections": 24,
+    "centre_neighbors": [
+      "A",
+      "B",
+      "C"
+    ],
+    "dead_ends": [],
+    "cut_districts": [],
+    "cut_routes": [],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G"
+        ],
+        [
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "slug": "walled-city",
+    "title": "Walled city",
+    "edges": [
+      {
+        "a": "A",
+        "b": "E",
+        "kind": "gate"
+      },
+      {
+        "a": "B",
+        "b": "O",
+        "kind": "gate"
+      },
+      {
+        "a": "C",
+        "b": "K",
+        "kind": "gate"
+      },
+      {
+        "a": "X",
+        "b": "H",
+        "kind": "gate"
+      },
+      {
+        "a": "I",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "K",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "K",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "E",
+        "X"
+      ],
+      "B": [
+        "A",
+        "C",
+        "O",
+        "X"
+      ],
+      "C": [
+        "B",
+        "K",
+        "X"
+      ],
+      "X": [
+        "A",
+        "B",
+        "C",
+        "H"
+      ],
+      "D": [
+        "E",
+        "O"
+      ],
+      "E": [
+        "A",
+        "D",
+        "F",
+        "O"
+      ],
+      "F": [
+        "E",
+        "G"
+      ],
+      "G": [
+        "F",
+        "H"
+      ],
+      "H": [
+        "G",
+        "M",
+        "X"
+      ],
+      "I": [
+        "J",
+        "K",
+        "N"
+      ],
+      "J": [
+        "I",
+        "K"
+      ],
+      "K": [
+        "C",
+        "I",
+        "J",
+        "L",
+        "M"
+      ],
+      "L": [
+        "K",
+        "M"
+      ],
+      "M": [
+        "H",
+        "K",
+        "L"
+      ],
+      "N": [
+        "I",
+        "O"
+      ],
+      "O": [
+        "B",
+        "D",
+        "E",
+        "N"
+      ]
+    },
+    "connections": 24,
+    "centre_neighbors": [
+      "A",
+      "B",
+      "C",
+      "H"
+    ],
+    "dead_ends": [],
+    "cut_districts": [],
+    "cut_routes": [],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G",
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "slug": "twin-cities",
+    "title": "Twin cities",
+    "edges": [
+      {
+        "a": "B",
+        "b": "D",
+        "kind": "bridge"
+      },
+      {
+        "a": "I",
+        "b": "L",
+        "kind": "bridge"
+      },
+      {
+        "a": "K",
+        "b": "N",
+        "kind": "bridge"
+      },
+      {
+        "a": "C",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "I",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "C"
+      ],
+      "B": [
+        "A",
+        "D",
+        "X"
+      ],
+      "C": [
+        "A",
+        "H",
+        "I",
+        "X"
+      ],
+      "X": [
+        "B",
+        "C",
+        "I"
+      ],
+      "D": [
+        "B",
+        "E",
+        "F"
+      ],
+      "E": [
+        "D",
+        "G"
+      ],
+      "F": [
+        "D",
+        "G",
+        "L"
+      ],
+      "G": [
+        "E",
+        "F",
+        "M"
+      ],
+      "H": [
+        "C",
+        "I",
+        "J"
+      ],
+      "I": [
+        "C",
+        "H",
+        "K",
+        "L",
+        "X"
+      ],
+      "J": [
+        "H",
+        "K"
+      ],
+      "K": [
+        "I",
+        "J",
+        "N"
+      ],
+      "L": [
+        "F",
+        "I",
+        "M",
+        "N"
+      ],
+      "M": [
+        "G",
+        "L",
+        "O"
+      ],
+      "N": [
+        "K",
+        "L",
+        "O"
+      ],
+      "O": [
+        "M",
+        "N"
+      ]
+    },
+    "connections": 24,
+    "centre_neighbors": [
+      "B",
+      "C",
+      "I"
+    ],
+    "dead_ends": [],
+    "cut_districts": [],
+    "cut_routes": [],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G"
+        ],
+        [
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "slug": "peninsula-capital",
+    "title": "Peninsula capital",
+    "edges": [
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "A",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "K",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "A",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "D": [
+        "E",
+        "J"
+      ],
+      "E": [
+        "D",
+        "F",
+        "K"
+      ],
+      "F": [
+        "E",
+        "G",
+        "L"
+      ],
+      "G": [
+        "F",
+        "H",
+        "M"
+      ],
+      "H": [
+        "G",
+        "I",
+        "N"
+      ],
+      "I": [
+        "H",
+        "O"
+      ],
+      "J": [
+        "D",
+        "K"
+      ],
+      "K": [
+        "E",
+        "J",
+        "L"
+      ],
+      "L": [
+        "A",
+        "F",
+        "K",
+        "M"
+      ],
+      "M": [
+        "A",
+        "B",
+        "G",
+        "L",
+        "N"
+      ],
+      "N": [
+        "B",
+        "H",
+        "M",
+        "O"
+      ],
+      "O": [
+        "I",
+        "N"
+      ],
+      "A": [
+        "B",
+        "C",
+        "L",
+        "M"
+      ],
+      "B": [
+        "A",
+        "M",
+        "N",
+        "X"
+      ],
+      "C": [
+        "A",
+        "X"
+      ],
+      "X": [
+        "B",
+        "C"
+      ]
+    },
+    "connections": 24,
+    "centre_neighbors": [
+      "B",
+      "C"
+    ],
+    "dead_ends": [],
+    "cut_districts": [],
+    "cut_routes": [],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G",
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "slug": "island-chain",
+    "title": "Island chain",
+    "edges": [
+      {
+        "a": "B",
+        "b": "C",
+        "kind": "bridge"
+      },
+      {
+        "a": "E",
+        "b": "F",
+        "kind": "bridge"
+      },
+      {
+        "a": "H",
+        "b": "J",
+        "kind": "bridge"
+      },
+      {
+        "a": "I",
+        "b": "M",
+        "kind": "bridge"
+      },
+      {
+        "a": "L",
+        "b": "X",
+        "kind": "bridge"
+      },
+      {
+        "a": "E",
+        "b": "O",
+        "kind": "bridge"
+      },
+      {
+        "a": "O",
+        "b": "H",
+        "kind": "bridge"
+      },
+      {
+        "a": "N",
+        "b": "X",
+        "kind": "bridge"
+      },
+      {
+        "a": "N",
+        "b": "I",
+        "kind": "bridge"
+      },
+      {
+        "a": "A",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "D",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "H",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "X"
+      ],
+      "B": [
+        "A",
+        "C",
+        "X"
+      ],
+      "C": [
+        "B",
+        "D",
+        "E"
+      ],
+      "X": [
+        "A",
+        "B",
+        "L",
+        "N"
+      ],
+      "D": [
+        "C",
+        "E"
+      ],
+      "E": [
+        "C",
+        "D",
+        "F",
+        "O"
+      ],
+      "F": [
+        "E",
+        "G",
+        "H"
+      ],
+      "G": [
+        "F",
+        "H"
+      ],
+      "H": [
+        "F",
+        "G",
+        "J",
+        "O"
+      ],
+      "I": [
+        "J",
+        "K",
+        "M",
+        "N"
+      ],
+      "J": [
+        "H",
+        "I",
+        "K"
+      ],
+      "K": [
+        "I",
+        "J"
+      ],
+      "L": [
+        "M",
+        "X"
+      ],
+      "M": [
+        "I",
+        "L"
+      ],
+      "N": [
+        "I",
+        "O",
+        "X"
+      ],
+      "O": [
+        "E",
+        "H",
+        "N"
+      ]
+    },
+    "connections": 23,
+    "centre_neighbors": [
+      "A",
+      "B",
+      "L",
+      "N"
+    ],
+    "dead_ends": [],
+    "cut_districts": [],
+    "cut_routes": [],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G",
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 9,
+    "slug": "crescent-bay",
+    "title": "Crescent bay",
+    "edges": [
+      {
+        "a": "G",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "D",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "K",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "H",
+        "I"
+      ],
+      "B": [
+        "A",
+        "C",
+        "I",
+        "J"
+      ],
+      "C": [
+        "B",
+        "J",
+        "K",
+        "X"
+      ],
+      "X": [
+        "C",
+        "D",
+        "K",
+        "L"
+      ],
+      "D": [
+        "E",
+        "L",
+        "X"
+      ],
+      "E": [
+        "D",
+        "F",
+        "L",
+        "M"
+      ],
+      "F": [
+        "E",
+        "G",
+        "M",
+        "N"
+      ],
+      "G": [
+        "F",
+        "N",
+        "O"
+      ],
+      "H": [
+        "A"
+      ],
+      "I": [
+        "A",
+        "B",
+        "J"
+      ],
+      "J": [
+        "B",
+        "C",
+        "I",
+        "K"
+      ],
+      "K": [
+        "C",
+        "J",
+        "L",
+        "X"
+      ],
+      "L": [
+        "D",
+        "E",
+        "K",
+        "X"
+      ],
+      "M": [
+        "E",
+        "F",
+        "N"
+      ],
+      "N": [
+        "F",
+        "G",
+        "M"
+      ],
+      "O": [
+        "G"
+      ]
+    },
+    "connections": 26,
+    "centre_neighbors": [
+      "C",
+      "D",
+      "K",
+      "L"
+    ],
+    "dead_ends": [
+      "H",
+      "O"
+    ],
+    "cut_districts": [
+      "A",
+      "E",
+      "G"
+    ],
+    "cut_routes": [
+      [
+        "G",
+        "O"
+      ],
+      [
+        "A",
+        "H"
+      ]
+    ],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G"
+        ],
+        [
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L"
+        ],
+        [
+          "M",
+          "N"
+        ],
+        [
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "slug": "railway-junction",
+    "title": "Railway junction",
+    "edges": [
+      {
+        "a": "B",
+        "b": "D",
+        "kind": "viaduct"
+      },
+      {
+        "a": "G",
+        "b": "M",
+        "kind": "viaduct"
+      },
+      {
+        "a": "N",
+        "b": "K",
+        "kind": "viaduct"
+      },
+      {
+        "a": "C",
+        "b": "H",
+        "kind": "viaduct"
+      },
+      {
+        "a": "A",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "K",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "C",
+        "X"
+      ],
+      "B": [
+        "A",
+        "D",
+        "X"
+      ],
+      "C": [
+        "A",
+        "H",
+        "X"
+      ],
+      "X": [
+        "A",
+        "B",
+        "C"
+      ],
+      "D": [
+        "B",
+        "E",
+        "F",
+        "G"
+      ],
+      "E": [
+        "D",
+        "G"
+      ],
+      "F": [
+        "D",
+        "G"
+      ],
+      "G": [
+        "D",
+        "E",
+        "F",
+        "M"
+      ],
+      "H": [
+        "C",
+        "I",
+        "J",
+        "K"
+      ],
+      "I": [
+        "H",
+        "K"
+      ],
+      "J": [
+        "H",
+        "K"
+      ],
+      "K": [
+        "H",
+        "I",
+        "J",
+        "N"
+      ],
+      "L": [
+        "M",
+        "N",
+        "O"
+      ],
+      "M": [
+        "G",
+        "L",
+        "O"
+      ],
+      "N": [
+        "K",
+        "L",
+        "O"
+      ],
+      "O": [
+        "L",
+        "M",
+        "N"
+      ]
+    },
+    "connections": 24,
+    "centre_neighbors": [
+      "A",
+      "B",
+      "C"
+    ],
+    "dead_ends": [],
+    "cut_districts": [],
+    "cut_routes": [],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G"
+        ],
+        [
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "slug": "ridge-city",
+    "title": "Ridge city",
+    "edges": [
+      {
+        "a": "X",
+        "b": "A",
+        "kind": "ridge road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "ridge road"
+      },
+      {
+        "a": "B",
+        "b": "C",
+        "kind": "ridge road"
+      },
+      {
+        "a": "X",
+        "b": "N",
+        "kind": "pass"
+      },
+      {
+        "a": "A",
+        "b": "L",
+        "kind": "pass"
+      },
+      {
+        "a": "C",
+        "b": "J",
+        "kind": "pass"
+      },
+      {
+        "a": "B",
+        "b": "E",
+        "kind": "pass"
+      },
+      {
+        "a": "C",
+        "b": "D",
+        "kind": "pass"
+      },
+      {
+        "a": "A",
+        "b": "G",
+        "kind": "pass"
+      },
+      {
+        "a": "K",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "K",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "G",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "G",
+        "L",
+        "X"
+      ],
+      "B": [
+        "A",
+        "C",
+        "E"
+      ],
+      "C": [
+        "B",
+        "D",
+        "J"
+      ],
+      "X": [
+        "A",
+        "N"
+      ],
+      "D": [
+        "C",
+        "E"
+      ],
+      "E": [
+        "B",
+        "D",
+        "F",
+        "G"
+      ],
+      "F": [
+        "E",
+        "G"
+      ],
+      "G": [
+        "A",
+        "E",
+        "F",
+        "H"
+      ],
+      "H": [
+        "G"
+      ],
+      "I": [
+        "J",
+        "K",
+        "L"
+      ],
+      "J": [
+        "C",
+        "I",
+        "L"
+      ],
+      "K": [
+        "I",
+        "L",
+        "M"
+      ],
+      "L": [
+        "A",
+        "I",
+        "J",
+        "K",
+        "M"
+      ],
+      "M": [
+        "K",
+        "L",
+        "N"
+      ],
+      "N": [
+        "M",
+        "O",
+        "X"
+      ],
+      "O": [
+        "N"
+      ]
+    },
+    "connections": 23,
+    "centre_neighbors": [
+      "A",
+      "N"
+    ],
+    "dead_ends": [
+      "H",
+      "O"
+    ],
+    "cut_districts": [
+      "G",
+      "N"
+    ],
+    "cut_routes": [
+      [
+        "N",
+        "O"
+      ],
+      [
+        "G",
+        "H"
+      ]
+    ],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G",
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 15,
+    "slug": "estuary-city",
+    "title": "Estuary city",
+    "edges": [
+      {
+        "a": "B",
+        "b": "D",
+        "kind": "bridge"
+      },
+      {
+        "a": "X",
+        "b": "F",
+        "kind": "bridge"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "F",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "C"
+      ],
+      "B": [
+        "D",
+        "X"
+      ],
+      "C": [
+        "A",
+        "H",
+        "I",
+        "X"
+      ],
+      "X": [
+        "B",
+        "C",
+        "F",
+        "I"
+      ],
+      "D": [
+        "B",
+        "E",
+        "F"
+      ],
+      "E": [
+        "D",
+        "F",
+        "G"
+      ],
+      "F": [
+        "D",
+        "E",
+        "G",
+        "L",
+        "X"
+      ],
+      "G": [
+        "E",
+        "F",
+        "L",
+        "M"
+      ],
+      "H": [
+        "C",
+        "I",
+        "J",
+        "K"
+      ],
+      "I": [
+        "C",
+        "H",
+        "K",
+        "X"
+      ],
+      "J": [
+        "H",
+        "K"
+      ],
+      "K": [
+        "H",
+        "I",
+        "J"
+      ],
+      "L": [
+        "F",
+        "G",
+        "M",
+        "N",
+        "O"
+      ],
+      "M": [
+        "G",
+        "L",
+        "O"
+      ],
+      "N": [
+        "L",
+        "O"
+      ],
+      "O": [
+        "L",
+        "M",
+        "N"
+      ]
+    },
+    "connections": 26,
+    "centre_neighbors": [
+      "B",
+      "C",
+      "F",
+      "I"
+    ],
+    "dead_ends": [
+      "A"
+    ],
+    "cut_districts": [
+      "C",
+      "X"
+    ],
+    "cut_routes": [
+      [
+        "A",
+        "C"
+      ]
+    ],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "C"
+        ],
+        [
+          "B"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G"
+        ],
+        [
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K"
+        ],
+        [
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 16,
+    "slug": "crater-city",
+    "title": "Crater city",
+    "edges": [
+      {
+        "a": "A",
+        "b": "H",
+        "kind": "pass"
+      },
+      {
+        "a": "C",
+        "b": "J",
+        "kind": "pass"
+      },
+      {
+        "a": "E",
+        "b": "L",
+        "kind": "pass"
+      },
+      {
+        "a": "G",
+        "b": "N",
+        "kind": "pass"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "D",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "D",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "A",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "K",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "N",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "X": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G"
+      ],
+      "A": [
+        "B",
+        "G",
+        "H",
+        "X"
+      ],
+      "B": [
+        "A",
+        "C",
+        "X"
+      ],
+      "C": [
+        "B",
+        "D",
+        "J",
+        "X"
+      ],
+      "D": [
+        "C",
+        "E",
+        "X"
+      ],
+      "E": [
+        "D",
+        "F",
+        "L",
+        "X"
+      ],
+      "F": [
+        "E",
+        "G",
+        "X"
+      ],
+      "G": [
+        "A",
+        "F",
+        "N",
+        "X"
+      ],
+      "H": [
+        "A",
+        "I",
+        "O"
+      ],
+      "I": [
+        "H",
+        "J"
+      ],
+      "J": [
+        "C",
+        "I",
+        "K"
+      ],
+      "K": [
+        "J",
+        "L"
+      ],
+      "L": [
+        "E",
+        "K",
+        "M"
+      ],
+      "M": [
+        "L",
+        "N"
+      ],
+      "N": [
+        "G",
+        "M",
+        "O"
+      ],
+      "O": [
+        "H",
+        "N"
+      ]
+    },
+    "connections": 26,
+    "centre_neighbors": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G"
+    ],
+    "dead_ends": [],
+    "cut_districts": [],
+    "cut_routes": [],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G"
+        ],
+        [
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 17,
+    "slug": "industrial-belt",
+    "title": "Industrial belt",
+    "edges": [
+      {
+        "a": "X",
+        "b": "F",
+        "kind": "service road"
+      },
+      {
+        "a": "K",
+        "b": "N",
+        "kind": "service road"
+      },
+      {
+        "a": "A",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "X",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "I",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "C",
+        "X"
+      ],
+      "B": [
+        "A",
+        "X"
+      ],
+      "C": [
+        "A",
+        "H",
+        "I",
+        "X"
+      ],
+      "X": [
+        "A",
+        "B",
+        "C",
+        "F",
+        "I"
+      ],
+      "D": [
+        "E",
+        "F"
+      ],
+      "E": [
+        "D",
+        "G"
+      ],
+      "F": [
+        "D",
+        "G",
+        "L",
+        "X"
+      ],
+      "G": [
+        "E",
+        "F",
+        "M"
+      ],
+      "H": [
+        "C",
+        "I",
+        "J"
+      ],
+      "I": [
+        "C",
+        "H",
+        "K",
+        "X"
+      ],
+      "J": [
+        "H",
+        "K"
+      ],
+      "K": [
+        "I",
+        "J",
+        "N"
+      ],
+      "L": [
+        "F",
+        "M",
+        "N"
+      ],
+      "M": [
+        "G",
+        "L",
+        "O"
+      ],
+      "N": [
+        "K",
+        "L",
+        "O"
+      ],
+      "O": [
+        "M",
+        "N"
+      ]
+    },
+    "connections": 24,
+    "centre_neighbors": [
+      "A",
+      "B",
+      "C",
+      "F",
+      "I"
+    ],
+    "dead_ends": [],
+    "cut_districts": [],
+    "cut_routes": [],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G"
+        ],
+        [
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "slug": "greenbelt-city",
+    "title": "Greenbelt city",
+    "edges": [
+      {
+        "a": "A",
+        "b": "J",
+        "kind": "gate"
+      },
+      {
+        "a": "B",
+        "b": "M",
+        "kind": "gate"
+      },
+      {
+        "a": "C",
+        "b": "O",
+        "kind": "gate"
+      },
+      {
+        "a": "X",
+        "b": "G",
+        "kind": "gate"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "I",
+        "kind": "road"
+      },
+      {
+        "a": "K",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "M",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "X",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "X",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "J",
+        "X"
+      ],
+      "B": [
+        "A",
+        "C",
+        "M",
+        "X"
+      ],
+      "C": [
+        "B",
+        "O",
+        "X"
+      ],
+      "X": [
+        "A",
+        "B",
+        "C",
+        "G"
+      ],
+      "D": [
+        "E",
+        "O"
+      ],
+      "E": [
+        "D",
+        "F"
+      ],
+      "F": [
+        "E",
+        "G"
+      ],
+      "G": [
+        "F",
+        "H",
+        "X"
+      ],
+      "H": [
+        "G",
+        "I"
+      ],
+      "I": [
+        "H",
+        "J"
+      ],
+      "J": [
+        "A",
+        "I",
+        "K"
+      ],
+      "K": [
+        "J",
+        "L"
+      ],
+      "L": [
+        "K",
+        "M"
+      ],
+      "M": [
+        "B",
+        "L",
+        "N"
+      ],
+      "N": [
+        "M",
+        "O"
+      ],
+      "O": [
+        "C",
+        "D",
+        "N"
+      ]
+    },
+    "connections": 21,
+    "centre_neighbors": [
+      "A",
+      "B",
+      "C",
+      "G"
+    ],
+    "dead_ends": [],
+    "cut_districts": [],
+    "cut_routes": [],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F",
+          "G",
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 19,
+    "slug": "floodplain-city",
+    "title": "Floodplain city",
+    "edges": [
+      {
+        "a": "A",
+        "b": "X",
+        "kind": "embankment"
+      },
+      {
+        "a": "C",
+        "b": "E",
+        "kind": "embankment"
+      },
+      {
+        "a": "K",
+        "b": "O",
+        "kind": "embankment"
+      },
+      {
+        "a": "B",
+        "b": "E",
+        "kind": "embankment"
+      },
+      {
+        "a": "F",
+        "b": "J",
+        "kind": "embankment"
+      },
+      {
+        "a": "D",
+        "b": "G",
+        "kind": "embankment"
+      },
+      {
+        "a": "F",
+        "b": "K",
+        "kind": "embankment"
+      },
+      {
+        "a": "H",
+        "b": "L",
+        "kind": "embankment"
+      },
+      {
+        "a": "K",
+        "b": "N",
+        "kind": "embankment"
+      },
+      {
+        "a": "E",
+        "b": "I",
+        "kind": "embankment"
+      },
+      {
+        "a": "C",
+        "b": "F",
+        "kind": "embankment"
+      },
+      {
+        "a": "F",
+        "b": "G",
+        "kind": "embankment"
+      },
+      {
+        "a": "X",
+        "b": "I",
+        "kind": "embankment"
+      },
+      {
+        "a": "X",
+        "b": "H",
+        "kind": "embankment"
+      },
+      {
+        "a": "I",
+        "b": "M",
+        "kind": "embankment"
+      },
+      {
+        "a": "J",
+        "b": "N",
+        "kind": "embankment"
+      },
+      {
+        "a": "G",
+        "b": "K",
+        "kind": "embankment"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "embankment"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "embankment"
+      },
+      {
+        "a": "B",
+        "b": "X",
+        "kind": "embankment"
+      },
+      {
+        "a": "J",
+        "b": "M",
+        "kind": "embankment"
+      },
+      {
+        "a": "B",
+        "b": "C",
+        "kind": "embankment"
+      },
+      {
+        "a": "H",
+        "b": "I",
+        "kind": "embankment"
+      },
+      {
+        "a": "I",
+        "b": "J",
+        "kind": "embankment"
+      },
+      {
+        "a": "E",
+        "b": "J",
+        "kind": "embankment"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "embankment"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "X"
+      ],
+      "B": [
+        "A",
+        "C",
+        "E",
+        "X"
+      ],
+      "C": [
+        "B",
+        "E",
+        "F"
+      ],
+      "X": [
+        "A",
+        "B",
+        "H",
+        "I"
+      ],
+      "D": [
+        "G"
+      ],
+      "E": [
+        "B",
+        "C",
+        "I",
+        "J"
+      ],
+      "F": [
+        "C",
+        "G",
+        "J",
+        "K"
+      ],
+      "G": [
+        "D",
+        "F",
+        "K"
+      ],
+      "H": [
+        "I",
+        "L",
+        "X"
+      ],
+      "I": [
+        "E",
+        "H",
+        "J",
+        "M",
+        "X"
+      ],
+      "J": [
+        "E",
+        "F",
+        "I",
+        "M",
+        "N"
+      ],
+      "K": [
+        "F",
+        "G",
+        "N",
+        "O"
+      ],
+      "L": [
+        "H",
+        "M"
+      ],
+      "M": [
+        "I",
+        "J",
+        "L"
+      ],
+      "N": [
+        "J",
+        "K",
+        "O"
+      ],
+      "O": [
+        "K",
+        "N"
+      ]
+    },
+    "connections": 26,
+    "centre_neighbors": [
+      "A",
+      "B",
+      "H",
+      "I"
+    ],
+    "dead_ends": [
+      "D"
+    ],
+    "cut_districts": [
+      "G"
+    ],
+    "cut_routes": [
+      [
+        "D",
+        "G"
+      ]
+    ],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "F",
+          "G"
+        ],
+        [
+          "E"
+        ],
+        [
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "M",
+          "N",
+          "O"
+        ]
+      ]
+    }
+  },
+  {
+    "id": 20,
+    "slug": "market-crossroads",
+    "title": "Market crossroads",
+    "edges": [
+      {
+        "a": "X",
+        "b": "A",
+        "kind": "market road"
+      },
+      {
+        "a": "A",
+        "b": "I",
+        "kind": "market road"
+      },
+      {
+        "a": "X",
+        "b": "B",
+        "kind": "market road"
+      },
+      {
+        "a": "B",
+        "b": "K",
+        "kind": "market road"
+      },
+      {
+        "a": "X",
+        "b": "C",
+        "kind": "market road"
+      },
+      {
+        "a": "C",
+        "b": "G",
+        "kind": "market road"
+      },
+      {
+        "a": "X",
+        "b": "D",
+        "kind": "market road"
+      },
+      {
+        "a": "B",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "H",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "E",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "F",
+        "b": "N",
+        "kind": "road"
+      },
+      {
+        "a": "K",
+        "b": "L",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "E",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "F",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "C",
+        "b": "H",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "M",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "B",
+        "kind": "road"
+      },
+      {
+        "a": "B",
+        "b": "C",
+        "kind": "road"
+      },
+      {
+        "a": "A",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "O",
+        "kind": "road"
+      },
+      {
+        "a": "I",
+        "b": "J",
+        "kind": "road"
+      },
+      {
+        "a": "G",
+        "b": "N",
+        "kind": "road"
+      }
+    ],
+    "neighbors": {
+      "A": [
+        "B",
+        "E",
+        "I",
+        "J",
+        "X"
+      ],
+      "B": [
+        "A",
+        "C",
+        "H",
+        "K",
+        "L",
+        "X"
+      ],
+      "C": [
+        "B",
+        "F",
+        "G",
+        "H",
+        "X"
+      ],
+      "X": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "D": [
+        "E",
+        "F",
+        "X"
+      ],
+      "E": [
+        "A",
+        "D",
+        "O"
+      ],
+      "F": [
+        "C",
+        "D",
+        "N"
+      ],
+      "G": [
+        "C",
+        "M",
+        "N"
+      ],
+      "H": [
+        "B",
+        "C",
+        "L",
+        "M"
+      ],
+      "I": [
+        "A",
+        "J",
+        "O"
+      ],
+      "J": [
+        "A",
+        "I",
+        "K"
+      ],
+      "K": [
+        "B",
+        "J",
+        "L"
+      ],
+      "L": [
+        "B",
+        "H",
+        "K"
+      ],
+      "M": [
+        "G",
+        "H"
+      ],
+      "N": [
+        "F",
+        "G"
+      ],
+      "O": [
+        "E",
+        "I"
+      ]
+    },
+    "connections": 27,
+    "centre_neighbors": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "dead_ends": [],
+    "cut_districts": [],
+    "cut_routes": [],
+    "region_components": {
+      "Urban": [
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "Mixed": [
+        [
+          "D",
+          "E",
+          "F"
+        ],
+        [
+          "G"
+        ],
+        [
+          "H"
+        ]
+      ],
+      "Outlying": [
+        [
+          "I",
+          "J",
+          "K",
+          "L",
+          "O"
+        ],
+        [
+          "M"
+        ],
+        [
+          "N"
+        ]
+      ]
+    }
+  }
+]

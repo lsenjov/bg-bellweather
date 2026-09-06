@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1020" role="img" aria-labelledby="title desc">
+<title id="title">1. River confluence — experimental Bellweather map</title>
+<desc id="desc">Three banks form separate campaign areas. Two crossings approach Bellweather; a downstream crossing links the outer banks without using the centre. Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellweather holds three separately.</desc>
+<style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:12px;font-weight:700}.detail{font-size:10px}.terrain{font-size:15px;font-style:italic;fill:#355564}</style>
+<rect width="1200" height="1020" fill="white"/>
+<text x="40" y="44" font-size="27" font-weight="700">1. River confluence</text>
+<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellweather 3 separate</text>
+<rect x="40" y="110" width="1120" height="790" rx="12" fill="#eff1e9"/>
+<polyline points="40.0,275.0 560.0,565.0" fill="none" stroke="#a9d9ec" stroke-width="42" stroke-linejoin="round"/>
+<polyline points="1160.0,230.0 560.0,565.0" fill="none" stroke="#a9d9ec" stroke-width="42" stroke-linejoin="round"/>
+<polyline points="560.0,565.0 560.0,900.0" fill="none" stroke="#a9d9ec" stroke-width="48" stroke-linejoin="round"/>
+<g data-route="X-E"><title>Bellweather–Canal Ward: bridge</title><path d="M 550,450 L 310,530" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 550,450 L 310,530" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g transform="translate(427.6 490.8) rotate(161.6)" aria-label="bridge"><rect x="-15" y="-8" width="30" height="16" fill="#fff5d8" stroke="#19354b" stroke-width="2"/><path d="M -15,-11 h30 M -15,11 h30" stroke="#19354b" stroke-width="2"/></g>
+<g data-route="X-I"><title>Bellweather–Westfield: bridge</title><path d="M 550,450 L 850,530" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 550,450 L 850,530" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g transform="translate(697.0 489.2) rotate(14.9)" aria-label="bridge"><rect x="-15" y="-8" width="30" height="16" fill="#fff5d8" stroke="#19354b" stroke-width="2"/><path d="M -15,-11 h30 M -15,11 h30" stroke="#19354b" stroke-width="2"/></g>
+<g data-route="H-N"><title>Meadow–Vale: bridge</title><path d="M 425,745 L 750,810" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 425,745 L 750,810" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g transform="translate(561.5 772.3) rotate(11.3)" aria-label="bridge"><rect x="-15" y="-8" width="30" height="16" fill="#fff5d8" stroke="#19354b" stroke-width="2"/><path d="M -15,-11 h30 M -15,11 h30" stroke="#19354b" stroke-width="2"/></g>
+<g data-route="C-X"><title>Ironwood–Bellweather: road</title><path d="M 550,325 L 550,450" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 550,325 L 550,450" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="L-M"><title>Heath–Downs: road</title><path d="M 950,650 L 1090,620" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 950,650 L 1090,620" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="I-K"><title>Westfield–Marsh: road</title><path d="M 850,530 L 750,640" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 850,530 L 750,640" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="E-G"><title>Canal Ward–Orchard: road</title><path d="M 310,530 L 280,680" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 310,530 L 280,680" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="I-L"><title>Westfield–Heath: road</title><path d="M 850,530 L 950,650" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 850,530 L 950,650" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="L-O"><title>Heath–Coast: road</title><path d="M 950,650 L 1000,800" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 950,650 L 1000,800" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="G-H"><title>Orchard–Meadow: road</title><path d="M 280,680 L 425,745" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 280,680 L 425,745" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="A-C"><title>Harbormouth–Ironwood: road</title><path d="M 460,190 L 550,325" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 460,190 L 550,325" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="B-C"><title>Grand Market–Ironwood: road</title><path d="M 650,190 L 550,325" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 650,190 L 550,325" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="F-G"><title>Crown Road–Orchard: road</title><path d="M 120,610 L 280,680" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 120,610 L 280,680" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="D-F"><title>Northgate–Crown Road: road</title><path d="M 150,425 L 120,610" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 150,425 L 120,610" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="J-M"><title>Eastfield–Downs: road</title><path d="M 1040,420 L 1090,620" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 1040,420 L 1090,620" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="K-N"><title>Marsh–Vale: road</title><path d="M 750,640 L 750,810" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 750,640 L 750,810" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="A-B"><title>Harbormouth–Grand Market: road</title><path d="M 460,190 L 650,190" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 460,190 L 650,190" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="D-E"><title>Northgate–Canal Ward: road</title><path d="M 150,425 L 310,530" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 150,425 L 310,530" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="K-L"><title>Marsh–Heath: road</title><path d="M 750,640 L 950,650" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 750,640 L 950,650" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="M-O"><title>Downs–Coast: road</title><path d="M 1090,620 L 1000,800" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 1090,620 L 1000,800" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="E-F"><title>Canal Ward–Crown Road: road</title><path d="M 310,530 L 120,610" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 310,530 L 120,610" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="I-J"><title>Westfield–Eastfield: road</title><path d="M 850,530 L 1040,420" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 850,530 L 1040,420" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="E-H"><title>Canal Ward–Meadow: road</title><path d="M 310,530 L 425,745" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 310,530 L 425,745" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="J-L"><title>Eastfield–Heath: road</title><path d="M 1040,420 L 950,650" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 1040,420 L 950,650" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="N-O"><title>Vale–Coast: road</title><path d="M 750,810 L 1000,800" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 750,810 L 1000,800" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-district="A"><polygon points="411.9,148.0 497.7,148.0 518.0,171.1 514.5,220.2 480.3,232.0 419.4,229.5 402.0,204.7 402.0,169.0" fill="#d5e7f5" stroke="#19354b" stroke-width="2"/><text class="name" x="460" y="172" text-anchor="middle">Harbormouth</text><text class="detail" x="460" y="187" text-anchor="middle">Urban · 3 votes</text>
+<circle cx="447.0" cy="201" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="460.0" cy="201" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="473.0" cy="201" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="447.0" cy="214" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="460.0" cy="214" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="473.0" cy="214" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="B"><polygon points="601.9,148.0 687.7,148.0 708.0,171.1 704.5,220.2 670.3,232.0 609.4,229.5 592.0,204.7 592.0,169.0" fill="#d5e7f5" stroke="#19354b" stroke-width="2"/><text class="name" x="650" y="172" text-anchor="middle">Grand Market</text><text class="detail" x="650" y="187" text-anchor="middle">Urban · 3 votes</text>
+<circle cx="637.0" cy="201" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="650.0" cy="201" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="663.0" cy="201" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="637.0" cy="214" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="650.0" cy="214" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="663.0" cy="214" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="C"><polygon points="501.9,283.0 587.7,283.0 608.0,306.1 604.5,355.2 570.3,367.0 509.4,364.5 492.0,339.7 492.0,304.0" fill="#d5e7f5" stroke="#19354b" stroke-width="2"/><text class="name" x="550" y="307" text-anchor="middle">Ironwood</text><text class="detail" x="550" y="322" text-anchor="middle">Urban · 3 votes</text>
+<circle cx="537.0" cy="336" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="550.0" cy="336" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="563.0" cy="336" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="537.0" cy="349" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="550.0" cy="349" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="563.0" cy="349" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="X"><polygon points="496.9,407.0 591.6,407.0 614.0,430.6 610.2,481.0 572.4,493.0 505.2,490.4 486.0,465.1 486.0,428.5" fill="#e4dfea" stroke="#19354b" stroke-width="2"/><text class="name" x="550" y="432" text-anchor="middle">Bellweather</text><text class="detail" x="550" y="447" text-anchor="middle">Centre · separate</text>
+<circle cx="537.0" cy="461" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="550.0" cy="461" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="563.0" cy="461" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="D"><polygon points="101.9,383.0 187.7,383.0 208.0,406.1 204.5,455.2 170.3,467.0 109.4,464.5 92.0,439.7 92.0,404.0" fill="#dbeaca" stroke="#19354b" stroke-width="2"/><text class="name" x="150" y="407" text-anchor="middle">Northgate</text><text class="detail" x="150" y="422" text-anchor="middle">Mixed · 3 votes</text>
+<circle cx="137.0" cy="436" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="150.0" cy="436" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="163.0" cy="436" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="137.0" cy="449" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="150.0" cy="449" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="163.0" cy="449" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="E"><polygon points="258.5,486.0 350.3,486.0 372.0,510.2 368.3,561.7 331.7,574.0 266.6,571.4 248.0,545.4 248.0,508.0" fill="#dbeaca" stroke="#19354b" stroke-width="2"/><text class="name" x="310" y="512" text-anchor="middle">Canal Ward</text><text class="detail" x="310" y="527" text-anchor="middle">Mixed · 2 votes</text>
+<circle cx="303.5" cy="541" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="316.5" cy="541" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="303.5" cy="554" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="316.5" cy="554" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="F"><polygon points="68.5,566.0 160.3,566.0 182.0,590.2 178.3,641.7 141.7,654.0 76.6,651.4 58.0,625.4 58.0,588.0" fill="#dbeaca" stroke="#19354b" stroke-width="2"/><text class="name" x="120" y="592" text-anchor="middle">Crown Road</text><text class="detail" x="120" y="607" text-anchor="middle">Mixed · 2 votes</text>
+<circle cx="113.5" cy="621" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="126.5" cy="621" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="113.5" cy="634" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="126.5" cy="634" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="G"><polygon points="223.6,634.0 324.2,634.0 348.0,659.3 343.9,713.1 303.8,726.0 232.4,723.2 212.0,696.1 212.0,657.0" fill="#dbeaca" stroke="#19354b" stroke-width="2"/><text class="name" x="280" y="662" text-anchor="middle">Orchard</text><text class="detail" x="280" y="677" text-anchor="middle">Mixed · 1 vote</text>
+<circle cx="273.5" cy="691" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="286.5" cy="691" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="H"><polygon points="368.6,699.0 469.2,699.0 493.0,724.3 488.9,778.1 448.8,791.0 377.4,788.2 357.0,761.1 357.0,722.0" fill="#dbeaca" stroke="#19354b" stroke-width="2"/><text class="name" x="425" y="727" text-anchor="middle">Meadow</text><text class="detail" x="425" y="742" text-anchor="middle">Mixed · 1 vote</text>
+<circle cx="418.5" cy="756" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="431.5" cy="756" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="I"><polygon points="798.5,486.0 890.3,486.0 912.0,510.2 908.3,561.7 871.7,574.0 806.6,571.4 788.0,545.4 788.0,508.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2"/><text class="name" x="850" y="512" text-anchor="middle">Westfield</text><text class="detail" x="850" y="527" text-anchor="middle">Outlying · 2 votes</text>
+<circle cx="843.5" cy="541" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="856.5" cy="541" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="843.5" cy="554" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="856.5" cy="554" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="J"><polygon points="988.5,376.0 1080.3,376.0 1102.0,400.2 1098.3,451.7 1061.7,464.0 996.6,461.4 978.0,435.4 978.0,398.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2"/><text class="name" x="1040" y="402" text-anchor="middle">Eastfield</text><text class="detail" x="1040" y="417" text-anchor="middle">Outlying · 2 votes</text>
+<circle cx="1033.5" cy="431" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="1046.5" cy="431" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="1033.5" cy="444" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="1046.5" cy="444" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="K"><polygon points="693.6,594.0 794.2,594.0 818.0,619.3 813.9,673.1 773.8,686.0 702.4,683.2 682.0,656.1 682.0,617.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2"/><text class="name" x="750" y="622" text-anchor="middle">Marsh</text><text class="detail" x="750" y="637" text-anchor="middle">Outlying · 1 vote</text>
+<circle cx="743.5" cy="651" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="756.5" cy="651" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="L"><polygon points="893.6,604.0 994.2,604.0 1018.0,629.3 1013.9,683.1 973.8,696.0 902.4,693.2 882.0,666.1 882.0,627.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2"/><text class="name" x="950" y="632" text-anchor="middle">Heath</text><text class="detail" x="950" y="647" text-anchor="middle">Outlying · 1 vote</text>
+<circle cx="943.5" cy="661" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="956.5" cy="661" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="M"><polygon points="1033.6,574.0 1134.2,574.0 1158.0,599.3 1153.9,653.1 1113.8,666.0 1042.4,663.2 1022.0,636.1 1022.0,597.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2"/><text class="name" x="1090" y="602" text-anchor="middle">Downs</text><text class="detail" x="1090" y="617" text-anchor="middle">Outlying · 1 vote</text>
+<circle cx="1083.5" cy="631" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="1096.5" cy="631" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="N"><polygon points="693.6,764.0 794.2,764.0 818.0,789.3 813.9,843.1 773.8,856.0 702.4,853.2 682.0,826.1 682.0,787.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2"/><text class="name" x="750" y="792" text-anchor="middle">Vale</text><text class="detail" x="750" y="807" text-anchor="middle">Outlying · 1 vote</text>
+<circle cx="743.5" cy="821" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="756.5" cy="821" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<g data-district="O"><polygon points="943.6,754.0 1044.2,754.0 1068.0,779.3 1063.9,833.1 1023.8,846.0 952.4,843.2 932.0,816.1 932.0,777.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2"/><text class="name" x="1000" y="782" text-anchor="middle">Coast</text><text class="detail" x="1000" y="797" text-anchor="middle">Outlying · 1 vote</text>
+<circle cx="993.5" cy="811" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+<circle cx="1006.5" cy="811" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
+</g>
+<text x="40" y="934" font-size="14">Only printed routes create adjacency. Every route joins its two endpoint districts for all effects.</text>
+<text x="40" y="959" font-size="13">Nearby footprints are not adjacent. Double-railed spans mark bridges, gates, passes, or viaducts.</text>
+<text x="40" y="984" font-size="13">Experimental concept · 25 connections · No dead ends · District elections remain local</text>
+</svg>

@@ -1,0 +1,2439 @@
+{
+  "districts": {
+    "A": {
+      "name": "Harbormouth",
+      "capacity": 6,
+      "region": "Urban"
+    },
+    "B": {
+      "name": "Grand Market",
+      "capacity": 6,
+      "region": "Urban"
+    },
+    "C": {
+      "name": "Ironwood",
+      "capacity": 6,
+      "region": "Urban"
+    },
+    "X": {
+      "name": "Bellweather",
+      "capacity": 3,
+      "region": "Centre"
+    },
+    "D": {
+      "name": "Northgate",
+      "capacity": 6,
+      "region": "Mixed"
+    },
+    "E": {
+      "name": "Canal Ward",
+      "capacity": 4,
+      "region": "Mixed"
+    },
+    "F": {
+      "name": "Crown Road",
+      "capacity": 4,
+      "region": "Mixed"
+    },
+    "G": {
+      "name": "Orchard",
+      "capacity": 2,
+      "region": "Mixed"
+    },
+    "H": {
+      "name": "Meadow",
+      "capacity": 2,
+      "region": "Mixed"
+    },
+    "I": {
+      "name": "Westfield",
+      "capacity": 4,
+      "region": "Outlying"
+    },
+    "J": {
+      "name": "Eastfield",
+      "capacity": 4,
+      "region": "Outlying"
+    },
+    "K": {
+      "name": "Marsh",
+      "capacity": 2,
+      "region": "Outlying"
+    },
+    "L": {
+      "name": "Heath",
+      "capacity": 2,
+      "region": "Outlying"
+    },
+    "M": {
+      "name": "Downs",
+      "capacity": 2,
+      "region": "Outlying"
+    },
+    "N": {
+      "name": "Vale",
+      "capacity": 2,
+      "region": "Outlying"
+    },
+    "O": {
+      "name": "Coast",
+      "capacity": 2,
+      "region": "Outlying"
+    }
+  },
+  "studies": [
+    {
+      "id": 1,
+      "slug": "river-confluence",
+      "title": "River confluence",
+      "nodes": {
+        "A": {
+          "x": 460,
+          "y": 190,
+          "zone": "north"
+        },
+        "B": {
+          "x": 650,
+          "y": 190,
+          "zone": "north"
+        },
+        "C": {
+          "x": 550,
+          "y": 325,
+          "zone": "north"
+        },
+        "X": {
+          "x": 550,
+          "y": 450,
+          "zone": "north"
+        },
+        "D": {
+          "x": 150,
+          "y": 425,
+          "zone": "west"
+        },
+        "E": {
+          "x": 310,
+          "y": 530,
+          "zone": "west"
+        },
+        "F": {
+          "x": 120,
+          "y": 610,
+          "zone": "west"
+        },
+        "G": {
+          "x": 280,
+          "y": 680,
+          "zone": "west"
+        },
+        "H": {
+          "x": 425,
+          "y": 745,
+          "zone": "west"
+        },
+        "I": {
+          "x": 850,
+          "y": 530,
+          "zone": "east"
+        },
+        "J": {
+          "x": 1040,
+          "y": 420,
+          "zone": "east"
+        },
+        "K": {
+          "x": 750,
+          "y": 640,
+          "zone": "east"
+        },
+        "L": {
+          "x": 950,
+          "y": 650,
+          "zone": "east"
+        },
+        "M": {
+          "x": 1090,
+          "y": 620,
+          "zone": "east"
+        },
+        "N": {
+          "x": 750,
+          "y": 810,
+          "zone": "east"
+        },
+        "O": {
+          "x": 1000,
+          "y": 800,
+          "zone": "east"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "band",
+          "points": [
+            [
+              40,
+              275
+            ],
+            [
+              560,
+              565
+            ]
+          ],
+          "width": 42,
+          "material": "water"
+        },
+        {
+          "kind": "band",
+          "points": [
+            [
+              1160,
+              230
+            ],
+            [
+              560,
+              565
+            ]
+          ],
+          "width": 42,
+          "material": "water"
+        },
+        {
+          "kind": "band",
+          "points": [
+            [
+              560,
+              565
+            ],
+            [
+              560,
+              900
+            ]
+          ],
+          "width": 48,
+          "material": "water"
+        }
+      ],
+      "required": [
+        {
+          "a": "X",
+          "b": "E",
+          "kind": "bridge"
+        },
+        {
+          "a": "X",
+          "b": "I",
+          "kind": "bridge"
+        },
+        {
+          "a": "H",
+          "b": "N",
+          "kind": "bridge"
+        }
+      ],
+      "purpose": "Three banks form separate campaign areas. Two crossings approach Bellweather; a downstream crossing links the outer banks without using the centre.",
+      "departures": "Bellweather can directly connect to mixed and outlying districts. Regions occupy separate banks, and bridges restore specific district connections.",
+      "watch": "The downstream crossing could matter more than either central crossing if players can satisfy regional objectives without approaching Bellweather.",
+      "target_edges": 25
+    },
+    {
+      "id": 2,
+      "slug": "lake-city",
+      "title": "Lake city",
+      "nodes": {
+        "X": {
+          "x": 125.0,
+          "y": 490.0,
+          "zone": "land"
+        },
+        "A": {
+          "x": 161.2,
+          "y": 365.6,
+          "zone": "land"
+        },
+        "B": {
+          "x": 264.1,
+          "y": 260.2,
+          "zone": "land"
+        },
+        "C": {
+          "x": 418.2,
+          "y": 189.7,
+          "zone": "land"
+        },
+        "E": {
+          "x": 600.0,
+          "y": 165.0,
+          "zone": "land"
+        },
+        "F": {
+          "x": 781.8,
+          "y": 189.7,
+          "zone": "land"
+        },
+        "G": {
+          "x": 935.9,
+          "y": 260.2,
+          "zone": "land"
+        },
+        "D": {
+          "x": 1038.8,
+          "y": 365.6,
+          "zone": "land"
+        },
+        "H": {
+          "x": 1075.0,
+          "y": 490.0,
+          "zone": "land"
+        },
+        "I": {
+          "x": 1038.8,
+          "y": 614.4,
+          "zone": "land"
+        },
+        "J": {
+          "x": 935.9,
+          "y": 719.8,
+          "zone": "land"
+        },
+        "K": {
+          "x": 781.8,
+          "y": 790.3,
+          "zone": "land"
+        },
+        "L": {
+          "x": 600.0,
+          "y": 815.0,
+          "zone": "land"
+        },
+        "M": {
+          "x": 418.2,
+          "y": 790.3,
+          "zone": "land"
+        },
+        "N": {
+          "x": 264.1,
+          "y": 719.8,
+          "zone": "land"
+        },
+        "O": {
+          "x": 161.2,
+          "y": 614.4,
+          "zone": "land"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "ellipse",
+          "cx": 600,
+          "cy": 490,
+          "rx": 300,
+          "ry": 205,
+          "material": "water",
+          "label": "Bellweather Lake"
+        }
+      ],
+      "required": [],
+      "purpose": "A continuous shoreline offers clockwise and anticlockwise approaches to the same targets, while the lake removes direct shortcuts across the middle.",
+      "departures": "Bellweather sits on a shore rather than at the geographic centre. Regional boundaries follow stretches of shoreline rather than concentric bands.",
+      "watch": "The two directions may feel equivalent unless starting Support creates different costs along them.",
+      "target_edges": 24
+    },
+    {
+      "id": 3,
+      "slug": "mountain-pass",
+      "title": "Mountain pass",
+      "nodes": {
+        "A": {
+          "x": 575,
+          "y": 250,
+          "zone": "pass"
+        },
+        "B": {
+          "x": 300,
+          "y": 250,
+          "zone": "west"
+        },
+        "C": {
+          "x": 140,
+          "y": 200,
+          "zone": "west"
+        },
+        "X": {
+          "x": 575,
+          "y": 440,
+          "zone": "pass"
+        },
+        "D": {
+          "x": 835,
+          "y": 250,
+          "zone": "east"
+        },
+        "E": {
+          "x": 300,
+          "y": 440,
+          "zone": "west"
+        },
+        "F": {
+          "x": 835,
+          "y": 440,
+          "zone": "east"
+        },
+        "G": {
+          "x": 140,
+          "y": 420,
+          "zone": "west"
+        },
+        "H": {
+          "x": 140,
+          "y": 650,
+          "zone": "west"
+        },
+        "I": {
+          "x": 300,
+          "y": 650,
+          "zone": "west"
+        },
+        "J": {
+          "x": 420,
+          "y": 780,
+          "zone": "west"
+        },
+        "K": {
+          "x": 1030,
+          "y": 200,
+          "zone": "east"
+        },
+        "L": {
+          "x": 1040,
+          "y": 420,
+          "zone": "east"
+        },
+        "M": {
+          "x": 1030,
+          "y": 650,
+          "zone": "east"
+        },
+        "N": {
+          "x": 835,
+          "y": 650,
+          "zone": "east"
+        },
+        "O": {
+          "x": 750,
+          "y": 790,
+          "zone": "east"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              480,
+              110
+            ],
+            [
+              650,
+              110
+            ],
+            [
+              700,
+              170
+            ],
+            [
+              630,
+              185
+            ],
+            [
+              500,
+              185
+            ],
+            [
+              455,
+              150
+            ]
+          ],
+          "material": "mountain"
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              490,
+              320
+            ],
+            [
+              655,
+              310
+            ],
+            [
+              700,
+              375
+            ],
+            [
+              475,
+              375
+            ]
+          ],
+          "material": "mountain"
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              470,
+              515
+            ],
+            [
+              675,
+              510
+            ],
+            [
+              690,
+              700
+            ],
+            [
+              640,
+              715
+            ],
+            [
+              520,
+              700
+            ],
+            [
+              450,
+              630
+            ]
+          ],
+          "material": "mountain"
+        }
+      ],
+      "required": [
+        {
+          "a": "B",
+          "b": "A",
+          "kind": "pass"
+        },
+        {
+          "a": "A",
+          "b": "D",
+          "kind": "pass"
+        },
+        {
+          "a": "E",
+          "b": "X",
+          "kind": "pass"
+        },
+        {
+          "a": "X",
+          "b": "F",
+          "kind": "pass"
+        },
+        {
+          "a": "J",
+          "b": "O",
+          "kind": "pass"
+        }
+      ],
+      "purpose": "Two inhabited passes connect the valleys; a longer southern foothill route provides a third approach around the mountains.",
+      "departures": "Dense districts are split across the valleys and passes. Regions need not be geographically contiguous, and Bellweather itself occupies a pass.",
+      "watch": "Passing through Bellweather may become incidental to valley-to-valley travel rather than an elective investment in Capital scoring.",
+      "target_edges": 24
+    },
+    {
+      "id": 4,
+      "slug": "river-delta",
+      "title": "River delta",
+      "nodes": {
+        "A": {
+          "x": 175,
+          "y": 190,
+          "zone": "upper west"
+        },
+        "B": {
+          "x": 390,
+          "y": 190,
+          "zone": "upper west"
+        },
+        "C": {
+          "x": 175,
+          "y": 355,
+          "zone": "upper west"
+        },
+        "X": {
+          "x": 390,
+          "y": 355,
+          "zone": "upper west"
+        },
+        "D": {
+          "x": 730,
+          "y": 190,
+          "zone": "upper east"
+        },
+        "E": {
+          "x": 970,
+          "y": 215,
+          "zone": "upper east"
+        },
+        "F": {
+          "x": 735,
+          "y": 365,
+          "zone": "upper east"
+        },
+        "G": {
+          "x": 980,
+          "y": 390,
+          "zone": "upper east"
+        },
+        "H": {
+          "x": 175,
+          "y": 565,
+          "zone": "lower west"
+        },
+        "I": {
+          "x": 385,
+          "y": 565,
+          "zone": "lower west"
+        },
+        "J": {
+          "x": 175,
+          "y": 770,
+          "zone": "lower west"
+        },
+        "K": {
+          "x": 385,
+          "y": 770,
+          "zone": "lower west"
+        },
+        "L": {
+          "x": 745,
+          "y": 580,
+          "zone": "lower east"
+        },
+        "M": {
+          "x": 975,
+          "y": 590,
+          "zone": "lower east"
+        },
+        "N": {
+          "x": 750,
+          "y": 780,
+          "zone": "lower east"
+        },
+        "O": {
+          "x": 985,
+          "y": 780,
+          "zone": "lower east"
+        }
+      },
+      "terrain": [],
+      "required": [
+        {
+          "a": "B",
+          "b": "D",
+          "kind": "bridge"
+        },
+        {
+          "a": "G",
+          "b": "M",
+          "kind": "bridge"
+        },
+        {
+          "a": "N",
+          "b": "K",
+          "kind": "bridge"
+        },
+        {
+          "a": "C",
+          "b": "H",
+          "kind": "bridge"
+        }
+      ],
+      "purpose": "Four inhabited delta islands form a circuit. A party can approach an island from either neighboring island, but cannot jump between diagonal islands.",
+      "departures": "Districts form island groups independent of scoring regions. Bridges, rather than shared land borders, connect the groups.",
+      "watch": "If each island can be developed in isolation, the circuit may be safe expansion rather than a reason to interfere.",
+      "target_edges": 24,
+      "background": "water",
+      "islands": true
+    },
+    {
+      "id": 5,
+      "slug": "walled-city",
+      "title": "Walled city",
+      "nodes": {
+        "A": {
+          "x": 430,
+          "y": 420,
+          "zone": "inside"
+        },
+        "B": {
+          "x": 570,
+          "y": 280,
+          "zone": "inside"
+        },
+        "C": {
+          "x": 715,
+          "y": 415,
+          "zone": "inside"
+        },
+        "X": {
+          "x": 570,
+          "y": 510,
+          "zone": "inside"
+        },
+        "D": {
+          "x": 170,
+          "y": 200,
+          "zone": "outside"
+        },
+        "E": {
+          "x": 200,
+          "y": 395,
+          "zone": "outside"
+        },
+        "F": {
+          "x": 180,
+          "y": 620,
+          "zone": "outside"
+        },
+        "G": {
+          "x": 380,
+          "y": 765,
+          "zone": "outside"
+        },
+        "H": {
+          "x": 610,
+          "y": 805,
+          "zone": "outside"
+        },
+        "I": {
+          "x": 935,
+          "y": 225,
+          "zone": "outside"
+        },
+        "J": {
+          "x": 1060,
+          "y": 330,
+          "zone": "outside"
+        },
+        "K": {
+          "x": 995,
+          "y": 520,
+          "zone": "outside"
+        },
+        "L": {
+          "x": 960,
+          "y": 730,
+          "zone": "outside"
+        },
+        "M": {
+          "x": 795,
+          "y": 805,
+          "zone": "outside"
+        },
+        "N": {
+          "x": 760,
+          "y": 160,
+          "zone": "outside"
+        },
+        "O": {
+          "x": 350,
+          "y": 165,
+          "zone": "outside"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "ring",
+          "cx": 570,
+          "cy": 430,
+          "rx": 265,
+          "ry": 235,
+          "width": 14,
+          "material": "wall",
+          "label": "Old city wall"
+        }
+      ],
+      "required": [
+        {
+          "a": "A",
+          "b": "E",
+          "kind": "gate"
+        },
+        {
+          "a": "B",
+          "b": "O",
+          "kind": "gate"
+        },
+        {
+          "a": "C",
+          "b": "K",
+          "kind": "gate"
+        },
+        {
+          "a": "X",
+          "b": "H",
+          "kind": "gate"
+        }
+      ],
+      "purpose": "Four gates connect a compact old city to an outer circuit. Different gates give access to different inner districts.",
+      "departures": "The urban region and Bellweather lie inside a wall. Gate connections replace ordinary proximity across that wall.",
+      "watch": "Four gates may make the wall easy to bypass; compare which gates actually attract Support rather than assuming all are valuable.",
+      "target_edges": 24
+    },
+    {
+      "id": 6,
+      "slug": "twin-cities",
+      "title": "Twin cities",
+      "nodes": {
+        "A": {
+          "x": 180,
+          "y": 185,
+          "zone": "west"
+        },
+        "B": {
+          "x": 420,
+          "y": 185,
+          "zone": "west"
+        },
+        "C": {
+          "x": 180,
+          "y": 390,
+          "zone": "west"
+        },
+        "X": {
+          "x": 420,
+          "y": 390,
+          "zone": "west"
+        },
+        "D": {
+          "x": 790,
+          "y": 185,
+          "zone": "east"
+        },
+        "E": {
+          "x": 1030,
+          "y": 185,
+          "zone": "east"
+        },
+        "F": {
+          "x": 790,
+          "y": 390,
+          "zone": "east"
+        },
+        "G": {
+          "x": 1030,
+          "y": 390,
+          "zone": "east"
+        },
+        "H": {
+          "x": 180,
+          "y": 590,
+          "zone": "west"
+        },
+        "I": {
+          "x": 420,
+          "y": 590,
+          "zone": "west"
+        },
+        "J": {
+          "x": 180,
+          "y": 790,
+          "zone": "west"
+        },
+        "K": {
+          "x": 420,
+          "y": 790,
+          "zone": "west"
+        },
+        "L": {
+          "x": 790,
+          "y": 590,
+          "zone": "east"
+        },
+        "M": {
+          "x": 1030,
+          "y": 590,
+          "zone": "east"
+        },
+        "N": {
+          "x": 790,
+          "y": 790,
+          "zone": "east"
+        },
+        "O": {
+          "x": 1030,
+          "y": 790,
+          "zone": "east"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "band",
+          "points": [
+            [
+              600,
+              110
+            ],
+            [
+              600,
+              900
+            ]
+          ],
+          "width": 66,
+          "material": "water"
+        }
+      ],
+      "required": [
+        {
+          "a": "B",
+          "b": "D",
+          "kind": "bridge"
+        },
+        {
+          "a": "I",
+          "b": "L",
+          "kind": "bridge"
+        },
+        {
+          "a": "K",
+          "b": "N",
+          "kind": "bridge"
+        }
+      ],
+      "purpose": "Two substantial banks support separate concentrations of activity. Three crossings connect different pairs of neighborhoods.",
+      "departures": "Dense cities occupy both banks: the three urban-region cities remain together on the west bank, while mixed-region Northgate lies on the east. Other scoring regions extend across both banks.",
+      "watch": "Cross-bank scoring could make a coalition or remote-placement bonus more efficient than repeatedly using bridges.",
+      "target_edges": 24
+    },
+    {
+      "id": 7,
+      "slug": "peninsula-capital",
+      "title": "Peninsula capital",
+      "nodes": {
+        "D": {
+          "x": 115,
+          "y": 185,
+          "zone": "land"
+        },
+        "E": {
+          "x": 280,
+          "y": 185,
+          "zone": "land"
+        },
+        "F": {
+          "x": 460,
+          "y": 185,
+          "zone": "land"
+        },
+        "G": {
+          "x": 640,
+          "y": 185,
+          "zone": "land"
+        },
+        "H": {
+          "x": 820,
+          "y": 185,
+          "zone": "land"
+        },
+        "I": {
+          "x": 1000,
+          "y": 185,
+          "zone": "land"
+        },
+        "J": {
+          "x": 115,
+          "y": 365,
+          "zone": "land"
+        },
+        "K": {
+          "x": 280,
+          "y": 365,
+          "zone": "land"
+        },
+        "L": {
+          "x": 460,
+          "y": 365,
+          "zone": "land"
+        },
+        "M": {
+          "x": 640,
+          "y": 365,
+          "zone": "land"
+        },
+        "N": {
+          "x": 820,
+          "y": 365,
+          "zone": "land"
+        },
+        "O": {
+          "x": 1000,
+          "y": 365,
+          "zone": "land"
+        },
+        "A": {
+          "x": 500,
+          "y": 555,
+          "zone": "land"
+        },
+        "B": {
+          "x": 700,
+          "y": 555,
+          "zone": "land"
+        },
+        "C": {
+          "x": 500,
+          "y": 760,
+          "zone": "land"
+        },
+        "X": {
+          "x": 700,
+          "y": 760,
+          "zone": "land"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "land",
+          "points": [
+            [
+              40,
+              110
+            ],
+            [
+              1160,
+              110
+            ],
+            [
+              1160,
+              440
+            ],
+            [
+              840,
+              440
+            ],
+            [
+              800,
+              525
+            ],
+            [
+              800,
+              875
+            ],
+            [
+              405,
+              875
+            ],
+            [
+              405,
+              520
+            ],
+            [
+              330,
+              440
+            ],
+            [
+              40,
+              440
+            ]
+          ]
+        }
+      ],
+      "required": [],
+      "purpose": "The urban port occupies a peninsula behind two approaches from the mainland. Bellweather sits near its tip, while the broader scoring landscape remains inland.",
+      "departures": "The city follows an elongated peninsula rather than a fan. Open water surrounds the peninsula, and access to its tip follows land routes.",
+      "watch": "If Capital scoring remains small compared with regional scoring, travelling down the peninsula may rarely be worth the actions.",
+      "target_edges": 24,
+      "background": "water"
+    },
+    {
+      "id": 8,
+      "slug": "island-chain",
+      "title": "Island chain",
+      "nodes": {
+        "A": {
+          "x": 120,
+          "y": 190,
+          "zone": "one"
+        },
+        "B": {
+          "x": 305,
+          "y": 190,
+          "zone": "one"
+        },
+        "C": {
+          "x": 515,
+          "y": 155,
+          "zone": "two"
+        },
+        "X": {
+          "x": 205,
+          "y": 335,
+          "zone": "one"
+        },
+        "D": {
+          "x": 715,
+          "y": 155,
+          "zone": "two"
+        },
+        "E": {
+          "x": 615,
+          "y": 310,
+          "zone": "two"
+        },
+        "F": {
+          "x": 940,
+          "y": 325,
+          "zone": "three"
+        },
+        "G": {
+          "x": 1070,
+          "y": 475,
+          "zone": "three"
+        },
+        "H": {
+          "x": 890,
+          "y": 550,
+          "zone": "three"
+        },
+        "I": {
+          "x": 535,
+          "y": 675,
+          "zone": "four"
+        },
+        "J": {
+          "x": 755,
+          "y": 670,
+          "zone": "four"
+        },
+        "K": {
+          "x": 655,
+          "y": 830,
+          "zone": "four"
+        },
+        "L": {
+          "x": 120,
+          "y": 605,
+          "zone": "five"
+        },
+        "M": {
+          "x": 305,
+          "y": 740,
+          "zone": "five"
+        },
+        "N": {
+          "x": 435,
+          "y": 470,
+          "zone": "six"
+        },
+        "O": {
+          "x": 630,
+          "y": 490,
+          "zone": "six"
+        }
+      },
+      "terrain": [],
+      "required": [
+        {
+          "a": "B",
+          "b": "C",
+          "kind": "bridge"
+        },
+        {
+          "a": "E",
+          "b": "F",
+          "kind": "bridge"
+        },
+        {
+          "a": "H",
+          "b": "J",
+          "kind": "bridge"
+        },
+        {
+          "a": "I",
+          "b": "M",
+          "kind": "bridge"
+        },
+        {
+          "a": "L",
+          "b": "X",
+          "kind": "bridge"
+        },
+        {
+          "a": "E",
+          "b": "O",
+          "kind": "bridge"
+        },
+        {
+          "a": "O",
+          "b": "H",
+          "kind": "bridge"
+        },
+        {
+          "a": "N",
+          "b": "X",
+          "kind": "bridge"
+        },
+        {
+          "a": "N",
+          "b": "I",
+          "kind": "bridge"
+        }
+      ],
+      "purpose": "Six islands create a winding outer journey and a small central island that offers alternate bridge routes.",
+      "departures": "Island groups cut across scoring regions. Several small districts have high travel value because their islands connect multiple routes.",
+      "watch": "The central island could dominate traversal despite its low electoral value; check whether outer bridges still get used.",
+      "target_edges": 24,
+      "background": "water",
+      "islands": true
+    },
+    {
+      "id": 9,
+      "slug": "crescent-bay",
+      "title": "Crescent bay",
+      "nodes": {
+        "A": {
+          "x": 378.8,
+          "y": 719.9,
+          "zone": "land"
+        },
+        "B": {
+          "x": 330.0,
+          "y": 561.6,
+          "zone": "land"
+        },
+        "C": {
+          "x": 382.8,
+          "y": 404.7,
+          "zone": "land"
+        },
+        "X": {
+          "x": 517.2,
+          "y": 308.0,
+          "zone": "land"
+        },
+        "D": {
+          "x": 682.8,
+          "y": 308.0,
+          "zone": "land"
+        },
+        "E": {
+          "x": 817.2,
+          "y": 404.7,
+          "zone": "land"
+        },
+        "F": {
+          "x": 870.0,
+          "y": 561.6,
+          "zone": "land"
+        },
+        "G": {
+          "x": 821.2,
+          "y": 719.9,
+          "zone": "land"
+        },
+        "H": {
+          "x": 251.9,
+          "y": 808.8,
+          "zone": "land"
+        },
+        "I": {
+          "x": 175.0,
+          "y": 559.7,
+          "zone": "land"
+        },
+        "J": {
+          "x": 258.0,
+          "y": 312.6,
+          "zone": "land"
+        },
+        "K": {
+          "x": 469.7,
+          "y": 160.5,
+          "zone": "land"
+        },
+        "L": {
+          "x": 730.3,
+          "y": 160.5,
+          "zone": "land"
+        },
+        "M": {
+          "x": 942.0,
+          "y": 312.6,
+          "zone": "land"
+        },
+        "N": {
+          "x": 1025.0,
+          "y": 559.7,
+          "zone": "land"
+        },
+        "O": {
+          "x": 948.1,
+          "y": 808.8,
+          "zone": "land"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "ellipse",
+          "cx": 600,
+          "cy": 565,
+          "rx": 185,
+          "ry": 185,
+          "material": "water"
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              600,
+              565
+            ],
+            [
+              820,
+              900
+            ],
+            [
+              380,
+              900
+            ]
+          ],
+          "material": "water"
+        }
+      ],
+      "required": [],
+      "purpose": "An inner coastal route and an outer inland route follow the same broad bay. Connections between them allow players to change approach without crossing water.",
+      "departures": "The shoreline remains open and unbridged. Districts occupy two curved bands, with Bellweather one stop on the coastal band.",
+      "watch": "The outer band may become a faster bypass if its connections let players skip too many coastal districts.",
+      "target_edges": 26
+    },
+    {
+      "id": 10,
+      "slug": "railway-junction",
+      "title": "Railway junction",
+      "nodes": {
+        "A": {
+          "x": 160,
+          "y": 190,
+          "zone": "northwest"
+        },
+        "B": {
+          "x": 400,
+          "y": 190,
+          "zone": "northwest"
+        },
+        "C": {
+          "x": 160,
+          "y": 375,
+          "zone": "northwest"
+        },
+        "X": {
+          "x": 400,
+          "y": 375,
+          "zone": "northwest"
+        },
+        "D": {
+          "x": 805,
+          "y": 190,
+          "zone": "northeast"
+        },
+        "E": {
+          "x": 1040,
+          "y": 190,
+          "zone": "northeast"
+        },
+        "F": {
+          "x": 805,
+          "y": 375,
+          "zone": "northeast"
+        },
+        "G": {
+          "x": 1040,
+          "y": 375,
+          "zone": "northeast"
+        },
+        "H": {
+          "x": 160,
+          "y": 600,
+          "zone": "southwest"
+        },
+        "I": {
+          "x": 400,
+          "y": 600,
+          "zone": "southwest"
+        },
+        "J": {
+          "x": 160,
+          "y": 795,
+          "zone": "southwest"
+        },
+        "K": {
+          "x": 400,
+          "y": 795,
+          "zone": "southwest"
+        },
+        "L": {
+          "x": 805,
+          "y": 600,
+          "zone": "southeast"
+        },
+        "M": {
+          "x": 1040,
+          "y": 600,
+          "zone": "southeast"
+        },
+        "N": {
+          "x": 805,
+          "y": 795,
+          "zone": "southeast"
+        },
+        "O": {
+          "x": 1040,
+          "y": 795,
+          "zone": "southeast"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "band",
+          "points": [
+            [
+              600,
+              110
+            ],
+            [
+              600,
+              900
+            ]
+          ],
+          "width": 24,
+          "material": "rail"
+        },
+        {
+          "kind": "band",
+          "points": [
+            [
+              40,
+              480
+            ],
+            [
+              1160,
+              480
+            ]
+          ],
+          "width": 24,
+          "material": "rail"
+        }
+      ],
+      "required": [
+        {
+          "a": "B",
+          "b": "D",
+          "kind": "viaduct"
+        },
+        {
+          "a": "G",
+          "b": "M",
+          "kind": "viaduct"
+        },
+        {
+          "a": "N",
+          "b": "K",
+          "kind": "viaduct"
+        },
+        {
+          "a": "C",
+          "b": "H",
+          "kind": "viaduct"
+        }
+      ],
+      "purpose": "Intersecting rail corridors divide the city into four sectors. Road viaducts connect the sectors in a circuit away from the rail junction.",
+      "departures": "Rail infrastructure blocks adjacency just like water. Bellweather is near the junction but has no special connection through the tracks.",
+      "watch": "The four sectors may function like separate boards unless players have objectives on both sides of a viaduct.",
+      "target_edges": 24
+    },
+    {
+      "id": 14,
+      "slug": "ridge-city",
+      "title": "Ridge city",
+      "nodes": {
+        "A": {
+          "x": 480,
+          "y": 500,
+          "zone": "ridge"
+        },
+        "B": {
+          "x": 620,
+          "y": 345,
+          "zone": "ridge"
+        },
+        "C": {
+          "x": 760,
+          "y": 195,
+          "zone": "ridge"
+        },
+        "X": {
+          "x": 345,
+          "y": 665,
+          "zone": "ridge"
+        },
+        "D": {
+          "x": 1030,
+          "y": 170,
+          "zone": "east"
+        },
+        "E": {
+          "x": 985,
+          "y": 360,
+          "zone": "east"
+        },
+        "F": {
+          "x": 1030,
+          "y": 570,
+          "zone": "east"
+        },
+        "G": {
+          "x": 860,
+          "y": 685,
+          "zone": "east"
+        },
+        "H": {
+          "x": 715,
+          "y": 820,
+          "zone": "east"
+        },
+        "I": {
+          "x": 130,
+          "y": 185,
+          "zone": "west"
+        },
+        "J": {
+          "x": 310,
+          "y": 165,
+          "zone": "west"
+        },
+        "K": {
+          "x": 140,
+          "y": 395,
+          "zone": "west"
+        },
+        "L": {
+          "x": 300,
+          "y": 355,
+          "zone": "west"
+        },
+        "M": {
+          "x": 145,
+          "y": 610,
+          "zone": "west"
+        },
+        "N": {
+          "x": 340,
+          "y": 810,
+          "zone": "west"
+        },
+        "O": {
+          "x": 530,
+          "y": 825,
+          "zone": "west"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "band",
+          "points": [
+            [
+              285,
+              740
+            ],
+            [
+              810,
+              125
+            ]
+          ],
+          "width": 105,
+          "material": "ridge",
+          "blocked": false
+        }
+      ],
+      "required": [
+        {
+          "a": "X",
+          "b": "A",
+          "kind": "ridge road"
+        },
+        {
+          "a": "A",
+          "b": "B",
+          "kind": "ridge road"
+        },
+        {
+          "a": "B",
+          "b": "C",
+          "kind": "ridge road"
+        },
+        {
+          "a": "X",
+          "b": "N",
+          "kind": "pass"
+        },
+        {
+          "a": "A",
+          "b": "L",
+          "kind": "pass"
+        },
+        {
+          "a": "C",
+          "b": "J",
+          "kind": "pass"
+        },
+        {
+          "a": "B",
+          "b": "E",
+          "kind": "pass"
+        },
+        {
+          "a": "C",
+          "b": "D",
+          "kind": "pass"
+        },
+        {
+          "a": "A",
+          "b": "G",
+          "kind": "pass"
+        }
+      ],
+      "purpose": "The urban districts form a ridge-top route above two lower neighborhoods. Several hillside approaches connect the slopes to different ridge districts.",
+      "departures": "The urban region is elongated along high ground. Scoring regions occupy different elevations and connect through explicit hillside routes.",
+      "watch": "The ridge could become a compulsory highway rather than one of several useful approaches; look for overused central ridge districts.",
+      "target_edges": 25
+    },
+    {
+      "id": 15,
+      "slug": "estuary-city",
+      "title": "Estuary city",
+      "nodes": {
+        "A": {
+          "x": 110,
+          "y": 185,
+          "zone": "west"
+        },
+        "B": {
+          "x": 410,
+          "y": 185,
+          "zone": "west"
+        },
+        "C": {
+          "x": 110,
+          "y": 370,
+          "zone": "west"
+        },
+        "X": {
+          "x": 355,
+          "y": 370,
+          "zone": "west"
+        },
+        "D": {
+          "x": 810,
+          "y": 185,
+          "zone": "east"
+        },
+        "E": {
+          "x": 1060,
+          "y": 185,
+          "zone": "east"
+        },
+        "F": {
+          "x": 855,
+          "y": 370,
+          "zone": "east"
+        },
+        "G": {
+          "x": 1080,
+          "y": 370,
+          "zone": "east"
+        },
+        "H": {
+          "x": 110,
+          "y": 565,
+          "zone": "west"
+        },
+        "I": {
+          "x": 290,
+          "y": 565,
+          "zone": "west"
+        },
+        "J": {
+          "x": 110,
+          "y": 785,
+          "zone": "west"
+        },
+        "K": {
+          "x": 265,
+          "y": 785,
+          "zone": "west"
+        },
+        "L": {
+          "x": 930,
+          "y": 565,
+          "zone": "east"
+        },
+        "M": {
+          "x": 1090,
+          "y": 565,
+          "zone": "east"
+        },
+        "N": {
+          "x": 930,
+          "y": 785,
+          "zone": "east"
+        },
+        "O": {
+          "x": 1090,
+          "y": 785,
+          "zone": "east"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              550,
+              110
+            ],
+            [
+              650,
+              110
+            ],
+            [
+              850,
+              900
+            ],
+            [
+              320,
+              900
+            ]
+          ],
+          "material": "water"
+        }
+      ],
+      "required": [
+        {
+          "a": "B",
+          "b": "D",
+          "kind": "bridge"
+        },
+        {
+          "a": "X",
+          "b": "F",
+          "kind": "bridge"
+        }
+      ],
+      "purpose": "The river widens toward the coast, leaving both crossings upstream. A campaign on the lower opposite bank requires a substantial inland detour.",
+      "departures": "Opposite coastal districts have no crossing despite being visually close. Dense cities occupy both banks, but the three urban-region cities remain on the west; other scoring regions span the river.",
+      "watch": "Low coastal districts may become quiet scoring pockets because reinforcement from the opposite bank takes too long.",
+      "target_edges": 26
+    },
+    {
+      "id": 16,
+      "slug": "crater-city",
+      "title": "Crater city",
+      "nodes": {
+        "X": {
+          "x": 600,
+          "y": 515,
+          "zone": "floor"
+        },
+        "A": {
+          "x": 785.0,
+          "y": 515.0,
+          "zone": "floor"
+        },
+        "B": {
+          "x": 715.3,
+          "y": 659.7,
+          "zone": "floor"
+        },
+        "C": {
+          "x": 558.8,
+          "y": 695.4,
+          "zone": "floor"
+        },
+        "D": {
+          "x": 433.3,
+          "y": 595.2,
+          "zone": "floor"
+        },
+        "E": {
+          "x": 433.3,
+          "y": 434.8,
+          "zone": "floor"
+        },
+        "F": {
+          "x": 558.8,
+          "y": 334.6,
+          "zone": "floor"
+        },
+        "G": {
+          "x": 715.3,
+          "y": 370.3,
+          "zone": "floor"
+        },
+        "H": {
+          "x": 937.2,
+          "y": 654.7,
+          "zone": "rim"
+        },
+        "I": {
+          "x": 739.7,
+          "y": 852.2,
+          "zone": "rim"
+        },
+        "J": {
+          "x": 460.3,
+          "y": 852.2,
+          "zone": "rim"
+        },
+        "K": {
+          "x": 262.8,
+          "y": 654.7,
+          "zone": "rim"
+        },
+        "L": {
+          "x": 262.8,
+          "y": 375.3,
+          "zone": "rim"
+        },
+        "M": {
+          "x": 460.3,
+          "y": 177.8,
+          "zone": "rim"
+        },
+        "N": {
+          "x": 739.7,
+          "y": 177.8,
+          "zone": "rim"
+        },
+        "O": {
+          "x": 937.2,
+          "y": 375.3,
+          "zone": "rim"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "ring",
+          "cx": 600,
+          "cy": 515,
+          "rx": 275,
+          "ry": 275,
+          "width": 18,
+          "material": "mountain",
+          "label": "Crater rim"
+        }
+      ],
+      "required": [
+        {
+          "a": "A",
+          "b": "H",
+          "kind": "pass"
+        },
+        {
+          "a": "C",
+          "b": "J",
+          "kind": "pass"
+        },
+        {
+          "a": "E",
+          "b": "L",
+          "kind": "pass"
+        },
+        {
+          "a": "G",
+          "b": "N",
+          "kind": "pass"
+        }
+      ],
+      "purpose": "Bellweather sits on the crater floor. Four breaks in the rim connect the inner neighborhoods to an outer circuit.",
+      "departures": "The mixed region shares the crater floor with the urban districts. The rim separates travel areas rather than perfectly matching scoring regions.",
+      "watch": "The central floor may offer such short routes that the outer circuit becomes a collection of destinations rather than a useful route.",
+      "target_edges": 27
+    },
+    {
+      "id": 17,
+      "slug": "industrial-belt",
+      "title": "Industrial belt",
+      "nodes": {
+        "A": {
+          "x": 140,
+          "y": 185,
+          "zone": "west"
+        },
+        "B": {
+          "x": 330,
+          "y": 185,
+          "zone": "west"
+        },
+        "C": {
+          "x": 140,
+          "y": 355,
+          "zone": "west"
+        },
+        "X": {
+          "x": 330,
+          "y": 355,
+          "zone": "west"
+        },
+        "D": {
+          "x": 850,
+          "y": 185,
+          "zone": "east"
+        },
+        "E": {
+          "x": 1070,
+          "y": 185,
+          "zone": "east"
+        },
+        "F": {
+          "x": 850,
+          "y": 355,
+          "zone": "east"
+        },
+        "G": {
+          "x": 1070,
+          "y": 355,
+          "zone": "east"
+        },
+        "H": {
+          "x": 140,
+          "y": 555,
+          "zone": "west"
+        },
+        "I": {
+          "x": 330,
+          "y": 555,
+          "zone": "west"
+        },
+        "J": {
+          "x": 140,
+          "y": 780,
+          "zone": "west"
+        },
+        "K": {
+          "x": 330,
+          "y": 780,
+          "zone": "west"
+        },
+        "L": {
+          "x": 850,
+          "y": 555,
+          "zone": "east"
+        },
+        "M": {
+          "x": 1070,
+          "y": 555,
+          "zone": "east"
+        },
+        "N": {
+          "x": 850,
+          "y": 780,
+          "zone": "east"
+        },
+        "O": {
+          "x": 1070,
+          "y": 780,
+          "zone": "east"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              445,
+              110
+            ],
+            [
+              705,
+              110
+            ],
+            [
+              705,
+              275
+            ],
+            [
+              445,
+              275
+            ]
+          ],
+          "material": "industry",
+          "label": "Freight yard"
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              450,
+              425
+            ],
+            [
+              725,
+              425
+            ],
+            [
+              725,
+              665
+            ],
+            [
+              450,
+              665
+            ]
+          ],
+          "material": "industry",
+          "label": "Foundry"
+        },
+        {
+          "kind": "polygon",
+          "points": [
+            [
+              450,
+              845
+            ],
+            [
+              725,
+              845
+            ],
+            [
+              725,
+              900
+            ],
+            [
+              450,
+              900
+            ]
+          ],
+          "material": "industry",
+          "label": "Depot"
+        }
+      ],
+      "required": [
+        {
+          "a": "X",
+          "b": "F",
+          "kind": "service road"
+        },
+        {
+          "a": "K",
+          "b": "N",
+          "kind": "service road"
+        }
+      ],
+      "purpose": "Large industrial sites leave two service corridors between east and west. Districts on either side of a factory are not automatically adjacent.",
+      "departures": "Non-playable industrial footprints divide the city. Access follows the two service corridors, and scoring regions can span the belt.",
+      "watch": "Two crossings may make the center feel obstructive rather than contested if most points can be earned on either bank independently.",
+      "target_edges": 24
+    },
+    {
+      "id": 18,
+      "slug": "greenbelt-city",
+      "title": "Greenbelt city",
+      "nodes": {
+        "A": {
+          "x": 455,
+          "y": 470,
+          "zone": "core"
+        },
+        "B": {
+          "x": 600,
+          "y": 345,
+          "zone": "core"
+        },
+        "C": {
+          "x": 745,
+          "y": 470,
+          "zone": "core"
+        },
+        "X": {
+          "x": 600,
+          "y": 605,
+          "zone": "core"
+        },
+        "D": {
+          "x": 950.0,
+          "y": 520.0,
+          "zone": "outside"
+        },
+        "E": {
+          "x": 903.1,
+          "y": 695.0,
+          "zone": "outside"
+        },
+        "F": {
+          "x": 775.0,
+          "y": 823.1,
+          "zone": "outside"
+        },
+        "G": {
+          "x": 600.0,
+          "y": 845,
+          "zone": "outside"
+        },
+        "H": {
+          "x": 425.0,
+          "y": 823.1,
+          "zone": "outside"
+        },
+        "I": {
+          "x": 296.9,
+          "y": 695.0,
+          "zone": "outside"
+        },
+        "J": {
+          "x": 250.0,
+          "y": 520.0,
+          "zone": "outside"
+        },
+        "K": {
+          "x": 296.9,
+          "y": 345.0,
+          "zone": "outside"
+        },
+        "L": {
+          "x": 425.0,
+          "y": 216.9,
+          "zone": "outside"
+        },
+        "M": {
+          "x": 600.0,
+          "y": 170.0,
+          "zone": "outside"
+        },
+        "N": {
+          "x": 775.0,
+          "y": 216.9,
+          "zone": "outside"
+        },
+        "O": {
+          "x": 903.1,
+          "y": 345.0,
+          "zone": "outside"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "ring",
+          "cx": 600,
+          "cy": 520,
+          "rx": 245,
+          "ry": 245,
+          "width": 34,
+          "material": "forest",
+          "label": "Protected greenbelt"
+        }
+      ],
+      "required": [
+        {
+          "a": "A",
+          "b": "J",
+          "kind": "gate"
+        },
+        {
+          "a": "B",
+          "b": "M",
+          "kind": "gate"
+        },
+        {
+          "a": "C",
+          "b": "O",
+          "kind": "gate"
+        },
+        {
+          "a": "X",
+          "b": "G",
+          "kind": "gate"
+        }
+      ],
+      "purpose": "An urban core is separated from satellite settlements by a greenbelt. Four access corridors connect different parts of the core to the outer circuit.",
+      "departures": "Protected land is a true adjacency barrier for this study. Outer scoring regions need not each have their own direct connection to Bellweather.",
+      "watch": "If the access corridors are too interchangeable, the greenbelt may add travel without producing meaningful decisions.",
+      "target_edges": 24
+    },
+    {
+      "id": 19,
+      "slug": "floodplain-city",
+      "title": "Floodplain city",
+      "nodes": {
+        "A": {
+          "x": 150,
+          "y": 185,
+          "zone": "land"
+        },
+        "B": {
+          "x": 415,
+          "y": 160,
+          "zone": "land"
+        },
+        "C": {
+          "x": 690,
+          "y": 210,
+          "zone": "land"
+        },
+        "X": {
+          "x": 240,
+          "y": 370,
+          "zone": "land"
+        },
+        "D": {
+          "x": 995,
+          "y": 165,
+          "zone": "land"
+        },
+        "E": {
+          "x": 530,
+          "y": 355,
+          "zone": "land"
+        },
+        "F": {
+          "x": 830,
+          "y": 415,
+          "zone": "land"
+        },
+        "G": {
+          "x": 1080,
+          "y": 390,
+          "zone": "land"
+        },
+        "H": {
+          "x": 120,
+          "y": 595,
+          "zone": "land"
+        },
+        "I": {
+          "x": 400,
+          "y": 565,
+          "zone": "land"
+        },
+        "J": {
+          "x": 680,
+          "y": 595,
+          "zone": "land"
+        },
+        "K": {
+          "x": 965,
+          "y": 615,
+          "zone": "land"
+        },
+        "L": {
+          "x": 220,
+          "y": 815,
+          "zone": "land"
+        },
+        "M": {
+          "x": 505,
+          "y": 805,
+          "zone": "land"
+        },
+        "N": {
+          "x": 810,
+          "y": 805,
+          "zone": "land"
+        },
+        "O": {
+          "x": 1080,
+          "y": 805,
+          "zone": "land"
+        }
+      },
+      "terrain": [
+        {
+          "kind": "band",
+          "points": [
+            [
+              45,
+              310
+            ],
+            [
+              290,
+              280
+            ],
+            [
+              650,
+              460
+            ],
+            [
+              1160,
+              300
+            ]
+          ],
+          "width": 90,
+          "material": "wetland",
+          "blocked": false
+        },
+        {
+          "kind": "band",
+          "points": [
+            [
+              40,
+              720
+            ],
+            [
+              300,
+              665
+            ],
+            [
+              680,
+              730
+            ],
+            [
+              1160,
+              710
+            ]
+          ],
+          "width": 85,
+          "material": "wetland",
+          "blocked": false
+        }
+      ],
+      "required": [],
+      "purpose": "Raised settlements connect through an embankment network above wet lowlands. The geography emphasizes which raised roads offer alternate approaches.",
+      "departures": "Only the printed embankments are usable connections; open-looking low ground is not automatically traversable. All roads are treated as permanent in this study.",
+      "watch": "A few highly connected settlements could dominate the raised network. Seasonal flooding is deliberately not assumed.",
+      "target_edges": 26,
+      "background": "wetland",
+      "islands": true,
+      "default_route": "embankment"
+    },
+    {
+      "id": 20,
+      "slug": "market-crossroads",
+      "title": "Market crossroads",
+      "nodes": {
+        "A": {
+          "x": 395,
+          "y": 505,
+          "zone": "land"
+        },
+        "B": {
+          "x": 600,
+          "y": 300,
+          "zone": "land"
+        },
+        "C": {
+          "x": 805,
+          "y": 505,
+          "zone": "land"
+        },
+        "X": {
+          "x": 600,
+          "y": 505,
+          "zone": "land"
+        },
+        "D": {
+          "x": 600,
+          "y": 820,
+          "zone": "land"
+        },
+        "E": {
+          "x": 385,
+          "y": 740,
+          "zone": "land"
+        },
+        "F": {
+          "x": 810,
+          "y": 745,
+          "zone": "land"
+        },
+        "G": {
+          "x": 1050,
+          "y": 505,
+          "zone": "land"
+        },
+        "H": {
+          "x": 860,
+          "y": 235,
+          "zone": "land"
+        },
+        "I": {
+          "x": 150,
+          "y": 505,
+          "zone": "land"
+        },
+        "J": {
+          "x": 285,
+          "y": 235,
+          "zone": "land"
+        },
+        "K": {
+          "x": 480,
+          "y": 170,
+          "zone": "land"
+        },
+        "L": {
+          "x": 700,
+          "y": 160,
+          "zone": "land"
+        },
+        "M": {
+          "x": 1060,
+          "y": 225,
+          "zone": "land"
+        },
+        "N": {
+          "x": 1045,
+          "y": 815,
+          "zone": "land"
+        },
+        "O": {
+          "x": 160,
+          "y": 800,
+          "zone": "land"
+        }
+      },
+      "terrain": [],
+      "required": [
+        {
+          "a": "X",
+          "b": "A",
+          "kind": "market road"
+        },
+        {
+          "a": "A",
+          "b": "I",
+          "kind": "market road"
+        },
+        {
+          "a": "X",
+          "b": "B",
+          "kind": "market road"
+        },
+        {
+          "a": "B",
+          "b": "K",
+          "kind": "market road"
+        },
+        {
+          "a": "X",
+          "b": "C",
+          "kind": "market road"
+        },
+        {
+          "a": "C",
+          "b": "G",
+          "kind": "market road"
+        },
+        {
+          "a": "X",
+          "b": "D",
+          "kind": "market road"
+        }
+      ],
+      "purpose": "Four market approaches meet at Bellweather, with outer settlement routes that can bypass the central crossroads.",
+      "departures": "Bellweather directly connects to a mixed city as well as urban districts. The centre is a transport junction, not a protected urban-only destination.",
+      "watch": "Direct traffic through Bellweather may make Capital scoring too easy or turn the centre into the strongest Smear position.",
+      "target_edges": 27
+    }
+  ]
+}
