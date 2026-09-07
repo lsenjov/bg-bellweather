@@ -4,20 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Current yearly Lobby rules for lobbying firms influencing animal political parties in Bellweather.">
-    <title>Current Rules — Ladder Bidding</title>
-    <link rel="stylesheet" href="../styles.css">
+    <title>Archived 2026-09-08 — Current Rules — Ladder Bidding</title>
+    <link rel="stylesheet" href="../../docs/styles.css">
   </head>
   <body>
     <header class="page-header">
       <div class="header-inner">
-        <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / 01.2</a>
+        <a class="brand" href="../../docs/index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / 01.2</a>
         <h1>Current rules</h1>
-        <p class="meta">Ruleset 24. Last updated: 2026-09-08.</p>
+        <p class="meta">Ruleset 24. Last updated: 2026-09-07.</p>
       </div>
     </header>
 
     <main>
-      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Current rules</nav>
+      <p><strong>Archived:</strong> This page preserves the version replaced by the Bonus-card revisions on 2026-09-08. <a href="../../docs/rules/current-rules.html">Read the current version →</a></p>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../docs/index.html">Index</a><span>/</span>Current rules</nav>
       <p class="intro">Across six years, rival lobbying firms establish party access, perform political Operations, collect public card piles for later years, and close their own contacts before three Elections decide Bellweather’s future.</p>
 
       <section>
@@ -45,7 +46,7 @@
           <li>Two Collection counters per player, doubled to four at two or three players.</li>
           <li>Twenty-four scoring cards, one player folio and one player helper per human player, one covered New Year area per player with its total count visible, an Early Bird marker, a Year/Election tracker, and a public score track.</li>
         </ul>
-        <p>Leverage cards, Bluff cards, gifts, bid markers, counterbid pieces, and the Pecking Order are not used. Their former specification is retained in the <a href="../../archive/components/auction-components-ruleset-14-2026-08-13.html">Ruleset 14 component archive</a>.</p>
+        <p>Leverage cards, Bluff cards, gifts, bid markers, counterbid pieces, and the Pecking Order are not used. Their former specification is retained in the <a href="../components/auction-components-ruleset-14-2026-08-13.html">Ruleset 14 component archive</a>.</p>
       </section>
 
       <section>
@@ -106,7 +107,7 @@
         <p>You do not choose later cards or targets in advance, and no other player acts between cards. Once the first card resolves, that party remains fixed for the complete Operate action and you cannot take a different Lobby action until you finish.</p>
         <p>A Bonus card is a complete standalone action and requires no ordinary card. It consumes one of the one-to-three card slots, never enters an Operation pile, and may be held indefinitely. Any number of cards in one Operate may be Bonus cards. Play a held Bonus card on any open party. If that party differs from the card’s home party, first resolve an automatic Court targeting the home party, then resolve the printed action. This costs no extra card or slot. The open party being operated remains the acting party for the entire card.</p>
         <p>Each party has two preferred-Operation Bonus cards and one Unbound Bonus card. A preferred-Operation card resolves its printed baseline and additional effect; an Unbound card has no printed baseline. Automatic off-home Court happens before either family. A Court-based Bonus therefore resolves Court twice when played off-home: first toward home, then toward the selected printed target.</p>
-        <p>Resolve a Bonus card atomically, including any automatic Court. If a required effect cannot resolve, the play is illegal: undo all Support and Target changes and leave the card in hand. Institutional Memory must add one named-party Support for every objective whose region has a free spot; skip only full regions, and at least one addition must resolve. Empty Every Nest must move the maximum possible number: the smaller of qualifying source districts and eligible destination districts, determined before movement. Choose which sources to use if destinations are insufficient. Canal Network moves a positive whole number from one source to one different destination; the source and all intermediate districts must contain acting-party Support before movement. A successful card returns home immediately, even if home is closed; no retroactive award occurs.</p>
+        <p>Resolve a Bonus card atomically, including any automatic Court. If a required effect cannot resolve, the play is illegal: undo all Support and Target changes and leave the card in hand. Institutional Memory may choose any non-empty subset of a revealed card’s objectives, with one source and one destination district per chosen objective; every destination must belong to that objective’s region and have a free spot. A successful card returns home immediately, even if home is closed; no retroactive award occurs.</p>
 
         <h3>Collect</h3>
         <p>Spend one of your Collection counters and choose any open party. Take its complete Operation pile into your New Year area and optionally take at most one Bonus card currently at that party. The pile may be empty, and the action remains legal when no Bonus card is available or taken. The party remains open and can receive new Operations. Any player may Collect any party, including one they opened or previously collected.</p>
@@ -155,20 +156,20 @@
             <thead><tr><th>Home party</th><th>Printed baseline</th><th>Complete standalone action</th></tr></thead>
             <tbody>
               <tr><td>Honeycomb</td><td>Organise</td><td><strong>Waggle Route:</strong> resolve Organise, then add another acting-party Support to a free destination spot.</td></tr>
-              <tr><td>Honeycomb</td><td>Court</td><td><strong>Common Cause:</strong> Resolve Court. Then add acting-party Support to a free spot in a district containing selected-party Support.</td></tr>
+              <tr><td>Honeycomb</td><td>Court</td><td><strong>Common Cause:</strong> resolve Court; the selected party must become the acting party’s Target, then move acting-party Support to a different free district containing selected-party Support.</td></tr>
               <tr><td>Honeycomb</td><td>Unbound</td><td><strong>Every Bee Counts:</strong> add acting-party Support to every district that contains exactly one acting-party Support and has a free spot.</td></tr>
               <tr><td>Old Shell</td><td>Organise</td><td><strong>Dig In:</strong> resolve a movement Organise, then refill the vacated source spot with acting-party Support. It cannot recover an absent party.</td></tr>
               <tr><td>Old Shell</td><td>Smear</td><td><strong>Stonewall:</strong> resolve Smear, then remove a second matching rival Support from the affected district.</td></tr>
-              <tr><td>Old Shell</td><td>Unbound</td><td><strong>Institutional Memory:</strong> Choose a revealed scoring card. For each objective, add one Support of the named party to a district in its region with a free spot, if possible.</td></tr>
+              <tr><td>Old Shell</td><td>Unbound</td><td><strong>Institutional Memory:</strong> choose a revealed scoring card. For each chosen objective, move one named-party Support from another district into a chosen free district within that objective’s region.</td></tr>
               <tr><td>Foxglove</td><td>Smear</td><td><strong>Spin:</strong> resolve Smear, then add acting-party Support to the vacated spot.</td></tr>
               <tr><td>Foxglove</td><td>Court</td><td><strong>Whisper Network:</strong> resolve Court, move acting-party Court Support from another party’s space to the selected party, then update the acting party’s Target again.</td></tr>
-              <tr><td>Foxglove</td><td>Unbound</td><td><strong>Shell Firm:</strong> Move the acting party’s Firm marker and entire Operation pile to another party without a Firm marker. End this Lobby action.</td></tr>
-              <tr><td>Riverworks</td><td>Organise</td><td><strong>Canal Network:</strong> Move any number of acting-party Support from one district to another with enough free spots, along a connected route. Each intermediate district must contain acting-party Support.</td></tr>
+              <tr><td>Foxglove</td><td>Unbound</td><td><strong>Shell Firm:</strong> choose another party without a Firm marker. Move the acting party’s Firm marker and complete Operation pile to it. Then end this Lobby action.</td></tr>
+              <tr><td>Riverworks</td><td>Organise</td><td><strong>Canal Network:</strong> move acting-party Support through a connected route whose source and intermediate districts contain acting-party Support to a free destination.</td></tr>
               <tr><td>Riverworks</td><td>Rally</td><td><strong>Public Works:</strong> resolve Rally, then add acting-party Support to a free neighboring district.</td></tr>
-              <tr><td>Riverworks</td><td>Unbound</td><td><strong>Mass Transit:</strong> Choose a chain of two to five neighboring districts with a free spot at one end. Move one Support of your choice from each other district one step toward that end.</td></tr>
-              <tr><td>Many Wings</td><td>Rally</td><td><strong>Scatter the Flock:</strong> Resolve Rally. Then move as many acting-party Support as possible from that district into different neighboring districts with free spots, one per district. At least one must move.</td></tr>
+              <tr><td>Riverworks</td><td>Unbound</td><td><strong>Mass Transit:</strong> choose a path of two to five districts with a free spot at one end. Every other district must contain Support. Shift one Support from each of those districts one step toward the free spot.</td></tr>
+              <tr><td>Many Wings</td><td>Rally</td><td><strong>Scatter the Flock:</strong> resolve Rally, then move the maximum possible acting-party Support into distinct free neighboring districts; at least one must move.</td></tr>
               <tr><td>Many Wings</td><td>Court</td><td><strong>Joint Campaign:</strong> resolve Court, then add selected-party Support to a free district containing acting-party Support.</td></tr>
-              <tr><td>Many Wings</td><td>Unbound</td><td><strong>Empty Every Nest:</strong> Move one acting-party Support from as many districts with two or more as possible. Each must go to a different district with a free spot and no acting-party Support.</td></tr>
+              <tr><td>Many Wings</td><td>Unbound</td><td><strong>Empty Every Nest:</strong> move one acting-party Support from every district containing at least two acting-party Support to the same number of different districts with no acting-party Support and a free spot.</td></tr>
               <tr><td>Night Parliament</td><td>Rally</td><td><strong>Quiet Hours:</strong> resolve Rally, then add acting-party Support to an otherwise empty district, including an empty Centre.</td></tr>
               <tr><td>Night Parliament</td><td>Smear</td><td><strong>Midnight Leak:</strong> resolve Smear, then remove one Court Support belonging to that rival and update the rival’s Target.</td></tr>
               <tr><td>Night Parliament</td><td>Unbound</td><td><strong>Midnight Session:</strong> choose a closed party. Place one of your returned Firm markers there. That party opens with an empty Operation pile.</td></tr>
@@ -176,7 +177,7 @@
           </table>
         </div>
         <p>The acting party is always the open party selected for Operate, including off-home Bonus cards. For Mass Transit, order the path from the district to vacate toward the free endpoint and choose the Support moved out of each preceding district. Shell Firm may move another player’s Firm; ownership stays the same and the destination may be unopened or closed. Midnight Session makes the acting player the reopened party’s owner and reduces the returned-Firm count. Both effects can make one party award cards more than once in a year.</p>
-        <p>The replaced two-card supply and Closure-only wording are preserved in the <a href="../../archive/rules/two-bound-bonus-cards-and-closure-trigger-ruleset-22-2026-08-25.html">Ruleset 22 archive</a>. The earlier once-per-year party-board bonuses remain in the <a href="../../archive/rules/party-board-immediate-bonuses-ruleset-19-2026-08-19.html">Ruleset 19 archive</a>.</p>
+        <p>The replaced two-card supply and Closure-only wording are preserved in the <a href="two-bound-bonus-cards-and-closure-trigger-ruleset-22-2026-08-25.html">Ruleset 22 archive</a>. The earlier once-per-year party-board bonuses remain in the <a href="party-board-immediate-bonuses-ruleset-19-2026-08-19.html">Ruleset 19 archive</a>.</p>
       </section>
 
       <section>
@@ -222,6 +223,6 @@
       </section>
     </main>
 
-    <footer class="page-footer"><div class="page-footer-inner"><a href="examples.html">Read worked examples →</a><span class="stamp">Ruleset 24</span></div></footer>
+    <footer class="page-footer"><div class="page-footer-inner"><a href="../../docs/rules/examples.html">Read worked examples →</a><span class="stamp">Ruleset 24</span></div></footer>
   </body>
 </html>

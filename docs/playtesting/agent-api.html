@@ -86,8 +86,8 @@ npm run dev</code></pre>
         </div>
 
         <p>Ruleset 24 scoring objectives use <code>regionId</code>. Election records expose <code>baseRegionScore</code>: the middle regional total on each card, summed for paired slots. Any held Bonus may be played at an open party; an off-home play automatically Courts its home party before its printed action, with the complete card resolving atomically.</p>
-        <p>Operation choices follow the selected family. Organise uses <code>destinationDistrictId</code> and optional <code>sourceDistrictId</code>; Rally uses <code>districtId</code>; Smear uses <code>districtId</code> and <code>rivalParty</code>; Court uses <code>targetParty</code>. Bound Bonus cards use their printed baseline family plus the additional fields required by the complete action, including <code>bonusDistrictId</code>, <code>bonusDistrictIds</code>, <code>bonusCourtParty</code>, <code>bonusSourceDistrictId</code>, or <code>bonusCourtSourceParty</code>.</p>
-        <p>Unbound Bonus choices use an <code>effect</code> discriminant: <code>every_bee_counts</code> needs no other field; <code>institutional_memory</code> uses a revealed <code>scoringCardId</code> and one to three <code>moves</code> containing a unique <code>objectiveIndex</code> plus <code>sourceDistrictId</code> and <code>destinationDistrictId</code>; only the destination must be in the selected objective’s region; <code>shell_firm</code> uses <code>targetPartyId</code>; <code>mass_transit</code> uses ordered <code>districtIds</code> and one <code>supportPartyIds</code> entry for each source; <code>empty_every_nest</code> uses <code>destinationDistrictIds</code>; and <code>midnight_session</code> uses <code>targetPartyId</code> and <code>firmId</code>. Refetch after each accepted play so the next choice uses the resulting state.</p>
+        <p>Operation choices follow the selected family. Organise uses <code>destinationDistrictId</code> and optional <code>sourceDistrictId</code>; Canal Network also accepts a positive integer <code>count</code> (default 1); Rally uses <code>districtId</code>; Smear uses <code>districtId</code> and <code>rivalParty</code>; Court uses <code>targetParty</code>. Bound Bonus cards use their printed baseline family plus the additional fields required by the complete action, including <code>bonusDistrictId</code>, <code>bonusDistrictIds</code>, <code>bonusCourtParty</code>, or <code>bonusCourtSourceParty</code>.</p>
+        <p>Unbound Bonus choices use an <code>effect</code> discriminant: <code>every_bee_counts</code> needs no other field; <code>institutional_memory</code> uses a revealed <code>scoringCardId</code> and one to three <code>placements</code> containing a unique <code>objectiveIndex</code> and <code>destinationDistrictId</code> in that objective’s region; include every objective whose region has space; <code>shell_firm</code> uses <code>targetPartyId</code>; <code>mass_transit</code> uses ordered <code>districtIds</code> and one <code>supportPartyIds</code> entry for each source; <code>empty_every_nest</code> uses equally sized <code>sourceDistrictIds</code> and <code>destinationDistrictIds</code> arrays; choose the maximum feasible number, with different qualifying sources and different free destinations where the acting party was absent; and <code>midnight_session</code> uses <code>targetPartyId</code> and <code>firmId</code>. Refetch after each accepted play so the next choice uses the resulting state.</p>
         <pre><code>{
   "type": "operate",
   "partyId": "night-parliament",
@@ -110,8 +110,10 @@ npm run dev</code></pre>
     "choice": {
       "effect": "institutional_memory",
       "scoringCardId": "SC-01",
-      "moves": [
-        { "objectiveIndex": 0, "sourceDistrictId": "meadow", "destinationDistrictId": "ironwood" }
+      "placements": [
+        { "objectiveIndex": 0, "destinationDistrictId": "ironwood" },
+        { "objectiveIndex": 1, "destinationDistrictId": "northgate" },
+        { "objectiveIndex": 2, "destinationDistrictId": "westfield" }
       ]
     }
   }
