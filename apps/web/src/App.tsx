@@ -758,7 +758,7 @@ export function DistrictMap({
         </g>)}
         {DISTRICTS.map((district) => <polygon key={district.id}
           points={district.polygon.map((p) => p.join(",")).join(" ")}
-          fill={district.regionId === "urban" ? "#d5e7f5" : district.regionId === "mixed" ? "#dbeaca" : district.regionId === "outlying" ? "#f5e7ac" : "#e4dfea"}
+          fill={district.regionId === "urban" ? "#e6b6a6" : district.regionId === "mixed" ? "#dbeaca" : district.regionId === "outlying" ? "#f5e7ac" : "#e4dfea"}
           stroke={interaction?.selectedDistrictIds?.includes(district.id) ? "#bd542f" : "#19354b"}
           strokeWidth={interaction?.selectedDistrictIds?.includes(district.id) ? 5 : 2}
           className={interaction?.districtIds?.includes(district.id) ? "terrain-selectable" : ""}
