@@ -1712,150 +1712,234 @@
     "edges": [
       {
         "a": "B",
-        "b": "C",
-        "kind": "bridge"
+        "b": "D",
+        "kind": "bridge",
+        "points": [
+          [
+            410,
+            140
+          ],
+          [
+            780,
+            126
+          ]
+        ]
       },
       {
         "a": "E",
         "b": "F",
-        "kind": "bridge"
+        "kind": "bridge",
+        "points": [
+          [
+            870,
+            260
+          ],
+          [
+            1040,
+            300
+          ]
+        ]
       },
       {
         "a": "H",
         "b": "J",
-        "kind": "bridge"
+        "kind": "bridge",
+        "points": [
+          [
+            950,
+            500
+          ],
+          [
+            835,
+            555
+          ]
+        ]
       },
       {
         "a": "I",
-        "b": "M",
-        "kind": "bridge"
+        "b": "N",
+        "kind": "bridge",
+        "points": [
+          [
+            580,
+            520
+          ],
+          [
+            405,
+            520
+          ]
+        ]
       },
       {
         "a": "L",
-        "b": "X",
-        "kind": "bridge"
-      },
-      {
-        "a": "E",
-        "b": "O",
-        "kind": "bridge"
-      },
-      {
-        "a": "O",
-        "b": "H",
-        "kind": "bridge"
-      },
-      {
-        "a": "N",
-        "b": "X",
-        "kind": "bridge"
-      },
-      {
-        "a": "N",
-        "b": "I",
-        "kind": "bridge"
-      },
-      {
-        "a": "A",
-        "b": "X",
-        "kind": "road"
-      },
-      {
-        "a": "B",
-        "b": "X",
-        "kind": "road"
+        "b": "C",
+        "kind": "bridge",
+        "points": [
+          [
+            150,
+            400
+          ],
+          [
+            155,
+            285
+          ]
+        ]
       },
       {
         "a": "C",
-        "b": "E",
-        "kind": "road"
+        "b": "X",
+        "kind": "bridge",
+        "points": [
+          [
+            400,
+            280
+          ],
+          [
+            545,
+            350
+          ]
+        ]
       },
       {
-        "a": "D",
-        "b": "E",
-        "kind": "road"
+        "a": "E",
+        "b": "X",
+        "kind": "bridge",
+        "points": [
+          [
+            715,
+            270
+          ],
+          [
+            625,
+            340
+          ]
+        ]
       },
       {
-        "a": "J",
-        "b": "K",
-        "kind": "road"
+        "a": "I",
+        "b": "X",
+        "kind": "bridge",
+        "points": [
+          [
+            600,
+            525
+          ],
+          [
+            590,
+            445
+          ]
+        ]
       },
       {
-        "a": "G",
-        "b": "H",
-        "kind": "road"
+        "a": "M",
+        "b": "X",
+        "kind": "bridge",
+        "points": [
+          [
+            400,
+            450
+          ],
+          [
+            530,
+            405
+          ]
+        ]
       },
       {
         "a": "A",
         "b": "B",
-        "kind": "road"
+        "kind": "border"
       },
       {
-        "a": "I",
-        "b": "K",
-        "kind": "road"
+        "a": "A",
+        "b": "C",
+        "kind": "border"
       },
       {
-        "a": "N",
-        "b": "O",
-        "kind": "road"
+        "a": "B",
+        "b": "C",
+        "kind": "border"
+      },
+      {
+        "a": "D",
+        "b": "E",
+        "kind": "border"
       },
       {
         "a": "F",
         "b": "G",
-        "kind": "road"
-      },
-      {
-        "a": "C",
-        "b": "D",
-        "kind": "road"
-      },
-      {
-        "a": "I",
-        "b": "J",
-        "kind": "road"
-      },
-      {
-        "a": "L",
-        "b": "M",
-        "kind": "road"
+        "kind": "border"
       },
       {
         "a": "F",
         "b": "H",
-        "kind": "road"
+        "kind": "border"
+      },
+      {
+        "a": "G",
+        "b": "H",
+        "kind": "border"
+      },
+      {
+        "a": "I",
+        "b": "J",
+        "kind": "border"
+      },
+      {
+        "a": "I",
+        "b": "K",
+        "kind": "border"
+      },
+      {
+        "a": "J",
+        "b": "K",
+        "kind": "border"
+      },
+      {
+        "a": "L",
+        "b": "M",
+        "kind": "border"
+      },
+      {
+        "a": "L",
+        "b": "O",
+        "kind": "border"
+      },
+      {
+        "a": "M",
+        "b": "N",
+        "kind": "border"
+      },
+      {
+        "a": "N",
+        "b": "O",
+        "kind": "border"
       }
     ],
     "neighbors": {
       "A": [
         "B",
-        "X"
+        "C"
       ],
       "B": [
         "A",
         "C",
-        "X"
+        "D"
       ],
       "C": [
-        "B",
-        "D",
-        "E"
-      ],
-      "X": [
         "A",
         "B",
         "L",
-        "N"
+        "X"
       ],
       "D": [
-        "C",
+        "B",
         "E"
       ],
       "E": [
-        "C",
         "D",
         "F",
-        "O"
+        "X"
       ],
       "F": [
         "E",
@@ -1869,14 +1953,13 @@
       "H": [
         "F",
         "G",
-        "J",
-        "O"
+        "J"
       ],
       "I": [
         "J",
         "K",
-        "M",
-        "N"
+        "N",
+        "X"
       ],
       "J": [
         "H",
@@ -1888,30 +1971,37 @@
         "J"
       ],
       "L": [
+        "C",
         "M",
-        "X"
+        "O"
       ],
       "M": [
-        "I",
-        "L"
+        "L",
+        "N",
+        "X"
       ],
       "N": [
         "I",
-        "O",
-        "X"
+        "M",
+        "O"
       ],
       "O": [
-        "E",
-        "H",
+        "L",
         "N"
+      ],
+      "X": [
+        "C",
+        "E",
+        "I",
+        "M"
       ]
     },
     "connections": 23,
     "centre_neighbors": [
-      "A",
-      "B",
-      "L",
-      "N"
+      "C",
+      "E",
+      "I",
+      "M"
     ],
     "dead_ends": [],
     "cut_districts": [],

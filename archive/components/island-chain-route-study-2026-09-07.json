@@ -1,0 +1,141 @@
+{
+  "id": 8,
+  "slug": "island-chain",
+  "title": "Island chain",
+  "nodes": {
+    "A": {
+      "x": 120,
+      "y": 190,
+      "zone": "one"
+    },
+    "B": {
+      "x": 305,
+      "y": 190,
+      "zone": "one"
+    },
+    "C": {
+      "x": 515,
+      "y": 155,
+      "zone": "two"
+    },
+    "X": {
+      "x": 205,
+      "y": 335,
+      "zone": "one"
+    },
+    "D": {
+      "x": 715,
+      "y": 155,
+      "zone": "two"
+    },
+    "E": {
+      "x": 615,
+      "y": 310,
+      "zone": "two"
+    },
+    "F": {
+      "x": 940,
+      "y": 325,
+      "zone": "three"
+    },
+    "G": {
+      "x": 1070,
+      "y": 475,
+      "zone": "three"
+    },
+    "H": {
+      "x": 890,
+      "y": 550,
+      "zone": "three"
+    },
+    "I": {
+      "x": 535,
+      "y": 675,
+      "zone": "four"
+    },
+    "J": {
+      "x": 755,
+      "y": 670,
+      "zone": "four"
+    },
+    "K": {
+      "x": 655,
+      "y": 830,
+      "zone": "four"
+    },
+    "L": {
+      "x": 120,
+      "y": 605,
+      "zone": "five"
+    },
+    "M": {
+      "x": 305,
+      "y": 740,
+      "zone": "five"
+    },
+    "N": {
+      "x": 435,
+      "y": 470,
+      "zone": "six"
+    },
+    "O": {
+      "x": 630,
+      "y": 490,
+      "zone": "six"
+    }
+  },
+  "terrain": [],
+  "required": [
+    {
+      "a": "B",
+      "b": "C",
+      "kind": "bridge"
+    },
+    {
+      "a": "E",
+      "b": "F",
+      "kind": "bridge"
+    },
+    {
+      "a": "H",
+      "b": "J",
+      "kind": "bridge"
+    },
+    {
+      "a": "I",
+      "b": "M",
+      "kind": "bridge"
+    },
+    {
+      "a": "L",
+      "b": "X",
+      "kind": "bridge"
+    },
+    {
+      "a": "E",
+      "b": "O",
+      "kind": "bridge"
+    },
+    {
+      "a": "O",
+      "b": "H",
+      "kind": "bridge"
+    },
+    {
+      "a": "N",
+      "b": "X",
+      "kind": "bridge"
+    },
+    {
+      "a": "N",
+      "b": "I",
+      "kind": "bridge"
+    }
+  ],
+  "purpose": "Six islands create a winding outer journey and a small central island that offers alternate bridge routes.",
+  "departures": "Island groups cut across scoring regions. Several small districts have high travel value because their islands connect multiple routes.",
+  "watch": "The central island could dominate traversal despite its low electoral value; check whether outer bridges still get used.",
+  "target_edges": 24,
+  "background": "water",
+  "islands": true
+}
