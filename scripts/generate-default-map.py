@@ -12,17 +12,22 @@ concepts = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(concepts)
 
 
-def coalition_summary():
-    svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="49mm" height="98mm" viewBox="0 0 490 980" role="img" aria-labelledby="title"><title id="title">Bellweather Coalition summary</title><rect x="5" y="5" width="480" height="970" fill="white" stroke="#19354b"/><g font-family="Arial,sans-serif" fill="#19354b" text-anchor="middle"><text x="245" y="55" font-size="29" font-weight="bold">Coalitions</text>']
-    for y in (170, 350, 530):
-        svg.append(f'<path d="M 140,{y} H350" stroke="#19354b" stroke-width="10"/>')
-        for x in (140, 350):
-            svg.append(f'<circle cx="{x}" cy="{y}" r="70" fill="#f4f4ef" stroke="#19354b" stroke-width="3"/>')
-    svg.append('<rect x="15" y="635" width="460" height="325" fill="none" stroke="#19354b" stroke-width="3"/><text x="245" y="672" font-size="24">No coalition</text>')
-    for y in (745, 885):
-        for x in (95, 245, 395):
-            svg.append(f'<circle cx="{x}" cy="{y}" r="70" fill="#f4f4ef" stroke="#19354b" stroke-width="2"/>')
-    return ''.join(svg) + '</g></svg>\n'
+def map_trackers():
+    svg = ['<g font-family="Arial,sans-serif" fill="#19354b" text-anchor="middle"><text x="326" y="710" font-size="14" font-weight="700">ROUND / YEAR</text><text x="766" y="704" font-size="12" font-weight="700">COALITIONS</text><text x="1024" y="704" font-size="12" font-weight="700">NO COALITION</text>']
+    for year in range(1, 7):
+        x = 40 + (year - 1) * 96
+        fill = '#e4dfea' if year % 2 == 0 else '#f2f5f6'
+        svg.append(f'<rect x="{x}" y="724" width="92" height="92" rx="8" fill="{fill}" stroke="#19354b"/><text x="{x+46}" y="763" font-size="25" font-weight="700">{year}</text>')
+        if year % 2 == 0:
+            svg.append(f'<text x="{x+46}" y="792" font-size="12">Election {year//2}</text>')
+    for x in (690, 766, 842):
+        svg.append(f'<path d="M{x},736 V796" stroke="#19354b" stroke-width="8"/>')
+        for y in (736, 796):
+            svg.append(f'<circle cx="{x}" cy="{y}" r="28" fill="#f4f4ef" stroke="#19354b"/>')
+    for x in (960, 1024, 1088):
+        for y in (736, 796):
+            svg.append(f'<circle cx="{x}" cy="{y}" r="28" fill="#f4f4ef" stroke="#19354b"/>')
+    return '\n'.join(svg) + '</g>\n</svg>\n'
 
 
 def main():
@@ -67,7 +72,8 @@ export const DISTRICTS_BY_ID = Object.freeze(
 export const MAP_BRIDGES = deepFreeze('''+json.dumps(bridges,indent=2)+''' as const);
 '''
     svg = concepts.render_border_map(study, edges, concepts.graph_facts(study,edges,graph)).replace('Island chain — landscape A4 prototype','Bellweather — inland district map').replace('ISLAND CHAIN','BELLWEATHER').replace('08 / Inland waterways · A4 landscape','R24 / Inland regions · A4 landscape')
-    for path, value in [(ROOT/'packages/content/src/districts.ts',content),(ROOT/'docs/assets/inland-district-map.svg',svg),(ROOT/'docs/assets/coalition-summary.svg',coalition_summary())]:
+    svg = svg.split('<text x="36" y="758"')[0] + map_trackers()
+    for path, value in [(ROOT/'packages/content/src/districts.ts',content),(ROOT/'docs/assets/inland-district-map.svg',svg)]:
         if args.check:
             assert path.read_text()==value, f'{path} is stale'
         else:

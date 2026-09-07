@@ -121,8 +121,6 @@ trap 'rm -rf "$export_directory"' EXIT
 board_pdf="$export_directory/board-a4.pdf"
 inkscape "$board_source" --export-filename="$board_pdf" --export-pdf-version=1.5 --export-text-to-path
 validate_pdf "$board_pdf" 1 841.889764 595.275591 "District map"
-inkscape "$repository_root/docs/assets/coalition-summary.svg" --export-filename="$export_directory/coalition-summary.pdf" --export-text-to-path
-validate_pdf "$export_directory/coalition-summary.pdf" 1 138.897638 277.795276 "Coalition summary"
 
 html_export_arguments=()
 for export_specification in "${html_exports[@]}"; do
@@ -153,7 +151,6 @@ for export_specification in "${html_exports[@]}"; do
 done
 
 install -m 0644 "$board_pdf" "$board_output"
-install -m 0644 "$export_directory/coalition-summary.pdf" "$repository_root/assets/print/coalition-summary.pdf"
 printf 'Exported %s\n' "${board_output#"$repository_root/"}"
 
 for export_specification in "${html_exports[@]}"; do

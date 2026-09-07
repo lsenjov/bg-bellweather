@@ -92,7 +92,6 @@ physical-size checks pass.
 
 | PDF | Contents |
 | --- | --- |
-| `assets/print/coalition-summary.pdf` | One 49 × 98 mm Coalition summary panel |
 | `assets/print/inland-district-map-a4.pdf` | One A4 landscape district map |
 | `assets/print/public-score-tracker-a4.pdf` | One A4 landscape 0–40 public score tracker sheet; the Year register is on the A4 map |
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
