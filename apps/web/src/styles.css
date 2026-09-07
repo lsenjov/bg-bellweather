@@ -144,22 +144,26 @@ select[multiple] { min-height: 116px; border: 1px solid var(--ink); }
 .latest-action-cards li, .latest-action-changes li { padding: 3px 5px; border: 1px solid var(--rule); background: var(--paper); font: .48rem var(--mono); }
 .latest-action-bonus { display: flex; gap: 5px; align-items: center; font: .52rem var(--mono); text-transform: uppercase; }
 .latest-action-bonus svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 4; }
-.district-map { position: relative; display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(7, minmax(64px, auto)); gap: 5px; min-height: 575px; padding: 12px; background: color-mix(in srgb, var(--blue) 72%, var(--paper)); isolation: isolate; }
-.district { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; padding: 8px; border: 1px solid var(--ink); background: var(--paper); }
+.district-map-scroll { overflow-x: auto; }
+.district-map { position: relative; min-width: 940px; aspect-ratio: 1108 / 583; isolation: isolate; }
+.district-terrain { position: absolute; inset: 0; width: 100%; height: 100%; }
+.terrain-selectable { cursor: pointer; }
+.terrain-selectable:hover { filter: brightness(1.07); }
+.lake-labels { text-anchor: middle; font: italic 15px Georgia, serif; fill: #355564; }
+.district { position: absolute; z-index: 1; width: 12%; translate: -50% 0; padding: 0; color: #19354b; text-align: center; }
 .map-change-layer { position: absolute; z-index: 2; top: 0; left: 0; pointer-events: none; overflow: visible; }
 .map-change-layer line { stroke-width: 5; stroke-linecap: round; opacity: .88; }
 .map-change-layer g { fill: color-mix(in srgb, var(--paper) 84%, transparent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.district-heading, .district-target-button { display: flex; justify-content: space-between; gap: 5px; }
-.district-target-button { flex: 1; align-items: start; width: 100%; padding: 0; border: 0; color: inherit; background: transparent; text-align: left; }
+.district-heading, .district-target-button { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.district-target-button { flex: 1; align-items: center; width: 100%; padding: 0; border: 0; color: inherit; background: transparent; text-align: left; }
 .district-target-button[aria-disabled="true"] { cursor: not-allowed; }
-.district strong { font-size: .83rem; line-height: 1; }
-.district small { font: .48rem var(--mono); opacity: .62; }
-.support-groups { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 8px; }
+.district strong { font-size: 12px; line-height: 1.1; }
+.district small { font: 9px var(--mono); }
+.support-groups { display: flex; justify-content: center; flex-wrap: wrap; gap: 2px; margin-top: 5px; }
 .support-groups span, .support-groups button { display: inline-flex; align-items: center; gap: 2px; margin: 0; padding: 2px 4px; border: 1px solid var(--party); color: var(--ink); background: color-mix(in srgb, var(--party) 18%, var(--paper)); font: 500 .53rem var(--mono); }
 .support-groups button.support-selectable { box-shadow: inset 0 0 0 1px var(--blue); }
 .support-groups button.support-selectable:hover { color: var(--paper); background: var(--blue); }
 .support-groups svg { width: 13px; height: 13px; color: var(--party); fill: none; stroke: currentColor; stroke-width: 4; }
-.district-northreach { grid-column: 3 / 6; grid-row: 1; }.district-cloverfield { grid-column: 6 / 8; grid-row: 1; }.district-harbormouth { grid-column: 7; grid-row: 2 / 4; }.district-millbank { grid-column: 7; grid-row: 4; }.district-reedwater { grid-column: 7; grid-row: 5 / 7; }.district-sunmeadow { grid-column: 6 / 8; grid-row: 7; }.district-grand-market { grid-column: 3 / 6; grid-row: 7; }.district-red-orchard { grid-column: 1 / 3; grid-row: 7; }.district-westgate { grid-column: 1; grid-row: 5 / 7; }.district-mossfield { grid-column: 1; grid-row: 4; }.district-ironwood { grid-column: 1; grid-row: 2 / 4; }.district-high-pastures { grid-column: 1 / 3; grid-row: 1; }.district-crown-road { grid-column: 5 / 7; grid-row: 3; }.district-canal-ward { grid-column: 4 / 6; grid-row: 5 / 7; }.district-old-quarter { grid-column: 2 / 4; grid-row: 3; }.district-bellweather-centre { grid-column: 3 / 6; grid-row: 4; color: var(--paper); background: var(--ink); }
 
 .action-tabs { display: grid; grid-template-columns: repeat(4, 1fr); margin-bottom: 18px; border: 1px solid var(--ink); }
 .action-tabs button { padding: 9px 4px; border: 0; border-right: 1px solid var(--ink); background: transparent; font: .58rem var(--mono); text-transform: uppercase; }
@@ -252,8 +256,7 @@ footer { display: flex; justify-content: space-between; padding: 18px 4px; font:
   .agenda-stack { grid-template-columns: 1fr; }
   .party-board { grid-template-columns: 1fr 1fr; }
   .latest-action { grid-template-columns: 1fr; align-items: start; }
-  .district-map { display: flex; min-height: 0; overflow-x: auto; scroll-snap-type: x mandatory; }
-  .district { min-width: 150px; min-height: 130px; scroll-snap-align: start; }
+
   .year-archive li { grid-template-columns: 1fr; }
 }
 

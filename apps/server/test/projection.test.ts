@@ -55,8 +55,8 @@ describe("yearly game projections", () => {
         operation: "organise",
         choice: {
           operation: "organise",
-          sourceDistrictId: "harbormouth",
-          destinationDistrictId: "cloverfield"
+          sourceDistrictId: "grand-market",
+          destinationDistrictId: "northgate"
         }
       }
     });
@@ -91,7 +91,7 @@ describe("yearly game projections", () => {
           play: {
             cardType: "bonus",
             bonusCardId: "honeycomb-waggle-route",
-            choice: { operation: "organise", destinationDistrictId: "cloverfield" }
+            choice: { operation: "organise", destinationDistrictId: "northgate" }
           }
         }
       }]

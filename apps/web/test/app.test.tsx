@@ -141,7 +141,7 @@ describe("yearly browser play surface", () => {
     render(<DistrictMap view={view} />);
     expect(screen.getAllByRole("article")).toHaveLength(16);
     expect(screen.getByLabelText("Bellweather Centre: 0 of 3 Support spaces occupied")).toBeTruthy();
-    expect(screen.getByLabelText("Harbormouth: 6 of 6 Support spaces occupied")).toBeTruthy();
+    expect(screen.getByLabelText("Grand Market: 6 of 6 Support spaces occupied")).toBeTruthy();
   });
 
   it("renders every latest Support change as its own accessible map glyph", async () => {
@@ -153,11 +153,11 @@ describe("yearly browser play surface", () => {
           {
             type: "move",
             partyId: "honeycomb",
-            sourceDistrictId: "harbormouth",
-            destinationDistrictId: "cloverfield"
+            sourceDistrictId: "grand-market",
+            destinationDistrictId: "northgate"
           },
-          { type: "add", partyId: "honeycomb", destinationDistrictId: "cloverfield" },
-          { type: "add", partyId: "honeycomb", destinationDistrictId: "cloverfield" }
+          { type: "add", partyId: "honeycomb", destinationDistrictId: "northgate" },
+          { type: "add", partyId: "honeycomb", destinationDistrictId: "northgate" }
         ]}
       />
     );
@@ -165,7 +165,7 @@ describe("yearly browser play surface", () => {
       expect(document.querySelectorAll('[data-map-change="move"]')).toHaveLength(1);
       expect(document.querySelectorAll('[data-map-change="add"]')).toHaveLength(2);
     });
-    expect(within(screen.getByLabelText("Latest map changes")).getAllByText("Honeycomb added to Cloverfield")).toHaveLength(2);
+    expect(within(screen.getByLabelText("Latest map changes")).getAllByText("Honeycomb added to Northgate")).toHaveLength(2);
   });
 
   it("separates Support change glyphs from different parties at one district", async () => {
@@ -174,9 +174,9 @@ describe("yearly browser play surface", () => {
       <DistrictMap
         view={view}
         supportChanges={[
-          { type: "add", partyId: "honeycomb", destinationDistrictId: "cloverfield" },
-          { type: "remove", partyId: "foxglove", sourceDistrictId: "cloverfield" },
-          { type: "add", partyId: "riverworks", destinationDistrictId: "cloverfield" }
+          { type: "add", partyId: "honeycomb", destinationDistrictId: "northgate" },
+          { type: "remove", partyId: "foxglove", sourceDistrictId: "northgate" },
+          { type: "add", partyId: "riverworks", destinationDistrictId: "northgate" }
         ]}
       />
     );
@@ -232,7 +232,7 @@ describe("yearly browser play surface", () => {
       supportChanges: [{
         type: "add",
         partyId: "honeycomb",
-        destinationDistrictId: "cloverfield"
+        destinationDistrictId: "northgate"
       }]
     })];
     view.resolvedOperations = [{
@@ -244,14 +244,14 @@ describe("yearly browser play surface", () => {
       operation: "rally",
       bonusCardId: null,
       bonusHomePartyId: null,
-      choice: { operation: "rally", districtId: "cloverfield" },
+      choice: { operation: "rally", districtId: "northgate" },
       bonusCardReturnedHome: false
     }];
     rerender(<GameDesk view={view} ownSeat={undefined} ownSeatId={undefined} spectator busy={false} onCommand={async () => true} />);
     latest = screen.getByLabelText("Latest Lobby action");
     expect(within(latest).getByText("Player 1 operated Honeycomb Cooperative")).toBeTruthy();
     expect(within(latest).getByText("Rally")).toBeTruthy();
-    expect(within(latest).getByText("Honeycomb added to Cloverfield")).toBeTruthy();
+    expect(within(latest).getByText("Honeycomb added to Northgate")).toBeTruthy();
   });
 
   it("shows exact public party piles and Bonus card locations", () => {
@@ -326,10 +326,10 @@ describe("yearly browser play surface", () => {
     render(
       <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={onCommand} />
     );
-    fireEvent.click(screen.getByLabelText("Harbormouth: 6 of 6 Support spaces occupied"));
+    fireEvent.click(screen.getByLabelText("Grand Market: 6 of 6 Support spaces occupied"));
     const destinationField = screen.getByLabelText("Destination").parentElement!;
     fireEvent.click(within(destinationField).getByRole("button", { name: "Select on map" }));
-    fireEvent.click(screen.getByLabelText("Cloverfield: 0 of 4 Support spaces occupied"));
+    fireEvent.click(screen.getByLabelText("Northgate: 0 of 6 Support spaces occupied"));
     expect(screen.getByText("Ready to resolve this card.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Resolve organise" }));
     await waitFor(() => expect(onCommand).toHaveBeenCalledWith({
@@ -342,8 +342,8 @@ describe("yearly browser play surface", () => {
           operation: "organise",
           choice: {
             operation: "organise",
-            sourceDistrictId: "harbormouth",
-            destinationDistrictId: "cloverfield"
+            sourceDistrictId: "grand-market",
+            destinationDistrictId: "northgate"
           }
         }
       }
@@ -355,7 +355,7 @@ describe("yearly browser play surface", () => {
       initializeGame(configuration(2), random).state,
       ["night-parliament", "old-shell", "foxglove", "riverworks"]
     );
-    state.support.cloverfield["night-parliament"] = 1;
+    state.support["northgate"]["night-parliament"] = 1;
     state.bonusCards["night-parliament-quiet-hours"] = {
       zone: "hand",
       seatId: "seat-1"
@@ -371,12 +371,12 @@ describe("yearly browser play surface", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: /Quiet Hours Bonus/ }));
     fireEvent.change(screen.getByLabelText("Rally district"), {
-      target: { value: "cloverfield" }
+      target: { value: "northgate" }
     });
     const quietHoursField = screen.getByLabelText("Quiet Hours district").parentElement!;
     fireEvent.click(within(quietHoursField).getByRole("button", { name: "Select on map" }));
     expect(
-      screen.getByLabelText("Harbormouth: 6 of 6 Support spaces occupied").getAttribute("aria-disabled")
+      screen.getByLabelText("Grand Market: 6 of 6 Support spaces occupied").getAttribute("aria-disabled")
     ).toBe("true");
     fireEvent.click(screen.getByLabelText("Bellweather Centre: 0 of 3 Support spaces occupied"));
 
@@ -392,7 +392,7 @@ describe("yearly browser play surface", () => {
           bonusCardId: "night-parliament-quiet-hours",
           choice: {
             operation: "rally",
-            districtId: "cloverfield",
+            districtId: "northgate",
             bonusDistrictId: "bellweather-centre"
           }
         }
@@ -427,7 +427,7 @@ describe("yearly browser play surface", () => {
 
   it("submits Every Bee Counts without extra choices", () => {
     const state = sixPartyState();
-    state.support.northreach.honeycomb = 1;
+    state.support["canal-ward"].honeycomb = 1;
     const { onSubmit } = renderUnboundComposer(
       state,
       "honeycomb",
@@ -444,10 +444,20 @@ describe("yearly browser play surface", () => {
     });
   });
 
+  it("offers an off-home Bonus at an unrelated open party", () => {
+    const state = sixPartyState();
+    state.support.harbormouth = { foxglove: 1 };
+    const { onSubmit } = renderUnboundComposer(state, "foxglove", "honeycomb-every-bee-counts");
+    fireEvent.click(screen.getByRole("button", { name: /Every Bee Counts Bonus/ }));
+    expect(screen.getByText("First Court Honeycomb.")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Resolve Every Bee Counts" }));
+    expect(onSubmit).toHaveBeenCalledWith({ cardType: "bonus", bonusCardId: "honeycomb-every-bee-counts", choice: { effect: "every_bee_counts" } });
+  });
+
   it("submits a partial Institutional Memory choice", () => {
     const state = sixPartyState();
     state.support.ironwood = {};
-    state.support.cloverfield.honeycomb = 1;
+    state.support["northgate"].honeycomb = 1;
     state.electionHistory = [{
       scoringCards: [{
         seatId: "seat-1",
@@ -465,9 +475,10 @@ describe("yearly browser play surface", () => {
     fireEvent.change(screen.getByLabelText("Revealed scoring card"), {
       target: { value: "SC-01" }
     });
-    fireEvent.change(screen.getByLabelText("Honeycomb to Ironwood"), {
-      target: { value: "cloverfield" }
+    fireEvent.change(screen.getByLabelText("Urban · Honeycomb source"), {
+      target: { value: "northgate" }
     });
+    fireEvent.change(screen.getByLabelText("Urban destination"), { target: { value: "ironwood" } });
     fireEvent.click(screen.getByRole("button", { name: "Resolve Institutional Memory" }));
     expect(onSubmit).toHaveBeenCalledWith({
       cardType: "bonus",
@@ -475,7 +486,7 @@ describe("yearly browser play surface", () => {
       choice: {
         effect: "institutional_memory",
         scoringCardId: "SC-01",
-        moves: [{ objectiveIndex: 0, sourceDistrictId: "cloverfield" }]
+        moves: [{ objectiveIndex: 0, sourceDistrictId: "northgate", destinationDistrictId: "ironwood" }]
       }
     });
   });
@@ -503,8 +514,8 @@ describe("yearly browser play surface", () => {
 
   it("submits Mass Transit in movement order toward its endpoint", () => {
     const state = sixPartyState();
-    state.support.northreach = { honeycomb: 1 };
-    state.support.cloverfield = {};
+    state.support["canal-ward"] = { honeycomb: 1 };
+    state.support["northgate"] = {};
     const { onSubmit } = renderUnboundComposer(
       state,
       "riverworks",
@@ -513,13 +524,13 @@ describe("yearly browser play surface", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /Mass Transit Bonus/ }));
     fireEvent.change(screen.getByLabelText("District 1"), {
-      target: { value: "northreach" }
+      target: { value: "canal-ward" }
     });
     fireEvent.change(screen.getByLabelText("Support moved onward"), {
       target: { value: "honeycomb" }
     });
     fireEvent.change(screen.getByLabelText("District 2 · free endpoint"), {
-      target: { value: "cloverfield" }
+      target: { value: "northgate" }
     });
     fireEvent.click(screen.getByRole("button", { name: "Resolve Mass Transit" }));
     expect(onSubmit).toHaveBeenCalledWith({
@@ -527,7 +538,7 @@ describe("yearly browser play surface", () => {
       bonusCardId: "riverworks-mass-transit",
       choice: {
         effect: "mass_transit",
-        districtIds: ["northreach", "cloverfield"],
+        districtIds: ["canal-ward", "northgate"],
         supportPartyIds: ["honeycomb"]
       }
     });
@@ -535,7 +546,7 @@ describe("yearly browser play surface", () => {
 
   it("requires one Empty Every Nest destination per qualifying district", () => {
     const state = sixPartyState();
-    state.support.harbormouth["many-wings"] = 2;
+    state.support["grand-market"]["many-wings"] = 2;
     const { onSubmit } = renderUnboundComposer(
       state,
       "many-wings",
@@ -544,7 +555,7 @@ describe("yearly browser play surface", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /Empty Every Nest Bonus/ }));
     const destinations = screen.getByLabelText("Different destination districts") as HTMLSelectElement;
-    within(destinations).getByRole("option", { name: "Northreach" }).setAttribute("selected", "");
+    within(destinations).getByRole("option", { name: "Canal Ward" }).setAttribute("selected", "");
     fireEvent.change(destinations);
     fireEvent.click(screen.getByRole("button", { name: "Resolve Empty Every Nest" }));
     expect(onSubmit).toHaveBeenCalledWith({
@@ -552,7 +563,7 @@ describe("yearly browser play surface", () => {
       bonusCardId: "many-wings-empty-every-nest",
       choice: {
         effect: "empty_every_nest",
-        destinationDistrictIds: ["northreach"]
+        destinationDistrictIds: ["canal-ward"]
       }
     });
   });
@@ -611,8 +622,8 @@ describe("yearly browser play surface", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: /^smear/ }));
-    fireEvent.click(screen.getByRole("button", { name: "Old Shell Support in Harbormouth: 1" }));
-    expect((screen.getByLabelText("District") as HTMLSelectElement).value).toBe("harbormouth");
+    fireEvent.click(screen.getByRole("button", { name: "Old Shell Support in Grand Market: 1" }));
+    expect((screen.getByLabelText("District") as HTMLSelectElement).value).toBe("grand-market");
     expect((screen.getByLabelText("Rival party") as HTMLSelectElement).value).toBe("old-shell");
   });
 
@@ -708,7 +719,7 @@ describe("yearly browser play surface", () => {
       draws: {},
       scores: [{
         playerId: "seat-1",
-        baseDistrictScore: 2,
+        baseRegionScore: 2,
         seatModifier: 1,
         capitalMatches: 3,
         capitalScore: 3,
@@ -738,7 +749,7 @@ describe("yearly browser play surface", () => {
       draws: {},
       scores: [{
         playerId: "seat-1",
-        baseDistrictScore: 2,
+        baseRegionScore: 2,
         seatModifier: 0,
         capitalMatches: 2,
         capitalScore: 1,
@@ -827,8 +838,8 @@ function organiseAction(seatId: string): GameAction {
       operation: "organise",
       choice: {
         operation: "organise",
-        sourceDistrictId: "harbormouth",
-        destinationDistrictId: "cloverfield"
+        sourceDistrictId: "grand-market",
+        destinationDistrictId: "northgate"
       }
     }
   };

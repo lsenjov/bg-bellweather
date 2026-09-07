@@ -2,6 +2,9 @@ import {
   BONUS_CARDS_BY_ID,
   DISTRICTS,
   DISTRICTS_BY_ID,
+  MAP_BRIDGES,
+  REGION_NAMES,
+  type RegionId,
   ELECTION_YEARS,
   FINAL_ELECTION_YEAR,
   FIRMS_BY_ID,
@@ -83,6 +86,7 @@ interface OperationDraft {
 interface UnboundDraft {
   scoringCardId: ScoringCardId | "";
   objectiveSourceDistrictIds: [string, string, string];
+  objectiveDestinationDistrictIds: [string, string, string];
   targetPartyId: PartyId | "";
   firmId: FirmId | "";
   transitDistrictIds: string[];
@@ -525,6 +529,7 @@ function PrivateFolio(props: {
                   key={cardId}
                   cardId={cardId as ScoringCardId}
                   capital={index === 0}
+                  seatModifiers={props.view.seats.length >= 4}
                   electionNumber={slotIndex + 1}
                 />
               ))
@@ -545,14 +550,16 @@ function Metric(props: { label: string; value: number; accent?: boolean; dark?: 
 function ScoringCard(props: {
   cardId: ScoringCardId;
   capital: boolean;
+  seatModifiers: boolean;
   electionNumber: number;
 }) {
   const card = SCORING_CARDS_BY_ID[props.cardId];
   return (
     <article className="agenda-card">
-      <span>Election {props.electionNumber} · {props.capital ? "Capital card" : "District card"} · {card.id}</span>
-      <strong>{card.objectives.map((objective) => PARTIES_BY_ID[objective.partyId].shortName).join(" · ")}</strong>
-      <small>{card.objectives.map((objective) => DISTRICTS.find((district) => district.id === objective.districtId)?.name).join(" / ")}</small>
+      <span>Election {props.electionNumber} · {props.capital ? "Capital card" : "Region card"} · {card.id}</span>
+      {card.objectives.map((objective) => <strong key={objective.regionId}>{REGION_NAMES[objective.regionId]} · {PARTIES_BY_ID[objective.partyId].shortName}</strong>)}
+      <small>Score the middle regional total.</small>
+      {props.seatModifiers && <small>Gain {card.gain.replaceAll("-", " ")} · Lose {card.lose.replaceAll("-", " ")}</small>}
     </article>
   );
 }
@@ -742,7 +749,23 @@ export function DistrictMap({
 }) {
   const targeting = interaction?.onDistrictClick !== undefined;
   return (
-    <div className="district-map" aria-label="Bellweather district map">
+    <div className="district-map-scroll"><div className="district-map" aria-label="Bellweather district map">
+      <svg className="district-terrain" viewBox="40 105 1108 583" aria-hidden="true">
+        <rect x="40" y="105" width="1108" height="583" fill="#d9edf5" />
+        {MAP_BRIDGES.map((bridge) => <g key={bridge.districtIds.join("-")} data-bridge={bridge.districtIds.join(":")}>
+          <path d={`M ${bridge.points[0].join(",")} L ${bridge.points[1].join(",")}`} stroke="#19354b" strokeWidth="14" />
+          <path d={`M ${bridge.points[0].join(",")} L ${bridge.points[1].join(",")}`} stroke="#fff5d8" strokeWidth="9" />
+        </g>)}
+        {DISTRICTS.map((district) => <polygon key={district.id}
+          points={district.polygon.map((p) => p.join(",")).join(" ")}
+          fill={district.regionId === "urban" ? "#d5e7f5" : district.regionId === "mixed" ? "#dbeaca" : district.regionId === "outlying" ? "#f5e7ac" : "#e4dfea"}
+          stroke={interaction?.selectedDistrictIds?.includes(district.id) ? "#bd542f" : "#19354b"}
+          strokeWidth={interaction?.selectedDistrictIds?.includes(district.id) ? 5 : 2}
+          className={interaction?.districtIds?.includes(district.id) ? "terrain-selectable" : ""}
+          onClick={() => { if (interaction?.districtIds?.includes(district.id)) interaction.onDistrictClick?.(district.id); }}
+        />)}
+        <g className="lake-labels"><text x="599" y="239">Upper Mere</text><text x="449" y="376">Willow Lake</text><text x="789" y="416">Longmere</text></g>
+      </svg>
       {DISTRICTS.map((district) => {
         const support = view.support[district.id] ?? {};
         const occupied = PARTIES.reduce((total, party) => total + (support[party.id] ?? 0), 0);
@@ -753,6 +776,7 @@ export function DistrictMap({
           <article
             key={district.id}
             data-district-id={district.id}
+            style={{ left: `${(district.label[0] - 40) / 1108 * 100}%`, top: `${(district.label[1] - 130) / 583 * 100}%` }}
             className={`district district-${district.id} ${targeting ? "table-target" : ""} ${targeting && !selectable ? "table-unavailable" : ""} ${selectable ? "table-selectable" : ""} ${selected ? "table-selected" : ""}`}
             aria-label={targeting ? undefined : summary}
           >
@@ -765,9 +789,9 @@ export function DistrictMap({
                 aria-pressed={selected}
                 tabIndex={selectable ? 0 : -1}
                 onClick={() => { if (selectable) interaction?.onDistrictClick?.(district.id); }}
-              ><strong>{district.name}</strong><small>{occupied}/{district.capacity} support</small></button>
+              ><strong>{district.id === "bellweather-centre" ? "Bellweather" : district.name}</strong><small>{district.regionId === null ? "Centre" : REGION_NAMES[district.regionId]} · {occupied}/{district.capacity}</small></button>
             ) : (
-              <div className="district-heading"><strong>{district.name}</strong><small>{occupied}/{district.capacity} support</small></div>
+              <div className="district-heading"><strong>{district.id === "bellweather-centre" ? "Bellweather" : district.name}</strong><small>{district.regionId === null ? "Centre" : REGION_NAMES[district.regionId]} · {occupied}/{district.capacity}</small></div>
             )}
             <div className="support-groups">
               {PARTIES.map((party) => {
@@ -798,7 +822,7 @@ export function DistrictMap({
         );
       })}
       <MapChangeLayer supportChanges={supportChanges} />
-    </div>
+    </div></div>
   );
 }
 
@@ -1322,8 +1346,8 @@ export function OperationComposer(props: {
     [props.view, operationState, props.seat, props.partyId, draft]
   );
   const openPartyIds = PARTIES.map((party) => party.id).filter((partyId) => props.view.parties[partyId]?.status === "open");
-  const playableBonusCardIds = (props.seat.bonusCardIds ?? []).filter((cardId) =>
-    canPlayBonusCardAtParty(props.view, cardId, props.partyId)
+  const playableBonusCardIds = (props.seat.bonusCardIds ?? []).filter(() =>
+    props.view.parties[props.partyId]?.status === "open"
   );
   const partyLocked = sequence !== null;
   const chooseOperation = (operation: OperationId) => {
@@ -1454,7 +1478,7 @@ function OperationDraftCard(props: {
       {props.draft.operation === "rally" && <DistrictSelect label="Rally district" value={props.draft.districtId} active={props.armedTarget === "districtId"} onArm={() => props.onArm("districtId")} onChange={(districtId) => props.onUpdate({ districtId })} />}
       {props.draft.operation === "smear" && <div className="field-grid"><DistrictSelect label="District" value={props.draft.districtId} active={props.armedTarget === "districtId"} onArm={() => props.onArm("districtId")} onChange={(districtId) => props.onUpdate({ districtId })} /><PartyField label="Rival party" value={props.draft.rivalParty} actingParty={props.partyId} active={props.armedTarget === "rivalParty"} onArm={() => props.onArm("rivalParty")} onChange={(rivalParty) => { if (rivalParty !== "") props.onUpdate({ rivalParty }); }} /></div>}
       {props.draft.operation === "court" && <PartyField label="Court target" value={props.draft.targetParty} actingParty={props.partyId} active={props.armedTarget === "targetParty"} onArm={() => props.onArm("targetParty")} onChange={(targetParty) => { if (targetParty !== "") props.onUpdate({ targetParty }); }} />}
-      {bonus !== null && <p className="bonus-check"><span><b>{bonus.name}</b>{bonus.effect}</span></p>}
+      {bonus !== null && <p className="bonus-check"><span><b>{bonus.name}</b>{bonus.effect}{bonus.homePartyId !== props.partyId && <small>First Court {PARTIES_BY_ID[bonus.homePartyId].shortName}.</small>}</span></p>}
       {bonus !== null && <BonusFields draft={props.draft} homePartyId={bonus.homePartyId} actingPartyId={props.partyId} armedTarget={props.armedTarget} onArm={props.onArm} onUpdate={props.onUpdate} />}
     </fieldset>
   );
@@ -1499,7 +1523,7 @@ function UnboundDraftCard(props: {
   return (
     <fieldset className="operation-card">
       <legend>{props.index + 1}. Unbound</legend>
-      <p className="bonus-check"><span><b>{card.name}</b>{card.effect}</span></p>
+      <p className="bonus-check"><span><b>{card.name}</b>{card.effect}{card.homePartyId !== props.partyId && <small>First Court {PARTIES_BY_ID[card.homePartyId].shortName}.</small>}</span></p>
       {props.cardId === "honeycomb-every-bee-counts" && (
         <p className="empty-copy">This card resolves every eligible district automatically.</p>
       )}
@@ -1512,7 +1536,8 @@ function UnboundDraftCard(props: {
               value={props.draft.scoringCardId}
               onChange={(event) => props.onUpdate({
                 scoringCardId: event.target.value as ScoringCardId | "",
-                objectiveSourceDistrictIds: ["", "", ""]
+                objectiveSourceDistrictIds: ["", "", ""],
+                objectiveDestinationDistrictIds: ["", "", ""]
               })}
             >
               <option value="">Choose revealed card</option>
@@ -1522,14 +1547,24 @@ function UnboundDraftCard(props: {
             </select>
           </label>
           {scoringCard?.objectives.map((objective, index) => (
-            <DistrictSelect
-              key={`${scoringCard.id}-${index}`}
-              label={`${PARTIES_BY_ID[objective.partyId].shortName} to ${DISTRICTS_BY_ID[objective.districtId].name}`}
-              optional
-              emptyLabel="Skip objective"
-              value={props.draft.objectiveSourceDistrictIds[index]!}
-              onChange={(districtId) => updateObjectiveSource(index, districtId)}
-            />
+            <div className="field-grid" key={`${scoringCard.id}-${index}`}>
+              <DistrictSelect
+                label={`${REGION_NAMES[objective.regionId]} · ${PARTIES_BY_ID[objective.partyId].shortName} source`}
+                optional emptyLabel="Skip objective"
+                value={props.draft.objectiveSourceDistrictIds[index]!}
+                onChange={(districtId) => updateObjectiveSource(index, districtId)}
+              />
+              <DistrictSelect
+                label={`${REGION_NAMES[objective.regionId]} destination`}
+                regionId={objective.regionId}
+                value={props.draft.objectiveDestinationDistrictIds[index]!}
+                onChange={(districtId) => {
+                  const next = [...props.draft.objectiveDestinationDistrictIds] as [string, string, string];
+                  next[index] = districtId;
+                  props.onUpdate({ objectiveDestinationDistrictIds: next });
+                }}
+              />
+            </div>
           ))}
         </div>
       )}
@@ -1673,9 +1708,9 @@ function MultiDistrictSelect(props: {
   return <label htmlFor={id}>{props.label}<select id={id} multiple value={props.value} onChange={(event) => props.onChange([...event.currentTarget.selectedOptions].map((option) => option.value))}>{DISTRICTS.map((district) => <option key={district.id} value={district.id}>{district.name}</option>)}</select></label>;
 }
 
-function DistrictSelect(props: { label: string; value: string; optional?: boolean; emptyLabel?: string; active?: boolean; onArm?(): void; onChange(value: string): void }) {
+function DistrictSelect(props: { regionId?: RegionId; label: string; value: string; optional?: boolean; emptyLabel?: string; active?: boolean; onArm?(): void; onChange(value: string): void }) {
   const id = useId();
-  return <div className={`target-field ${props.active ? "target-field-active" : ""}`}><div className="target-field-heading"><label htmlFor={id}>{props.label}</label>{props.onArm !== undefined && <button type="button" className="target-arm" onClick={props.onArm}>Select on map</button>}</div><select id={id} value={props.value} onFocus={props.onArm} onChange={(event) => props.onChange(event.target.value)}><option value="">{props.emptyLabel ?? (props.optional ? "None / recovery" : "Choose district")}</option>{DISTRICTS.map((district) => <option key={district.id} value={district.id}>{district.name}</option>)}</select></div>;
+  return <div className={`target-field ${props.active ? "target-field-active" : ""}`}><div className="target-field-heading"><label htmlFor={id}>{props.label}</label>{props.onArm !== undefined && <button type="button" className="target-arm" onClick={props.onArm}>Select on map</button>}</div><select id={id} value={props.value} onFocus={props.onArm} onChange={(event) => props.onChange(event.target.value)}><option value="">{props.emptyLabel ?? (props.optional ? "None / recovery" : "Choose district")}</option>{DISTRICTS.filter((district) => props.regionId === undefined || district.regionId === props.regionId).map((district) => <option key={district.id} value={district.id}>{district.name}</option>)}</select></div>;
 }
 
 function PartyField(props: { label: string; value: PartyId | ""; optional?: boolean; actingParty: PartyId; allowActingParty?: boolean; active?: boolean; onArm?(): void; onChange(value: PartyId | ""): void }) {
@@ -1700,7 +1735,7 @@ function ElectionBulletin({ view }: { view: GameView }) {
       <div className="election-scores">
         {election.scores.map((score) => {
           const seat = view.seats.find((candidate) => candidate.id === score.playerId);
-          return <article key={score.playerId}><span>{seat?.displayName ?? score.playerId}</span><b>{signed(score.pointsChange)} points</b><small>District {score.baseDistrictScore} · Seat {signed(score.seatModifier)} · Capital {score.capitalScore} ({score.capitalMatches}/3){score.finalCardCount === null ? "" : ` · Final cards ${score.finalCardCount} · Rank ${signed(score.finalCardRankBonus)}`}</small><strong>{score.resultingPoints} total</strong></article>;
+          return <article key={score.playerId}><span>{seat?.displayName ?? score.playerId}</span><b>{signed(score.pointsChange)} points</b><small>Regions {score.baseRegionScore} · Seat {signed(score.seatModifier)} · Capital {score.capitalScore} ({score.capitalMatches}/3){score.finalCardCount === null ? "" : ` · Final cards ${score.finalCardCount} · Rank ${signed(score.finalCardRankBonus)}`}</small><strong>{score.resultingPoints} total</strong></article>;
         })}
       </div>
     </section>
@@ -1851,7 +1886,8 @@ function unboundDraftChoice(
       if (sourceDistrictId === "") return [];
       return [{
         objectiveIndex: index as 0 | 1 | 2,
-        sourceDistrictId: sourceDistrictId as DistrictId
+        sourceDistrictId: sourceDistrictId as DistrictId,
+        destinationDistrictId: draft.objectiveDestinationDistrictIds[index] as DistrictId
       }];
     });
     if (moves.length === 0) {
@@ -1860,9 +1896,10 @@ function unboundDraftChoice(
     const legal = moves.every((move) => {
       const objective = scoringCard.objectives[move.objectiveIndex];
       return (
-        move.sourceDistrictId !== objective.districtId &&
+        DISTRICTS_BY_ID[move.destinationDistrictId]?.regionId === objective.regionId &&
+        move.sourceDistrictId !== move.destinationDistrictId &&
         (view.support[move.sourceDistrictId][objective.partyId] ?? 0) > 0 &&
-        districtHasFreeSpot(view, objective.districtId)
+        districtHasFreeSpot(view, move.destinationDistrictId)
       );
     });
     return legal
@@ -2202,6 +2239,7 @@ function emptyOperationDraft(
     unbound: {
       scoringCardId: "",
       objectiveSourceDistrictIds: ["", "", ""],
+                objectiveDestinationDistrictIds: ["", "", ""],
       targetPartyId: "",
       firmId: "",
       transitDistrictIds: ["", ""],
@@ -2211,17 +2249,6 @@ function emptyOperationDraft(
   };
 }
 
-function canPlayBonusCardAtParty(
-  view: GameView,
-  bonusCardId: BonusCardId,
-  partyId: PartyId
-): boolean {
-  const homePartyId = BONUS_CARDS_BY_ID[bonusCardId].homePartyId;
-  return partyId === homePartyId || (
-    view.coalitionTargets[homePartyId] === partyId &&
-    view.coalitionTargets[partyId] === homePartyId
-  );
-}
 
 function toOperationState(view: GameView): OperationState {
   return {

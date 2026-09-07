@@ -220,8 +220,8 @@ describe("game server", () => {
         operation: "organise",
         choice: {
           operation: "organise",
-          sourceDistrictId: "harbormouth",
-          destinationDistrictId: "cloverfield"
+          sourceDistrictId: "grand-market",
+          destinationDistrictId: "northgate"
         }
       }
     });
