@@ -29,6 +29,7 @@ export type OperationChoice =
       operation: "organise";
       destinationDistrictId: string;
       sourceDistrictId?: string;
+      count?: number;
     }
   | {
       operation: "rally";
@@ -46,7 +47,6 @@ export type OperationChoice =
       operation: "court";
       targetParty: Party;
       bonusDistrictId?: string;
-      bonusSourceDistrictId?: string;
       bonusCourtSourceParty?: Party;
     };
 
@@ -253,11 +253,16 @@ function applyBaseline(
 ): BaselineResult {
   const wasAbsent = supportCount(state, party) === 0;
   if (choice.operation === "organise") {
+    const count = choice.count ?? 1;
+    if (!Number.isSafeInteger(count) || count < 1 || (!allowCanalNetwork && count !== 1)) {
+      return failed(wasAbsent, "Only Canal Network can move multiple Support; choose a positive whole number");
+    }
     const destination = state.districts[choice.destinationDistrictId];
-    if (destination === undefined || !hasFreeSpot(destination)) {
+    if (destination === undefined || destination.capacity - districtTotal(destination) < count) {
       return failed(wasAbsent, "Organise requires a free destination spot");
     }
     if (wasAbsent) {
+      if (allowCanalNetwork) return failed(wasAbsent, "Canal Network requires existing Support");
       addSupport(destination, party, supportChanges);
       return {
         applied: true,
@@ -273,7 +278,7 @@ function applyBaseline(
     if (
       source === undefined ||
       source.id === destination.id ||
-      (source.support[party] ?? 0) < 1
+      (source.support[party] ?? 0) < count
     ) {
       return failed(wasAbsent, "Organise requires party Support in a different source");
     }
@@ -286,7 +291,9 @@ function applyBaseline(
     ) {
       return failed(wasAbsent, "Organise destination must neighbor the source");
     }
-    moveSupport(source, destination, party, supportChanges);
+    for (let index = 0; index < count; index += 1) {
+      moveSupport(source, destination, party, supportChanges);
+    }
     return {
       applied: true,
       failure: null,
@@ -379,24 +386,13 @@ function applyBonus(
     );
   }
   if (bonusCardId === "honeycomb-common-cause" && choice.operation === "court") {
-    const source = state.districts[choice.bonusSourceDistrictId ?? ""];
     const destination = state.districts[choice.bonusDistrictId ?? ""];
-    if (
-      state.coalitionTargets[party] !== choice.targetParty ||
-      source === undefined ||
-      destination === undefined ||
-      source.id === destination.id ||
-      (source.support[party] ?? 0) < 1 ||
-      (destination.support[choice.targetParty] ?? 0) < 1 ||
-      !hasFreeSpot(destination)
-    ) {
-      return bonusFailed(
-        "Common Cause requires the acting party's selected Coalition Target, an acting-party source, and a distinct free district containing that target's Support"
-      );
+    if (destination === undefined || (destination.support[choice.targetParty] ?? 0) < 1) {
+      return bonusFailed("Common Cause requires a district containing selected-party Support");
     }
-    moveSupport(source, destination, party, supportChanges);
-    return bonusApplied();
+    return addBonusSupport(state, destination.id, party, null, supportChanges);
   }
+
   if (bonusCardId === "old-shell-dig-in") {
     return baseline.wasAbsent
       ? bonusFailed("Dig In requires a movement Organise")

@@ -89,18 +89,48 @@ describe("operation baselines", () => {
   it("adds off-home Court before the printed Court and rolls back both on failure", () => {
     const initial = state({ a: { foxglove: 1 }, b: { honeycomb: 1 } });
     const request = { party: "foxglove", bonusCardId: "honeycomb-common-cause", choice: {
-      operation: "court", targetParty: "honeycomb", bonusSourceDistrictId: "a", bonusDistrictId: "b"
+      operation: "court", targetParty: "honeycomb", bonusDistrictId: "b"
     }} as const;
     const resolved = resolveOperation(initial, request);
     expect(resolved.bonusApplied).toBe(true);
     expect(resolved.state.courtSupport.foxglove.honeycomb).toBe(2);
     expect(resolved.state.courtSupport.honeycomb.foxglove).toBe(2);
-    const failed = resolveOperation(initial, { ...request, choice: { ...request.choice, bonusSourceDistrictId: "c" } });
+    const failed = resolveOperation(initial, { ...request, choice: { ...request.choice, bonusDistrictId: "c" } });
     expect(failed.baselineApplied).toBe(false);
     expect(failed.state).toEqual(initial);
     const tied = resolveOperation(initial, { ...request, choice: { ...request.choice, targetParty: "old-shell" } });
     expect(tied.baselineApplied).toBe(false);
     expect(tied.state).toEqual(initial);
+  });
+
+  it("adds Common Cause Support even when Court does not change the acting Target", () => {
+    const initial = state({ c: { foxglove: 1 } });
+    initial.courtSupport.honeycomb["old-shell"] = 3;
+    initial.coalitionTargets.honeycomb = "old-shell";
+    const result = resolveOperation(initial, { party: "honeycomb", bonusCardId: "honeycomb-common-cause",
+      choice: { operation: "court", targetParty: "foxglove", bonusDistrictId: "c" } });
+    expect(result.bonusApplied).toBe(true);
+    expect(result.state.coalitionTargets.honeycomb).toBe("old-shell");
+    expect(result.state.districts.c?.support.honeycomb).toBe(1);
+  });
+
+  it("moves a chosen Canal Network group and rejects invalid quantities and broken routes atomically", () => {
+    const initial = state({ a: { riverworks: 3 }, b: { riverworks: 1 } });
+    const request = { party: "riverworks", bonusCardId: "riverworks-canal-network",
+      choice: { operation: "organise", sourceDistrictId: "a", destinationDistrictId: "c", count: 2 } } as const;
+    const result = resolveOperation(initial, request);
+    expect(result.bonusApplied).toBe(true);
+    expect(result.state.districts.a?.support.riverworks).toBe(1);
+    expect(result.state.districts.b?.support.riverworks).toBe(1);
+    expect(result.state.districts.c?.support.riverworks).toBe(2);
+    for (const count of [0, -1, 1.5, 3, 4, NaN]) {
+      const failed = resolveOperation(initial, { ...request, choice: { ...request.choice, count } });
+      expect(failed.baselineApplied).toBe(false);
+      expect(failed.state).toEqual(initial);
+    }
+    const broken = state({ a: { riverworks: 3 } });
+    expect(resolveOperation(broken, request).state).toEqual(broken);
+    expect(resolveOperation(initial, { party: "riverworks", choice: request.choice }).baselineApplied).toBe(false);
   });
 
   it("moves the Coalition Target only when Court Support has a unique leader", () => {
@@ -327,14 +357,13 @@ describe("all twelve Operation-bound Bonus card actions", () => {
         choice: {
           operation: "court",
           targetParty: "foxglove",
-          bonusSourceDistrictId: "a",
           bonusDistrictId: "c"
         },
         bonusCardId: "honeycomb-common-cause"
       }
     );
     expect(cause.bonusApplied).toBe(true);
-    expect(cause.state.districts.a?.support.honeycomb).toBeUndefined();
+    expect(cause.state.districts.a?.support.honeycomb).toBe(1);
     expect(cause.state.districts.c?.support.honeycomb).toBe(1);
   });
 

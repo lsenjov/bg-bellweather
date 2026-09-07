@@ -1,5 +1,6 @@
 import {
   DISTRICT_IDS,
+  DISTRICTS_BY_ID,
   ELECTION_YEARS,
   PARTY_IDS,
   RULESET_VERSION,
@@ -380,6 +381,7 @@ describe("Lobby actions", () => {
       "many-wings-empty-every-nest",
       {
         effect: "empty_every_nest",
+        sourceDistrictIds: ["harbormouth", "grand-market"],
         destinationDistrictIds: ["orchard", "meadow"]
       }
     );
@@ -415,7 +417,7 @@ describe("Lobby actions", () => {
     expect(state).toEqual(before);
   });
 
-  it("allows Institutional Memory to complete a legal subset of a revealed card", () => {
+  it("requires Institutional Memory to add for all available objectives without moving existing Support", () => {
     let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
     clearSupport(state);
     state.support.coast.honeycomb = 1;
@@ -435,18 +437,55 @@ describe("Lobby actions", () => {
       {
         effect: "institutional_memory",
         scoringCardId: "SC-01",
-        moves: [
-          { objectiveIndex: 0, sourceDistrictId: "coast", destinationDistrictId: "ironwood" },
-          { objectiveIndex: 1, sourceDistrictId: "orchard", destinationDistrictId: "northgate" }
+        placements: [
+          { objectiveIndex: 0, destinationDistrictId: "ironwood" },
+          { objectiveIndex: 1, destinationDistrictId: "northgate" },
+          { objectiveIndex: 2, destinationDistrictId: "westfield" }
         ]
       }
     );
 
-    expect(state.support.coast.honeycomb).toBeUndefined();
+    expect(state.support.coast.honeycomb).toBe(1);
     expect(state.support.ironwood.honeycomb).toBe(1);
-    expect(state.support.orchard["old-shell"]).toBeUndefined();
+    expect(state.support.orchard["old-shell"]).toBe(1);
     expect(state.support.northgate["old-shell"]).toBe(1);
-    expect(state.support["westfield"].foxglove).toBeUndefined();
+    expect(state.support["westfield"].foxglove).toBe(1);
+  });
+
+  it("skips only full Institutional Memory regions and rejects omissions and duplicate objectives", () => {
+    const state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
+    clearSupport(state);
+    state.electionHistory = [{ scoringCards: [{ scoringCardIds: ["SC-01"] }] } as GameState["electionHistory"][number]];
+    for (const id of DISTRICT_IDS) {
+      if (DISTRICTS_BY_ID[id].regionId !== "urban") state.support[id].riverworks = DISTRICTS_BY_ID[id].capacity;
+    }
+    const choice = { effect: "institutional_memory", scoringCardId: "SC-01",
+      placements: [{ objectiveIndex: 0, destinationDistrictId: "ironwood" }] };
+    const result = playUnbound(structuredClone(state), "old-shell", "old-shell-institutional-memory", choice);
+    expect(result.support.ironwood.honeycomb).toBe(1);
+    expect(() => playUnbound(structuredClone(state), "old-shell", "old-shell-institutional-memory",
+      { ...choice, placements: [...choice.placements, ...choice.placements] })).toThrow("every objective");
+    state.support.northgate = {};
+    expect(() => playUnbound(structuredClone(state), "old-shell", "old-shell-institutional-memory", choice)).toThrow("every objective");
+    for (const id of DISTRICT_IDS) state.support[id] = { riverworks: DISTRICTS_BY_ID[id].capacity };
+    expect(() => playUnbound(structuredClone(state), "old-shell", "old-shell-institutional-memory", choice)).toThrow("at least once");
+  });
+
+  it("moves the maximum feasible nests and lets the player choose sources when space is scarce", () => {
+    const state = openAllParties(initializeGame(configuration(6), zeroRandom).state);
+    for (const id of DISTRICT_IDS) state.support[id] = { honeycomb: DISTRICTS_BY_ID[id].capacity };
+    state.support.harbormouth = { "many-wings": 2 };
+    state.support["grand-market"] = { "many-wings": 2 };
+    state.support.orchard = {};
+    const choice = { effect: "empty_every_nest", sourceDistrictIds: ["grand-market"], destinationDistrictIds: ["orchard"] };
+    const result = playUnbound(structuredClone(state), "many-wings", "many-wings-empty-every-nest", choice);
+    expect(result.support.harbormouth["many-wings"]).toBe(2);
+    expect(result.support["grand-market"]["many-wings"]).toBe(1);
+    expect(result.support.orchard["many-wings"]).toBe(1);
+    state.support.meadow = {};
+    expect(() => playUnbound(structuredClone(state), "many-wings", "many-wings-empty-every-nest", choice)).toThrow("maximum");
+    expect(() => playUnbound(structuredClone(state), "many-wings", "many-wings-empty-every-nest",
+      { ...choice, sourceDistrictIds: ["grand-market", "grand-market"], destinationDistrictIds: ["orchard", "meadow"] })).toThrow("maximum");
   });
 
   it("moves another player's Firm and pile with Shell Firm, then ends the action", () => {

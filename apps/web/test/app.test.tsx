@@ -425,6 +425,24 @@ describe("yearly browser play surface", () => {
     })).toBeTruthy();
   });
 
+  it("submits a chosen Canal Network quantity and prevents overfilling", () => {
+    const state = sixPartyState();
+    state.support["canal-ward"] = { riverworks: 3 };
+    state.support.northgate = {};
+    const { onSubmit } = renderUnboundComposer(state, "riverworks", "riverworks-canal-network");
+    fireEvent.click(screen.getByRole("button", { name: /Canal Network Bonus/ }));
+    fireEvent.change(screen.getByLabelText("Source"), { target: { value: "canal-ward" } });
+    fireEvent.change(screen.getByLabelText("Destination"), { target: { value: "northgate" } });
+    fireEvent.change(screen.getByLabelText("Support to move"), { target: { value: "5" } });
+    expect(screen.getByRole("button", { name: "Resolve Canal Network" }).hasAttribute("disabled")).toBe(true);
+    fireEvent.change(screen.getByLabelText("Support to move"), { target: { value: "2" } });
+    fireEvent.click(screen.getByRole("button", { name: "Resolve Canal Network" }));
+    expect(onSubmit).toHaveBeenCalledWith({
+      cardType: "bonus", bonusCardId: "riverworks-canal-network",
+      choice: { operation: "organise", sourceDistrictId: "canal-ward", destinationDistrictId: "northgate", count: 2 }
+    });
+  });
+
   it("submits Every Bee Counts without extra choices", () => {
     const state = sixPartyState();
     state.support["canal-ward"].honeycomb = 1;
@@ -454,7 +472,7 @@ describe("yearly browser play surface", () => {
     expect(onSubmit).toHaveBeenCalledWith({ cardType: "bonus", bonusCardId: "honeycomb-every-bee-counts", choice: { effect: "every_bee_counts" } });
   });
 
-  it("submits a partial Institutional Memory choice", () => {
+  it("requires destinations for all available Institutional Memory objectives", () => {
     const state = sixPartyState();
     state.support.ironwood = {};
     state.support["northgate"].honeycomb = 1;
@@ -475,10 +493,10 @@ describe("yearly browser play surface", () => {
     fireEvent.change(screen.getByLabelText("Revealed scoring card"), {
       target: { value: "SC-01" }
     });
-    fireEvent.change(screen.getByLabelText("Urban · Honeycomb source"), {
-      target: { value: "northgate" }
-    });
-    fireEvent.change(screen.getByLabelText("Urban destination"), { target: { value: "ironwood" } });
+    fireEvent.change(screen.getByLabelText("Urban · Honeycomb destination"), { target: { value: "ironwood" } });
+    expect(screen.getByRole("button", { name: "Resolve Institutional Memory" }).hasAttribute("disabled")).toBe(true);
+    fireEvent.change(screen.getByLabelText("Mixed · Old Shell destination"), { target: { value: "northgate" } });
+    fireEvent.change(screen.getByLabelText("Outlying · Foxglove destination"), { target: { value: "westfield" } });
     fireEvent.click(screen.getByRole("button", { name: "Resolve Institutional Memory" }));
     expect(onSubmit).toHaveBeenCalledWith({
       cardType: "bonus",
@@ -486,7 +504,7 @@ describe("yearly browser play surface", () => {
       choice: {
         effect: "institutional_memory",
         scoringCardId: "SC-01",
-        moves: [{ objectiveIndex: 0, sourceDistrictId: "northgate", destinationDistrictId: "ironwood" }]
+        placements: [{ objectiveIndex: 0, destinationDistrictId: "ironwood" }, { objectiveIndex: 1, destinationDistrictId: "northgate" }, { objectiveIndex: 2, destinationDistrictId: "westfield" }]
       }
     });
   });
@@ -554,6 +572,9 @@ describe("yearly browser play surface", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: /Empty Every Nest Bonus/ }));
+    const sources = screen.getByLabelText("Source districts") as HTMLSelectElement;
+    within(sources).getByRole("option", { name: "Grand Market" }).setAttribute("selected", "");
+    fireEvent.change(sources);
     const destinations = screen.getByLabelText("Different destination districts") as HTMLSelectElement;
     within(destinations).getByRole("option", { name: "Canal Ward" }).setAttribute("selected", "");
     fireEvent.change(destinations);
@@ -563,6 +584,7 @@ describe("yearly browser play surface", () => {
       bonusCardId: "many-wings-empty-every-nest",
       choice: {
         effect: "empty_every_nest",
+        sourceDistrictIds: ["grand-market"],
         destinationDistrictIds: ["canal-ward"]
       }
     });

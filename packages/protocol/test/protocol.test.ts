@@ -156,7 +156,7 @@ describe("commands", () => {
       ["old-shell-institutional-memory", {
         effect: "institutional_memory",
         scoringCardId: "SC-01",
-        moves: [{ objectiveIndex: 0, sourceDistrictId: "coast", destinationDistrictId: "ironwood" }]
+        placements: [{ objectiveIndex: 0, destinationDistrictId: "ironwood" }]
       }],
       ["foxglove-shell-firm", { effect: "shell_firm", targetPartyId: "old-shell" }],
       ["riverworks-mass-transit", {
@@ -166,6 +166,7 @@ describe("commands", () => {
       }],
       ["many-wings-empty-every-nest", {
         effect: "empty_every_nest",
+        sourceDistrictIds: ["harbormouth"],
         destinationDistrictIds: ["northreach"]
       }],
       ["night-parliament-midnight-session", {
@@ -190,7 +191,7 @@ describe("commands", () => {
         choice: {
           effect: "institutional_memory",
           scoringCardId: "SC-01",
-          moves: []
+          placements: []
         }
       }
     }).success).toBe(false);

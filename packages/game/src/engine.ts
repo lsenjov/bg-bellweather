@@ -929,7 +929,6 @@ function operationChoice(value: unknown): OperationChoice {
   } else {
     requirePartyId(choice.targetParty, "targetParty");
     optionalDistrictId(choice.bonusDistrictId, "bonusDistrictId");
-    optionalDistrictId(choice.bonusSourceDistrictId, "bonusSourceDistrictId");
     optionalPartyId(choice.bonusCourtSourceParty, "bonusCourtSourceParty");
   }
   return choice as unknown as OperationChoice;

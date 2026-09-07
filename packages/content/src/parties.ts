@@ -85,7 +85,7 @@ export const PARTIES = deepFreeze([
         operation: "court",
         name: "Common Cause",
         effect:
-          "Resolve Court for the acting party. The selected party must become its Coalition Target; then move acting-party Support to a different free district containing selected-party Support."
+          "Resolve Court. Then add acting-party Support to a free spot in a district containing selected-party Support."
       },
       {
         id: "honeycomb-every-bee-counts",
@@ -127,7 +127,7 @@ export const PARTIES = deepFreeze([
         operation: null,
         name: "Institutional Memory",
         effect:
-          "Choose a revealed scoring card. For each chosen objective, move one Support belonging to the named party from another district to a chosen district in the objective's region. Each destination must have a free spot."
+          "Choose a revealed scoring card. For each objective, add one Support of the named party to a district in its region with a free spot, if possible."
       }
     ]
   },
@@ -161,7 +161,7 @@ export const PARTIES = deepFreeze([
         operation: null,
         name: "Shell Firm",
         effect:
-          "Choose another party without a Firm marker. Move the acting party's Firm marker and complete Operation pile to it. Then end this Lobby action."
+          "Move the acting party’s Firm marker and entire Operation pile to another party without a Firm marker. End this Lobby action."
       }
     ]
   },
@@ -179,7 +179,7 @@ export const PARTIES = deepFreeze([
         operation: "organise",
         name: "Canal Network",
         effect:
-          "Move acting-party Support through connected districts containing its Support to a free destination at the end of the route."
+          "Move any number of acting-party Support from one district to another with enough free spots, along a connected route. Each intermediate district must contain acting-party Support."
       },
       {
         id: "riverworks-public-works",
@@ -195,7 +195,7 @@ export const PARTIES = deepFreeze([
         operation: null,
         name: "Mass Transit",
         effect:
-          "Choose a path of two to five districts with a free spot at one end. Every other district must contain Support. Shift one Support from each of those districts one step toward the free spot."
+          "Choose a chain of two to five neighboring districts with a free spot at one end. Move one Support of your choice from each other district one step toward that end."
       }
     ]
   },
@@ -213,7 +213,7 @@ export const PARTIES = deepFreeze([
         operation: "rally",
         name: "Scatter the Flock",
         effect:
-          "Resolve Rally for the acting party, then move the maximum possible acting-party Support to distinct free neighboring districts."
+          "Resolve Rally. Then move as many acting-party Support as possible from that district into different neighboring districts with free spots, one per district. At least one must move."
       },
       {
         id: "many-wings-joint-campaign",
@@ -229,7 +229,7 @@ export const PARTIES = deepFreeze([
         operation: null,
         name: "Empty Every Nest",
         effect:
-          "Move one acting-party Support from every district containing at least two acting-party Support to the same number of different districts with no acting-party Support and a free spot."
+          "Move one acting-party Support from as many districts with two or more as possible. Each must go to a different district with a free spot and no acting-party Support."
       }
     ]
   },

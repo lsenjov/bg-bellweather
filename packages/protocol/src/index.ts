@@ -301,7 +301,8 @@ const OrganiseChoiceSchema = z
   .object({
     operation: z.literal("organise"),
     destinationDistrictId: z.string().trim().min(1).max(100),
-    sourceDistrictId: z.string().trim().min(1).max(100).optional()
+    sourceDistrictId: z.string().trim().min(1).max(100).optional(),
+    count: z.number().int().positive().optional()
   })
   .strict();
 const RallyChoiceSchema = z
@@ -328,7 +329,6 @@ const CourtChoiceSchema = z
     operation: z.literal("court"),
     targetParty: PartyIdSchema,
     bonusDistrictId: z.string().trim().min(1).max(100).optional(),
-    bonusSourceDistrictId: z.string().trim().min(1).max(100).optional(),
     bonusCourtSourceParty: PartyIdSchema.optional()
   })
   .strict();
@@ -339,10 +339,9 @@ export const OperationChoiceSchema = z.discriminatedUnion("operation", [
   CourtChoiceSchema
 ]);
 export type OperationChoice = z.infer<typeof OperationChoiceSchema>;
-const InstitutionalMemoryMoveSchema = z
+const InstitutionalMemoryPlacementSchema = z
   .object({
     objectiveIndex: z.union([z.literal(0), z.literal(1), z.literal(2)]),
-    sourceDistrictId: z.string().trim().min(1).max(100),
     destinationDistrictId: z.string().trim().min(1).max(100)
   })
   .strict();
@@ -357,7 +356,7 @@ export const UnboundBonusChoiceSchema = z.discriminatedUnion("effect", [
         "SC-13", "SC-14", "SC-15", "SC-16", "SC-17", "SC-18",
         "SC-19", "SC-20", "SC-21", "SC-22", "SC-23", "SC-24"
       ]),
-      moves: z.array(InstitutionalMemoryMoveSchema).min(1).max(3)
+      placements: z.array(InstitutionalMemoryPlacementSchema).min(1).max(3)
     })
     .strict(),
   z.object({ effect: z.literal("shell_firm"), targetPartyId: PartyIdSchema }).strict(),
@@ -371,6 +370,7 @@ export const UnboundBonusChoiceSchema = z.discriminatedUnion("effect", [
   z
     .object({
       effect: z.literal("empty_every_nest"),
+      sourceDistrictIds: z.array(z.string().trim().min(1).max(100)).min(1).max(16),
       destinationDistrictIds: z.array(z.string().trim().min(1).max(100)).min(1).max(16)
     })
     .strict(),

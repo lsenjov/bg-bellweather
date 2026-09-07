@@ -25,7 +25,7 @@ export type UnboundBonusChoice =
   | {
       effect: "institutional_memory";
       scoringCardId: ScoringCardId;
-      moves: Array<{ objectiveIndex: 0 | 1 | 2; sourceDistrictId: DistrictId; destinationDistrictId: DistrictId }>;
+      placements: Array<{ objectiveIndex: 0 | 1 | 2; destinationDistrictId: DistrictId }>;
     }
   | { effect: "shell_firm"; targetPartyId: PartyId }
   | {
@@ -33,7 +33,7 @@ export type UnboundBonusChoice =
       districtIds: DistrictId[];
       supportPartyIds: PartyId[];
     }
-  | { effect: "empty_every_nest"; destinationDistrictIds: DistrictId[] }
+  | { effect: "empty_every_nest"; sourceDistrictIds: DistrictId[]; destinationDistrictIds: DistrictId[] }
   | { effect: "midnight_session"; targetPartyId: PartyId; firmId: FirmId };
 
 export interface UnboundBonusResolution {
@@ -79,6 +79,7 @@ export function resolveUnboundBonus(
     emptyEveryNest(
       state,
       actingPartyId,
+      choice.sourceDistrictIds,
       choice.destinationDistrictIds,
       supportChanges
     );
@@ -124,34 +125,30 @@ function institutionalMemory(
   if (!revealed.has(choice.scoringCardId)) {
     illegalBonus("Institutional Memory requires a revealed scoring card");
   }
-  if (choice.moves.length === 0) {
-    illegalBonus("Institutional Memory must complete at least one objective");
-  }
-  if (new Set(choice.moves.map((move) => move.objectiveIndex)).size !== choice.moves.length) {
-    illegalBonus("Institutional Memory cannot choose an objective more than once");
-  }
-
   const scoringCard = SCORING_CARDS_BY_ID[choice.scoringCardId];
-  for (const move of choice.moves) {
-    const objective = scoringCard.objectives[move.objectiveIndex];
+  const required = scoringCard.objectives.flatMap((objective, index) =>
+    DISTRICT_IDS.some((id) => DISTRICTS_BY_ID[id].regionId === objective.regionId && hasFreeSpot(state, id))
+      ? [index] : []
+  );
+  if (
+    required.length === 0 ||
+    choice.placements.length !== required.length ||
+    new Set(choice.placements.map((placement) => placement.objectiveIndex)).size !== required.length ||
+    choice.placements.some((placement) => !required.includes(placement.objectiveIndex))
+  ) {
+    illegalBonus("Institutional Memory must add Support for every objective with regional space, at least once");
+  }
+  for (const placement of choice.placements) {
+    const objective = scoringCard.objectives[placement.objectiveIndex];
     if (
-      move.sourceDistrictId === move.destinationDistrictId ||
-      DISTRICTS_BY_ID[move.destinationDistrictId].regionId !== objective.regionId ||
-      (state.support[move.sourceDistrictId][objective.partyId] ?? 0) < 1 ||
-      !hasFreeSpot(state, move.destinationDistrictId)
+      DISTRICTS_BY_ID[placement.destinationDistrictId].regionId !== objective.regionId ||
+      !hasFreeSpot(state, placement.destinationDistrictId)
     ) {
-      illegalBonus("Every chosen Institutional Memory objective must be legal");
+      illegalBonus("Every Institutional Memory destination must have a free spot in its objective's region");
     }
   }
-  for (const move of choice.moves) {
-    const objective = scoringCard.objectives[move.objectiveIndex];
-    moveSupport(
-      state,
-      move.sourceDistrictId,
-      move.destinationDistrictId,
-      objective.partyId,
-      supportChanges
-    );
+  for (const placement of choice.placements) {
+    addSupport(state, placement.destinationDistrictId, scoringCard.objectives[placement.objectiveIndex].partyId, supportChanges);
   }
 }
 
@@ -228,37 +225,28 @@ function massTransit(
 function emptyEveryNest(
   state: GameState,
   actingPartyId: PartyId,
+  sourceDistrictIds: DistrictId[],
   destinationDistrictIds: DistrictId[],
   supportChanges: SupportChange[]
 ): void {
-  const sources = DISTRICT_IDS.filter(
-    (districtId) => (state.support[districtId][actingPartyId] ?? 0) >= 2
+  const sources = DISTRICT_IDS.filter((id) => (state.support[id][actingPartyId] ?? 0) >= 2);
+  const destinations = DISTRICT_IDS.filter((id) =>
+    (state.support[id][actingPartyId] ?? 0) === 0 && hasFreeSpot(state, id)
   );
+  const count = Math.min(sources.length, destinations.length);
   if (
-    sources.length === 0 ||
-    destinationDistrictIds.length !== sources.length ||
-    new Set(destinationDistrictIds).size !== destinationDistrictIds.length ||
-    destinationDistrictIds.some(
-      (districtId) =>
-        (state.support[districtId][actingPartyId] ?? 0) !== 0 ||
-        !hasFreeSpot(state, districtId)
-    )
+    count === 0 ||
+    sourceDistrictIds.length !== count ||
+    destinationDistrictIds.length !== count ||
+    new Set(sourceDistrictIds).size !== count ||
+    new Set(destinationDistrictIds).size !== count ||
+    sourceDistrictIds.some((id) => !sources.includes(id)) ||
+    destinationDistrictIds.some((id) => !destinations.includes(id))
   ) {
-    illegalBonus(
-      "Empty Every Nest requires one different eligible destination for every qualifying district"
-    );
+    illegalBonus("Empty Every Nest must move the maximum possible number from different qualifying sources to different free districts where the party is absent");
   }
-  const destinations = [...destinationDistrictIds].sort(
-    (left, right) => DISTRICT_IDS.indexOf(left) - DISTRICT_IDS.indexOf(right)
-  );
-  for (let index = 0; index < sources.length; index += 1) {
-    moveSupport(
-      state,
-      sources[index]!,
-      destinations[index]!,
-      actingPartyId,
-      supportChanges
-    );
+  for (let index = 0; index < count; index += 1) {
+    moveSupport(state, sourceDistrictIds[index]!, destinationDistrictIds[index]!, actingPartyId, supportChanges);
   }
 }
 
@@ -300,22 +288,20 @@ function unboundBonusChoice(value: unknown): UnboundBonusChoice {
   }
   if (choice.effect === "institutional_memory") {
     requireScoringCardId(choice.scoringCardId);
-    if (!Array.isArray(choice.moves)) invalidChoice("moves must be an array");
-    const moves = choice.moves.map((move) => {
-      if (typeof move !== "object" || move === null) invalidChoice("moves must be objects");
+    if (!Array.isArray(choice.placements)) invalidChoice("placements must be an array");
+    const placements = choice.placements.map((move) => {
+      if (typeof move !== "object" || move === null) invalidChoice("placements must be objects");
       const fields = move as Record<string, unknown>;
       if (![0, 1, 2].includes(fields.objectiveIndex as number)) {
         invalidChoice("objectiveIndex must be 0, 1, or 2");
       }
-      requireDistrictId(fields.sourceDistrictId);
       requireDistrictId(fields.destinationDistrictId);
       return {
         objectiveIndex: fields.objectiveIndex as 0 | 1 | 2,
-        sourceDistrictId: fields.sourceDistrictId,
         destinationDistrictId: fields.destinationDistrictId
       };
     });
-    return { effect: choice.effect, scoringCardId: choice.scoringCardId, moves };
+    return { effect: choice.effect, scoringCardId: choice.scoringCardId, placements };
   }
   if (choice.effect === "shell_firm") {
     requirePartyId(choice.targetPartyId);
@@ -331,6 +317,7 @@ function unboundBonusChoice(value: unknown): UnboundBonusChoice {
   if (choice.effect === "empty_every_nest") {
     return {
       effect: choice.effect,
+      sourceDistrictIds: districtIdArray(choice.sourceDistrictIds, "sourceDistrictIds"),
       destinationDistrictIds: districtIdArray(
         choice.destinationDistrictIds,
         "destinationDistrictIds"
