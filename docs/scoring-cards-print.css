@@ -86,7 +86,7 @@ main {
   background:
     repeating-linear-gradient(0deg, transparent 0 5.8mm, rgb(23 23 19 / 3%) 5.8mm 6mm),
     var(--paper);
-  grid-template-rows: 8mm minmax(0, 1fr) 5mm 11mm;
+  grid-template-rows: 8mm minmax(0, 1fr) 11mm;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }
@@ -357,5 +357,3 @@ main {
     page-break-after: auto;
   }
 }
-
-.middle-score { margin: 0; display: grid; place-items: center; font: bold 6.5pt var(--body); border-top: .25mm solid var(--ink); }

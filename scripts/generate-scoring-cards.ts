@@ -14,7 +14,6 @@ function output(path: string, value: string) {
 const cards = SCORING_CARDS.map((card) => `<article class="score-card" aria-label="Scoring card ${card.id}">
 <header class="card-head"><strong>Election brief</strong><span>${card.id} · R24</span></header>
 <div class="objectives">${card.objectives.map((objective) => `<div class="objective party-${objective.partyId}"><div class="objective-copy"><span class="district">${REGION_NAMES[objective.regionId]}</span><span class="party-line"><span class="party-name">${escape(PARTIES_BY_ID[objective.partyId].shortName)}</span></span></div></div>`).join("\n")}</div>
-<p class="middle-score">Score the middle region</p>
 <footer class="seat-stakes"><span class="seat gain"><b class="seat-symbol">+</b><small>Gain</small><strong>${seatName(card.gain)}</strong></span><span class="seat lose"><b class="seat-symbol">−</b><small>Lose</small><strong>${seatName(card.lose)}</strong></span></footer></article>`);
 output("docs/components/printable-scoring-cards.html", `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Twenty-four Ruleset 24 regional scoring cards on two A4 sheets."><title>Printable Scoring Cards — Bellweather</title><link rel="stylesheet" href="../scoring-cards-print.css"></head><body>
