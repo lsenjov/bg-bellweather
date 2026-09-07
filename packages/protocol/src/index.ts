@@ -342,7 +342,8 @@ export type OperationChoice = z.infer<typeof OperationChoiceSchema>;
 const InstitutionalMemoryMoveSchema = z
   .object({
     objectiveIndex: z.union([z.literal(0), z.literal(1), z.literal(2)]),
-    sourceDistrictId: z.string().trim().min(1).max(100)
+    sourceDistrictId: z.string().trim().min(1).max(100),
+    destinationDistrictId: z.string().trim().min(1).max(100)
   })
   .strict();
 export const UnboundBonusChoiceSchema = z.discriminatedUnion("effect", [

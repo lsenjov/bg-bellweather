@@ -127,7 +127,7 @@ export const PARTIES = deepFreeze([
         operation: null,
         name: "Institutional Memory",
         effect:
-          "Choose a revealed scoring card. For each chosen objective, move one Support belonging to the named party from another district to the objective's district. Each destination must have a free spot."
+          "Choose a revealed scoring card. For each chosen objective, move one Support belonging to the named party from another district to a chosen district in the objective's region. Each destination must have a free spot."
       }
     ]
   },

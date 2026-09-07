@@ -92,6 +92,9 @@ export function resolveOperation(
       supportChanges
     );
   }
+  if (bonusCard !== undefined && bonusCard.homePartyId !== request.party) {
+    resolveCourt(state, request.party, bonusCard.homePartyId);
+  }
   const baseline = applyBaseline(
     state,
     request.party,
@@ -101,7 +104,7 @@ export function resolveOperation(
   );
 
   if (!baseline.applied) {
-    return result(state, false, false, bonusName, baseline.failure, null, supportChanges);
+    return result(cloneState(initialState), false, false, bonusName, baseline.failure, null, []);
   }
   if (request.bonusCardId === undefined) {
     return result(state, true, false, bonusName, null, null, supportChanges);
@@ -348,7 +351,7 @@ function applyBaseline(
   if (choice.targetParty === party) {
     return failed(wasAbsent, "Court must choose another party");
   }
-  placeCourtSupport(state, party, choice.targetParty);
+  resolveCourt(state, party, choice.targetParty);
   return {
     applied: true,
     failure: null,
@@ -638,8 +641,14 @@ function cloneState(state: OperationState): OperationState {
   };
 }
 
+export function resolveCourt(state: Pick<OperationState, "courtSupport" | "coalitionTargets">, party: Party, targetParty: Party): void {
+  if (party === targetParty) throw new Error("Court must choose another party");
+  placeCourtSupport(state, party, targetParty);
+  placeCourtSupport(state, targetParty, party);
+}
+
 function placeCourtSupport(
-  state: OperationState,
+  state: Pick<OperationState, "courtSupport" | "coalitionTargets">,
   party: Party,
   targetParty: Party
 ): void {
@@ -662,7 +671,7 @@ function removeCourtSupport(
   }
 }
 
-function updateCoalitionTarget(state: OperationState, party: Party): void {
+function updateCoalitionTarget(state: Pick<OperationState, "courtSupport" | "coalitionTargets">, party: Party): void {
   const support = state.courtSupport[party];
   const ranked = PARTIES.filter((candidate) => candidate !== party)
     .map((candidate) => ({

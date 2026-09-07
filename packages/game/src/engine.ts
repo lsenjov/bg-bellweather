@@ -12,7 +12,7 @@ import {
   PARTY_IDS,
   RULESET_VERSION,
   SCORING_CARD_IDS,
-  SCORING_CARD_PAIRS,
+  scoringCardsCompatible,
   SCORING_CARDS_BY_ID,
   STANDARD_PLAYER_SETUP,
   type BonusCardId,
@@ -48,6 +48,7 @@ import type {
 import { GameRuleError } from "./model.js";
 import {
   resolveOperation,
+  resolveCourt,
   type OperationChoice,
   type OperationState
 } from "./operations.js";
@@ -59,9 +60,7 @@ export function initializeGame(
 ): GameInitializedEvent {
   validateConfiguration(configuration);
   const setup = playerSetup(configuration.seats.length);
-  const scoringDeck = configuration.seats.length <= 3
-    ? shuffle([...SCORING_CARD_PAIRS], random).flatMap((pair) => [...pair])
-    : shuffle([...SCORING_CARD_IDS], random);
+  const scoringDeck = shuffle([...SCORING_CARD_IDS], random);
   const scoringCards = dealScoringCards(
     scoringDeck,
     configuration.seats.length
@@ -298,9 +297,10 @@ function operate(
   const party = requireOpenParty(state, partyId);
   const seat = getSeat(state, seatId);
   const bonusCard = play.cardType === "bonus"
-    ? requirePlayableBonusCard(state, seatId, partyId, play.bonusCardId)
+    ? requirePlayableBonusCard(state, seatId, play.bonusCardId)
     : null;
   if (play.cardType === "bonus" && bonusCard?.operation === null) {
+    if (partyId !== bonusCard.homePartyId) resolveCourt(state, partyId, bonusCard.homePartyId);
     const resolution = resolveUnboundBonus(
       state,
       seatId,
@@ -883,7 +883,6 @@ function awardBonusCard(
 function requirePlayableBonusCard(
   state: GameState,
   seatId: SeatId,
-  partyId: PartyId,
   bonusCardId: BonusCardId
 ) {
   if (!(BONUS_CARD_IDS as readonly string[]).includes(bonusCardId)) {
@@ -895,16 +894,6 @@ function requirePlayableBonusCard(
     throw new GameRuleError(
       "bonus_card_not_held",
       "The player does not hold that Bonus card"
-    );
-  }
-  const homePartyId = card.homePartyId;
-  const reciprocalCoalition =
-    state.coalitionTargets[homePartyId] === partyId &&
-    state.coalitionTargets[partyId] === homePartyId;
-  if (partyId !== homePartyId && !reciprocalCoalition) {
-    throw new GameRuleError(
-      "bonus_card_party_ineligible",
-      "A Bonus card requires its home party or its current reciprocal coalition partner"
     );
   }
   return card;
@@ -1047,20 +1036,11 @@ export function dealScoringCards(
   if (deck.length < required) {
     throw new GameRuleError("insufficient_scoring_cards", "The scoring deck is too small");
   }
-  if (cardsPerSlot === 2) {
-    for (let index = 0; index < required; index += 2) {
-      const first = deck[index];
-      const second = deck[index + 1];
-      if (!SCORING_CARD_PAIRS.some(
-        (pair) => pair[0] === first && pair[1] === second
-      )) {
-        throw new GameRuleError(
-          "invalid_scoring_pair",
-          "Low-player scoring cards must be arranged as registered pairs"
-        );
-      }
-    }
+  if (new Set(deck).size !== deck.length || deck.some((id) => !SCORING_CARD_IDS.includes(id))) {
+    throw new GameRuleError("invalid_scoring_deck", "Scoring cards must be distinct known cards");
   }
+  const arranged = cardsPerSlot === 2 ? compatibleDeal([...deck], required / 2) : [...deck];
+  if (arranged === null) throw new GameRuleError("invalid_scoring_pair", "The deck cannot supply compatible pairs");
   const slots = Array.from(
     { length: playerCount },
     (): ScoringCardSlots => [[], [], []]
@@ -1068,7 +1048,7 @@ export function dealScoringCards(
   let cardIndex = 0;
   for (let electionIndex = 0; electionIndex < 3; electionIndex += 1) {
     for (let seatIndex = 0; seatIndex < playerCount; seatIndex += 1) {
-      slots[seatIndex]![electionIndex] = deck.slice(
+      slots[seatIndex]![electionIndex] = arranged.slice(
         cardIndex,
         cardIndex + cardsPerSlot
       );
@@ -1076,6 +1056,18 @@ export function dealScoringCards(
     }
   }
   return slots;
+}
+
+function compatibleDeal(deck: ScoringCardId[], pairs: number): ScoringCardId[] | null {
+  if (pairs === 0) return [];
+  const first = deck[0]!;
+  for (let index = 1; index < deck.length; index += 1) {
+    const second = deck[index]!;
+    if (!scoringCardsCompatible(SCORING_CARDS_BY_ID[first], SCORING_CARDS_BY_ID[second])) continue;
+    const rest = compatibleDeal(deck.filter((_, i) => i !== 0 && i !== index), pairs - 1);
+    if (rest !== null) return [first, second, ...rest];
+  }
+  return null;
 }
 
 export function toOperationState(state: GameState): OperationState {

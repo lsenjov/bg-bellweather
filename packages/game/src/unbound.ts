@@ -25,7 +25,7 @@ export type UnboundBonusChoice =
   | {
       effect: "institutional_memory";
       scoringCardId: ScoringCardId;
-      moves: Array<{ objectiveIndex: 0 | 1 | 2; sourceDistrictId: DistrictId }>;
+      moves: Array<{ objectiveIndex: 0 | 1 | 2; sourceDistrictId: DistrictId; destinationDistrictId: DistrictId }>;
     }
   | { effect: "shell_firm"; targetPartyId: PartyId }
   | {
@@ -135,9 +135,10 @@ function institutionalMemory(
   for (const move of choice.moves) {
     const objective = scoringCard.objectives[move.objectiveIndex];
     if (
-      move.sourceDistrictId === objective.districtId ||
+      move.sourceDistrictId === move.destinationDistrictId ||
+      DISTRICTS_BY_ID[move.destinationDistrictId].regionId !== objective.regionId ||
       (state.support[move.sourceDistrictId][objective.partyId] ?? 0) < 1 ||
-      !hasFreeSpot(state, objective.districtId)
+      !hasFreeSpot(state, move.destinationDistrictId)
     ) {
       illegalBonus("Every chosen Institutional Memory objective must be legal");
     }
@@ -147,7 +148,7 @@ function institutionalMemory(
     moveSupport(
       state,
       move.sourceDistrictId,
-      objective.districtId,
+      move.destinationDistrictId,
       objective.partyId,
       supportChanges
     );
@@ -307,9 +308,11 @@ function unboundBonusChoice(value: unknown): UnboundBonusChoice {
         invalidChoice("objectiveIndex must be 0, 1, or 2");
       }
       requireDistrictId(fields.sourceDistrictId);
+      requireDistrictId(fields.destinationDistrictId);
       return {
         objectiveIndex: fields.objectiveIndex as 0 | 1 | 2,
-        sourceDistrictId: fields.sourceDistrictId
+        sourceDistrictId: fields.sourceDistrictId,
+        destinationDistrictId: fields.destinationDistrictId
       };
     });
     return { effect: choice.effect, scoringCardId: choice.scoringCardId, moves };

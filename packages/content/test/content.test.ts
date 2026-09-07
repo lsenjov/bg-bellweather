@@ -16,7 +16,8 @@ import {
   PARTY_IDS,
   SCORING_CARDS,
   SCORING_CARD_IDS,
-  SCORING_CARD_PAIRS,
+  REGION_IDS,
+  scoringCardsCompatible,
   SEAT_REFERENCES,
   STANDARD_PLAYER_SETUP,
   SUPPORT_SUPPLY,
@@ -41,29 +42,12 @@ describe("district map", () => {
         .map((adjacentId) => `${district.id}:${adjacentId}`)
     ).sort();
 
-    expect(edges).toEqual([
-      "bellweather-centre:canal-ward",
-      "bellweather-centre:crown-road",
-      "bellweather-centre:old-quarter",
-      "canal-ward:grand-market",
-      "cloverfield:harbormouth",
-      "cloverfield:northreach",
-      "crown-road:harbormouth",
-      "grand-market:red-orchard",
-      "grand-market:sunmeadow",
-      "harbormouth:millbank",
-      "high-pastures:ironwood",
-      "high-pastures:northreach",
-      "ironwood:mossfield",
-      "ironwood:old-quarter",
-      "millbank:reedwater",
-      "mossfield:westgate",
-      "red-orchard:westgate",
-      "reedwater:sunmeadow"
-    ].sort());
+    expect(edges).toHaveLength(23);
+    expect(DISTRICTS_BY_ID["bellweather-centre"].adjacentDistrictIds).toEqual(["ironwood", "canal-ward", "westfield", "downs"]);
+    expect(DISTRICTS_BY_ID.harbormouth.adjacentDistrictIds).toEqual(["grand-market", "ironwood"]);
   });
 
-  it("contains the complete capacity-57, 18-border map", () => {
+  it("contains the complete capacity-57, 23-connection map", () => {
     expect(DISTRICTS).toHaveLength(16);
     expect(new Set(DISTRICT_IDS).size).toBe(16);
     expect(DISTRICTS.reduce((total, district) => total + district.capacity, 0)).toBe(
@@ -74,7 +58,7 @@ describe("district map", () => {
         (total, district) => total + district.adjacentDistrictIds.length,
         0
       ) / 2
-    ).toBe(18);
+    ).toBe(23);
   });
 
   it("has only known, symmetric, non-self adjacencies", () => {
@@ -141,103 +125,28 @@ describe("parties and firms", () => {
 });
 
 describe("scoring deck", () => {
-  it("matches every committed objective and seat reference", () => {
-    expect(
-      SCORING_CARDS.map((card) =>
-        [
-          card.id,
-          ...card.objectives.map(
-            (objective) => `${objective.districtId}/${objective.partyId}`
-          ),
-          `+${card.gain}`,
-          `-${card.lose}`
-        ].join("|")
-      )
-    ).toEqual([
-      "SC-01|ironwood/honeycomb|millbank/old-shell|canal-ward/foxglove|+left|-second-left",
-      "SC-02|harbormouth/old-shell|high-pastures/foxglove|old-quarter/riverworks|+left|-second-right",
-      "SC-03|harbormouth/foxglove|mossfield/riverworks|northreach/many-wings|+left|-second-right",
-      "SC-04|grand-market/riverworks|cloverfield/many-wings|crown-road/night-parliament|+second-left|-right",
-      "SC-05|grand-market/many-wings|cloverfield/night-parliament|old-quarter/honeycomb|+second-left|-left",
-      "SC-06|ironwood/night-parliament|red-orchard/honeycomb|reedwater/old-shell|+right|-second-right",
-      "SC-07|ironwood/honeycomb|sunmeadow/foxglove|canal-ward/riverworks|+left|-second-left",
-      "SC-08|harbormouth/old-shell|high-pastures/riverworks|westgate/many-wings|+right|-second-left",
-      "SC-09|harbormouth/foxglove|mossfield/many-wings|reedwater/night-parliament|+left|-second-right",
-      "SC-10|grand-market/riverworks|millbank/night-parliament|westgate/honeycomb|+second-right|-right",
-      "SC-11|ironwood/many-wings|sunmeadow/honeycomb|westgate/old-shell|+second-right|-right",
-      "SC-12|grand-market/night-parliament|cloverfield/old-shell|reedwater/foxglove|+right|-second-left",
-      "SC-13|harbormouth/honeycomb|red-orchard/riverworks|old-quarter/many-wings|+second-right|-right",
-      "SC-14|ironwood/old-shell|sunmeadow/many-wings|northreach/night-parliament|+right|-second-right",
-      "SC-15|grand-market/foxglove|high-pastures/night-parliament|reedwater/honeycomb|+right|-second-left",
-      "SC-16|harbormouth/riverworks|mossfield/honeycomb|canal-ward/old-shell|+right|-second-right",
-      "SC-17|ironwood/many-wings|red-orchard/old-shell|crown-road/foxglove|+second-right|-left",
-      "SC-18|grand-market/night-parliament|millbank/foxglove|northreach/riverworks|+second-right|-left",
-      "SC-19|harbormouth/honeycomb|high-pastures/many-wings|canal-ward/night-parliament|+second-left|-right",
-      "SC-20|ironwood/old-shell|red-orchard/night-parliament|northreach/honeycomb|+second-left|-left",
-      "SC-21|grand-market/foxglove|millbank/honeycomb|crown-road/old-shell|+left|-second-left",
-      "SC-22|harbormouth/riverworks|mossfield/old-shell|old-quarter/foxglove|+second-right|-left",
-      "SC-23|grand-market/many-wings|cloverfield/foxglove|westgate/riverworks|+second-left|-right",
-      "SC-24|ironwood/night-parliament|sunmeadow/riverworks|crown-road/many-wings|+second-left|-left"
-    ]);
-  });
-
   it("contains the exact 24 stable card IDs", () => {
     expect(SCORING_CARDS).toHaveLength(24);
     expect(SCORING_CARDS.map((card) => card.id)).toEqual(SCORING_CARD_IDS);
     expect(new Set(SCORING_CARD_IDS).size).toBe(24);
   });
 
-  it("registers every scoring card in one compatible low-player pair", () => {
-    expect(SCORING_CARD_PAIRS.flat()).toEqual(SCORING_CARD_IDS);
-    for (const [firstId, secondId] of SCORING_CARD_PAIRS) {
-      const districts = [firstId, secondId].flatMap((cardId) =>
-        SCORING_CARDS.find((card) => card.id === cardId)!.objectives.map(
-          (objective) => objective.districtId
-        )
-      );
-      expect(new Set(districts).size).toBe(6);
-    }
-  });
-
-  it("gives each card one non-neighboring objective at each scoring capacity", () => {
-    const districtTriples = new Set<string>();
+  it("assigns a different party to each region and allows only non-overlapping pairs", () => {
     for (const card of SCORING_CARDS) {
-      expect(
-        card.objectives.map(
-          (objective) => DISTRICTS_BY_ID[objective.districtId].capacity
-        )
-      ).toEqual([6, 4, 2]);
-      expect(new Set(card.objectives.map((objective) => objective.partyId)).size).toBe(
-        3
-      );
-      districtTriples.add(
-        card.objectives.map((objective) => objective.districtId).join("|")
-      );
-      for (const [index, objective] of card.objectives.entries()) {
-        const otherDistricts = card.objectives
-          .filter((_, otherIndex) => otherIndex !== index)
-          .map((other) => other.districtId);
-        for (const otherDistrict of otherDistricts) {
-          expect(
-            DISTRICTS_BY_ID[objective.districtId].adjacentDistrictIds
-          ).not.toContain(otherDistrict);
-        }
-      }
+      expect(card.objectives.map((o) => o.regionId)).toEqual(REGION_IDS);
+      expect(new Set(card.objectives.map((o) => o.partyId)).size).toBe(3);
+      expect(scoringCardsCompatible(card, card)).toBe(false);
     }
-    expect(districtTriples.size).toBe(SCORING_CARDS.length);
+    expect(scoringCardsCompatible(SCORING_CARDS[0], SCORING_CARDS[1])).toBe(true);
+    expect(scoringCardsCompatible(SCORING_CARDS[0], SCORING_CARDS[6])).toBe(false);
   });
 
   it("matches the district and party distribution", () => {
-    const districtCounts = frequencies(
-      SCORING_CARDS.flatMap((card) =>
-        card.objectives.map((objective) => objective.districtId)
-      )
-    );
-    for (const district of DISTRICTS) {
-      const expected =
-        district.capacity === 6 ? 8 : district.capacity === 3 ? 0 : 4;
-      expect(districtCounts.get(district.id) ?? 0).toBe(expected);
+    for (const regionId of REGION_IDS) {
+      expect(DISTRICTS.filter((d) => d.regionId === regionId).reduce((n, d) => n + d.capacity, 0)).toBe(18);
     }
+    expect(DISTRICTS_BY_ID.coast.capacity).toBe(4);
+    expect(DISTRICTS_BY_ID.westfield.capacity).toBe(2);
 
     const allPartyCounts = frequencies(
       SCORING_CARDS.flatMap((card) =>
@@ -328,7 +237,7 @@ it("keeps typed content identifiers assignable", () => {
   const party: PartyId = PARTY_IDS[0];
 
   expect({ district, party }).toEqual({
-    district: "northreach",
+    district: "harbormouth",
     party: "honeycomb"
   });
 });

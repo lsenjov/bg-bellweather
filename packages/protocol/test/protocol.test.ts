@@ -156,7 +156,7 @@ describe("commands", () => {
       ["old-shell-institutional-memory", {
         effect: "institutional_memory",
         scoringCardId: "SC-01",
-        moves: [{ objectiveIndex: 0, sourceDistrictId: "cloverfield" }]
+        moves: [{ objectiveIndex: 0, sourceDistrictId: "coast", destinationDistrictId: "ironwood" }]
       }],
       ["foxglove-shell-firm", { effect: "shell_firm", targetPartyId: "old-shell" }],
       ["riverworks-mass-transit", {

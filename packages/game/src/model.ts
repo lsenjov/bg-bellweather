@@ -168,7 +168,7 @@ export interface ElectionRecord {
   >;
   scores: Array<{
     playerId: SeatId;
-    baseDistrictScore: number;
+    baseRegionScore: number;
     seatModifier: number;
     capitalMatches: number;
     capitalScore: number;

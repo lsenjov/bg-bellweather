@@ -74,6 +74,35 @@ describe("operation baselines", () => {
     ).toBe(false);
   });
 
+  it("adds reciprocal Court Support and independently preserves tied Targets", () => {
+    const initial = state();
+    initial.courtSupport.foxglove["old-shell"] = 1;
+    initial.coalitionTargets.foxglove = "old-shell";
+    const resolved = resolveOperation(initial, { party: "honeycomb", choice: { operation: "court", targetParty: "foxglove" }});
+    expect(resolved.state.courtSupport.honeycomb.foxglove).toBe(1);
+    expect(resolved.state.courtSupport.foxglove.honeycomb).toBe(1);
+    expect(resolved.state.coalitionTargets.honeycomb).toBe("foxglove");
+    expect(resolved.state.coalitionTargets.foxglove).toBe("old-shell");
+    expect(initial.courtSupport.honeycomb).toEqual({});
+  });
+
+  it("adds off-home Court before the printed Court and rolls back both on failure", () => {
+    const initial = state({ a: { foxglove: 1 }, b: { honeycomb: 1 } });
+    const request = { party: "foxglove", bonusCardId: "honeycomb-common-cause", choice: {
+      operation: "court", targetParty: "honeycomb", bonusSourceDistrictId: "a", bonusDistrictId: "b"
+    }} as const;
+    const resolved = resolveOperation(initial, request);
+    expect(resolved.bonusApplied).toBe(true);
+    expect(resolved.state.courtSupport.foxglove.honeycomb).toBe(2);
+    expect(resolved.state.courtSupport.honeycomb.foxglove).toBe(2);
+    const failed = resolveOperation(initial, { ...request, choice: { ...request.choice, bonusSourceDistrictId: "c" } });
+    expect(failed.baselineApplied).toBe(false);
+    expect(failed.state).toEqual(initial);
+    const tied = resolveOperation(initial, { ...request, choice: { ...request.choice, targetParty: "old-shell" } });
+    expect(tied.baselineApplied).toBe(false);
+    expect(tied.state).toEqual(initial);
+  });
+
   it("moves the Coalition Target only when Court Support has a unique leader", () => {
     let result = resolveOperation(state(), {
       party: "honeycomb",

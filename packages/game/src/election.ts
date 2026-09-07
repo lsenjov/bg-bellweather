@@ -1,7 +1,9 @@
 import type { DistrictState, OperationState, Party } from "./operations.js";
-import type {
-  ScoringCard as ContentScoringCard,
-  SeatReference
+import {
+  DISTRICTS,
+  type RegionId,
+  type ScoringCard as ContentScoringCard,
+  type SeatReference
 } from "@bellweather/content";
 
 export type RelativeSeat =
@@ -11,7 +13,7 @@ export type RelativeSeat =
   | "second-right";
 
 export interface ElectionObjective {
-  districtId: string;
+  regionId: RegionId;
   party: Party;
 }
 
@@ -38,7 +40,7 @@ export interface RecordedDistrictDraw {
 
 export interface ElectionScore {
   playerId: string;
-  baseDistrictScore: number;
+  baseRegionScore: number;
   seatModifier: number;
   capitalMatches: number;
   capitalScore: number;
@@ -144,7 +146,7 @@ export function scoreElectionDay(input: {
     ? finalCardRankBonuses(players)
     : new Map<string, number>();
   const scores = players.map((player, seatIndex): ElectionScore => {
-    const baseDistrictScore = baseScores.get(player.id)!;
+    const baseRegionScore = baseScores.get(player.id)!;
     const seatModifier =
       players.length < 4
         ? 0
@@ -166,10 +168,10 @@ export function scoreElectionDay(input: {
     );
     const finalCardRankBonus = finalCardBonuses.get(player.id) ?? 0;
     const pointsChange =
-      baseDistrictScore + seatModifier + capitalScore + finalCardRankBonus;
+      baseRegionScore + seatModifier + capitalScore + finalCardRankBonus;
     return {
       playerId: player.id,
-      baseDistrictScore,
+      baseRegionScore,
       seatModifier,
       capitalMatches,
       capitalScore,
@@ -236,7 +238,7 @@ export function toElectionScoringCard(card: ContentScoringCard): ScoringCard {
   return {
     id: card.id,
     objectives: card.objectives.map((objective) => ({
-      districtId: objective.districtId,
+      regionId: objective.regionId,
       party: objective.partyId
     })),
     positiveSeat: card.gain as SeatReference,
@@ -249,21 +251,20 @@ export function scoreCard(
   draws: Readonly<Record<string, RecordedDistrictDraw>>,
   coalitionTargets: Readonly<Record<Party, Party | null>>
 ): number {
-  return card.objectives.reduce((score, objective) => {
-    const draw = draws[objective.districtId];
-    if (draw === undefined) {
-      throw new Error(`Missing recorded draw for ${objective.districtId}`);
-    }
+  if (card.objectives.length !== 3 || new Set(card.objectives.map((o) => o.regionId)).size !== 3) {
+    throw new Error("A scoring card requires one objective per region");
+  }
+  const scores = card.objectives.map((objective) => {
     const matchingParties = new Set<Party>([objective.party]);
     const target = coalitionTargets[objective.party];
-    if (target !== null && coalitionTargets[target] === objective.party) {
-      matchingParties.add(target);
-    }
-    return (
-      score +
-      draw.parties.filter((party) => matchingParties.has(party)).length
-    );
-  }, 0);
+    if (target !== null && coalitionTargets[target] === objective.party) matchingParties.add(target);
+    return DISTRICTS.filter((district) => district.regionId === objective.regionId).reduce((total, district) => {
+      const draw = draws[district.id];
+      if (draw === undefined) throw new Error(`Missing recorded draw for ${district.id}`);
+      return total + draw.parties.filter((party) => matchingParties.has(party)).length;
+    }, 0);
+  });
+  return scores.sort((a, b) => a - b)[1]!;
 }
 
 export function determineWinners(
