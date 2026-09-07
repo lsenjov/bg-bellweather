@@ -3,8 +3,8 @@
 set -euo pipefail
 
 repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-board_source="$repository_root/docs/assets/ring-and-cross-district-map.svg"
-board_output="$repository_root/assets/print/ring-and-cross-district-map-a3.pdf"
+board_source="$repository_root/docs/assets/inland-district-map.svg"
+board_output="$repository_root/assets/print/inland-district-map-a4.pdf"
 html_exporter="$repository_root/scripts/export-html-print-pages.cjs"
 
 mkdir -p "$repository_root/assets/print"
@@ -35,6 +35,8 @@ for font_requirement in "${font_requirements[@]}"; do
   fi
 done
 
+python "$repository_root/scripts/generate-default-map.py"
+node --conditions=development --import tsx "$repository_root/scripts/generate-scoring-cards.ts"
 node "$repository_root/scripts/generate-candidate-bonus-cards.mjs"
 
 pdf_page_size_matches() {
@@ -116,33 +118,11 @@ html_exports=(
 export_directory="$(mktemp -d)"
 trap 'rm -rf "$export_directory"' EXIT
 
-artwork_pdf="$export_directory/artwork.pdf"
-a3_pdf="$export_directory/board-a3.pdf"
-
-inkscape "$board_source" \
-  --export-filename="$artwork_pdf" \
-  --export-pdf-version=1.5 \
-  --export-text-to-path
-
-if ! pdf_page_size_matches "$artwork_pdf" 1122.519685 841.889764; then
-  printf 'Source artwork must remain 396 x 297 mm.\n' >&2
-  exit 1
-fi
-
-gs \
-  -q \
-  -dBATCH \
-  -dNOPAUSE \
-  -sDEVICE=pdfwrite \
-  -dFIXEDMEDIA \
-  -dPDFFitPage \
-  -dAutoRotatePages=/None \
-  -dDEVICEWIDTHPOINTS=1190.551181 \
-  -dDEVICEHEIGHTPOINTS=841.889764 \
-  -sOutputFile="$a3_pdf" \
-  "$artwork_pdf"
-
-validate_pdf "$a3_pdf" 1 1190.551181 841.889764 "District map"
+board_pdf="$export_directory/board-a4.pdf"
+inkscape "$board_source" --export-filename="$board_pdf" --export-pdf-version=1.5 --export-text-to-path
+validate_pdf "$board_pdf" 1 841.889764 595.275591 "District map"
+inkscape "$repository_root/docs/assets/coalition-summary.svg" --export-filename="$export_directory/coalition-summary.pdf" --export-text-to-path
+validate_pdf "$export_directory/coalition-summary.pdf" 1 138.897638 277.795276 "Coalition summary"
 
 html_export_arguments=()
 for export_specification in "${html_exports[@]}"; do
@@ -172,7 +152,8 @@ for export_specification in "${html_exports[@]}"; do
   fi
 done
 
-install -m 0644 "$a3_pdf" "$board_output"
+install -m 0644 "$board_pdf" "$board_output"
+install -m 0644 "$export_directory/coalition-summary.pdf" "$repository_root/assets/print/coalition-summary.pdf"
 printf 'Exported %s\n' "${board_output#"$repository_root/"}"
 
 for export_specification in "${html_exports[@]}"; do

@@ -92,15 +92,15 @@ physical-size checks pass.
 
 | PDF | Contents |
 | --- | --- |
-| `assets/print/ring-and-cross-district-map-a3.pdf` | One A3 landscape district map |
-| `assets/print/public-score-tracker-a4.pdf` | One A4 landscape 0–40 public score tracker sheet; the Year register is on the A3 map |
+| `assets/print/coalition-summary.pdf` | One 49 × 98 mm Coalition summary panel |
+| `assets/print/inland-district-map-a4.pdf` | One A4 landscape district map |
+| `assets/print/public-score-tracker-a4.pdf` | One A4 landscape 0–40 public score tracker sheet; the Year register is on the A4 map |
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
-| `assets/print/player-folios-a4.pdf` | Three A4 portrait player-folio sheets |
+| `assets/print/player-folios-a4.pdf` | Two A4 portrait player-folio sheets |
 | `assets/print/operation-cards-a4.pdf` | Five A4 portrait sheets containing the current 66-card Operation supply |
 | `assets/print/scoring-cards-a4.pdf` | Two A4 portrait scoring-card sheets |
 | `assets/print/shared-state-tokens-a4.pdf` | One A4 landscape sheet containing all shared state, Firm opening, Collection, and score pieces |
 
-The A3 export keeps the 396 × 297 mm map artwork at 100% scale and centers it
-with 12 mm side margins. The A4 exports preserve the millimetre dimensions in
+The map export uses a 297 × 210 mm landscape A4 page. The A4 exports preserve the millimetre dimensions in
 their print CSS. Print every PDF at “Actual size” or 100%, with any “Fit to
 page” option disabled.

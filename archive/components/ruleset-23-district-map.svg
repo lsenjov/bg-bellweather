@@ -1,0 +1,257 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="396mm" height="297mm" viewBox="0 0 1600 1200" role="img" aria-labelledby="title description">
+  <title id="title">Territorial district map of Bellweather</title>
+  <desc id="description">Sixteen named districts form an irregular land ring and three causeways across Crownwater to Bellweather Centre. Shared black borders define adjacency. Clockwise from north, the outer ring is Northreach with 2 Support spots, Cloverfield with 4, Harbormouth with 6, Millbank with 4, Reedwater with 2, Sunmeadow with 4, Grand Market with 6, Red Orchard with 4, Westgate with 2, Mossfield with 4, Ironwood with 6, and High Pastures with 4. Crown Road has 2 spots and borders Harbormouth and Bellweather Centre. Canal Ward has 2 spots and borders Grand Market and Bellweather Centre. Old Quarter has 2 spots and borders Ironwood and Bellweather Centre. Bellweather Centre has 3 spots and borders the three causeways. A compact right-side tracker holds three reciprocal coalition pairs and reserves unpaired party tokens. A lower-right register tracks Years 1 through 6, with Midterms after odd years and Elections after even years.</desc>
+  <defs>
+    <pattern id="water" width="52" height="28" patternUnits="userSpaceOnUse">
+      <rect width="52" height="28" fill="#c9d9da"/>
+      <path d="M-8 17Q5 7 18 17T44 17T70 17" fill="none" stroke="#91afb0" stroke-width="3"/>
+    </pattern>
+    <g id="support-spot">
+      <circle r="20" fill="#f2eadb" stroke="#171612" stroke-width="4"/>
+    </g>
+  </defs>
+  <style>
+    .paper { fill: #f2eadb; }
+    .district { stroke: #171612; stroke-linejoin: round; stroke-width: 6; }
+    .district-two { fill: #fffaf0; }
+    .district-four { fill: #d8dfcf; }
+    .district-six { fill: #898985; }
+    .district-center { fill: #f2bc3b; stroke-width: 9; }
+    .region-name { fill: #171612; font: 900 25px "Noto Serif", serif; letter-spacing: -0.4px; text-anchor: middle; }
+    .region-name-small { font-size: 22px; }
+    .region-name-centre { font-size: 12px; letter-spacing: 0; }
+    .heading { fill: #171612; font: 900 38px "Noto Serif", serif; letter-spacing: -1px; }
+    .eyebrow { fill: #9f2c1e; font: 900 15px "Noto Sans Mono", monospace; letter-spacing: 3px; }
+    .map-note { fill: #625f57; font: 900 14px "Noto Sans Mono", monospace; letter-spacing: 2px; }
+    .water-label { fill: #314e54; font: italic 900 15px "Noto Serif", serif; letter-spacing: 4px; text-anchor: middle; }
+    .coalition-tracker-frame { fill: #fffaf0; stroke: #171612; stroke-width: 4; }
+    .coalition-tracker-title { fill: #171612; font: 900 17px "Noto Sans Mono", monospace; letter-spacing: 2px; text-anchor: middle; }
+    .coalition-pair-line { stroke: #171612; stroke-width: 7; }
+    .coalition-token-well { fill: #f2eadb; stroke: #171612; stroke-width: 4; }
+    .coalition-reserve-label { fill: #625f57; font: 900 13px "Noto Sans Mono", monospace; letter-spacing: 1.5px; text-anchor: middle; text-transform: uppercase; }
+    .year-tracker-title { fill: #9f2c1e; font: 900 17px "Noto Sans Mono", monospace; letter-spacing: 2px; text-anchor: middle; }
+    .year-space { fill: #fffaf0; stroke: #203947; stroke-width: 4; }
+    .year-space-election { fill: #f2bc3b; stroke: #171612; }
+    .year-space-label { fill: #171612; font: 900 23px "Noto Sans Mono", monospace; text-anchor: middle; dominant-baseline: middle; }
+    .year-divider { stroke: #9f2c1e; stroke-width: 3; }
+    .year-phase-label { fill: #625f57; font: 900 13px "Noto Sans Mono", monospace; letter-spacing: 1.5px; text-anchor: middle; }
+    .registration { fill: none; stroke: #d9432f; stroke-width: 3; }
+  </style>
+
+  <rect class="paper" width="1600" height="1200"/>
+  <path class="registration" d="M28 52V28h24 M1548 28h24v24 M28 1172v18h24 M1548 1190h24v-18"/>
+  <text class="eyebrow" x="60" y="62">REPUBLIC OF BELLWEATHER / DISTRICT ATLAS 01</text>
+  <text class="heading" x="60" y="103">The sixteen districts</text>
+  <text class="map-note" x="1540" y="62" text-anchor="end">R23</text>
+
+  <g aria-label="Coalitions summary tracker">
+    <text class="coalition-tracker-title" x="1480" y="154">COALITIONS</text>
+    <g aria-label="Coalition pair">
+      <path class="coalition-pair-line" d="M1463 210H1497"/>
+      <circle class="coalition-token-well" cx="1435" cy="210" r="28"/>
+      <circle class="coalition-token-well" cx="1525" cy="210" r="28"/>
+    </g>
+    <g aria-label="Coalition pair">
+      <path class="coalition-pair-line" d="M1463 275H1497"/>
+      <circle class="coalition-token-well" cx="1435" cy="275" r="28"/>
+      <circle class="coalition-token-well" cx="1525" cy="275" r="28"/>
+    </g>
+    <g aria-label="Coalition pair">
+      <path class="coalition-pair-line" d="M1463 340H1497"/>
+      <circle class="coalition-token-well" cx="1435" cy="340" r="28"/>
+      <circle class="coalition-token-well" cx="1525" cy="340" r="28"/>
+    </g>
+    <g aria-label="No coalition reserve">
+      <rect class="coalition-tracker-frame" x="1382" y="380" width="196" height="152" rx="8"/>
+      <text class="coalition-reserve-label" x="1480" y="400">NO COALITION</text>
+      <circle class="coalition-token-well" cx="1418" cy="433" r="28"/>
+      <circle class="coalition-token-well" cx="1480" cy="433" r="28"/>
+      <circle class="coalition-token-well" cx="1542" cy="433" r="28"/>
+      <circle class="coalition-token-well" cx="1418" cy="494" r="28"/>
+      <circle class="coalition-token-well" cx="1480" cy="494" r="28"/>
+      <circle class="coalition-token-well" cx="1542" cy="494" r="28"/>
+    </g>
+  </g>
+
+  <g aria-label="Six-year register: Years 1, 3, and 5 end at Midterms; Years 2, 4, and 6 end at Elections">
+    <text class="year-tracker-title" x="1416" y="858">YEAR REGISTER</text>
+    <g aria-label="Midterm years">
+      <rect class="year-space" x="1246" y="880" width="108" height="108" rx="8"/>
+      <rect class="year-space" x="1362" y="880" width="108" height="108" rx="8"/>
+      <rect class="year-space" x="1478" y="880" width="108" height="108" rx="8"/>
+      <text class="year-space-label" x="1300" y="934">Y1</text>
+      <text class="year-space-label" x="1416" y="934">Y3</text>
+      <text class="year-space-label" x="1532" y="934">Y5</text>
+      <path class="year-divider" d="M1246 1009H1363 M1469 1009H1586"/>
+      <text class="year-phase-label" x="1416" y="1014">MIDTERMS</text>
+    </g>
+    <g aria-label="Election years">
+      <rect class="year-space year-space-election" x="1246" y="1026" width="108" height="108" rx="8"/>
+      <rect class="year-space year-space-election" x="1362" y="1026" width="108" height="108" rx="8"/>
+      <rect class="year-space year-space-election" x="1478" y="1026" width="108" height="108" rx="8"/>
+      <text class="year-space-label" x="1300" y="1080">Y2</text>
+      <text class="year-space-label" x="1416" y="1080">Y4</text>
+      <text class="year-space-label" x="1532" y="1080">Y6</text>
+      <path class="year-divider" d="M1246 1154H1365 M1467 1154H1586"/>
+      <text class="year-phase-label" x="1416" y="1159">ELECTIONS</text>
+    </g>
+  </g>
+
+  <g class="map-art" transform="translate(96 70) scale(.88)">
+  <ellipse cx="800" cy="610" rx="375" ry="305" fill="url(#water)" stroke="#171612" stroke-width="5"/>
+
+  <g aria-label="Outer ring districts">
+    <path class="district district-two" aria-label="Northreach district, capacity 2" d="M639 127Q800 68 961 127L920 230L893 330Q800 290 707 330L680 230Z"/>
+    <path class="district district-four" aria-label="Cloverfield district, capacity 4" d="M961 127Q1120 150 1238 256L1145 340L1055 405Q1020 360 893 330L920 230Z"/>
+    <path class="district district-six" aria-label="Harbormouth district, capacity 6" d="M1238 256Q1360 340 1399 481L1275 500L1148 535Q1150 470 1055 405L1145 340Z"/>
+    <path class="district district-four" aria-label="Millbank district, capacity 4" d="M1399 481Q1450 610 1399 739L1270 720L1148 685Q1180 610 1148 535L1275 500Z"/>
+    <path class="district district-two" aria-label="Reedwater district, capacity 2" d="M1399 739Q1350 860 1238 964L1140 885L1055 815Q1080 770 1148 685L1270 720Z"/>
+    <path class="district district-four" aria-label="Sunmeadow district, capacity 4" d="M1238 964Q1120 1070 961 1093L930 990L893 890Q980 880 1055 815L1140 885Z"/>
+    <path class="district district-six" aria-label="Grand Market district, capacity 6" d="M961 1093Q800 1150 639 1093L670 990L707 890Q800 920 893 890L930 990Z"/>
+    <path class="district district-four" aria-label="Red Orchard district, capacity 4" d="M639 1093Q480 1060 362 964L455 895L545 815Q620 870 707 890L670 990Z"/>
+    <path class="district district-two" aria-label="Westgate district, capacity 2" d="M362 964Q250 870 201 739L325 720L452 685Q460 750 545 815L455 895Z"/>
+    <path class="district district-four" aria-label="Mossfield district, capacity 4" d="M201 739Q150 610 201 481L320 500L452 535Q420 610 452 685L325 720Z"/>
+    <path class="district district-six" aria-label="Ironwood district, capacity 6" d="M201 481Q240 350 362 256L450 335L545 405Q480 460 452 535L320 500Z"/>
+    <path class="district district-four" aria-label="High Pastures district, capacity 4" d="M362 256Q500 145 639 127L680 230L707 330Q620 340 545 405L450 335Z"/>
+  </g>
+
+  <g aria-label="Inner city-spoke districts">
+    <path class="district district-two" aria-label="Crown Road district, capacity 2" d="M1055 405Q1150 470 1148 535L900 710L800 540Z"/>
+    <path class="district district-two" aria-label="Canal Ward district, capacity 2" d="M707 890Q800 920 893 890L900 710H700Z"/>
+    <path class="district district-two" aria-label="Old Quarter district, capacity 2" d="M452 535Q480 460 545 405L800 540L700 710Z"/>
+    <path class="district district-center" aria-label="Bellweather Centre district, capacity 3" d="M800 540L900 710H700Z"/>
+  </g>
+
+  <g aria-hidden="true">
+    <text class="water-label" x="800" y="420">CROWNWATER</text>
+    <text class="water-label" x="1040" y="765" transform="rotate(-32 1040 765)">CROWNWATER</text>
+    <text class="water-label" x="560" y="765" transform="rotate(32 560 765)">CROWNWATER</text>
+  </g>
+
+  <g aria-label="District labels and Support spots">
+    <g aria-label="Northreach, 2 Support spots">
+      <text class="region-name" x="800" y="133">Northreach</text>
+      <use href="#support-spot" x="774" y="205"/>
+      <use href="#support-spot" x="826" y="205"/>
+    </g>
+
+    <g aria-label="Cloverfield, 4 Support spots">
+      <text class="region-name" x="1045" y="205">Cloverfield</text>
+      <use href="#support-spot" x="1019" y="273"/>
+      <use href="#support-spot" x="1071" y="273"/>
+      <use href="#support-spot" x="1019" y="321"/>
+      <use href="#support-spot" x="1071" y="321"/>
+    </g>
+
+    <g aria-label="Harbormouth, 6 Support spots">
+      <text class="region-name" x="1270" y="322">Harbormouth</text>
+      <use href="#support-spot" x="1218" y="392"/>
+      <use href="#support-spot" x="1270" y="392"/>
+      <use href="#support-spot" x="1322" y="392"/>
+      <use href="#support-spot" x="1218" y="440"/>
+      <use href="#support-spot" x="1270" y="440"/>
+      <use href="#support-spot" x="1322" y="440"/>
+    </g>
+
+    <g aria-label="Millbank, 4 Support spots">
+      <text class="region-name" x="1305" y="542">Millbank</text>
+      <use href="#support-spot" x="1279" y="610"/>
+      <use href="#support-spot" x="1331" y="610"/>
+      <use href="#support-spot" x="1279" y="658"/>
+      <use href="#support-spot" x="1331" y="658"/>
+    </g>
+
+    <g aria-label="Reedwater, 2 Support spots">
+      <text class="region-name" x="1240" y="788">Reedwater</text>
+      <use href="#support-spot" x="1214" y="858"/>
+      <use href="#support-spot" x="1266" y="858"/>
+    </g>
+
+    <g aria-label="Sunmeadow, 4 Support spots">
+      <text class="region-name" x="1045" y="921">Sunmeadow</text>
+      <use href="#support-spot" x="1019" y="989"/>
+      <use href="#support-spot" x="1071" y="989"/>
+      <use href="#support-spot" x="1019" y="1037"/>
+      <use href="#support-spot" x="1071" y="1037"/>
+    </g>
+
+    <g aria-label="Grand Market, 6 Support spots">
+      <text class="region-name" x="800" y="958">Grand Market</text>
+      <use href="#support-spot" x="748" y="1028"/>
+      <use href="#support-spot" x="800" y="1028"/>
+      <use href="#support-spot" x="852" y="1028"/>
+      <use href="#support-spot" x="748" y="1076"/>
+      <use href="#support-spot" x="800" y="1076"/>
+      <use href="#support-spot" x="852" y="1076"/>
+    </g>
+
+    <g aria-label="Red Orchard, 4 Support spots">
+      <text class="region-name" x="555" y="921">Red Orchard</text>
+      <use href="#support-spot" x="529" y="989"/>
+      <use href="#support-spot" x="581" y="989"/>
+      <use href="#support-spot" x="529" y="1037"/>
+      <use href="#support-spot" x="581" y="1037"/>
+    </g>
+
+    <g aria-label="Westgate, 2 Support spots">
+      <text class="region-name" x="360" y="788">Westgate</text>
+      <use href="#support-spot" x="334" y="858"/>
+      <use href="#support-spot" x="386" y="858"/>
+    </g>
+
+    <g aria-label="Mossfield, 4 Support spots">
+      <text class="region-name" x="295" y="542">Mossfield</text>
+      <use href="#support-spot" x="269" y="610"/>
+      <use href="#support-spot" x="321" y="610"/>
+      <use href="#support-spot" x="269" y="658"/>
+      <use href="#support-spot" x="321" y="658"/>
+    </g>
+
+    <g aria-label="Ironwood, 6 Support spots">
+      <text class="region-name" x="330" y="322">Ironwood</text>
+      <use href="#support-spot" x="278" y="392"/>
+      <use href="#support-spot" x="330" y="392"/>
+      <use href="#support-spot" x="382" y="392"/>
+      <use href="#support-spot" x="278" y="440"/>
+      <use href="#support-spot" x="330" y="440"/>
+      <use href="#support-spot" x="382" y="440"/>
+    </g>
+
+    <g aria-label="High Pastures, 4 Support spots">
+      <text class="region-name region-name-small" x="555" y="205">High Pastures</text>
+      <use href="#support-spot" x="529" y="273"/>
+      <use href="#support-spot" x="581" y="273"/>
+      <use href="#support-spot" x="529" y="321"/>
+      <use href="#support-spot" x="581" y="321"/>
+    </g>
+
+    <g aria-label="Crown Road, 2 Support spots">
+      <text class="region-name region-name-small" x="1000" y="492">Crown Road</text>
+      <use href="#support-spot" x="974" y="555"/>
+      <use href="#support-spot" x="1026" y="555"/>
+    </g>
+
+    <g aria-label="Canal Ward, 2 Support spots">
+      <text class="region-name region-name-small" x="800" y="760">Canal Ward</text>
+      <use href="#support-spot" x="774" y="830"/>
+      <use href="#support-spot" x="826" y="830"/>
+    </g>
+
+    <g aria-label="Old Quarter, 2 Support spots">
+      <text class="region-name region-name-small" x="600" y="492">Old Quarter</text>
+      <use href="#support-spot" x="574" y="555"/>
+      <use href="#support-spot" x="626" y="555"/>
+    </g>
+
+    <g aria-label="Bellweather Centre, 3 Support spots">
+      <text class="region-name region-name-centre" x="800" y="620">Bellweather</text>
+      <text class="region-name region-name-centre" x="800" y="640">Centre</text>
+      <use href="#support-spot" x="755" y="676"/>
+      <use href="#support-spot" x="800" y="676"/>
+      <use href="#support-spot" x="845" y="676"/>
+    </g>
+  </g>
+
+  </g>
+
+</svg>

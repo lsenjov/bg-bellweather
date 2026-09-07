@@ -17,11 +17,12 @@
     "generate:candidate-bonus-cards": "node scripts/generate-candidate-bonus-cards.mjs",
     "dev": "npm run dev --workspace @bellweather/server",
     "dev:web": "npm run dev --workspace @bellweather/web",
-    "docs:check": "node scripts/generate-candidate-bonus-cards.mjs --check && node scripts/check-docs.mjs",
+    "docs:check": "python scripts/generate-default-map.py --check && node --conditions=development --import tsx scripts/generate-scoring-cards.ts --check && node scripts/generate-candidate-bonus-cards.mjs --check && node scripts/check-docs.mjs",
     "start": "npm run start --workspace @bellweather/server",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "npm run typecheck --workspaces --if-present && tsc -p examples/tsconfig.json --noEmit"
+    "typecheck": "npm run typecheck --workspaces --if-present && tsc -p examples/tsconfig.json --noEmit",
+    "generate:scoring-cards": "node --conditions=development --import tsx scripts/generate-scoring-cards.ts"
   },
   "devDependencies": {
     "@types/node": "^24.1.0",

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="District map, Coalition summary, Year register, and yearly party access areas for Bellweather Ruleset 23.">
+    <meta name="description" content="District map, Coalition summary, Year register, and yearly party access areas for Bellweather Ruleset 24.">
     <title>Board — Ladder Bidding</title>
     <link rel="stylesheet" href="../styles.css">
   </head>
@@ -27,41 +27,41 @@
       <section>
         <span class="status decided">Decided</span>
         <h2 id="district-map">District map</h2>
-        <p>The map contains sixteen districts, fifty-seven Support spaces, and eighteen shared borders. Shared printed border segments define adjacency; districts touching only at a point are not adjacent. The outer twelve districts form a continuous ring, while Crown Road, Canal Ward, and Old Quarter connect Bellweather Centre directly to Harbormouth, Grand Market, and Ironwood respectively.</p>
+        <p>The default inland map has sixteen districts, 57 Support spaces and 23 adjacencies: fourteen shared borders and nine bridges. Urban, Mixed and Outlying each hold 18 Support; Bellweather Centre holds 3 separately. Water severs adjacency for every effect, including Smear, except at a marked bridge. Point contacts do not count.</p>
         <div class="table-wrap" role="region" aria-label="District capacities and neighbors" tabindex="0"><table>
-          <thead><tr><th>District</th><th>Capacity</th><th>Neighbors</th></tr></thead>
+          <thead><tr><th>District</th><th>Region</th><th>Support</th><th>Votes</th><th>Neighbors</th></tr></thead>
           <tbody>
-            <tr><td>Northreach</td><td>2</td><td>High Pastures, Cloverfield</td></tr>
-            <tr><td>Cloverfield</td><td>4</td><td>Northreach, Harbormouth</td></tr>
-            <tr><td>Harbormouth</td><td>6</td><td>Cloverfield, Millbank, Crown Road</td></tr>
-            <tr><td>Millbank</td><td>4</td><td>Harbormouth, Reedwater</td></tr>
-            <tr><td>Reedwater</td><td>2</td><td>Millbank, Sunmeadow</td></tr>
-            <tr><td>Sunmeadow</td><td>4</td><td>Reedwater, Grand Market</td></tr>
-            <tr><td>Grand Market</td><td>6</td><td>Sunmeadow, Red Orchard, Canal Ward</td></tr>
-            <tr><td>Red Orchard</td><td>4</td><td>Grand Market, Westgate</td></tr>
-            <tr><td>Westgate</td><td>2</td><td>Red Orchard, Mossfield</td></tr>
-            <tr><td>Mossfield</td><td>4</td><td>Westgate, Ironwood</td></tr>
-            <tr><td>Ironwood</td><td>6</td><td>Mossfield, High Pastures, Old Quarter</td></tr>
-            <tr><td>High Pastures</td><td>4</td><td>Ironwood, Northreach</td></tr>
-            <tr><td>Crown Road</td><td>2</td><td>Harbormouth, Bellweather Centre</td></tr>
-            <tr><td>Canal Ward</td><td>2</td><td>Grand Market, Bellweather Centre</td></tr>
-            <tr><td>Old Quarter</td><td>2</td><td>Ironwood, Bellweather Centre</td></tr>
-            <tr><td>Bellweather Centre</td><td>3</td><td>Crown Road, Canal Ward, Old Quarter</td></tr>
-          </tbody>
+<tr><td>Harbormouth</td><td>Urban</td><td>6</td><td>3</td><td>Grand Market, Ironwood</td></tr>
+<tr><td>Grand Market</td><td>Urban</td><td>6</td><td>3</td><td>Harbormouth, Ironwood, Northgate</td></tr>
+<tr><td>Ironwood</td><td>Urban</td><td>6</td><td>3</td><td>Harbormouth, Grand Market, Heath, Bellweather Centre</td></tr>
+<tr><td>Northgate</td><td>Mixed</td><td>6</td><td>3</td><td>Grand Market, Canal Ward</td></tr>
+<tr><td>Canal Ward</td><td>Mixed</td><td>4</td><td>2</td><td>Northgate, Crown Road, Bellweather Centre</td></tr>
+<tr><td>Crown Road</td><td>Mixed</td><td>4</td><td>2</td><td>Canal Ward, Orchard, Meadow</td></tr>
+<tr><td>Orchard</td><td>Mixed</td><td>2</td><td>1</td><td>Crown Road, Meadow</td></tr>
+<tr><td>Meadow</td><td>Mixed</td><td>2</td><td>1</td><td>Crown Road, Orchard, Eastfield</td></tr>
+<tr><td>Westfield</td><td>Outlying</td><td>2</td><td>1</td><td>Eastfield, Marsh, Vale, Bellweather Centre</td></tr>
+<tr><td>Eastfield</td><td>Outlying</td><td>4</td><td>2</td><td>Meadow, Westfield, Marsh</td></tr>
+<tr><td>Marsh</td><td>Outlying</td><td>2</td><td>1</td><td>Westfield, Eastfield</td></tr>
+<tr><td>Heath</td><td>Outlying</td><td>2</td><td>1</td><td>Ironwood, Downs, Coast</td></tr>
+<tr><td>Downs</td><td>Outlying</td><td>2</td><td>1</td><td>Heath, Vale, Bellweather Centre</td></tr>
+<tr><td>Vale</td><td>Outlying</td><td>2</td><td>1</td><td>Westfield, Downs, Coast</td></tr>
+<tr><td>Coast</td><td>Outlying</td><td>4</td><td>2</td><td>Heath, Vale</td></tr>
+<tr><td>Bellweather Centre</td><td>Centre</td><td>3</td><td>separate</td><td>Ironwood, Canal Ward, Westfield, Downs</td></tr>
+</tbody>
         </table></div>
         <p>At setup, Harbormouth, Grand Market, and Ironwood each contain one Support from every party and therefore begin full. Bellweather Centre does not participate in ordinary Election draws; it remains intact and supplies separate Capital scoring.</p>
-        <p><a href="../../assets/print/ring-and-cross-district-map-a3.pdf">Open the current A3 map PDF →</a></p>
+        <p><a href="../../assets/print/inland-district-map-a4.pdf">Open the current A4 map PDF →</a></p>
       </section>
       <section>
         <span class="status decided">Decided</span>
         <h2>Coalition summary</h2>
-        <p>The map’s upper-right margin holds a roughly 49 × 98 mm summary without moving or resizing the district diagram. Three interchangeable, unnumbered rows each join two 14 mm circular wells. A boxed reserve beneath them holds six unpaired tokens in a 3 × 2 arrangement, with <strong>No coalition</strong> printed inside the box.</p>
+        <p>Use the separate 49 × 98 mm <a href="../assets/coalition-summary.svg">Coalition summary panel</a> (<a href="../../assets/print/coalition-summary.pdf">PDF</a>) beside the A4 map. It has three interchangeable joined pairs of 14 mm wells and a six-token No coalition reserve.</p>
         <p>Each party has one 14 mm Coalition summary token showing only its established color and emblem. All six begin in the reserve. After each card finishes resolving, the acting player places every reciprocal pair on any empty joined row and returns all other tokens to the reserve. Coalition Targets remain authoritative; the summary is only a table-readable copy of their reciprocal state.</p>
       </section>
       <section>
         <span class="status decided">Decided</span>
         <h2>Year register</h2>
-        <p>The map’s lower-right corner holds six 27 mm spaces without moving or resizing the district diagram. The upper row contains Y1, Y3, and Y5 above a <strong>Midterms</strong> divider; the lower row contains Y2, Y4, and Y6 above an <strong>Elections</strong> divider. Advance the 22 mm Year marker numerically down each column and then to the next column.</p>
+        <p>The landscape A4 map has a six-space round/year tracker along its bottom edge. Each 23 mm-high space fits the existing 22 mm Year marker. Advance numerically from 1 through 6; Elections are marked after Years 2, 4 and 6.</p>
         <p>Midterms are thematic boundaries with no additional procedure. After Years 2, 4, and 6, complete Cleanup and then resolve the corresponding Election. The separate <a href="campaign-score-trackers.html">A4 public ledger</a> now contains only the 0–40 Firm score track.</p>
       </section>
       <section>
@@ -72,7 +72,7 @@
       <section>
         <span class="status decided">Decided</span>
         <h2>Print layout</h2>
-        <p>The party workspaces sit beside the district map so piles never obscure Support. Each opening, pile, and blank Bonus-card space uses an exact card-sized well. A marker in the opening well means open; returning it closes the party unless a card places that marker elsewhere. The three Bonus spaces and two workspace wells fit across the existing 287 mm board without reducing their 40 × 61 mm card geometry. The Coalition summary and Year register occupy existing map margin, so the district diagram retains its position and 88% scale. The map’s upper-right register shows the current revision, R23. Its replaced <a href="../../archive/components/map-capacity-header-2026-08-21.html">capacity header</a>, the <a href="../../archive/components/separate-year-and-score-tracker-ruleset-22-2026-08-22.html">separate Year register</a>, the <a href="../../archive/components/two-bonus-space-party-boards-2026-08-21.html">two-space Bonus layout</a>, and the earlier <a href="../../archive/components/party-board-bonus-panels-ruleset-19-2026-08-19.html">Ruleset 19 bonus panels</a> remain archived.</p>
+        <p>Print the <a href="../assets/inland-district-map.svg">default map SVG</a> or <a href="../../assets/print/inland-district-map-a4.pdf">A4 map PDF</a> at 100% on landscape A4 (297 × 210 mm). The map uses enlarged inland territories and a separate central Bellweather island. Support circles are 4.5 mm across; final physical Support-token size remains an open fit question. Keep party boards and the separate Coalition summary beside the map. The <a href="../../archive/rules/ruleset-23.html">replaced rules and components</a> remain archived.</p>
       </section>
     </main>
     <footer class="page-footer"><div class="page-footer-inner"><a href="cards.html">Next component: Cards →</a><span class="stamp">16 districts / 6 years / 3 coalition pairs</span></div></footer>
