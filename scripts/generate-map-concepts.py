@@ -275,6 +275,10 @@ def esc(value):
     return html.escape(str(value))
 
 
+def district(study,key):
+    return DISTRICTS[key] | study.get('district_overrides',{}).get(key,{})
+
+
 def names(keys):
     return ', '.join(DISTRICTS[key]['name'] for key in keys) or 'None'
 
@@ -326,9 +330,10 @@ def study_page(study,report):
             page.append(f'<li>{esc(names([edge["a"],edge["b"]]).replace(", ","–"))}: {esc(edge["kind"])}.</li>')
         page.append('</ul></section>')
     page.append('<details class="adjacency"><summary>Inspect every district and its neighbors</summary><div class="table-wrap"><table><caption>Complete adjacency; no additional connections are implied by the drawing.</caption><thead><tr><th scope="col">District</th><th scope="col">Scoring region</th><th scope="col">Support / votes</th><th scope="col">Connected districts</th></tr></thead><tbody>')
-    for key,district in DISTRICTS.items():
-        capacity=str(district['capacity'])+' / '+('separate' if key=='X' else str(district['capacity']//2))
-        page.append(f'<tr><th scope="row">{esc(district["name"])}</th><td>{district["region"]}</td><td>{capacity}</td><td>{esc(names(report["neighbors"][key]))}</td></tr>')
+    for key in DISTRICTS:
+        d=district(study,key)
+        capacity=str(d['capacity'])+' / '+('separate' if key=='X' else str(d['capacity']//2))
+        page.append(f'<tr><th scope="row">{esc(d["name"])}</th><td>{d["region"]}</td><td>{capacity}</td><td>{esc(names(report["neighbors"][key]))}</td></tr>')
     page.append('</tbody></table></div></details><footer><p>Experimental concept; no production map is adopted. Generate this file and its SVG with <code>python scripts/generate-map-concepts.py</code>.</p></footer></main></body></html>')
     if study.get('border_map'):
         page[3]=page[3].replace('width="1200" height="1020"','width="1188" height="840"').replace('explicit routes show every adjacency.','shared borders and bridges show adjacency.').replace('These are experimental route maps, not adopted game rules.','Landscape A4, 297 × 210 mm, with a six-year tracker whose 23 mm-high spaces fit the existing 22 mm Year marker. Print the SVG at 100%; Support circles are 4.5 mm across. Token size remains an open print-fit question. This is an experimental map, not an adopted game rule.')
@@ -391,7 +396,7 @@ def render_border_map(study,edges,facts):
         a,b=edge['points']
         svg.append(f'<g data-bridge="{edge["a"]}-{edge["b"]}"><title>{esc(names([edge["a"],edge["b"]]))}: bridge</title><path d="M {a[0]},{a[1]} L {b[0]},{b[1]}" stroke="#19354b" stroke-width="14"/><path d="M {a[0]},{a[1]} L {b[0]},{b[1]}" stroke="#fff5d8" stroke-width="9"/></g>')
     for key,node in study['nodes'].items():
-        d=DISTRICTS[key];x,y=xy(node);polygon=node['polygon']
+        d=district(study,key);x,y=xy(node);polygon=node['polygon']
         assert all(40<=px<=1148 and 105<=py<=688 for px,py in polygon)
         svg.append(f'<g data-district="{key}"><polygon points="{points_text(polygon)}" fill="{COLORS[d["region"]]}" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="{x}" y="{y-17}" text-anchor="middle">{esc(d["name"])}</text><text class="detail" x="{x}" y="{y}" text-anchor="middle">'+('Centre · separate' if key=='X' else f'{d["region"]} · {d["capacity"]//2} '+('vote' if d['capacity']==2 else 'votes'))+'</text>')
         columns=3 if d['capacity']==6 else d['capacity']
@@ -400,8 +405,7 @@ def render_border_map(study,edges,facts):
             assert all(inside((sx+9*math.cos(t*math.tau/32),sy+9*math.sin(t*math.tau/32)),polygon) for t in range(32)),(key,'Support circle outside territory')
             svg.append(f'<circle cx="{sx}" cy="{sy}" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>')
         svg.append('</g>')
-    svg.append('<text x="36" y="715" font-size="12">Shared borders + bridges = adjacency for every effect. Water blocks all other connections. Point contacts do not count.</text>')
-    svg.append('<text x="36" y="758" font-size="14" font-weight="700">ROUND / YEAR</text><text x="36" y="780" font-size="11">Elections after 2, 4, 6</text>')
+    svg.append('<text x="36" y="758" font-size="14" font-weight="700">ROUND / YEAR</text>')
     for year in range(1,7):
         x=220+(year-1)*154
         svg.append(f'<rect x="{x}" y="724" width="140" height="92" rx="8" fill="{ "#e4dfea" if year%2==0 else "#f2f5f6"}" stroke="#19354b"/><text x="{x+23}" y="780" font-size="25" font-weight="700">{year}</text>')
@@ -420,7 +424,7 @@ def main():
     for study in DATA['studies']:
         assert set(study['nodes'])==set(DISTRICTS)
         for region in ('Urban','Mixed','Outlying'):
-            assert sum(d['capacity'] for d in DISTRICTS.values() if d['region']==region)==18
+            assert sum(district(study,k)['capacity'] for k in DISTRICTS if district(study,k)['region']==region)==18
         if study.get('border_map'):
             edges,graph=border_edges(study)
         else:

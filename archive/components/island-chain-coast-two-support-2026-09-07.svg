@@ -71,9 +71,11 @@
 <circle cx="942.0" cy="459" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="966.0" cy="459" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="I"><polygon points="690.0,610.0 515.0,530.0 670.0,475.0 785.0,495.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="660" y="522" text-anchor="middle">Westfield</text><text class="detail" x="660" y="539" text-anchor="middle">Outlying · 1 vote</text>
+<g data-district="I"><polygon points="690.0,610.0 515.0,530.0 670.0,475.0 785.0,495.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="660" y="522" text-anchor="middle">Westfield</text><text class="detail" x="660" y="539" text-anchor="middle">Outlying · 2 votes</text>
+<circle cx="624.0" cy="559" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="648.0" cy="559" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="672.0" cy="559" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
+<circle cx="696.0" cy="559" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
 <g data-district="J"><polygon points="690.0,610.0 785.0,495.0 865.0,560.0 835.0,660.0 710.0,680.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="785" y="578" text-anchor="middle">Eastfield</text><text class="detail" x="785" y="595" text-anchor="middle">Outlying · 2 votes</text>
 <circle cx="749.0" cy="615" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
@@ -97,18 +99,17 @@
 <circle cx="302.0" cy="592" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="326.0" cy="592" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="O"><polygon points="235.0,515.0 235.0,665.0 85.0,625.0 60.0,440.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="144" y="554" text-anchor="middle">Coast</text><text class="detail" x="144" y="571" text-anchor="middle">Outlying · 2 votes</text>
-<circle cx="108.0" cy="591" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
+<g data-district="O"><polygon points="235.0,515.0 235.0,665.0 85.0,625.0 60.0,440.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="144" y="554" text-anchor="middle">Coast</text><text class="detail" x="144" y="571" text-anchor="middle">Outlying · 1 vote</text>
 <circle cx="132.0" cy="591" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="156.0" cy="591" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
-<circle cx="180.0" cy="591" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
 <g data-district="X"><polygon points="535.0,340.0 605.0,320.0 650.0,365.0 645.0,425.0 565.0,455.0 520.0,400.0" fill="#e4dfea" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="590" y="373" text-anchor="middle">Bellweather</text><text class="detail" x="590" y="390" text-anchor="middle">Centre · separate</text>
 <circle cx="566.0" cy="410" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="590.0" cy="410" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="614.0" cy="410" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<text x="36" y="758" font-size="14" font-weight="700">ROUND / YEAR</text>
+<text x="36" y="715" font-size="12">Shared borders + bridges = adjacency for every effect. Water blocks all other connections. Point contacts do not count.</text>
+<text x="36" y="758" font-size="14" font-weight="700">ROUND / YEAR</text><text x="36" y="780" font-size="11">Elections after 2, 4, 6</text>
 <rect x="220" y="724" width="140" height="92" rx="8" fill="#f2f5f6" stroke="#19354b"/><text x="243" y="780" font-size="25" font-weight="700">1</text>
 <rect x="374" y="724" width="140" height="92" rx="8" fill="#e4dfea" stroke="#19354b"/><text x="397" y="780" font-size="25" font-weight="700">2</text>
 <text x="434" y="778" font-size="12">Election 1</text>

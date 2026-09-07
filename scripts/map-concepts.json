@@ -1606,7 +1606,15 @@
       "target_edges": 24,
       "background": "water",
       "islands": true,
-      "border_map": true
+      "border_map": true,
+      "district_overrides": {
+        "I": {
+          "capacity": 2
+        },
+        "O": {
+          "capacity": 4
+        }
+      }
     },
     {
       "id": 9,
