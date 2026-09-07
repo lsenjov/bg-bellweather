@@ -363,16 +363,20 @@ describe("yearly browser play surface", () => {
     expect((screen.getByLabelText("Party") as HTMLSelectElement).disabled).toBe(true);
   });
 
-  it("targets and resolves one Operation card with mouse clicks", async () => {
+  it.each(["map", "list"])("advances Organise from a %s source choice to a map destination", async (sourceInput) => {
     const state = openEveryParty(initializeGame(configuration(2), random).state);
     const view = privateView(state, "seat-1");
     const onCommand = vi.fn(async () => true);
     render(
       <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={onCommand} />
     );
-    fireEvent.click(screen.getByLabelText("Grand Market: 6 of 6 Support spaces occupied"));
-    const destinationField = screen.getByLabelText("Destination").parentElement!;
-    fireEvent.click(within(destinationField).getByRole("button", { name: "Select on map" }));
+    if (sourceInput === "map") {
+      fireEvent.click(screen.getByLabelText("Grand Market: 6 of 6 Support spaces occupied"));
+    } else {
+      fireEvent.change(screen.getByLabelText("Source"), { target: { value: "grand-market" } });
+    }
+    expect(screen.getByText("Select the Organise destination district on the map.")).toBeTruthy();
+    expect(screen.getByLabelText("Destination").closest(".target-field")?.classList.contains("target-field-active")).toBe(true);
     fireEvent.click(screen.getByLabelText("Northgate: 0 of 6 Support spaces occupied"));
     expect(screen.getByText("Ready to resolve this card.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Resolve organise" }));

@@ -1413,7 +1413,12 @@ export function OperationComposer(props: {
     setArmedTarget(defaultOperationTarget(draft.operation));
     operationChoicesRef.current?.focus();
   };
-  const update = (patch: Partial<OperationDraft>) => setDraft((current) => ({ ...current, ...patch }));
+  const update = (patch: Partial<OperationDraft>) => {
+    setDraft((current) => ({ ...current, ...patch }));
+    if (draft.operation === "organise" && patch.sourceDistrictId) {
+      setArmedTarget("destinationDistrictId");
+    }
+  };
   const interactionKey = JSON.stringify([
     armedTarget,
     draft,
