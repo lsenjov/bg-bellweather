@@ -78,7 +78,7 @@ select[multiple] { min-height: 116px; border: 1px solid var(--ink); }
 
 .game-grid { display: grid; grid-template-columns: minmax(0, 1.58fr) minmax(360px, .72fr); gap: 16px; align-items: start; margin-top: 18px; }
 .private-folio, .map-desk, .action-desk, .player-ledger-block, .election-desk, .year-archive, .chat-desk { padding: clamp(18px, 2.4vw, 32px); }
-.private-folio { position: relative; grid-column: 1 / -1; display: grid; grid-template-columns: minmax(190px, .58fr) minmax(420px, 1.7fr) minmax(230px, .68fr); gap: 18px; overflow: hidden; background: #e6dbc5; isolation: isolate; }
+.private-folio { position: relative; grid-column: 1 / -1; display: grid; grid-template-columns: minmax(190px, .58fr) minmax(0, 2.38fr); gap: 18px; overflow: hidden; background: #e6dbc5; isolation: isolate; }
 .private-folio-firm { background: linear-gradient(115deg, color-mix(in srgb, var(--folio-firm) 72%, var(--paper)) 0 25%, transparent 62%), #e6dbc5; }
 .folio-watermark { position: absolute; top: -65px; left: 70px; z-index: -1; width: 340px; height: 340px; opacity: .065; fill: none; stroke: var(--ink); stroke-width: 2.7; }
 .folio-heading { align-content: center; padding-right: 18px; border-right: 1px solid var(--ink); }
@@ -93,13 +93,13 @@ select[multiple] { min-height: 116px; border: 1px solid var(--ink); }
 .new-year-area { grid-column: 2; display: flex; flex-wrap: wrap; gap: 5px 12px; padding: 8px 10px; border: 1px dashed var(--ink); background: rgb(255 255 255 / 22%); }
 .new-year-area span { width: 100%; color: var(--red); font: .53rem var(--mono); text-transform: uppercase; }
 .new-year-area b { font: 500 .56rem var(--mono); }
-.agenda-stack { display: grid; grid-column: 3; grid-row: 1 / 3; gap: 6px; align-content: start; }
+.agenda-stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px; margin-top: 10px; align-content: start; }
 .agenda-card { display: grid; gap: 3px; padding: 8px; border: 1px solid var(--ink); background: rgb(255 251 238 / 63%); }
 .agenda-card span, .agenda-card small { overflow: hidden; font: .5rem var(--mono); text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
 .agenda-card strong { overflow-wrap: anywhere; font-size: .87rem; }
 .folio-public-copy { grid-column: 2 / -1; align-self: center; }
 
-.map-desk { grid-column: 1; }
+.map-desk { grid-column: 1; min-width: 0; }
 .map-instruction { margin: -5px 0 14px; padding: 8px 11px; border-left: 5px solid var(--red); background: color-mix(in srgb, var(--blue) 11%, transparent); font: 500 .62rem/1.45 var(--mono); letter-spacing: .03em; text-transform: uppercase; }
 .action-desk { position: sticky; top: 12px; grid-column: 2; max-height: calc(100vh - 24px); overflow-y: auto; border-top: 8px solid var(--red); }
 .section-heading { display: flex; justify-content: space-between; gap: 20px; align-items: start; margin-bottom: 18px; border-bottom: 2px solid var(--ink); }
@@ -145,7 +145,7 @@ select[multiple] { min-height: 116px; border: 1px solid var(--ink); }
 .latest-action-bonus { display: flex; gap: 5px; align-items: center; font: .52rem var(--mono); text-transform: uppercase; }
 .latest-action-bonus svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 4; }
 .district-map-scroll { overflow-x: auto; }
-.district-map { position: relative; min-width: 940px; aspect-ratio: 1108 / 583; isolation: isolate; }
+.district-map { position: relative; min-width: 780px; aspect-ratio: 1108 / 583; isolation: isolate; }
 .district-terrain { position: absolute; inset: 0; width: 100%; height: 100%; }
 .terrain-selectable { cursor: pointer; }
 .terrain-selectable:hover { filter: brightness(1.07); }
@@ -236,10 +236,9 @@ footer { display: flex; justify-content: space-between; padding: 18px 4px; font:
 
 @media (max-width: 1120px) {
   .entry-page { grid-template-columns: 1fr; padding: 40px 20px; }
-  .game-grid { grid-template-columns: 1fr; }
+  .game-grid { grid-template-columns: minmax(0, 1fr); }
   .private-folio, .map-desk, .action-desk, .player-ledger-block, .election-desk, .year-archive, .chat-desk { grid-column: 1; }
   .private-folio { grid-template-columns: minmax(190px, .5fr) 1.5fr; }
-  .agenda-stack { grid-column: 1 / -1; grid-row: auto; grid-template-columns: repeat(3, 1fr); }
   .action-desk { position: static; max-height: none; }
 }
 
@@ -268,3 +267,21 @@ footer { display: flex; justify-content: space-between; padding: 18px 4px; font:
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
 }
+
+.player-scoring { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin: 12px 0; }
+.scoring-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; font-size: .9rem; }
+.capital-objectives { display: flex; gap: 6px; align-items: center; }
+.all-agendas { flex: 1; min-width: 110px; }
+.all-agendas[open] { flex-basis: 100%; }
+.all-agendas summary { cursor: pointer; width: fit-content; }
+.objective-icon { position: relative; display: inline-flex; flex: 0 0 auto; width: 34px; height: 34px; padding: 5px; align-items: center; justify-content: center; color: var(--ink); background: color-mix(in srgb, var(--party) 22%, var(--paper)); border: 2px solid var(--party); border-radius: 50%; }
+.objective-icon > svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.objective-icon:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.objective-tooltip { display: none; position: absolute; z-index: 10; top: calc(100% + 5px); left: 0; padding: 6px 9px; width: max-content; max-width: 220px; color: var(--paper); background: var(--ink); font: 14px/1.3 "Newsreader", serif; pointer-events: none; }
+.objective-icon:hover .objective-tooltip, .objective-icon:focus .objective-tooltip { display: block; }
+.map-objectives { position: absolute; z-index: 4; display: flex; flex-direction: column; gap: 6px; }
+.map-objectives-urban { top: 8px; left: 8px; }
+.map-objectives-mixed { top: 8px; right: 8px; }
+.map-objectives-outlying { bottom: 8px; left: 8px; }
+.map-objectives-mixed .objective-tooltip { left: auto; right: 0; }
+.map-objectives-outlying .objective-tooltip { top: auto; bottom: calc(100% + 5px); }

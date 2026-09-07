@@ -3,6 +3,9 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import {
   PARTY_IDS,
+  SCORING_CARDS_BY_ID,
+  PARTIES_BY_ID,
+  type ScoringCardId,
   RULESET_VERSION,
   type BonusCardId,
   type PartyId
@@ -726,7 +729,36 @@ describe("yearly browser play surface", () => {
       <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />
     );
     expect(screen.getByText("New Year area · unavailable this year")).toBeTruthy();
+    expect(screen.getByText("All agendas").closest("details")?.open).toBe(false);
+    fireEvent.click(screen.getByText("All agendas"));
     expect(screen.getAllByText(/Capital card/)).toHaveLength(3);
+  });
+
+  it.each([2, 6])("shows only current private regional objectives in stable card order for %i players", (count) => {
+    const state = initializeGame(configuration(count), random).state;
+    state.year = 3;
+    let view = privateView(state, "seat-1");
+    const props = { ownSeatId: "seat-1", spectator: false, busy: false, onCommand: async () => true };
+    const { container, rerender } = render(<GameDesk {...props} view={view} ownSeat={view.seats[0]} />);
+    const assertObjectives = (slotIndex: number) => {
+      for (const region of ["urban", "mixed", "outlying"]) {
+        const labels = [...container.querySelectorAll(`.map-objectives-${region} [role="img"]`)].map((icon) => icon.getAttribute("aria-label"));
+        const cards = view.seats[0]!.scoringCardIds![slotIndex]!;
+        expect(labels).toEqual(cards.map((id, index) => {
+          const objective = SCORING_CARDS_BY_ID[id as ScoringCardId].objectives.find((value) => value.regionId === region)!;
+          return `${region[0]!.toUpperCase()}${region.slice(1)}: ${PARTIES_BY_ID[objective.partyId].shortName}${cards.length > 1 ? ` · Card ${index + 1}` : ""}`;
+        }));
+      }
+    };
+    assertObjectives(1);
+    expect(container.querySelectorAll(".capital-objectives [role='img']")).toHaveLength(3);
+    state.year = 6;
+    view = privateView(state, "seat-1");
+    rerender(<GameDesk {...props} view={view} ownSeat={view.seats[0]} />);
+    assertObjectives(2);
+    rerender(<GameDesk {...props} view={view} ownSeat={undefined} spectator />);
+    expect(container.querySelectorAll(".map-objectives [role='img']")).toHaveLength(0);
+    expect(screen.queryByText("All agendas")).toBeNull();
   });
 
   it("reports Capital scoring separately in an Election bulletin", () => {

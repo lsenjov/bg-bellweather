@@ -435,6 +435,9 @@ export function GameDesk(props: {
   onCommand(command: GameCommand): Promise<boolean | void>;
 }) {
   const latestElection = props.view.electionHistory.at(-1);
+  const scoringSlots = props.spectator ? [] : props.ownSeat?.scoringCardIds ?? [];
+  const slotIndex = Math.min(2, Math.floor((props.view.year - 1) / 2));
+  const objectiveCardIds = (scoringSlots[slotIndex] ?? []) as ScoringCardId[];
   const latestAction = props.view.lobbyActions.at(-1) ?? null;
   const supportChanges = props.view.phase === "election" || props.view.phase === "complete"
     ? []
@@ -448,7 +451,9 @@ export function GameDesk(props: {
         {interaction !== null && <p className="map-instruction">{interaction.prompt}</p>}
         <LatestLobbyAction view={props.view} action={latestAction} />
         <PartyBoard view={props.view} interaction={interaction} />
+        <PlayerScoring cardIds={objectiveCardIds} slots={scoringSlots} seatModifiers={props.view.seats.length >= 4} />
         <DistrictMap
+          objectiveCardIds={objectiveCardIds}
           view={props.view}
           interaction={interaction}
           supportChanges={supportChanges}
@@ -521,24 +526,48 @@ function PrivateFolio(props: {
               ))}
             </div>
           )}
-          <div className="agenda-stack">
-            {(props.seat.scoringCardIds ?? []).flatMap((slot, slotIndex) =>
-              slot.map((cardId, index) => (
-                <ScoringCard
-                  key={cardId}
-                  cardId={cardId as ScoringCardId}
-                  capital={index === 0}
-                  seatModifiers={props.view.seats.length >= 4}
-                  electionNumber={slotIndex + 1}
-                />
-              ))
-            )}
-          </div>
+
         </>
       ) : (
         <p className="folio-public-copy">Hands, New Year cards, and future scoring cards remain private.</p>
       )}
     </aside>
+  );
+}
+
+function ObjectiveIcon({ partyId, label }: { partyId: PartyId; label: string }) {
+  return (
+    <span className="objective-icon" role="img" tabIndex={0} aria-label={label} style={{ "--party": PARTIES_BY_ID[partyId].color } as CSSProperties}>
+      <PartyEmblem partyId={partyId} />
+      <span className="objective-tooltip" aria-hidden="true">{label}</span>
+    </span>
+  );
+}
+
+function PlayerScoring({ cardIds, slots, seatModifiers }: {
+  cardIds: ScoringCardId[];
+  slots: readonly (readonly string[])[];
+  seatModifiers: boolean;
+}) {
+  const capitalCard = cardIds[0] === undefined ? undefined : SCORING_CARDS_BY_ID[cardIds[0]];
+  if (capitalCard === undefined) return null;
+  return (
+    <div className="player-scoring">
+      <div className="scoring-strip">
+        <span className="capital-objectives">Capital {capitalCard.objectives.map((objective) =>
+          <ObjectiveIcon key={objective.partyId} partyId={objective.partyId} label={`Capital: ${PARTIES_BY_ID[objective.partyId].shortName}`} />
+        )}</span>
+        {seatModifiers && <span>Gain {capitalCard.gain.replaceAll("-", " ")} · Lose {capitalCard.lose.replaceAll("-", " ")}</span>}
+      </div>
+      <details className="all-agendas">
+        <summary>All agendas</summary>
+        <div className="agenda-stack">
+          {slots.flatMap((slot, slotIndex) => slot.map((cardId, index) =>
+            <ScoringCard key={cardId} cardId={cardId as ScoringCardId} capital={index === 0} seatModifiers={seatModifiers} electionNumber={slotIndex + 1} />
+          ))}
+        </div>
+      </details>
+    </div>
   );
 }
 
@@ -740,11 +769,13 @@ function LatestLobbyAction({
 export function DistrictMap({
   view,
   interaction = null,
-  supportChanges = []
+  supportChanges = [],
+  objectiveCardIds = []
 }: {
   view: GameView;
   interaction?: TableInteraction | null;
   supportChanges?: SupportChange[];
+  objectiveCardIds?: readonly ScoringCardId[];
 }) {
   const targeting = interaction?.onDistrictClick !== undefined;
   return (
@@ -820,6 +851,14 @@ export function DistrictMap({
           </article>
         );
       })}
+      {(["urban", "mixed", "outlying"] as const).map((regionId) => (
+        <div key={regionId} className={`map-objectives map-objectives-${regionId}`}>
+          {objectiveCardIds.map((cardId, index) => {
+            const objective = SCORING_CARDS_BY_ID[cardId].objectives.find((candidate) => candidate.regionId === regionId)!;
+            return <ObjectiveIcon key={cardId} partyId={objective.partyId} label={`${REGION_NAMES[regionId]}: ${PARTIES_BY_ID[objective.partyId].shortName}${objectiveCardIds.length > 1 ? ` · Card ${index + 1}` : ""}`} />;
+          })}
+        </div>
+      ))}
       <MapChangeLayer supportChanges={supportChanges} />
     </div></div>
   );
