@@ -322,6 +322,47 @@ describe("yearly browser play surface", () => {
     });
   });
 
+  it("selects the acting party directly, then uses party clicks for Court targets", () => {
+    const state = sixPartyState();
+    const view = privateView(state, "seat-1");
+    render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />);
+    fireEvent.click(screen.getByRole("button", { name: /^Foxglove Open/ }));
+    expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe("foxglove");
+    expect(document.activeElement).toBe(screen.getByLabelText("Choose an Operation card"));
+    fireEvent.click(screen.getByRole("button", { name: /^court 2$/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^Old Shell Open/ }));
+    expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe("foxglove");
+    expect((screen.getByLabelText("Court target") as HTMLSelectElement).value).toBe("old-shell");
+  });
+
+  it("keeps Collect and Close selected when choosing a party on the board", () => {
+    const state = openEveryParty(initializeGame(configuration(2), random).state);
+    if (state.phase.type !== "lobby") throw new Error("Expected Lobby");
+    state.phase.turnsTaken["seat-1"] = 1;
+    const view = privateView(state, "seat-1");
+    render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />);
+    fireEvent.click(screen.getByRole("button", { name: "collect" }));
+    fireEvent.click(screen.getByRole("button", { name: /^Foxglove Open/ }));
+    expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe("foxglove");
+    expect(screen.getByRole("heading", { name: "Collect" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "close" }));
+    const owned = Object.values(view.parties).find((party) => party?.ownerSeatId === "seat-1" && party.partyId !== "honeycomb")!;
+    const board = screen.getByText(PARTIES_BY_ID[owned.partyId].shortName).closest(".party-file")!;
+    fireEvent.click(board);
+    expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe(owned.partyId);
+    expect(screen.getByRole("heading", { name: "Close" })).toBeTruthy();
+  });
+
+  it("locks acting-party board selection after an Operation resolves", () => {
+    let state = openEveryParty(initializeGame(configuration(2), random).state);
+    state = apply(state, organiseAction("seat-1"));
+    const view = privateView(state, "seat-1");
+    render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />);
+    fireEvent.click(screen.getByText("Foxglove").closest(".party-file")!);
+    expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe("honeycomb");
+    expect((screen.getByLabelText("Party") as HTMLSelectElement).disabled).toBe(true);
+  });
+
   it("targets and resolves one Operation card with mouse clicks", async () => {
     const state = openEveryParty(initializeGame(configuration(2), random).state);
     const view = privateView(state, "seat-1");

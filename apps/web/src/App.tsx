@@ -1357,6 +1357,7 @@ export function OperationComposer(props: {
   onInteraction?: ((interaction: TableInteraction | null) => void) | undefined;
 }) {
   const nextId = useRef(1);
+  const operationChoicesRef = useRef<HTMLDivElement>(null);
   const sequence = props.view.phaseData.type === "lobby"
     ? props.view.phaseData.inProgressOperate
     : null;
@@ -1407,12 +1408,18 @@ export function OperationComposer(props: {
     });
     setArmedTarget(defaultOperationTarget(operation));
   };
+  const chooseActingParty = (partyId: PartyId) => {
+    props.onPartyId(partyId);
+    setArmedTarget(defaultOperationTarget(draft.operation));
+    operationChoicesRef.current?.focus();
+  };
   const update = (patch: Partial<OperationDraft>) => setDraft((current) => ({ ...current, ...patch }));
   const interactionKey = JSON.stringify([
     armedTarget,
     draft,
     props.partyId,
     partyLocked,
+    props.busy,
     openPartyIds,
     props.view.support,
     props.view.courtSupport,
@@ -1420,23 +1427,32 @@ export function OperationComposer(props: {
   ]);
   useEffect(() => {
     if (props.onInteraction === undefined) return;
+    const actingPartyInteraction = {
+      partyIds: partyLocked || props.busy ? [] : openPartyIds,
+      selectedPartyIds: [props.partyId],
+      onPartyClick: partyLocked || props.busy ? undefined : chooseActingParty
+    };
     if (
       draft.bonusCardId !== "" &&
       BONUS_CARDS_BY_ID[draft.bonusCardId].operation === null
     ) {
-      props.onInteraction(null);
-      return;
+      props.onInteraction({ prompt: partyLocked ? "Continue at the acting party." : "Select an open party or complete this Bonus card.", ...actingPartyInteraction });
+      return () => props.onInteraction?.(null);
     }
-    props.onInteraction(operationTableInteraction({
+    const interaction = operationTableInteraction({
       state: operationState,
       partyId: props.partyId,
       openPartyIds,
       partyLocked,
       draft,
       armedTarget,
-      onPartyId: props.onPartyId,
+      onPartyId: chooseActingParty,
       onDraft: update
-    }));
+    });
+    props.onInteraction({
+      ...actingPartyInteraction,
+      ...interaction
+    });
     return () => props.onInteraction?.(null);
   }, [interactionKey, props.onInteraction]);
 
@@ -1448,7 +1464,7 @@ export function OperationComposer(props: {
       <p className="action-lede">Resolve one ordinary Operation or held Bonus card now. Then either resolve another card at this party or finish your action.</p>
       <p className="operation-progress">Card {resolvedCount + 1} of up to 3</p>
       <PartySelect partyId={props.partyId} partyIds={openPartyIds} onPartyId={props.onPartyId} disabled={partyLocked} active={armedTarget === "actingParty"} onArm={() => setArmedTarget("actingParty")} />
-      <div className="operation-adders" aria-label="Choose an Operation card">
+      <div ref={operationChoicesRef} tabIndex={-1} className="operation-adders" aria-label="Choose an Operation card">
         {OPERATION_IDS.map((operation) => (
           <button type="button" key={operation} className={draft.bonusCardId === "" && draft.operation === operation ? "active" : ""} disabled={(props.seat.operations?.[operation] ?? 0) < 1} onClick={() => chooseOperation(operation)}>
             {operation} <b>{props.seat.operations?.[operation] ?? 0}</b>
