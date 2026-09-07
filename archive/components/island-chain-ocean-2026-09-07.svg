@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="297mm" height="210mm" viewBox="0 0 1188 840" role="img" aria-labelledby="title desc">
 <title id="title">Island chain — landscape A4 prototype</title>
-<desc id="desc">Urban districts share continuous land. Bellweather occupies an island among inland lakes and rivers. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency. Three regions of eighteen Support; district elections. Six-year tracker beneath the map.</desc>
+<desc id="desc">Three urban districts fill one island. Bellweather occupies a central island. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency. Three regions of eighteen Support; district elections. Six-year tracker beneath the map.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:12px}</style>
 <rect width="1188" height="840" fill="white"/>
 <text x="32" y="38" font-size="25" font-weight="700">ISLAND CHAIN</text>
-<text x="1156" y="36" text-anchor="end" font-size="13">08 / Inland waterways · A4 landscape</text>
+<text x="1156" y="36" text-anchor="end" font-size="13">08 / Experimental board · A4 landscape</text>
 <rect x="32" y="56" width="16" height="16" fill="#d5e7f5" stroke="#19354b"/><text x="56" y="69" font-size="13">Urban 18 / 9 votes</text>
 <rect x="310" y="56" width="16" height="16" fill="#dbeaca" stroke="#19354b"/><text x="334" y="69" font-size="13">Mixed 18 / 9 votes</text>
 <rect x="580" y="56" width="16" height="16" fill="#f5e7ac" stroke="#19354b"/><text x="604" y="69" font-size="13">Outlying 18 / 9 votes</text>
 <rect x="875" y="56" width="16" height="16" fill="#e4dfea" stroke="#19354b"/><text x="899" y="69" font-size="13">Bellweather 3 / separate</text>
-<rect x="40" y="105" width="1108" height="583" fill="#d9edf5"/>
+<rect x="28" y="92" width="1132" height="608" rx="20" fill="#d9edf5"/>
 <g data-bridge="B-D"><title>Grand Market, Northgate: bridge</title><path d="M 410,140 L 780,126" stroke="#19354b" stroke-width="14"/><path d="M 410,140 L 780,126" stroke="#fff5d8" stroke-width="9"/></g>
 <g data-bridge="E-F"><title>Canal Ward, Crown Road: bridge</title><path d="M 870,260 L 1040,300" stroke="#19354b" stroke-width="14"/><path d="M 870,260 L 1040,300" stroke="#fff5d8" stroke-width="9"/></g>
 <g data-bridge="H-J"><title>Meadow, Eastfield: bridge</title><path d="M 950,500 L 835,555" stroke="#19354b" stroke-width="14"/><path d="M 950,500 L 835,555" stroke="#fff5d8" stroke-width="9"/></g>
@@ -19,7 +19,7 @@
 <g data-bridge="E-X"><title>Canal Ward, Bellweather: bridge</title><path d="M 715,270 L 625,340" stroke="#19354b" stroke-width="14"/><path d="M 715,270 L 625,340" stroke="#fff5d8" stroke-width="9"/></g>
 <g data-bridge="I-X"><title>Westfield, Bellweather: bridge</title><path d="M 600,525 L 590,445" stroke="#19354b" stroke-width="14"/><path d="M 600,525 L 590,445" stroke="#fff5d8" stroke-width="9"/></g>
 <g data-bridge="M-X"><title>Downs, Bellweather: bridge</title><path d="M 400,450 L 530,405" stroke="#19354b" stroke-width="14"/><path d="M 400,450 L 530,405" stroke="#fff5d8" stroke-width="9"/></g>
-<g data-district="A"><polygon points="260.0,215.0 65.0,230.0 40.0,230.0 40.0,105.0 280.0,105.0 280.0,130.0" fill="#d5e7f5" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="165" y="148" text-anchor="middle">Harbormouth</text><text class="detail" x="165" y="165" text-anchor="middle">Urban · 3 votes</text>
+<g data-district="A"><polygon points="260.0,215.0 65.0,230.0 80.0,135.0 230.0,115.0 280.0,130.0" fill="#d5e7f5" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="165" y="148" text-anchor="middle">Harbormouth</text><text class="detail" x="165" y="165" text-anchor="middle">Urban · 3 votes</text>
 <circle cx="141.0" cy="185" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="165.0" cy="185" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="189.0" cy="185" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
@@ -27,7 +27,7 @@
 <circle cx="165.0" cy="209" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="189.0" cy="209" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="B"><polygon points="260.0,215.0 280.0,130.0 280.0,105.0 545.0,105.0 540.0,150.0 550.0,205.0 500.0,265.0 435.0,260.0" fill="#d5e7f5" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="360" y="153" text-anchor="middle">Grand Market</text><text class="detail" x="360" y="170" text-anchor="middle">Urban · 3 votes</text>
+<g data-district="B"><polygon points="260.0,215.0 280.0,130.0 410.0,120.0 460.0,195.0 435.0,260.0" fill="#d5e7f5" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="360" y="153" text-anchor="middle">Grand Market</text><text class="detail" x="360" y="170" text-anchor="middle">Urban · 3 votes</text>
 <circle cx="336.0" cy="190" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="360.0" cy="190" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="384.0" cy="190" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
@@ -35,7 +35,7 @@
 <circle cx="360.0" cy="214" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="384.0" cy="214" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="C"><polygon points="260.0,215.0 435.0,260.0 475.0,300.0 420.0,345.0 210.0,345.0 40.0,320.0 40.0,230.0 65.0,230.0" fill="#d5e7f5" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="290" y="245" text-anchor="middle">Ironwood</text><text class="detail" x="290" y="262" text-anchor="middle">Urban · 3 votes</text>
+<g data-district="C"><polygon points="260.0,215.0 435.0,260.0 370.0,315.0 205.0,320.0 65.0,230.0" fill="#d5e7f5" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="290" y="245" text-anchor="middle">Ironwood</text><text class="detail" x="290" y="262" text-anchor="middle">Urban · 3 votes</text>
 <circle cx="266.0" cy="282" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="290.0" cy="282" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="314.0" cy="282" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
@@ -43,7 +43,7 @@
 <circle cx="290.0" cy="306" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="314.0" cy="306" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="D"><polygon points="760.0,225.0 650.0,140.0 620.0,140.0 620.0,105.0 1148.0,105.0 1148.0,210.0 1025.0,215.0 920.0,225.0" fill="#dbeaca" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="790" y="153" text-anchor="middle">Northgate</text><text class="detail" x="790" y="170" text-anchor="middle">Mixed · 3 votes</text>
+<g data-district="D"><polygon points="760.0,225.0 650.0,140.0 800.0,115.0 935.0,145.0 920.0,225.0" fill="#dbeaca" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="790" y="153" text-anchor="middle">Northgate</text><text class="detail" x="790" y="170" text-anchor="middle">Mixed · 3 votes</text>
 <circle cx="766.0" cy="190" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="790.0" cy="190" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="814.0" cy="190" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
@@ -51,19 +51,19 @@
 <circle cx="790.0" cy="214" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="814.0" cy="214" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="E"><polygon points="760.0,225.0 920.0,225.0 1025.0,215.0 1005.0,240.0 880.0,340.0 690.0,310.0 650.0,140.0" fill="#dbeaca" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="790" y="251" text-anchor="middle">Canal Ward</text><text class="detail" x="790" y="268" text-anchor="middle">Mixed · 2 votes</text>
+<g data-district="E"><polygon points="760.0,225.0 920.0,225.0 845.0,325.0 690.0,310.0 650.0,140.0" fill="#dbeaca" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="790" y="251" text-anchor="middle">Canal Ward</text><text class="detail" x="790" y="268" text-anchor="middle">Mixed · 2 votes</text>
 <circle cx="754.0" cy="288" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="778.0" cy="288" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="802.0" cy="288" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="826.0" cy="288" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="F"><polygon points="997.0,409.0 980.0,295.0 1015.0,260.0 1148.0,240.0 1148.0,410.0 1140.0,410.0" fill="#dbeaca" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="1060" y="336" text-anchor="middle">Crown Road</text><text class="detail" x="1060" y="353" text-anchor="middle">Mixed · 2 votes</text>
+<g data-district="F"><polygon points="997.0,409.0 980.0,295.0 1125.0,280.0 1140.0,410.0" fill="#dbeaca" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="1060" y="336" text-anchor="middle">Crown Road</text><text class="detail" x="1060" y="353" text-anchor="middle">Mixed · 2 votes</text>
 <circle cx="1024.0" cy="373" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="1048.0" cy="373" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="1072.0" cy="373" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="1096.0" cy="373" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="G"><polygon points="997.0,409.0 1140.0,410.0 1148.0,410.0 1148.0,688.0 995.0,688.0 995.0,550.0" fill="#dbeaca" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="1065" y="462" text-anchor="middle">Orchard</text><text class="detail" x="1065" y="479" text-anchor="middle">Mixed · 1 vote</text>
+<g data-district="G"><polygon points="997.0,409.0 1140.0,410.0 1125.0,555.0 995.0,550.0" fill="#dbeaca" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="1065" y="462" text-anchor="middle">Orchard</text><text class="detail" x="1065" y="479" text-anchor="middle">Mixed · 1 vote</text>
 <circle cx="1053.0" cy="499" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="1077.0" cy="499" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
@@ -75,17 +75,17 @@
 <circle cx="648.0" cy="559" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="672.0" cy="559" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="J"><polygon points="690.0,610.0 785.0,495.0 865.0,560.0 930.0,595.0 955.0,688.0 710.0,688.0 710.0,680.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="785" y="578" text-anchor="middle">Eastfield</text><text class="detail" x="785" y="595" text-anchor="middle">Outlying · 2 votes</text>
+<g data-district="J"><polygon points="690.0,610.0 785.0,495.0 865.0,560.0 835.0,660.0 710.0,680.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="785" y="578" text-anchor="middle">Eastfield</text><text class="detail" x="785" y="595" text-anchor="middle">Outlying · 2 votes</text>
 <circle cx="749.0" cy="615" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="773.0" cy="615" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="797.0" cy="615" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="821.0" cy="615" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="K"><polygon points="690.0,610.0 710.0,680.0 710.0,688.0 475.0,688.0 475.0,625.0 505.0,605.0 515.0,530.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="615" y="606" text-anchor="middle">Marsh</text><text class="detail" x="615" y="623" text-anchor="middle">Outlying · 1 vote</text>
+<g data-district="K"><polygon points="690.0,610.0 710.0,680.0 565.0,675.0 505.0,605.0 515.0,530.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="615" y="606" text-anchor="middle">Marsh</text><text class="detail" x="615" y="623" text-anchor="middle">Outlying · 1 vote</text>
 <circle cx="603.0" cy="643" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="627.0" cy="643" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="L"><polygon points="235.0,515.0 60.0,440.0 40.0,440.0 40.0,360.0 180.0,375.0 265.0,390.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="158" y="412" text-anchor="middle">Heath</text><text class="detail" x="158" y="429" text-anchor="middle">Outlying · 1 vote</text>
+<g data-district="L"><polygon points="235.0,515.0 60.0,440.0 180.0,375.0 265.0,390.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="158" y="412" text-anchor="middle">Heath</text><text class="detail" x="158" y="429" text-anchor="middle">Outlying · 1 vote</text>
 <circle cx="146.0" cy="449" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="170.0" cy="449" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
@@ -93,11 +93,11 @@
 <circle cx="315.0" cy="476" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="339.0" cy="476" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="N"><polygon points="235.0,515.0 420.0,505.0 450.0,540.0 430.0,620.0 445.0,688.0 235.0,688.0 235.0,665.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="314" y="555" text-anchor="middle">Vale</text><text class="detail" x="314" y="572" text-anchor="middle">Outlying · 1 vote</text>
+<g data-district="N"><polygon points="235.0,515.0 420.0,505.0 375.0,630.0 235.0,665.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="314" y="555" text-anchor="middle">Vale</text><text class="detail" x="314" y="572" text-anchor="middle">Outlying · 1 vote</text>
 <circle cx="302.0" cy="592" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="326.0" cy="592" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="O"><polygon points="235.0,515.0 235.0,665.0 235.0,688.0 40.0,688.0 40.0,440.0 60.0,440.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="144" y="554" text-anchor="middle">Coast</text><text class="detail" x="144" y="571" text-anchor="middle">Outlying · 2 votes</text>
+<g data-district="O"><polygon points="235.0,515.0 235.0,665.0 85.0,625.0 60.0,440.0" fill="#f5e7ac" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="144" y="554" text-anchor="middle">Coast</text><text class="detail" x="144" y="571" text-anchor="middle">Outlying · 2 votes</text>
 <circle cx="108.0" cy="591" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="132.0" cy="591" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="156.0" cy="591" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
@@ -108,9 +108,6 @@
 <circle cx="590.0" cy="410" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="614.0" cy="410" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<text x="599" y="239" text-anchor="middle" font-size="15" font-style="italic" fill="#355564">Upper Mere</text>
-<text x="449" y="376" text-anchor="middle" font-size="15" font-style="italic" fill="#355564">Willow Lake</text>
-<text x="789" y="416" text-anchor="middle" font-size="15" font-style="italic" fill="#355564">Longmere</text>
 <text x="36" y="758" font-size="14" font-weight="700">ROUND / YEAR</text>
 <rect x="220" y="724" width="140" height="92" rx="8" fill="#f2f5f6" stroke="#19354b"/><text x="243" y="780" font-size="25" font-weight="700">1</text>
 <rect x="374" y="724" width="140" height="92" rx="8" fill="#e4dfea" stroke="#19354b"/><text x="397" y="780" font-size="25" font-weight="700">2</text>

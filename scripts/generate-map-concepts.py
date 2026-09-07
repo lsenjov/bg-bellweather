@@ -337,7 +337,7 @@ def study_page(study,report):
     page.append('</tbody></table></div></details><footer><p>Experimental concept; no production map is adopted. Generate this file and its SVG with <code>python scripts/generate-map-concepts.py</code>.</p></footer></main></body></html>')
     if study.get('border_map'):
         page[3]=page[3].replace('width="1200" height="1020"','width="1188" height="840"').replace('explicit routes show every adjacency.','shared borders and bridges show adjacency.').replace('These are experimental route maps, not adopted game rules.','Landscape A4, 297 × 210 mm, with a six-year tracker whose 23 mm-high spaces fit the existing 22 mm Year marker. Print the SVG at 100%; Support circles are 4.5 mm across. Token size remains an open print-fit question. This is an experimental map, not an adopted game rule.')
-        page[4]='<section class="reading-rule"><h2>How to read this map</h2><p><strong>Shared borders and marked bridges create adjacency for every effect.</strong> Districts touching only at a point are not adjacent. Water severs every other connection, including Smear. No route lines are needed within an island. Elections still happen in each district; each region holds 18 Support and up to 9 votes. Bellweather holds 3 separate Support.</p><p><a href="../../../archive/components/island-chain-route-study-2026-09-07.svg">Previous route-based Island chain</a> · <a href="../../../archive/components/island-chain-route-study-2026-09-07.json">Archived concept data</a>.</p></section>'
+        page[4]='<section class="reading-rule"><h2>How to read this map</h2><p><strong>Shared borders and marked bridges create adjacency for every effect.</strong> Districts touching only at a point are not adjacent. Water severs every other connection, including Smear. Lakes and rivers separate the land areas, which reach the map edge. No route lines are needed within contiguous land. Elections still happen in each district; each region holds 18 Support and up to 9 votes. Bellweather holds 3 separate Support.</p><p><a href="../../../archive/components/island-chain-ocean-2026-09-07.svg">Previous ocean layout</a> · <a href="../../../archive/components/island-chain-ocean-2026-09-07.json">Archived ocean geometry</a> · <a href="../../../archive/components/island-chain-route-study-2026-09-07.svg">Original route-based Island chain</a> · <a href="../../../archive/components/island-chain-route-study-2026-09-07.json">Archived concept data</a>.</p></section>'
     return '\n'.join(page)+'\n'
 
 
@@ -382,14 +382,14 @@ def border_edges(study):
 def render_border_map(study,edges,facts):
     svg=['<svg xmlns="http://www.w3.org/2000/svg" width="297mm" height="210mm" viewBox="0 0 1188 840" role="img" aria-labelledby="title desc">',
          '<title id="title">Island chain — landscape A4 prototype</title>',
-         '<desc id="desc">Three urban districts fill one island. Bellweather occupies a central island. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency. Three regions of eighteen Support; district elections. Six-year tracker beneath the map.</desc>',
+         '<desc id="desc">Urban districts share continuous land. Bellweather occupies an island among inland lakes and rivers. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency. Three regions of eighteen Support; district elections. Six-year tracker beneath the map.</desc>',
          '<style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:12px}</style>',
          '<rect width="1188" height="840" fill="white"/>',
          '<text x="32" y="38" font-size="25" font-weight="700">ISLAND CHAIN</text>',
-         '<text x="1156" y="36" text-anchor="end" font-size="13">08 / Experimental board · A4 landscape</text>']
+         '<text x="1156" y="36" text-anchor="end" font-size="13">08 / Inland waterways · A4 landscape</text>']
     for x,region,label in [(32,'Urban','Urban 18 / 9 votes'),(310,'Mixed','Mixed 18 / 9 votes'),(580,'Outlying','Outlying 18 / 9 votes'),(875,'Centre','Bellweather 3 / separate')]:
         svg.append(f'<rect x="{x}" y="56" width="16" height="16" fill="{COLORS[region]}" stroke="#19354b"/><text x="{x+24}" y="69" font-size="13">{label}</text>')
-    svg.append('<rect x="28" y="92" width="1132" height="608" rx="20" fill="#d9edf5"/>')
+    svg.append('<rect x="40" y="105" width="1108" height="583" fill="#d9edf5"/>')
     for edge in edges:
         if edge['kind']=='border':
             continue
@@ -405,6 +405,8 @@ def render_border_map(study,edges,facts):
             assert all(inside((sx+9*math.cos(t*math.tau/32),sy+9*math.sin(t*math.tau/32)),polygon) for t in range(32)),(key,'Support circle outside territory')
             svg.append(f'<circle cx="{sx}" cy="{sy}" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>')
         svg.append('</g>')
+    for label in study.get('water_labels',[]):
+        svg.append(f'<text x="{label["x"]}" y="{label["y"]}" text-anchor="middle" font-size="15" font-style="italic" fill="#355564">{esc(label["name"])}</text>')
     svg.append('<text x="36" y="758" font-size="14" font-weight="700">ROUND / YEAR</text>')
     for year in range(1,7):
         x=220+(year-1)*154

@@ -1067,12 +1067,16 @@
               230
             ],
             [
-              80,
-              135
+              40,
+              230
             ],
             [
-              230,
-              115
+              40,
+              105
+            ],
+            [
+              280,
+              105
             ],
             [
               280,
@@ -1094,12 +1098,24 @@
               130
             ],
             [
-              410,
-              120
+              280,
+              105
             ],
             [
-              460,
-              195
+              545,
+              105
+            ],
+            [
+              540,
+              150
+            ],
+            [
+              550,
+              205
+            ],
+            [
+              500,
+              265
             ],
             [
               435,
@@ -1121,12 +1137,24 @@
               260
             ],
             [
-              370,
-              315
+              475,
+              300
             ],
             [
-              205,
+              420,
+              345
+            ],
+            [
+              210,
+              345
+            ],
+            [
+              40,
               320
+            ],
+            [
+              40,
+              230
             ],
             [
               65,
@@ -1148,12 +1176,24 @@
               140
             ],
             [
-              800,
-              115
+              620,
+              140
             ],
             [
-              935,
-              145
+              620,
+              105
+            ],
+            [
+              1148,
+              105
+            ],
+            [
+              1148,
+              210
+            ],
+            [
+              1025,
+              215
             ],
             [
               920,
@@ -1175,8 +1215,16 @@
               225
             ],
             [
-              845,
-              325
+              1025,
+              215
+            ],
+            [
+              1005,
+              240
+            ],
+            [
+              880,
+              340
             ],
             [
               690,
@@ -1202,8 +1250,16 @@
               295
             ],
             [
-              1125,
-              280
+              1015,
+              260
+            ],
+            [
+              1148,
+              240
+            ],
+            [
+              1148,
+              410
             ],
             [
               1140,
@@ -1225,8 +1281,16 @@
               410
             ],
             [
-              1125,
-              555
+              1148,
+              410
+            ],
+            [
+              1148,
+              688
+            ],
+            [
+              995,
+              688
             ],
             [
               995,
@@ -1302,8 +1366,16 @@
               560
             ],
             [
-              835,
-              660
+              930,
+              595
+            ],
+            [
+              955,
+              688
+            ],
+            [
+              710,
+              688
             ],
             [
               710,
@@ -1325,8 +1397,16 @@
               680
             ],
             [
-              565,
-              675
+              710,
+              688
+            ],
+            [
+              475,
+              688
+            ],
+            [
+              475,
+              625
             ],
             [
               505,
@@ -1350,6 +1430,14 @@
             [
               60,
               440
+            ],
+            [
+              40,
+              440
+            ],
+            [
+              40,
+              360
             ],
             [
               180,
@@ -1398,8 +1486,20 @@
               505
             ],
             [
-              375,
-              630
+              450,
+              540
+            ],
+            [
+              430,
+              620
+            ],
+            [
+              445,
+              688
+            ],
+            [
+              235,
+              688
             ],
             [
               235,
@@ -1421,8 +1521,16 @@
               665
             ],
             [
-              85,
-              625
+              235,
+              688
+            ],
+            [
+              40,
+              688
+            ],
+            [
+              40,
+              440
             ],
             [
               60,
@@ -1600,12 +1708,11 @@
           ]
         }
       ],
-      "purpose": "One urban island faces a central Bellweather island, with a looping chain of mixed and outlying territories around them.",
-      "departures": "Districts fill their islands: shared borders define adjacency for every effect, and only marked bridges connect across water. All three urban districts share one island. Bellweather occupies its own central island and connects to all three regions. The sheet is landscape A4 with a six-year tracker below the map.",
-      "watch": "Compare the direct bridges through Bellweather with the outer island loop. Watch whether a full urban island makes access to the mixed region too dependent on Grand Market, and whether the outer rural bridges remain attractive.",
+      "purpose": "The Island chain network becomes an inland lake district, with rivers separating continuous countryside and Bellweather on a central lake island.",
+      "departures": "Outer territories reach the map edge. Lakes occupy the central basins and rivers divide the surrounding land, with the same nine bridges and 23 adjacencies as the ocean version. Shared borders and bridges define adjacency for every effect; water blocks all other connections. Urban stays contiguous, and Bellweather remains on its own central island. The landscape A4 sheet retains its six-year tracker.",
+      "watch": "The travel network is unchanged: compare the direct bridges through Bellweather with the outer river crossings. Watch whether the inland geography makes the available routes easier to read, and whether the outer rural bridges remain attractive.",
       "target_edges": 24,
-      "background": "water",
-      "islands": true,
+      "background": "inland",
       "border_map": true,
       "district_overrides": {
         "I": {
@@ -1614,7 +1721,24 @@
         "O": {
           "capacity": 4
         }
-      }
+      },
+      "water_labels": [
+        {
+          "name": "Upper Mere",
+          "x": 599,
+          "y": 239
+        },
+        {
+          "name": "Willow Lake",
+          "x": 449,
+          "y": 376
+        },
+        {
+          "name": "Longmere",
+          "x": 789,
+          "y": 416
+        }
+      ]
     },
     {
       "id": 9,

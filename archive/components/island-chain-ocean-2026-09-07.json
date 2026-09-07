@@ -1,0 +1,568 @@
+{
+  "id": 8,
+  "slug": "island-chain",
+  "title": "Island chain",
+  "nodes": {
+    "A": {
+      "x": 165,
+      "y": 165,
+      "zone": "urban",
+      "polygon": [
+        [
+          260,
+          215
+        ],
+        [
+          65,
+          230
+        ],
+        [
+          80,
+          135
+        ],
+        [
+          230,
+          115
+        ],
+        [
+          280,
+          130
+        ]
+      ]
+    },
+    "B": {
+      "x": 360,
+      "y": 170,
+      "zone": "urban",
+      "polygon": [
+        [
+          260,
+          215
+        ],
+        [
+          280,
+          130
+        ],
+        [
+          410,
+          120
+        ],
+        [
+          460,
+          195
+        ],
+        [
+          435,
+          260
+        ]
+      ]
+    },
+    "C": {
+      "x": 290,
+      "y": 262,
+      "zone": "urban",
+      "polygon": [
+        [
+          260,
+          215
+        ],
+        [
+          435,
+          260
+        ],
+        [
+          370,
+          315
+        ],
+        [
+          205,
+          320
+        ],
+        [
+          65,
+          230
+        ]
+      ]
+    },
+    "D": {
+      "x": 790,
+      "y": 170,
+      "zone": "north",
+      "polygon": [
+        [
+          760,
+          225
+        ],
+        [
+          650,
+          140
+        ],
+        [
+          800,
+          115
+        ],
+        [
+          935,
+          145
+        ],
+        [
+          920,
+          225
+        ]
+      ]
+    },
+    "E": {
+      "x": 790,
+      "y": 268,
+      "zone": "north",
+      "polygon": [
+        [
+          760,
+          225
+        ],
+        [
+          920,
+          225
+        ],
+        [
+          845,
+          325
+        ],
+        [
+          690,
+          310
+        ],
+        [
+          650,
+          140
+        ]
+      ]
+    },
+    "F": {
+      "x": 1060,
+      "y": 353,
+      "zone": "east",
+      "polygon": [
+        [
+          997,
+          409
+        ],
+        [
+          980,
+          295
+        ],
+        [
+          1125,
+          280
+        ],
+        [
+          1140,
+          410
+        ]
+      ]
+    },
+    "G": {
+      "x": 1065,
+      "y": 479,
+      "zone": "east",
+      "polygon": [
+        [
+          997,
+          409
+        ],
+        [
+          1140,
+          410
+        ],
+        [
+          1125,
+          555
+        ],
+        [
+          995,
+          550
+        ]
+      ]
+    },
+    "H": {
+      "x": 954,
+      "y": 439,
+      "zone": "east",
+      "polygon": [
+        [
+          997,
+          409
+        ],
+        [
+          995,
+          550
+        ],
+        [
+          905,
+          475
+        ],
+        [
+          915,
+          355
+        ],
+        [
+          980,
+          295
+        ]
+      ]
+    },
+    "I": {
+      "x": 660,
+      "y": 539,
+      "zone": "south",
+      "polygon": [
+        [
+          690,
+          610
+        ],
+        [
+          515,
+          530
+        ],
+        [
+          670,
+          475
+        ],
+        [
+          785,
+          495
+        ]
+      ]
+    },
+    "J": {
+      "x": 785,
+      "y": 595,
+      "zone": "south",
+      "polygon": [
+        [
+          690,
+          610
+        ],
+        [
+          785,
+          495
+        ],
+        [
+          865,
+          560
+        ],
+        [
+          835,
+          660
+        ],
+        [
+          710,
+          680
+        ]
+      ]
+    },
+    "K": {
+      "x": 615,
+      "y": 623,
+      "zone": "south",
+      "polygon": [
+        [
+          690,
+          610
+        ],
+        [
+          710,
+          680
+        ],
+        [
+          565,
+          675
+        ],
+        [
+          505,
+          605
+        ],
+        [
+          515,
+          530
+        ]
+      ]
+    },
+    "L": {
+      "x": 158,
+      "y": 429,
+      "zone": "west",
+      "polygon": [
+        [
+          235,
+          515
+        ],
+        [
+          60,
+          440
+        ],
+        [
+          180,
+          375
+        ],
+        [
+          265,
+          390
+        ]
+      ]
+    },
+    "M": {
+      "x": 327,
+      "y": 456,
+      "zone": "west",
+      "polygon": [
+        [
+          235,
+          515
+        ],
+        [
+          265,
+          390
+        ],
+        [
+          390,
+          410
+        ],
+        [
+          420,
+          505
+        ]
+      ]
+    },
+    "N": {
+      "x": 314,
+      "y": 572,
+      "zone": "west",
+      "polygon": [
+        [
+          235,
+          515
+        ],
+        [
+          420,
+          505
+        ],
+        [
+          375,
+          630
+        ],
+        [
+          235,
+          665
+        ]
+      ]
+    },
+    "O": {
+      "x": 144,
+      "y": 571,
+      "zone": "west",
+      "polygon": [
+        [
+          235,
+          515
+        ],
+        [
+          235,
+          665
+        ],
+        [
+          85,
+          625
+        ],
+        [
+          60,
+          440
+        ]
+      ]
+    },
+    "X": {
+      "x": 590,
+      "y": 390,
+      "zone": "centre",
+      "polygon": [
+        [
+          535,
+          340
+        ],
+        [
+          605,
+          320
+        ],
+        [
+          650,
+          365
+        ],
+        [
+          645,
+          425
+        ],
+        [
+          565,
+          455
+        ],
+        [
+          520,
+          400
+        ]
+      ]
+    }
+  },
+  "terrain": [],
+  "required": [
+    {
+      "a": "B",
+      "b": "D",
+      "kind": "bridge",
+      "points": [
+        [
+          410,
+          140
+        ],
+        [
+          780,
+          126
+        ]
+      ]
+    },
+    {
+      "a": "E",
+      "b": "F",
+      "kind": "bridge",
+      "points": [
+        [
+          870,
+          260
+        ],
+        [
+          1040,
+          300
+        ]
+      ]
+    },
+    {
+      "a": "H",
+      "b": "J",
+      "kind": "bridge",
+      "points": [
+        [
+          950,
+          500
+        ],
+        [
+          835,
+          555
+        ]
+      ]
+    },
+    {
+      "a": "I",
+      "b": "N",
+      "kind": "bridge",
+      "points": [
+        [
+          580,
+          520
+        ],
+        [
+          405,
+          520
+        ]
+      ]
+    },
+    {
+      "a": "L",
+      "b": "C",
+      "kind": "bridge",
+      "points": [
+        [
+          150,
+          400
+        ],
+        [
+          155,
+          285
+        ]
+      ]
+    },
+    {
+      "a": "C",
+      "b": "X",
+      "kind": "bridge",
+      "points": [
+        [
+          400,
+          280
+        ],
+        [
+          545,
+          350
+        ]
+      ]
+    },
+    {
+      "a": "E",
+      "b": "X",
+      "kind": "bridge",
+      "points": [
+        [
+          715,
+          270
+        ],
+        [
+          625,
+          340
+        ]
+      ]
+    },
+    {
+      "a": "I",
+      "b": "X",
+      "kind": "bridge",
+      "points": [
+        [
+          600,
+          525
+        ],
+        [
+          590,
+          445
+        ]
+      ]
+    },
+    {
+      "a": "M",
+      "b": "X",
+      "kind": "bridge",
+      "points": [
+        [
+          400,
+          450
+        ],
+        [
+          530,
+          405
+        ]
+      ]
+    }
+  ],
+  "purpose": "One urban island faces a central Bellweather island, with a looping chain of mixed and outlying territories around them.",
+  "departures": "Districts fill their islands: shared borders define adjacency for every effect, and only marked bridges connect across water. All three urban districts share one island. Bellweather occupies its own central island and connects to all three regions. The sheet is landscape A4 with a six-year tracker below the map.",
+  "watch": "Compare the direct bridges through Bellweather with the outer island loop. Watch whether a full urban island makes access to the mixed region too dependent on Grand Market, and whether the outer rural bridges remain attractive.",
+  "target_edges": 24,
+  "background": "water",
+  "islands": true,
+  "border_map": true,
+  "district_overrides": {
+    "I": {
+      "capacity": 2
+    },
+    "O": {
+      "capacity": 4
+    }
+  }
+}
