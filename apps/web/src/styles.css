@@ -116,6 +116,7 @@ select[multiple] { min-height: 116px; border: 1px solid var(--ink); }
 .party-file-emblem { width: 36px; height: 36px; color: var(--party); fill: none; stroke: currentColor; stroke-width: 3; }
 .party-file-title { min-width: 0; }
 .party-file-title strong, .party-file-title small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.party-file-title strong { overflow-wrap: anywhere; white-space: normal; }
 .party-file-title small { font: .5rem var(--mono); text-transform: uppercase; }
 .pile-count { display: grid; text-align: right; }
 .pile-count b { font-size: 1.4rem; line-height: .8; }

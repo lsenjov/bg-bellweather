@@ -309,7 +309,7 @@ describe("yearly browser play surface", () => {
     render(
       <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={onCommand} />
     );
-    fireEvent.click(screen.getByRole("button", { name: /^Night Closed/ }));
+    fireEvent.click(screen.getByRole("button", { name: /^Night Parliament Closed/ }));
     expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe("night-parliament");
     fireEvent.click(screen.getByRole("button", { name: "Open party access" }));
     expect(onCommand).toHaveBeenCalledWith({

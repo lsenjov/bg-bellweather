@@ -236,7 +236,7 @@ export const PARTIES = deepFreeze([
   {
     id: "night-parliament",
     name: "Night Parliament",
-    shortName: "Night",
+    shortName: "Night Parliament",
     animal: "Owls",
     color: "#252522",
     favoredOperations: ["rally", "smear"],
