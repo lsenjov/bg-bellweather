@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="297mm" viewBox="0 0 1188 840" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="297mm" height="210mm" viewBox="0 0 1188 840" role="img" aria-labelledby="title desc">
 <title id="title">Bellweather — inland district map</title>
 <desc id="desc">Urban districts share continuous land. Bellweather occupies an island among inland lakes and rivers. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency. Three regions of eighteen Support; district elections. Six-year tracker beneath the map.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:12px}</style>
 <rect width="1188" height="840" fill="white"/>
 <text x="32" y="38" font-size="25" font-weight="700">BELLWEATHER</text>
-<text x="1156" y="36" text-anchor="end" font-size="13">R24 / Inland regions · A3 landscape</text>
+<text x="1156" y="36" text-anchor="end" font-size="13">R24 / Inland regions · A4 landscape</text>
 <rect x="32" y="56" width="16" height="16" fill="#e6b6a6" stroke="#19354b"/><text x="56" y="69" font-size="13">Urban 18 / 9 votes</text>
 <rect x="310" y="56" width="16" height="16" fill="#dbeaca" stroke="#19354b"/><text x="334" y="69" font-size="13">Mixed 18 / 9 votes</text>
 <rect x="580" y="56" width="16" height="16" fill="#f5e7ac" stroke="#19354b"/><text x="604" y="69" font-size="13">Outlying 18 / 9 votes</text>

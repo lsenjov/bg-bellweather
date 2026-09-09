@@ -71,7 +71,8 @@ export const DISTRICTS_BY_ID = Object.freeze(
 
 export const MAP_BRIDGES = deepFreeze('''+json.dumps(bridges,indent=2)+''' as const);
 '''
-    svg = concepts.render_border_map(study, edges, concepts.graph_facts(study,edges,graph)).replace('Island chain — landscape A4 prototype','Bellweather — inland district map').replace('ISLAND CHAIN','BELLWEATHER').replace('08 / Inland waterways · A4 landscape','R24 / Inland regions · A4 landscape')
+    svg = concepts.render_border_map(study, edges, concepts.graph_facts(study,edges,graph)).replace('Island chain — landscape A4 prototype','Bellweather — inland district map').replace('ISLAND CHAIN','BELLWEATHER').replace('08 / Inland waterways · A4 landscape','R24 / Inland regions · A3 landscape')
+    svg = svg.replace('width="297mm" height="210mm"', 'width="420mm" height="297mm"')
     svg = svg.replace(concepts.COLORS['Urban'], '#e6b6a6')
     svg = svg.split('<text x="36" y="758"')[0] + map_trackers()
     for path, value in [(ROOT/'packages/content/src/districts.ts',content),(ROOT/'docs/assets/inland-district-map.svg',svg)]:

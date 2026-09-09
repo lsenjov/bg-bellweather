@@ -4,7 +4,7 @@ set -euo pipefail
 
 repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 board_source="$repository_root/docs/assets/inland-district-map.svg"
-board_output="$repository_root/assets/print/inland-district-map-a4.pdf"
+board_output="$repository_root/assets/print/inland-district-map-a3.pdf"
 html_exporter="$repository_root/scripts/export-html-print-pages.cjs"
 
 mkdir -p "$repository_root/assets/print"
@@ -118,9 +118,9 @@ html_exports=(
 export_directory="$(mktemp -d)"
 trap 'rm -rf "$export_directory"' EXIT
 
-board_pdf="$export_directory/board-a4.pdf"
+board_pdf="$export_directory/board-a3.pdf"
 inkscape "$board_source" --export-filename="$board_pdf" --export-pdf-version=1.5 --export-text-to-path
-validate_pdf "$board_pdf" 1 841.889764 595.275591 "District map"
+validate_pdf "$board_pdf" 1 1190.551181 841.889764 "District map"
 
 html_export_arguments=()
 for export_specification in "${html_exports[@]}"; do
