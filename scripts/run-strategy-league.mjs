@@ -165,7 +165,7 @@ try {
     for (const filename of await readdir(path.join(root, 'references'))) {
       await copyFile(path.join(root, 'references', filename), path.join(cwd, 'references', filename));
     }
-    await writeFile(path.join(cwd, 'AGENTS.md'), 'This is a private playtest-player workspace. Play through league-player.mjs using only your own session and supplied references. Read and write only within this directory. Do not inspect parent/repository directories or other identities, and do not delegate or implement game-playing software. Preserve your private notes.\n');
+    await writeFile(path.join(cwd, 'AGENTS.md'), 'This is a private playtest-player workspace. Play through league-player.mjs using only your own session and supplied references. Read and write only within this directory. Do not inspect parent/repository directories or other identities, and do not delegate or implement game-playing software. Preserve your private notes. Before each game, read every full postmortem in shared-postmortems.md, using chunks small enough to avoid tool-output truncation. Before Game N there should be 4 * (N - 1) complete postmortems; do not substitute a summary or skip earlier entries.\n');
   }
   let dossier = await distributeDossier();
   for (const game of manifest.games) {
