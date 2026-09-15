@@ -783,4 +783,3 @@ function organise(sourceDistrictId: string, destinationDistrictId: string): Oper
     choice: { operation: "organise", sourceDistrictId, destinationDistrictId }
   };
 }
-

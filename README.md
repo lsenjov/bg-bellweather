@@ -5,10 +5,11 @@ Working repository for the board game currently titled **Ladder Bidding**.
 Rival lobbying Firms use reusable Operation cards to influence six animal
 political parties in the fictional Republic of Bellweather. Across six
 years, players open parties, Operate, Collect public card piles, and Close
-access before scoring fixed agendas in Elections after Years 2, 4, and 6.
+access. Elections after Years 2, 4, and 6 vote on four regional policies;
+enacted policies score against one secret promise-priority card at game end.
 The repository contains the printable design archive and a local,
 server-authoritative web application for two to six human or API-controlled
-players, including private hands and agendas, persistence, and completed-game
+players, including private hands and priorities, persistence, and completed-game
 replay.
 
 Start here:
@@ -92,12 +93,14 @@ physical-size checks pass.
 
 | PDF | Contents |
 | --- | --- |
-| `assets/print/inland-district-map-a3.pdf` | One A3 landscape district map |
-| `assets/print/public-score-tracker-a4.pdf` | One A4 landscape 0–40 public score tracker sheet; the Year register is on the A3 map |
+| `assets/print/policy-district-map-a3.pdf` | One A3 landscape district map |
+| `assets/print/public-score-tracker-a4.pdf` | One A4 landscape final score ledger; the Year register is on the A3 map |
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
 | `assets/print/player-folios-a4.pdf` | Two A4 portrait player-folio sheets |
-| `assets/print/operation-cards-a4.pdf` | Five A4 portrait sheets containing the current 66-card Operation supply |
-| `assets/print/scoring-cards-a4.pdf` | Two A4 portrait scoring-card sheets |
+| `assets/print/operation-cards-a4.pdf` | Four A4 portrait sheets containing the current 54-card Operation supply |
+| `assets/print/policy-cards-a4.pdf` | Four A4 portrait sheets with thirty policies |
+| `assets/print/bonus-cards-a4.pdf` | Two A4 portrait sheets with eighteen Bonuses |
+| `assets/print/scoring-cards-a4.pdf` | One A4 portrait sheet with twelve scoring cards |
 | `assets/print/shared-state-tokens-a4.pdf` | One A4 landscape sheet containing all shared state, Firm opening, Collection, and score pieces |
 
 The map export uses a 420 × 297 mm landscape A3 page. The A4 exports preserve the millimetre dimensions in

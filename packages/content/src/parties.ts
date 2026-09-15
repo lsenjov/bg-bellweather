@@ -110,7 +110,7 @@ export const PARTIES = deepFreeze([
         operation: "organise",
         name: "Dig In",
         effect:
-          "Resolve a movement Organise for the acting party, then add acting-party Support to the vacated source spot."
+          "Resolve a movement Organise for the acting party, then add acting-party Support to the vacated source spot if possible; skip if full."
       },
       {
         id: "old-shell-stonewall",

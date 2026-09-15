@@ -231,7 +231,7 @@ describe("game server", () => {
         parties: Record<string, unknown>;
       }).parties.honeycomb
     ).toMatchObject({
-      operations: { organise: 1, rally: 0, smear: 0, court: 0 }
+      operations: { organise: 1, rally: 0, smear: 0 }
     });
 
     await gameAction(baseUrl, game, 0, "finish-operate", {
@@ -247,7 +247,7 @@ describe("game server", () => {
     expect(privateSeat(view)).toMatchObject({
       collectionCounters: 3,
       newYearCardCount: 2,
-      newYearOperations: { organise: 1, rally: 0, smear: 0, court: 0 },
+      newYearOperations: { organise: 1, rally: 0, smear: 0 },
       newYearBonusCardIds: ["honeycomb-waggle-route"]
     });
 
@@ -311,7 +311,7 @@ describe("game server", () => {
     expect(privateSeat(view)).toMatchObject({
       collectionCounters: 4,
       newYearCardCount: 0,
-      operations: { organise: 7, rally: 8, smear: 4, court: 4 }
+      operations: { organise: 7, rally: 8, smear: 4 }
     });
     await app.close();
   });

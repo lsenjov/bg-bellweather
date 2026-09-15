@@ -145,4 +145,3 @@ function bonusCardsForSeat(
     return location.zone === zone && location.seatId === seatId;
   });
 }
-

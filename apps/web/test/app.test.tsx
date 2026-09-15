@@ -3,6 +3,7 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import {
   PARTY_IDS,
+  POLICIES,
   SCORING_CARDS_BY_ID,
   PARTIES_BY_ID,
   type ScoringCardId,
@@ -120,12 +121,12 @@ describe("yearly browser play surface", () => {
     state.seats[0]!.newYearOperations.rally = 2;
     const view = extractView(activeEnvelope(state, "seat-1"))!;
     expect(view.seats[0]).toMatchObject({
-      operations: { organise: 6, rally: 8, smear: 4, court: 4 },
-      newYearOperations: { organise: 0, rally: 2, smear: 0, court: 0 },
+      operations: { organise: 6, rally: 8, smear: 4 },
+      newYearOperations: { organise: 0, rally: 2, smear: 0 },
       newYearCardCount: 2
     });
     expect(view.seats[1]!.operations).toBeNull();
-    expect(view.seats[1]!.scoringCardIds).toBeNull();
+    expect(view.seats[1]!.scoringCardId).toBeNull();
   });
 
   it("rejects obsolete and incomplete active projections", () => {
@@ -271,19 +272,13 @@ describe("yearly browser play surface", () => {
     expect(within(honeycomb).getByText("Waggle Route").className).toContain("bonus-used");
   });
 
-  it("shows Court Support amounts and reciprocal coalition status", () => {
+  it("shows each party's public promise order", () => {
     const state = initializeGame(configuration(2), random).state;
-    state.courtSupport.honeycomb.foxglove = 2;
-    state.courtSupport.honeycomb.riverworks = 1;
-    state.coalitionTargets.honeycomb = "foxglove";
-    state.coalitionTargets.foxglove = "honeycomb";
-
     render(<PartyBoard view={privateView(state, "seat-1")} />);
-
     const honeycomb = screen.getByText("Honeycomb").closest("article")!;
-    expect(within(honeycomb).getByLabelText("Foxglove Court Support: 2").textContent).toBe("2");
-    expect(within(honeycomb).getByLabelText("Riverworks Court Support: 1").textContent).toBe("1");
-    expect(within(honeycomb).getByLabelText("Coalition with Foxglove")).toBeTruthy();
+    expect(within(honeycomb).getByText(/Healthcare/)).toBeTruthy();
+    expect(within(honeycomb).getByText(/Fiscal/)).toBeTruthy();
+    expect(within(honeycomb).queryByText(/Court/)).toBeNull();
   });
 
   it("styles parties without an opening as closed", () => {
@@ -322,17 +317,12 @@ describe("yearly browser play surface", () => {
     });
   });
 
-  it("selects the acting party directly, then uses party clicks for Court targets", () => {
-    const state = sixPartyState();
-    const view = privateView(state, "seat-1");
+  it("selects the acting party directly and offers three Operations", () => {
+    const view = privateView(sixPartyState(), "seat-1");
     render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />);
     fireEvent.click(screen.getByRole("button", { name: /^Foxglove Open/ }));
     expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe("foxglove");
-    expect(document.activeElement).toBe(screen.getByLabelText("Choose an Operation card"));
-    fireEvent.click(screen.getByRole("button", { name: /^court 2$/i }));
-    fireEvent.click(screen.getByRole("button", { name: /^Old Shell Open/ }));
-    expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe("foxglove");
-    expect((screen.getByLabelText("Court target") as HTMLSelectElement).value).toBe("old-shell");
+    expect(screen.queryByRole("button", { name: /^court/i })).toBeNull();
   });
 
   it("keeps Collect and Close selected when choosing a party on the board", () => {
@@ -347,7 +337,7 @@ describe("yearly browser play surface", () => {
     expect(screen.getByRole("heading", { name: "Collect" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "close" }));
     const owned = Object.values(view.parties).find((party) => party?.ownerSeatId === "seat-1" && party.partyId !== "honeycomb")!;
-    const board = screen.getByText(PARTIES_BY_ID[owned.partyId].shortName).closest(".party-file")!;
+    const board = within(screen.getByLabelText("Party access and Operation piles")).getByText(PARTIES_BY_ID[owned.partyId].shortName).closest(".party-file")!;
     fireEvent.click(board);
     expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe(owned.partyId);
     expect(screen.getByRole("heading", { name: "Close" })).toBeTruthy();
@@ -358,7 +348,7 @@ describe("yearly browser play surface", () => {
     state = apply(state, organiseAction("seat-1"));
     const view = privateView(state, "seat-1");
     render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />);
-    fireEvent.click(screen.getByText("Foxglove").closest(".party-file")!);
+    fireEvent.click(within(screen.getByLabelText("Party access and Operation piles")).getByText("Foxglove").closest(".party-file")!);
     expect((screen.getByLabelText("Party") as HTMLSelectElement).value).toBe("honeycomb");
     expect((screen.getByLabelText("Party") as HTMLSelectElement).disabled).toBe(true);
   });
@@ -448,29 +438,48 @@ describe("yearly browser play surface", () => {
     }));
   });
 
-  it("allows Midnight Leak to target rival Court Support on the acting party", () => {
-    const state = openEveryParty(
-      initializeGame(configuration(2), random).state,
-      ["night-parliament", "old-shell", "foxglove", "riverworks"]
-    );
-    state.bonusCards["night-parliament-midnight-leak"] = {
-      zone: "hand",
-      seatId: "seat-1"
-    };
-    state.courtSupport["old-shell"]["night-parliament"] = 1;
-    const view = privateView(state, "seat-1");
-    render(
-      <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />
-    );
+  it("allows map recovery before choosing Fresh Start and orders the Bonus first", () => {
+    const state = sixPartyState();
+    for (const support of Object.values(state.support)) delete support.honeycomb;
+    state.enactedPolicyIds = [POLICIES.find(policy => policy.effect === 6)!.id];
+    state.bonusCards["honeycomb-waggle-route"] = {zone:"hand",seatId:"seat-1"};
+    const view = privateView(state,"seat-1");
+    const onCommand = vi.fn(async()=>true);
+    render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={onCommand}/>);
+    fireEvent.click(screen.getByRole("button",{name:/Waggle Route Bonus/}));
+    fireEvent.focus(screen.getByLabelText("Destination"));
+    const district = screen.getByLabelText("Northgate: 0 of 6 Support spaces occupied");
+    expect(district.getAttribute("aria-disabled")).not.toBe("true");
+    fireEvent.click(district);
+    fireEvent.change(screen.getByLabelText("Fresh Start: second placement"),{target:{value:"northgate"}});
+    fireEvent.click(screen.getByRole("button",{name:"Move Bonus extra earlier"}));
+    fireEvent.click(screen.getByRole("button",{name:"Resolve Waggle Route"}));
+    expect(onCommand).toHaveBeenCalledWith(expect.objectContaining({action:expect.objectContaining({play:expect.objectContaining({choice:expect.objectContaining({destinationDistrictId:"northgate",freshStartDistrictId:"northgate",followUpOrder:["bonus",6]})})})}));
+  });
 
-    fireEvent.change(screen.getByLabelText("Party"), {
-      target: { value: "night-parliament" }
-    });
+  it("limits Political Exchange arrivals and submits two chosen swaps", () => {
+    const state = sixPartyState();
+    state.enactedPolicyIds = [7,10].map(effect => POLICIES.find(policy=>policy.effect===effect)!.id);
+    state.support["grand-market"] = {honeycomb:2};
+    state.support.northgate = {foxglove:6};
+    const {onSubmit} = renderUnboundComposer(state,"honeycomb","honeycomb-waggle-route");
+    fireEvent.change(screen.getByLabelText("Source"),{target:{value:"grand-market"}});
+    fireEvent.change(screen.getByLabelText("Destination"),{target:{value:"northgate"}});
+    fireEvent.change(screen.getByLabelText("Support to move"),{target:{value:"10000000"}});
+    expect(screen.getAllByLabelText(/swap rival/)).toHaveLength(2);
+    expect(screen.getByRole("button",{name:"Resolve organise"}).hasAttribute("disabled")).toBe(true);
+    fireEvent.change(screen.getByLabelText("Support to move"),{target:{value:"2"}});
+    for(const select of screen.getAllByLabelText(/swap rival/)) fireEvent.change(select,{target:{value:"foxglove"}});
+    fireEvent.click(screen.getByRole("button",{name:"Resolve organise"}));
+    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({choice:expect.objectContaining({count:2,swapPartyIds:["foxglove","foxglove"]})}));
+  });
+
+  it("offers a neighboring district for Midnight Leak", () => {
+    const state = sixPartyState();
+    renderUnboundComposer(state, "night-parliament", "night-parliament-midnight-leak");
     fireEvent.click(screen.getByRole("button", { name: /Midnight Leak Bonus/ }));
-
-    expect(within(screen.getByLabelText("Rival Court space")).getByRole("option", {
-      name: "Night Parliament"
-    })).toBeTruthy();
+    expect(screen.getByLabelText("Midnight Leak district")).toBeTruthy();
+    expect(screen.queryByLabelText("Rival Court space")).toBeNull();
   });
 
   it("submits a chosen Canal Network quantity and prevents overfilling", () => {
@@ -515,46 +524,24 @@ describe("yearly browser play surface", () => {
     state.support.harbormouth = { foxglove: 1 };
     const { onSubmit } = renderUnboundComposer(state, "foxglove", "honeycomb-every-bee-counts");
     fireEvent.click(screen.getByRole("button", { name: /Every Bee Counts Bonus/ }));
-    expect(screen.getByText("First Court Honeycomb.")).toBeTruthy();
+    expect(screen.queryByText(/First Court/)).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Resolve Every Bee Counts" }));
     expect(onSubmit).toHaveBeenCalledWith({ cardType: "bonus", bonusCardId: "honeycomb-every-bee-counts", choice: { effect: "every_bee_counts" } });
   });
 
-  it("requires destinations for all available Institutional Memory objectives", () => {
+  it("requires all three policy-side placements for Institutional Memory when room remains", () => {
     const state = sixPartyState();
-    state.support.ironwood = {};
-    state.support["northgate"].honeycomb = 1;
-    state.electionHistory = [{
-      scoringCards: [{
-        seatId: "seat-1",
-        scoringCardIds: ["SC-01"],
-        capitalCardId: "SC-01"
-      }]
-    } as GameState["electionHistory"][number]];
-    const { onSubmit } = renderUnboundComposer(
-      state,
-      "old-shell",
-      "old-shell-institutional-memory"
-    );
-
+    state.support.northgate = {};
+    const { onSubmit } = renderUnboundComposer(state, "old-shell", "old-shell-institutional-memory");
     fireEvent.click(screen.getByRole("button", { name: /Institutional Memory Bonus/ }));
-    fireEvent.change(screen.getByLabelText("Revealed scoring card"), {
-      target: { value: "SC-01" }
-    });
-    fireEvent.change(screen.getByLabelText("Urban · Honeycomb destination"), { target: { value: "ironwood" } });
-    expect(screen.getByRole("button", { name: "Resolve Institutional Memory" }).hasAttribute("disabled")).toBe(true);
-    fireEvent.change(screen.getByLabelText("Mixed · Old Shell destination"), { target: { value: "northgate" } });
-    fireEvent.change(screen.getByLabelText("Outlying · Foxglove destination"), { target: { value: "westfield" } });
-    fireEvent.click(screen.getByRole("button", { name: "Resolve Institutional Memory" }));
-    expect(onSubmit).toHaveBeenCalledWith({
-      cardType: "bonus",
-      bonusCardId: "old-shell-institutional-memory",
-      choice: {
-        effect: "institutional_memory",
-        scoringCardId: "SC-01",
-        placements: [{ objectiveIndex: 0, destinationDistrictId: "ironwood" }, { objectiveIndex: 1, destinationDistrictId: "northgate" }, { objectiveIndex: 2, destinationDistrictId: "westfield" }]
-      }
-    });
+    fireEvent.change(screen.getByLabelText("Policy region"), {target:{value:"mixed"}});
+    const destinations = screen.getAllByLabelText(/ destination$/);
+    expect(destinations).toHaveLength(3);
+    fireEvent.change(destinations[0]!, {target:{value:"northgate"}});
+    expect(screen.getByRole("button", {name:"Resolve Institutional Memory"}).hasAttribute("disabled")).toBe(true);
+    for (const select of destinations.slice(1)) fireEvent.change(select, {target:{value:"northgate"}});
+    fireEvent.click(screen.getByRole("button", {name:"Resolve Institutional Memory"}));
+    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({choice: expect.objectContaining({effect:"institutional_memory",regionId:"mixed",forPolicy:true,placements:expect.any(Array)})}));
   });
 
   it("offers closed parties to Shell Firm", () => {
@@ -766,106 +753,30 @@ describe("yearly browser play surface", () => {
     });
   });
 
-  it("labels collected cards unavailable and explains the Capital card", () => {
-    const state = initializeGame(configuration(2), random).state;
+  it.each([2, 6])("shows four policies and one secret priority card for %i players", (count) => {
+    const state = initializeGame(configuration(count), random).state;
     state.seats[0]!.newYearOperations.organise = 2;
     const view = privateView(state, "seat-1");
-    render(
-      <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />
-    );
+    const {container} = render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async()=>true}/>);
+    expect(container.querySelectorAll(".policy-card")).toHaveLength(4);
     expect(screen.getByText("New Year area · unavailable this year")).toBeTruthy();
-    expect(screen.getByText("All agendas").closest("details")?.open).toBe(false);
-    fireEvent.click(screen.getByText("All agendas"));
-    expect(screen.getAllByText(/Capital card/)).toHaveLength(3);
-  });
-
-  it.each([2, 6])("shows only current private regional objectives in stable card order for %i players", (count) => {
-    const state = initializeGame(configuration(count), random).state;
-    state.year = 3;
-    let view = privateView(state, "seat-1");
-    const props = { ownSeatId: "seat-1", spectator: false, busy: false, onCommand: async () => true };
-    const { container, rerender } = render(<GameDesk {...props} view={view} ownSeat={view.seats[0]} />);
-    const assertObjectives = (slotIndex: number) => {
-      for (const region of ["urban", "mixed", "outlying"]) {
-        const labels = [...container.querySelectorAll(`.map-objectives-${region} [role="img"]`)].map((icon) => icon.getAttribute("aria-label"));
-        const cards = view.seats[0]!.scoringCardIds![slotIndex]!;
-        expect(labels).toEqual(cards.map((id, index) => {
-          const objective = SCORING_CARDS_BY_ID[id as ScoringCardId].objectives.find((value) => value.regionId === region)!;
-          return `${region[0]!.toUpperCase()}${region.slice(1)}: ${PARTIES_BY_ID[objective.partyId].shortName}${cards.length > 1 ? ` · Card ${index + 1}` : ""}`;
-        }));
-      }
-    };
-    assertObjectives(1);
-    expect(container.querySelectorAll(".capital-objectives [role='img']")).toHaveLength(3);
-    state.year = 6;
-    view = privateView(state, "seat-1");
-    rerender(<GameDesk {...props} view={view} ownSeat={view.seats[0]} />);
-    assertObjectives(2);
-    rerender(<GameDesk {...props} view={view} ownSeat={undefined} spectator />);
-    expect(container.querySelectorAll(".map-objectives [role='img']")).toHaveLength(0);
+    expect(view.seats[0]!.scoringCardId).toMatch(/^S/);
+    expect(view.seats[1]!.scoringCardId).toBeNull();
     expect(screen.queryByText("All agendas")).toBeNull();
   });
 
-  it("reports Capital scoring separately in an Election bulletin", () => {
+  it("reports policy votes, final scoring card and hand rank", () => {
     const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
-    view.electionHistory.push({
-      electionNumber: 1,
-      afterYear: 2,
-      scoringCards: [
-        { seatId: "seat-1", scoringCardIds: ["SC-01", "SC-02"], capitalCardId: "SC-01" },
-        { seatId: "seat-2", scoringCardIds: ["SC-03", "SC-04"], capitalCardId: "SC-03" }
-      ],
-      draws: {},
-      scores: [{
-        playerId: "seat-1",
-        baseRegionScore: 2,
-        seatModifier: 1,
-        capitalMatches: 3,
-        capitalScore: 3,
-        finalCardCount: null,
-        finalCardRankBonus: 0,
-        pointsChange: 6,
-        resultingPoints: 16
-      }],
-      winnerSeatIds: ["seat-1"]
-    });
-    render(
-      <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />
-    );
-    expect(screen.getByText(/Capital 3 \(3\/3\)/)).toBeTruthy();
-    expect(screen.getByText("+6 points")).toBeTruthy();
+    const policyId = view.pendingPolicies.mixed!;
+    view.electionHistory.push({electionNumber:3,afterYear:6,scoringCards:[{seatId:"seat-1",scoringCardId:"S01"}],draws:{},policyVotes:[{regionId:"mixed",policyId,forVotes:4,againstVotes:3,passed:true}],scores:[{playerId:"seat-1",policyScore:3,policyScores:[{policyId,gain:5,loss:2,net:3}],finalCardCount:14,finalCardRankBonus:1,pointsChange:4,resultingPoints:4}],winnerSeatIds:["seat-1"]});
+    render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async()=>true}/>);
+    expect(screen.getByText("4 For · 3 Against")).toBeTruthy();
+    expect(screen.getByText("Passed")).toBeTruthy();
+    expect(screen.getByText(/14 held cards · Hand rank \+1/)).toBeTruthy();
+    expect(screen.getByText("Scoring card S01")).toBeTruthy();
+    expect(screen.getByText("4 points")).toBeTruthy();
   });
 
-  it("reports final card count and rank bonus in the Election 3 bulletin", () => {
-    const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
-    view.electionHistory.push({
-      electionNumber: 3,
-      afterYear: 6,
-      scoringCards: [
-        { seatId: "seat-1", scoringCardIds: ["SC-01", "SC-02"], capitalCardId: "SC-01" },
-        { seatId: "seat-2", scoringCardIds: ["SC-03", "SC-04"], capitalCardId: "SC-03" }
-      ],
-      draws: {},
-      scores: [{
-        playerId: "seat-1",
-        baseRegionScore: 2,
-        seatModifier: 0,
-        capitalMatches: 2,
-        capitalScore: 1,
-        finalCardCount: 14,
-        finalCardRankBonus: 1,
-        pointsChange: 4,
-        resultingPoints: 14
-      }],
-      winnerSeatIds: ["seat-1"]
-    });
-    render(
-      <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />
-    );
-
-    expect(screen.getByText(/Final cards 14 · Rank \+1/)).toBeTruthy();
-    expect(screen.getByText("+4 points")).toBeTruthy();
-  });
 });
 
 function configuration(playerCount: number) {

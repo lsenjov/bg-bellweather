@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { POLICIES } from "@bellweather/content";
 import { chooseLobbyAction } from "../playtest-actions.js";
 
 describe("playtest agent Lobby action selection", () => {
@@ -21,6 +22,11 @@ describe("playtest agent Lobby action selection", () => {
       rally: 1
     }
   };
+
+  it("supplies Fresh Start's mandatory second placement for an absent party", () => {
+    const action = chooseLobbyAction({parties:{honeycomb:{status:"open"}}, support:{}, enactedPolicyIds:[POLICIES.find(policy => policy.effect === 6)!.id]}, ownSeat, {turnsTaken:{"seat-1":0}}, "seat-1");
+    expect(action).toMatchObject({type:"operate",play:{choice:{operation:"rally",freshStartDistrictId:expect.any(String)}}});
+  });
 
   it("collects on the first turn when Rally is blocked and Close is unavailable", () => {
     expect(

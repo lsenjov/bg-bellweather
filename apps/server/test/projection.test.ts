@@ -26,18 +26,18 @@ describe("yearly game projections", () => {
     const publicView = publicEngineState(state);
     const publicSeats = publicView.seats as Array<Record<string, unknown>>;
     expect(publicSeats[0]).toMatchObject({
-      handCount: 11,
+      handCount: 9,
       newYearCardCount: 3,
       operations: null,
       newYearOperations: null,
-      scoringCardIds: null
+      scoringCardId: null
     });
 
     const privateView = seatEngineState(state, "seat-1");
     expect(privateView.seat).toMatchObject({
       id: "seat-1",
-      operations: { organise: 3, rally: 4, smear: 2, court: 2 },
-      newYearOperations: { organise: 0, rally: 2, smear: 0, court: 0 }
+      operations: { organise: 3, rally: 4, smear: 2 },
+      newYearOperations: { organise: 0, rally: 2, smear: 0 }
     });
     expect(privateView.seat).toMatchObject({
       newYearBonusCardIds: ["honeycomb-waggle-route"]
@@ -69,7 +69,7 @@ describe("yearly game projections", () => {
     expect(parties.honeycomb).toMatchObject({
       ownerSeatId: "seat-1",
       status: "open",
-      operations: { organise: 1, rally: 0, smear: 0, court: 0 }
+      operations: { organise: 1, rally: 0, smear: 0 }
     });
     expect(publicState.bonusCardsAtParties).toMatchObject({
       honeycomb: [
