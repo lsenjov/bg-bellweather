@@ -534,7 +534,7 @@ function PrivateFolio(props: {
 
         </>
       ) : (
-        <p className="folio-public-copy">Hands, New Year cards, and promise priorities remain private until game end.</p>
+        <p className="folio-public-copy">Hands, New Year cards, and issue priorities remain private until game end.</p>
       )}
     </aside>
   );

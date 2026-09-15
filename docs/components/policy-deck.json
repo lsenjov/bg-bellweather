@@ -259,12 +259,12 @@
     {
       "id": 19,
       "name": "Muted Priorities",
-      "text": "At final scoring, each firm treats its printed 6-point category as worth 4 for both gains and losses. Party votes do not change."
+      "text": "At final scoring, each firm treats its printed 6-point issue as worth 4 for both gains and losses. Party votes do not change."
     },
     {
       "id": 20,
       "name": "Broad Interests",
-      "text": "At final scoring, each firm treats its printed 1-point category as worth 3 for both gains and losses. Party votes do not change."
+      "text": "At final scoring, each firm treats its printed 1-point issue as worth 3 for both gains and losses. Party votes do not change."
     },
     {
       "id": 22,
