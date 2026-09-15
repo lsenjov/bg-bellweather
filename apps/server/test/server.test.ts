@@ -288,19 +288,23 @@ describe("game server", () => {
 
     await gameAction(baseUrl, game, 0, "close-honeycomb", {
       type: "close",
-      partyId: "honeycomb"
+      partyId: "honeycomb",
+      bonusCardId: "honeycomb-common-cause"
     });
     await gameAction(baseUrl, game, 1, "close-old-shell", {
       type: "close",
-      partyId: "old-shell"
+      partyId: "old-shell",
+      bonusCardId: "old-shell-dig-in"
     });
     await gameAction(baseUrl, game, 0, "close-riverworks", {
       type: "close",
-      partyId: "riverworks"
+      partyId: "riverworks",
+      bonusCardId: "riverworks-canal-network"
     });
     await gameAction(baseUrl, game, 1, "closure-foxglove", {
       type: "choose_closure_bonus",
-      partyId: "foxglove"
+      partyId: "foxglove",
+      bonusCardId: "foxglove-spin"
     });
     view = await state(baseUrl, game, 1);
     expect(view.publicState.publicGame).toMatchObject({

@@ -726,6 +726,27 @@ describe("yearly browser play surface", () => {
     expect(screen.getByRole("button", { name: "Pass this turn" }).hasAttribute("disabled")).toBe(true);
   });
 
+  it.each(["collect", "close"])("requires a Bonus selection for %s and permits no selection when none remain", (mode) => {
+    const state = openEveryParty(initializeGame(configuration(2), random).state);
+    if (state.phase.type !== "lobby") throw new Error("Expected Lobby");
+    state.phase.turnsTaken["seat-1"] = 1;
+    let view = privateView(state,"seat-1");
+    const onCommand = vi.fn(async()=>true);
+    const props = {ownSeatId:"seat-1",spectator:false,busy:false,onCommand};
+    const {rerender} = render(<GameDesk {...props} view={view} ownSeat={view.seats[0]}/>);
+    fireEvent.click(screen.getByRole("button",{name:mode,exact:true}));
+    const button = screen.getByRole("button",{name:mode === "collect" ? "Collect 0 cards" : "Close party"});
+    expect(button.hasAttribute("disabled")).toBe(true);
+    expect(screen.queryByRole("option",{name:"Take no Bonus card"})).toBeNull();
+    fireEvent.change(screen.getByLabelText("Bonus card"),{target:{value:"honeycomb-common-cause"}});
+    expect(button.hasAttribute("disabled")).toBe(false);
+    for (const id of Object.keys(state.bonusCards) as BonusCardId[]) if(id.startsWith("honeycomb-")) state.bonusCards[id]={zone:"hand",seatId:"seat-2"};
+    view = privateView(state,"seat-1");
+    rerender(<GameDesk {...props} view={view} ownSeat={view.seats[0]}/>);
+    fireEvent.click(button);
+    expect(onCommand).toHaveBeenCalledWith({type:"game_action",action:{type:mode,partyId:"honeycomb"}});
+  });
+
   it("lets each opener choose a Bonus card during automatic Closure", () => {
     let state = openEveryParty(initializeGame(configuration(2), random).state);
     state = apply(state, { type: "collect", seatId: "seat-1", partyId: "honeycomb" });
@@ -739,6 +760,7 @@ describe("yearly browser play surface", () => {
       <ActionDesk view={view} seat={view.seats[1]!} seatId="seat-2" busy={false} onCommand={onCommand} />
     );
 
+    expect(screen.getByRole("button", {name:"Confirm Closure choice"}).hasAttribute("disabled")).toBe(true);
     fireEvent.change(screen.getByLabelText("Bonus card"), {
       target: { value: "foxglove-spin" }
     });
@@ -875,6 +897,10 @@ function organiseAction(seatId: string): GameAction {
 }
 
 function apply(state: GameState, action: GameAction): GameState {
+  if ((action.type === "collect" || action.type === "close" || action.type === "choose_closure_bonus") && action.bonusCardId === undefined) {
+    const card = Object.entries(state.bonusCards).find(([id, location]) => location.zone === "home" && id.startsWith(`${action.partyId}-`));
+    if (card) action = {...action, bonusCardId:card[0] as BonusCardId};
+  }
   return executeAction(state, action).state;
 }
 

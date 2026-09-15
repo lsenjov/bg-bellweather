@@ -10,7 +10,7 @@ import {
   type ViewerStateEnvelope
 } from "@bellweather/protocol";
 import { parsePlayerTarget } from "./playtest-settings.js";
-import { chooseLobbyAction } from "./playtest-actions.js";
+import { chooseLobbyAction, chooseBonus } from "./playtest-actions.js";
 
 const baseUrl = process.env["BELLWEATHER_URL"] ?? "http://127.0.0.1:4317";
 const inviteCode = process.env["BELLWEATHER_INVITE"];
@@ -161,6 +161,7 @@ async function takeTurn(
     if (party["ownerSeatId"] === session.seatId) {
       await gameAction(client, session.gameId, publicState.version, {
         type: "choose_closure_bonus",
+        ...chooseBonus(game, String(partyId)),
         partyId
       });
     }

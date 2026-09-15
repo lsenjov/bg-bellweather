@@ -28,7 +28,7 @@ import { projectGameState } from "../src/projection.js";
 
 const zeroRandom = { integer: () => 0 };
 
-describe("ruleset 25 setup", () => {
+describe("ruleset 26 setup", () => {
   for (const playerCount of [2, 3, 4, 5, 6]) {
     it(`creates the yearly Operation economy for ${playerCount} players`, () => {
       const state = initializeGame(configuration(playerCount), zeroRandom).state;
@@ -49,7 +49,7 @@ describe("ruleset 25 setup", () => {
   it("rejects old saved rulesets", () => {
     const initialized = initializeGame(configuration(4), zeroRandom);
     initialized.state.rulesetVersion = "18";
-    expect(() => replay([initialized])).toThrow("Only ruleset 25 is supported");
+    expect(() => replay([initialized])).toThrow("Only ruleset 26 is supported");
   });
 });
 
@@ -391,6 +391,38 @@ describe("Lobby actions", () => {
     });
   });
 
+  it.each(["collect", "close", "choose_closure_bonus"] as const)("requires an available Bonus for %s without partially changing state", (type) => {
+    const state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
+    const seatId = state.parties.honeycomb!.ownerSeatId;
+    if (type === "choose_closure_bonus") {
+      state.parties.honeycomb!.status = "closed";
+      state.phase = {type:"closure", endedBySeatId:seatId, pendingPartyIds:["honeycomb", "old-shell"]};
+    } else {
+      lobbyPhase(state).activeSeatId = seatId;
+      lobbyPhase(state).turnsTaken[seatId] = 1;
+    }
+    const before = structuredClone(state);
+    expect(() => executeAction(state, {type,seatId,partyId:"honeycomb"})).toThrow("Choose a Bonus card");
+    expect(state).toEqual(before);
+    expect(() => executeAction(state, {type,seatId,partyId:"honeycomb",bonusCardId:"foxglove-spin"})).toThrow("not available");
+    expect(state).toEqual(before);
+    const next = executeAction(state, {type,seatId,partyId:"honeycomb",bonusCardId:"honeycomb-common-cause"}).state;
+    expect(next.bonusCards["honeycomb-common-cause"]).toEqual({zone:"new_year",seatId});
+  });
+
+  it.each(["collect", "close"] as const)("allows %s without a Bonus only when none are home", (type) => {
+    const state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
+    const seatId = state.parties.honeycomb!.ownerSeatId;
+    lobbyPhase(state).activeSeatId = seatId;
+    lobbyPhase(state).turnsTaken[seatId] = 1;
+    for (const id of Object.keys(state.bonusCards) as BonusCardId[]) {
+      if (id.startsWith("honeycomb-")) state.bonusCards[id] = {zone:"hand",seatId};
+    }
+    expect(executeAction(state,{type,seatId,partyId:"honeycomb"}).state.lobbyActions.at(-1)!.bonusCardId).toBeNull();
+    state.bonusCards["honeycomb-common-cause"] = {zone:"home"};
+    expect(() => executeAction(state,{type,seatId,partyId:"honeycomb"})).toThrow("Choose a Bonus card");
+  });
+
   it("collects complete piles, including empty piles, and leaves the party open", () => {
     let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
     const operator = lobbyPhase(state).activeSeatId;
@@ -454,12 +486,11 @@ describe("Lobby actions", () => {
     state = act(state, {
       type: "close",
       seatId: "seat-1",
-      partyId: partyOpenedBy(state, "seat-1"),
-      bonusCardId: "honeycomb-common-cause"
+      partyId: partyOpenedBy(state, "seat-1")
     });
     expect(state.bonusCards["honeycomb-common-cause"]).toEqual({
       zone: "new_year",
-      seatId: "seat-1"
+      seatId: "seat-2"
     });
     state = act(state, {
       type: "close",
@@ -593,10 +624,10 @@ describe("cleanup, Elections, visibility, and replay", () => {
       count: score.finalCardCount,
       bonus: score.finalCardRankBonus
     }))).toEqual([
-      { count: 5, bonus: 0 },
-      { count: 8, bonus: 2 },
-      { count: 8, bonus: 2 },
-      { count: 10, bonus: 3 }
+      { count: 7, bonus: 0 },
+      { count: 12, bonus: 2 },
+      { count: 11, bonus: 1 },
+      { count: 13, bonus: 3 }
     ]);
     expect(state.phase.type).toBe("complete");
     expect(state.phase).toMatchObject({
@@ -608,10 +639,10 @@ describe("cleanup, Elections, visibility, and replay", () => {
       count: score.finalCardCount,
       bonus: score.finalCardRankBonus
     }))).toEqual([
-      { count: 5, bonus: 0 },
-      { count: 8, bonus: 2 },
-      { count: 8, bonus: 2 },
-      { count: 10, bonus: 3 }
+      { count: 7, bonus: 0 },
+      { count: 12, bonus: 2 },
+      { count: 11, bonus: 1 },
+      { count: 13, bonus: 3 }
     ]);
   });
 
@@ -655,6 +686,10 @@ function configuration(playerCount: number): GameConfiguration {
 }
 
 function act(state: GameState, action: GameAction): GameState {
+  if ((action.type === "collect" || action.type === "close" || action.type === "choose_closure_bonus") && action.bonusCardId === undefined) {
+    const card = Object.entries(state.bonusCards).find(([id, location]) => location.zone === "home" && id.startsWith(`${action.partyId}-`));
+    if (card) action = {...action, bonusCardId:card[0] as BonusCardId};
+  }
   return executeAction(state, action).state;
 }
 

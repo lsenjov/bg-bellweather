@@ -856,6 +856,9 @@ function awardBonusCard(
   bonusCardId?: BonusCardId
 ): BonusCardId | null {
   if (bonusCardId === undefined) {
+    if (availableBonusCards(state, partyId).length > 0) {
+      throw new GameRuleError("bonus_card_required", "Choose a Bonus card when one is available at this party");
+    }
     return null;
   }
   if (!(BONUS_CARD_IDS as readonly string[]).includes(bonusCardId)) {

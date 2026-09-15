@@ -1041,7 +1041,7 @@ function ClosureDesk(props: {
   return (
     <BonusCardChoice
       title={`${PARTIES_BY_ID[partyId].shortName} Closure`}
-      copy="Choose at most one available Bonus card before Cleanup releases every New Year area."
+      copy="Choose one available Bonus card before Cleanup releases every New Year area."
       bonusCardIds={available}
       busy={props.busy}
       button="Confirm Closure choice"
@@ -1155,10 +1155,10 @@ function LobbyActionDesk(props: {
         <OperationComposer view={props.view} seat={props.seat} partyId={partyId} onPartyId={setPartyId} busy={props.busy} onInteraction={props.onInteraction} onSubmit={(play) => props.onCommand({ type: "game_action", action: { type: "operate", partyId, play } })} onFinish={() => props.onCommand({ type: "game_action", action: { type: "finish_operate" } })} />
       )}
       {mode === "collect" && (
-        <SimplePartyAction title="Collect" copy="Spend one Collection counter and take the complete public pile, even when empty, into your New Year area. You may also take one available Bonus card. The party stays open." partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={collectTargetPartyIds} bonusCardIds={props.view.bonusCardsAtParties[partyId]} disabled={props.busy || !collectLegal} button={`Collect ${party === undefined ? 0 : operationCount(party.operations)} cards`} onInteraction={props.onInteraction} onSubmit={(bonusCardId) => props.onCommand({ type: "game_action", action: { type: "collect", partyId, ...(bonusCardId === undefined ? {} : { bonusCardId }) } })} />
+        <SimplePartyAction title="Collect" copy="Spend one Collection counter and take the complete public pile, even when empty, into your New Year area. You must also take one Bonus card if available. The party stays open." partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={collectTargetPartyIds} bonusCardIds={props.view.bonusCardsAtParties[partyId]} disabled={props.busy || !collectLegal} button={`Collect ${party === undefined ? 0 : operationCount(party.operations)} cards`} onInteraction={props.onInteraction} onSubmit={(bonusCardId) => props.onCommand({ type: "game_action", action: { type: "collect", partyId, ...(bonusCardId === undefined ? {} : { bonusCardId }) } })} />
       )}
       {mode === "close" && (
-        <SimplePartyAction title="Close" copy={firstTurn ? "You cannot Close on your first Lobby turn." : "Only the opening Firm may Close. Its owner takes the pile, may take one Bonus card, and gets the opening back."} partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={closeTargetPartyIds} bonusCardIds={props.view.bonusCardsAtParties[partyId]} disabled={props.busy || !closeLegal} button="Close party" onInteraction={props.onInteraction} onSubmit={(bonusCardId) => props.onCommand({ type: "game_action", action: { type: "close", partyId, ...(bonusCardId === undefined ? {} : { bonusCardId }) } })} />
+        <SimplePartyAction title="Close" copy={firstTurn ? "You cannot Close on your first Lobby turn." : "Only the opening Firm may Close. Its owner takes the pile, takes one Bonus card if available, and gets the opening back."} partyId={partyId} onPartyId={setPartyId} partyIds={openPartyIds} targetPartyIds={closeTargetPartyIds} bonusCardIds={props.view.bonusCardsAtParties[partyId]} disabled={props.busy || !closeLegal} button="Close party" onInteraction={props.onInteraction} onSubmit={(bonusCardId) => props.onCommand({ type: "game_action", action: { type: "close", partyId, ...(bonusCardId === undefined ? {} : { bonusCardId }) } })} />
       )}
       {mode === "pass" && (
         <PassAction busy={props.busy} eligible={passLegal} onInteraction={props.onInteraction} onPass={() => props.onCommand({ type: "game_action", action: { type: "pass" } })} />
@@ -1193,23 +1193,24 @@ function SimplePartyAction(props: {
     });
     return () => props.onInteraction?.(null);
   }, [targetPartyKey, props.onInteraction, props.onPartyId, props.partyId, props.title]);
+  const selectionValid = props.bonusCardIds.length === 0 || props.bonusCardIds.includes(bonusCardId as BonusCardId);
   return (
     <form onSubmit={(event) => {
       event.preventDefault();
-      void props.onSubmit(bonusCardId || undefined);
+      if (selectionValid && !props.disabled) void props.onSubmit(props.bonusCardIds.length > 0 ? bonusCardId as BonusCardId : undefined);
     }}>
       <div className="action-copy"><h3>{props.title}</h3><p>{props.copy}</p></div>
       <PartySelect partyId={props.partyId} partyIds={props.partyIds} onPartyId={props.onPartyId} />
       {props.bonusCardIds.length > 0 && (
         <label>
           Bonus card
-          <select aria-label="Bonus card" value={bonusCardId} onChange={(event) => setBonusCardId(event.target.value as BonusCardId | "")}>
-            <option value="">Take no Bonus card</option>
+          <select required aria-label="Bonus card" value={bonusCardId} onChange={(event) => setBonusCardId(event.target.value as BonusCardId | "")}>
+            <option value="" disabled>Choose a Bonus card</option>
             {props.bonusCardIds.map((cardId) => <option key={cardId} value={cardId}>{BONUS_CARDS_BY_ID[cardId].name}</option>)}
           </select>
         </label>
       )}
-      <button className="red-button" disabled={props.disabled}>{props.button}</button>
+      <button className="red-button" disabled={props.disabled || !selectionValid}>{props.button}</button>
     </form>
   );
 }
@@ -1228,6 +1229,7 @@ function BonusCardChoice(props: {
       setBonusCardId("");
     }
   }, [bonusCardId, props.bonusCardIds]);
+  const selectionValid = props.bonusCardIds.length === 0 || props.bonusCardIds.includes(bonusCardId as BonusCardId);
   return (
     <div className="action-copy">
       {props.title !== undefined && <h3>{props.title}</h3>}
@@ -1235,13 +1237,13 @@ function BonusCardChoice(props: {
       {props.bonusCardIds.length > 0 && (
         <label>
           Bonus card
-          <select aria-label="Bonus card" value={bonusCardId} onChange={(event) => setBonusCardId(event.target.value as BonusCardId | "")}>
-            <option value="">Take no Bonus card</option>
+          <select required aria-label="Bonus card" value={bonusCardId} onChange={(event) => setBonusCardId(event.target.value as BonusCardId | "")}>
+            <option value="" disabled>Choose a Bonus card</option>
             {props.bonusCardIds.map((cardId) => <option key={cardId} value={cardId}>{BONUS_CARDS_BY_ID[cardId].name}</option>)}
           </select>
         </label>
       )}
-      <button className="red-button" disabled={props.busy} onClick={() => void props.onSubmit(bonusCardId || undefined)}>{props.button}</button>
+      <button className="red-button" disabled={props.busy || !selectionValid} onClick={() => { if (selectionValid && !props.busy) void props.onSubmit(props.bonusCardIds.length > 0 ? bonusCardId as BonusCardId : undefined); }}>{props.button}</button>
     </div>
   );
 }

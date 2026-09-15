@@ -5,24 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Procedure for Bellweather learning leagues played by persistent LLM-controlled identities through the game API.">
     <title>LLM Learning Leagues — Ladder Bidding</title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../../../docs/styles.css">
   </head>
   <body>
     <header class="page-header">
       <div class="header-inner">
-        <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / 04.12</a>
+        <a class="brand" href="../../../docs/index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / 04.12</a>
         <h1>LLM learning leagues</h1>
         <p class="meta">How persistent language-model players play, explain, share lessons, and adapt across a sequence of complete games.</p>
       </div>
     </header>
 
     <main>
-      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>LLM learning leagues</nav>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../../docs/index.html">Index</a><span>/</span>LLM learning leagues</nav>
 
       <section>
         <span class="status decided">Ruleset-21 process</span>
         <h2>What this is</h2>
-        <p>An LLM learning league uses persistent language-model identities as the players. Each identity receives its own private game projection, reasons about strategic choices, submits those choices through the authenticated <a href="agent-api.html">game API</a>, and explains its result after the complete replay becomes available. Before the next game, every player receives the cumulative shared lessons from all earlier games.</p>
+        <p>An LLM learning league uses persistent language-model identities as the players. Each identity receives its own private game projection, reasons about strategic choices, submits those choices through the authenticated <a href="../../../docs/playtesting/agent-api.html">game API</a>, and explains its result after the complete replay becomes available. Before the next game, every player receives the cumulative shared lessons from all earlier games.</p>
         <p>This is not reinforcement learning. There are no learned weight vectors, value functions, reward updates, exploration schedules, or automated policy checkpoints. It is also not a fixed heuristic simulation: mechanical tooling may fetch state, enumerate legal inputs, and submit a selected command, but an LLM must choose the strategic action.</p>
       </section>
 
@@ -50,7 +50,7 @@
           <li>On each decision, fetch the acting player’s fresh private state. Use the projected version when submitting the command.</li>
           <li>Let the LLM compare the meaningful legal alternatives and choose. Legal-action enumeration may be automated; strategic scoring and selection may not be delegated to a fixed heuristic.</li>
           <li>After each Operation card, refetch state and let the same LLM decide whether to finish or play another card. Never precommit a multi-card sequence against stale state.</li>
-          <li>Let the owning LLM decide every required Bonus award, automatic Closure choice, voluntary Close, Collect, and Pass. Do not skip choices for speed.</li>
+          <li>Let the owning LLM decide every optional Bonus award, automatic Closure choice, voluntary Close, Collect, and Pass. Do not decline or skip choices for speed.</li>
           <li>Continue through all six years and all three Elections. A player acknowledges an Election only after inspecting its result.</li>
         </ol>
         <div class="note"><p><strong>No pacing constraints:</strong> there is no time limit. Do not cap Operation length, force passes, skip counterplay, suppress Bonus choices, or alter strategy to finish sooner. Parallel controllers reduce waiting; they do not change the rules.</p></div>
@@ -96,6 +96,6 @@
       </section>
     </main>
 
-    <footer class="page-footer"><div class="page-footer-inner"><a href="agent-api.html">Open the agent API →</a><span class="stamp">Persistent LLM players</span></div></footer>
+    <footer class="page-footer"><div class="page-footer-inner"><a href="../../../docs/playtesting/agent-api.html">Open the agent API →</a><span class="stamp">Persistent LLM players</span></div></footer>
   </body>
 </html>

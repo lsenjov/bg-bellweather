@@ -75,7 +75,7 @@ function chooseClose(
   for (const [partyId, partyValue] of Object.entries(objectValue(game["parties"]))) {
     const party = objectValue(partyValue);
     if (party["ownerSeatId"] === seatId && party["status"] === "open") {
-      return { type: "close", partyId };
+      return { type: "close", partyId, ...chooseBonus(game, partyId) };
     }
   }
   return null;
@@ -90,7 +90,7 @@ function chooseCollect(
   }
   for (const [partyId, partyValue] of Object.entries(objectValue(game["parties"]))) {
     if (objectValue(partyValue)["status"] === "open") {
-      return { type: "collect", partyId };
+      return { type: "collect", partyId, ...chooseBonus(game, partyId) };
     }
   }
   return null;
@@ -100,4 +100,9 @@ function objectValue(value: unknown): Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
     ? (value as Record<string, unknown>)
     : {};
+}
+
+export function chooseBonus(game: Record<string, unknown>, partyId: string): { bonusCardId?: string } {
+  const cards = objectValue(game["bonusCardsAtParties"])[partyId];
+  return Array.isArray(cards) && typeof cards[0] === "string" ? { bonusCardId: cards[0] } : {};
 }

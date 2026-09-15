@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Local HTTP and WebSocket API contract for automated Bellweather playtest agents.">
     <title>Playtest Agent API — Ladder Bidding</title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../../../docs/styles.css">
   </head>
   <body>
     <header class="page-header">
       <div class="header-inner">
-        <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / agent API</a>
+        <a class="brand" href="../../../docs/index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / agent API</a>
         <h1>Playtest agent API</h1>
         <p class="meta">The authenticated local contract shared by browser players and automated seats.</p>
       </div>
     </header>
 
     <main>
-      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Index</a><span>/</span>Playtest agent API</nav>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../../docs/index.html">Index</a><span>/</span>Playtest agent API</nav>
       <p class="intro">Run the application locally at <code>http://127.0.0.1:4317</code>. Every seat receives an opaque bearer token. A command’s acting seat and timestamp come from the server; strict validation rejects unknown fields.</p>
 
       <section>
-        <span class="status decided">Ruleset 26</span>
+        <span class="status decided">Ruleset 25</span>
         <h2>Start and connect</h2>
         <pre><code>npm install
 npm run build
@@ -76,16 +76,16 @@ npm run dev</code></pre>
               <tr><td><code>open_party</code></td><td><code>firmId</code> and an unopened <code>partyId</code>. Submit only while the projected opening cursor names the seat.</td></tr>
               <tr><td><code>operate</code></td><td><code>partyId</code> and one <code>play</code>. An ordinary play contains <code>cardType: "operation"</code>, a matching <code>operation</code>, and <code>choice</code>. A Bonus play contains <code>cardType: "bonus"</code>, a held <code>bonusCardId</code>, and <code>choice</code>. The card resolves immediately; a second or third play must use the same party, and the third ends the action automatically.</td></tr>
               <tr><td><code>finish_operate</code></td><td>No additional fields. Submit after the first or second resolved card to finish the sequence and pass play clockwise.</td></tr>
-              <tr><td><code>collect</code></td><td><code>partyId</code> for any open party and <code>bonusCardId</code> when any Bonus is available there. The engine spends one Collection counter even when the pile is empty and no Bonus card is available.</td></tr>
-              <tr><td><code>close</code></td><td><code>partyId</code> for an open party whose Firm marker belongs to the acting player and <code>bonusCardId</code> when any Bonus is available there. Illegal on that player’s first Lobby turn of the year.</td></tr>
-              <tr><td><code>choose_closure_bonus</code></td><td><code>partyId</code> for the current automatic-Closure choice and a required <code>bonusCardId</code>. Choose one available card. Only the owner of the Firm marker that was on that party may submit it.</td></tr>
+              <tr><td><code>collect</code></td><td><code>partyId</code> for any open party and optional <code>bonusCardId</code> for at most one card there. The engine spends one Collection counter even when the pile is empty and no Bonus card is taken.</td></tr>
+              <tr><td><code>close</code></td><td><code>partyId</code> for an open party whose Firm marker belongs to the acting player and optional <code>bonusCardId</code> home there. Illegal on that player’s first Lobby turn of the year.</td></tr>
+              <tr><td><code>choose_closure_bonus</code></td><td><code>partyId</code> for the current automatic-Closure choice and optional <code>bonusCardId</code>. Omit the card to decline. Only the owner of the Firm marker that was on that party may submit it.</td></tr>
               <tr><td><code>pass</code></td><td>No additional fields. Legal only after every Firm marker controlled by the acting player has returned; it does not end the year.</td></tr>
               <tr><td><code>set_election_ready</code></td><td>Boolean <code>ready</code>, after <code>phaseData.resultsRecorded</code> is true.</td></tr>
             </tbody>
           </table>
         </div>
 
-        <p>Ruleset 26 uses one private <code>scoringCardId</code> per human. Public state includes <code>pendingPolicies</code> keyed by region, <code>enactedPolicyIds</code>, <code>discardedPolicyIds</code>, and <code>policyDeckCount</code>. The undealt deck is hidden. Parties vote by their public promise priority orders.</p>
+        <p>Ruleset 25 uses one private <code>scoringCardId</code> per human. Public state includes <code>pendingPolicies</code> keyed by region, <code>enactedPolicyIds</code>, <code>discardedPolicyIds</code>, and <code>policyDeckCount</code>. The undealt deck is hidden. Parties vote by their public promise priority orders.</p>
         <p>Operation choices: Organise uses <code>destinationDistrictId</code>, optional <code>sourceDistrictId</code>, positive integer <code>count</code> (default 1; at most 2 with Carpooling, or 54 for Canal Network), and optional <code>swapPartyIds</code> for Political Exchange. Rally uses <code>districtId</code> and optional <code>sourceDistrictId</code> for extended placement. Smear uses <code>districtId</code>, <code>rivalParty</code>, and optional <code>displacementDistrictId</code>. Bonuses may additionally need <code>bonusDistrictId</code> or <code>bonusDistrictIds</code>.</p>
         <p>Each Operation may include <code>freshStartDistrictId</code>, <code>chainSourceDistrictId</code>, and <code>followUpOrder</code>. The order must list each triggered extra exactly once: numeric effect IDs 6, 17, 28, 29 and the string <code>"bonus"</code>. Omission uses that default order. The firm can freely order all extras together. Law extras must resolve if possible and otherwise skip; required Bonus extras must succeed. Dig In skips a full source; Midnight Leak skips if no matching rival is available. Displacement preserves the Smear Bonus’s original district and rival. Laws apply once per card, without loops.</p>
         <p>Unbound choices use an <code>effect</code> discriminant:</p><ul>
@@ -127,8 +127,8 @@ npm run dev</code></pre>
 
       <section>
         <h2>Phase and visibility</h2>
-        <p><code>publicGame.phase</code> is <code>opening</code>, <code>lobby</code>, <code>closure</code>, <code>election</code>, or <code>complete</code>; <code>phaseData</code> carries the phase cursor. During Openings, <code>turnSeatIds</code> contains ABBA, ABCCBA, or the single clockwise orbit and may repeat a seat. During the Lobby, <code>activeSeatId</code> identifies the only acting seat. A non-null <code>inProgressOperate</code> gives the locked <code>partyId</code> and resolved ordinary and total card counts; the active seat must either continue that Operate action or finish it. During Closure, the phase cursor identifies each current Firm owner’s pending required Bonus-card choice.</p>
-        <p>Public state includes year, Election number, Early Bird, combined hand and New Year counts, party status and piles, home Bonus cards, Support, policies, Lobby actions, resolved Operations, year and Election history, and chat. Exact opponent hands and New Year areas remain hidden. Seat-private state adds exact inventories, held and New Year Bonus IDs, and <code>scoringCardId</code>. That card remains hidden from others until final Election results.</p><p>Election records contain <code>policyVotes</code> with <code>regionId</code>, <code>policyId</code>, <code>forVotes</code>, <code>againstVotes</code> and <code>passed</code>. Final-only <code>scoringCards</code> reveal <code>seatId</code> and <code>scoringCardId</code>. Final scores include <code>policyScore</code>, <code>policyScores</code> (policy ID, gain, loss, net), <code>finalCardCount</code>, <code>finalCardRankBonus</code>, <code>pointsChange</code> and <code>resultingPoints</code>. Earlier Elections have no scores. Earlier ruleset saves are unsupported; start a new table. Collect, Close and automatic Closure reject a missing Bonus selection when cards are available, without changing state.</p>
+        <p><code>publicGame.phase</code> is <code>opening</code>, <code>lobby</code>, <code>closure</code>, <code>election</code>, or <code>complete</code>; <code>phaseData</code> carries the phase cursor. During Openings, <code>turnSeatIds</code> contains ABBA, ABCCBA, or the single clockwise orbit and may repeat a seat. During the Lobby, <code>activeSeatId</code> identifies the only acting seat. A non-null <code>inProgressOperate</code> gives the locked <code>partyId</code> and resolved ordinary and total card counts; the active seat must either continue that Operate action or finish it. During Closure, the phase cursor identifies each current Firm owner’s pending optional Bonus-card choice.</p>
+        <p>Public state includes year, Election number, Early Bird, combined hand and New Year counts, party status and piles, home Bonus cards, Support, policies, Lobby actions, resolved Operations, year and Election history, and chat. Exact opponent hands and New Year areas remain hidden. Seat-private state adds exact inventories, held and New Year Bonus IDs, and <code>scoringCardId</code>. That card remains hidden from others until final Election results.</p><p>Election records contain <code>policyVotes</code> with <code>regionId</code>, <code>policyId</code>, <code>forVotes</code>, <code>againstVotes</code> and <code>passed</code>. Final-only <code>scoringCards</code> reveal <code>seatId</code> and <code>scoringCardId</code>. Final scores include <code>policyScore</code>, <code>policyScores</code> (policy ID, gain, loss, net), <code>finalCardCount</code>, <code>finalCardRankBonus</code>, <code>pointsChange</code> and <code>resultingPoints</code>. Earlier Elections have no scores. Ruleset 24 saves are unsupported; start a new table.</p>
         <p>After the game ends, every authenticated participant may fetch the complete event history and canonical final state. If observer admission was enabled, a new observer may still join by invitation code to obtain replay access; this adds no event to the completed history. Random setup and Election draws are recorded, so replay never rerolls.</p>
       </section>
 

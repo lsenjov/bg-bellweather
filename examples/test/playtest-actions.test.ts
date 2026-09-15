@@ -10,6 +10,7 @@ describe("playtest agent Lobby action selection", () => {
         status: "open"
       }
     },
+    bonusCardsAtParties: {honeycomb:["honeycomb-common-cause"]},
     support: {
       harbormouth: {
         honeycomb: 6
@@ -36,7 +37,7 @@ describe("playtest agent Lobby action selection", () => {
         { turnsTaken: { "seat-1": 0 } },
         "seat-1"
       )
-    ).toEqual({ type: "collect", partyId: "honeycomb" });
+    ).toEqual({ type: "collect", partyId: "honeycomb", bonusCardId:"honeycomb-common-cause" });
   });
 
   it("closes its own party before spending a Collection counter", () => {
@@ -47,7 +48,7 @@ describe("playtest agent Lobby action selection", () => {
         { turnsTaken: { "seat-1": 1 } },
         "seat-1"
       )
-    ).toEqual({ type: "close", partyId: "honeycomb" });
+    ).toEqual({ type: "close", partyId: "honeycomb", bonusCardId:"honeycomb-common-cause" });
   });
 
   it("passes only when no open party it owns remains", () => {
