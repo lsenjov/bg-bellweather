@@ -36,6 +36,7 @@ import {
   isOperationChoiceLegal, operationFollowUps, resolveUnboundBonus, type FollowUpId,
   isOperationRequestLegal,
   resolveOperation,
+  scorePolicies,
   type GameView as EngineGameView,
   type OperationChoice,
   type OperationState,
@@ -461,7 +462,7 @@ export function GameDesk(props: {
           interaction={interaction}
           supportChanges={supportChanges}
         />
-        <PolicyDisplay view={props.view} />
+        <PolicyDisplay view={props.view} scoringCardId={props.spectator ? null : props.ownSeat?.scoringCardId ?? null} />
       </section>
       <aside className="action-desk paper-panel">
         <SectionHeading label="Active desk" title={phaseName(props.view.phase)} slug={turnSlug(props.view)} />
@@ -544,13 +545,15 @@ function PlayerScoring({ cardId }: { cardId: ScoringCardId | null }) {
   return <section className="private-priorities" aria-label="Your secret priorities"><strong>Your secret priorities</strong><p>Every enacted policy: + value − value at game end.</p><ol>{SCORING_CARDS_BY_ID[cardId].order.map((category, index) => <li key={category}><b>{6-index}</b> {category}</li>)}</ol></section>;
 }
 
-function PolicyDisplay({ view }: { view: GameView }) {
+function PolicyDisplay({ view, scoringCardId }: { view: GameView; scoringCardId: ScoringCardId | null }) {
+  const projectedScore = (policyId: PolicyId) => scoringCardId === null ? null
+    : scorePolicies(SCORING_CARDS_BY_ID[scoringCardId], [policyId], view.enactedPolicyIds)[0]!.net;
   return <section className="policy-display"><h3>Regional policies</h3><p>Each surviving Support votes. For must exceed Against; ties fail. Centre keeps all Support.</p>
     <div className="regional-policies">{REGION_IDS.map(regionId => {
       const policyId = view.pendingPolicies[regionId];
-      return <section key={regionId}><h4>{REGION_NAMES[regionId]}</h4>{policyId ? <PolicyCard policyId={policyId}/> : <p>Final vote complete</p>}</section>;
+      return <section key={regionId}><h4>{REGION_NAMES[regionId]}</h4>{policyId ? <PolicyCard policyId={policyId} projectedScore={projectedScore(policyId)}/> : <p>Final vote complete</p>}</section>;
     })}</div>
-    <details className="enacted-laws" open={view.enactedPolicyIds.length > 0}><summary>Enacted laws ({view.enactedPolicyIds.length})</summary><p>Global effects. Identical effects apply once per card; no loops.</p><div className="regional-policies">{view.enactedPolicyIds.map(id => <PolicyCard key={id} policyId={id}/>)}</div></details>
+    <details className="enacted-laws" open={view.enactedPolicyIds.length > 0}><summary>Enacted laws ({view.enactedPolicyIds.length})</summary><p>Global effects. Identical effects apply once per card; no loops.</p><div className="regional-policies">{view.enactedPolicyIds.map(id => <PolicyCard key={id} policyId={id} projectedScore={projectedScore(id)}/>)}</div></details>
     <details><summary>Failed policies ({view.discardedPolicyIds.length}) · {view.policyDeckCount} undealt</summary><ul>{view.discardedPolicyIds.map(id => <li key={id}>{POLICIES_BY_ID[id].name}</li>)}</ul></details>
   </section>;
 }

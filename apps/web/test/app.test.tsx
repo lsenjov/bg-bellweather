@@ -765,6 +765,25 @@ describe("yearly browser play surface", () => {
     expect(screen.queryByText("All agendas")).toBeNull();
   });
 
+  it.each([
+    [0, 4, false, "+4 points"],
+    [4, 2, false, "−2 points"],
+    [0, 2, true, "0 points"]
+  ] as const)("shows a private policy projection for ranks %i and %i", (plus, minus, muted, expected) => {
+    const state = initializeGame(configuration(2), random).state;
+    const card = SCORING_CARDS_BY_ID[state.seats[0]!.scoringCardId];
+    const policy = POLICIES.find(policy => policy.plus === card.order[plus] && policy.minus === card.order[minus])!;
+    state.pendingPolicies.urban = policy.id;
+    state.enactedPolicyIds = muted ? [POLICIES.find(policy => policy.effect === 19)!.id] : [];
+    const view = privateView(state, "seat-1");
+    const props = {view, ownSeat:view.seats[0], ownSeatId:"seat-1", spectator:false, busy:false, onCommand:async()=>true};
+    const {container, rerender} = render(<GameDesk {...props}/>);
+    const header = container.querySelector(".policy-card > header")!;
+    expect(header.textContent).toContain(`Policy proposal${expected}`);
+    rerender(<GameDesk {...props} ownSeat={undefined} spectator/>);
+    expect(container.querySelectorAll(".policy-projected-score")).toHaveLength(0);
+  });
+
   it("reports policy votes, final scoring card and hand rank", () => {
     const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
     const policyId = view.pendingPolicies.mixed!;

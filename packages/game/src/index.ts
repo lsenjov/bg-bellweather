@@ -5,3 +5,5 @@ export * from "./projection.js";
 export * from "./unbound.js";
 
 export { RULESET_VERSION as engineVersion } from "@bellweather/content";
+
+export { scorePolicies } from "./election.js";

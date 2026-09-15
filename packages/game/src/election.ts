@@ -96,8 +96,8 @@ export function scoreElectionDay(input: {
   return { draws, policyVotes, scores, winnerIds: input.finalElection ? determineWinners(scores.map(s => ({id: s.playerId, points: s.resultingPoints}))) : [] };
 }
 
-export function scorePolicies(card: ScoringCard, policyIds: readonly PolicyId[]): ElectionScore["policyScores"] {
-  const effects = activeLawEffects(policyIds);
+export function scorePolicies(card: ScoringCard, policyIds: readonly PolicyId[], enactedPolicyIds: readonly PolicyId[] = policyIds): ElectionScore["policyScores"] {
+  const effects = activeLawEffects(enactedPolicyIds);
   const value = (category: ScoringCard["order"][number]) => {
     const printed = 6 - card.order.indexOf(category);
     return printed === 6 && effects.includes(19) ? 4 : printed === 1 && effects.includes(20) ? 3 : printed;

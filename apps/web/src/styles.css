@@ -264,7 +264,9 @@ footer { display: flex; justify-content: space-between; padding: 18px 4px; font:
 .policy-display { margin: 16px 0; }
 .policy-display > p { font-size: 13px; }
 .policy-card { padding: 12px; border: 1.5px solid #252522; border-radius: 12px; background: #fffefa; color: #171612; }
-.policy-card > header { display: flex; justify-content: space-between; font-size: 11px; }
+.policy-card > header { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; font-size: 11px; }
+.policy-card > header > small { margin-left: auto; }
+.policy-projected-score { white-space: nowrap; font-size: 12px; }
 .policy-card > h3 { margin: 8px 0 14px; font: bold 23px/1.05 "Liberation Serif", serif; }
 .policy-vote-row { margin: 8px 0; }
 .policy-vote-row h4 { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 5px; font-size: 16px; }

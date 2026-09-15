@@ -5,6 +5,13 @@ import { recordElectionDraws, scoreElectionDay, scorePolicies, finalCardRankBonu
 const config = {seats:[0,1].map(i=>({id:String(i),displayName:String(i),controller:"human" as const}))};
 const fresh = () => initializeGame(config,{integer:()=>0}).state;
 describe("policy elections",()=>{
+  it("projects a pending scoring law without activating it", () => {
+    const policy = POLICIES.find(policy => policy.effect === 19)!;
+    const order = [policy.plus, ...SCORING_CARDS[0]!.order.filter(category => category !== policy.plus && category !== policy.minus), policy.minus];
+    const card = {...SCORING_CARDS[0]!, order};
+    expect(scorePolicies(card, [policy.id], [])[0]!.net).toBe(5);
+    expect(scorePolicies(card, [policy.id], [policy.id])[0]!.net).toBe(3);
+  });
   it("thins every non-Centre district and never draws Centre",()=>{
     const state=fresh();state.support['bellweather-centre']={honeycomb:3};
     const draws=recordElectionDraws(toOperationState(state).districts,()=>0);
