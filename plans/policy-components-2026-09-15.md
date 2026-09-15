@@ -13,4 +13,11 @@ Scope: physical components and their documentation only. Leave apps/, packages/,
 
 ## Validation and completion
 
-Pending.
+Completed.
+
+- `npm run docs:check` passes, including generator invariants and all 169 HTML documents.
+- Print export passes: policy deck 4 pages, scoring deck 1, Operations 4, Bonuses 2, party boards 3, folios 2, helper 1, regional labels 1, shared tokens 1, final ledger 1; map is A3. PDF dimensions and embedded fonts validated by the exporter.
+- Chromium print inspection found no component overflow; visually checked policy cards, party boards, helper and policy map. Fixed an extra blank ledger page.
+- Independent agent review reported no high or medium issues. Fixed its low documentation findings concerning score-marker descriptions, duplicated metadata and archived links to mutable PDF exports.
+- Three Bonus/law interactions remain explicitly open in the component reference; no unapproved rules were invented.
+- App, package content, existing app map asset, current rulebook and unrelated work remain untouched.

@@ -297,6 +297,112 @@ main {
   box-shadow: inset -1.5mm -1.5mm 0 rgb(23 22 18 / 9%);
 }
 
+.coalition-target {
+  display: grid;
+  min-width: 0;
+  height: 24mm;
+  grid-column: 2 / 6;
+  grid-template-columns: 32mm minmax(0, 1fr);
+  gap: 2mm;
+  padding: 2.5mm;
+  border: 0.5mm solid var(--ink);
+  background: var(--tint);
+}
+
+.coalition-target-heading {
+  display: flex;
+  min-width: 0;
+  border-right: 0.4mm solid var(--ink);
+  flex-direction: column;
+  justify-content: center;
+}
+
+.coalition-target-heading strong {
+  font: 800 11pt/0.95 var(--display);
+}
+
+.coalition-target-heading span {
+  margin-top: 1mm;
+  font: 750 5.4pt/1.2 var(--body);
+}
+
+.coalition-target-targets {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1.5mm;
+}
+
+.coalition-target-target {
+  display: grid;
+  min-width: 0;
+  grid-template-rows: 1fr auto;
+  padding: 1.2mm 0.8mm;
+  place-items: center;
+  border: 0.4mm solid var(--ink);
+  background: var(--paper-bright);
+  font: 800 6pt/1 var(--mono);
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.coalition-target-target b {
+  font: 800 11pt/0.8 var(--display);
+  letter-spacing: -0.02em;
+}
+
+.coalition-target-target > span {
+  font: 800 4.7pt/1 var(--mono);
+  letter-spacing: 0.02em;
+}
+
+.target-honeycomb {
+  background: #d7aa12;
+  color: #171612;
+}
+
+.target-old-shell {
+  background: #3f7447;
+  color: #fffaf0;
+}
+
+.target-foxglove {
+  background: #b83d6d;
+  color: #fffaf0;
+}
+
+.target-riverworks {
+  background: #2d6fa3;
+  color: #fffaf0;
+}
+
+.target-many-wings {
+  background: #d86f24;
+  color: #171612;
+}
+
+.target-night {
+  background: #252522;
+  color: #fffaf0;
+}
+
+.coalition-target-target.unpointed {
+  display: flex;
+  padding: 1mm;
+  border-style: dashed;
+  color: var(--muted);
+  flex-direction: column;
+  justify-content: center;
+}
+
+.coalition-target-target small {
+  display: block;
+  margin-top: 0.7mm;
+  font: 800 4.4pt/1 var(--mono);
+  letter-spacing: 0;
+}
+
 @page {
   size: A4 landscape;
   margin: 0;
@@ -327,9 +433,3 @@ main {
     break-after: auto;
   }
 }
-
-.promise-ranking { grid-column: 2 / 6; height: 24mm; padding: 2mm; border: .5mm solid var(--ink); background: var(--tint); }
-.promise-ranking > strong { font: bold 8pt var(--body); }
-.promise-ranking ol { list-style: none; display: grid; grid-template-columns: repeat(6, 1fr); gap: 1mm; padding: 0; margin: 2mm 0 0; }
-.promise-ranking li { font: 7pt var(--body); border-top: .25mm solid; padding-top: 1mm; }
-.promise-ranking li b { display: block; font-size: 11pt; }

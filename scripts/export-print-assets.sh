@@ -3,8 +3,8 @@
 set -euo pipefail
 
 repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-board_source="$repository_root/docs/assets/inland-district-map.svg"
-board_output="$repository_root/assets/print/inland-district-map-a3.pdf"
+board_source="$repository_root/docs/assets/policy-district-map.svg"
+board_output="$repository_root/assets/print/policy-district-map-a3.pdf"
 html_exporter="$repository_root/scripts/export-html-print-pages.cjs"
 
 mkdir -p "$repository_root/assets/print"
@@ -107,10 +107,12 @@ html_exports=(
   "party-boards|docs/components/party-boards.html|assets/print/party-boards-a4.pdf|3|841.92|594.96"
   "player-folios|docs/components/player-folios.html|assets/print/player-folios-a4.pdf|2|594.96|841.92"
   "player-helper|docs/components/player-helper.html|assets/print/player-helper-a4.pdf|1|594.96|841.92"
-  "operation-cards|docs/components/operation-cards.html|assets/print/operation-cards-a4.pdf|5|594.96|841.92"
+  "operation-cards|docs/components/operation-cards.html|assets/print/operation-cards-a4.pdf|4|594.96|841.92"
   "bonus-cards|docs/components/bonus-cards.html|assets/print/bonus-cards-a4.pdf|2|594.96|841.92"
   "bonus-card-candidates|docs/design/printable-bonus-card-candidates.html|assets/print/bonus-card-candidates-a4.pdf|9|594.96|841.92"
-  "scoring-cards|docs/components/printable-scoring-cards.html|assets/print/scoring-cards-a4.pdf|2|594.96|841.92"
+  "policy-cards|docs/components/printable-policy-cards.html|assets/print/policy-cards-a4.pdf|4|594.96|841.92"
+  "policy-region-labels|docs/components/policy-region-labels.html|assets/print/policy-region-labels-a4.pdf|1|594.96|841.92"
+  "scoring-cards|docs/components/printable-scoring-cards.html|assets/print/scoring-cards-a4.pdf|1|594.96|841.92"
   "shared-state-tokens|docs/components/shared-state-tokens.html|assets/print/shared-state-tokens-a4.pdf|1|841.92|594.96"
   "public-score-tracker|docs/components/campaign-score-trackers.html|assets/print/public-score-tracker-a4.pdf|1|841.92|594.96"
 )
