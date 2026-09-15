@@ -52,6 +52,7 @@ function page(title, body) {
 function table(headings, rows) {
   return `<div class="table-wrap"><table><thead><tr>${headings.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('\n')}</tbody></table></div>`;
 }
+output('packages/content/src/policy-data.ts', `export const POLICY_DATA = ${JSON.stringify(data, null, 2)} as const;\n`);
 const priorityTable = table(['Party', '1st', '2nd', '3rd', '4th', '5th', '6th'], parties.map((p) => [p.name, ...p.order]));
 const policyRows = policies.map((p) => [p.id, escape(p.name), '+' + p.plus, '−' + p.minus, votes(p, true).map((p) => p.name).join(', '), votes(p, false).map((p) => p.name).join(', '), `<a href="#effect-${p.effect}">${effectFor(p).name}</a>`]);
 output('docs/components/policy-cards.html', page('Policy cards', `

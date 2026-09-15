@@ -1,8 +1,8 @@
 import { deepFreeze } from "./immutable.js";
 
-export const REGION_IDS = deepFreeze(["urban", "mixed", "outlying"] as const);
+export const REGION_IDS = deepFreeze(["urban", "mixed", "outlying", "centre"] as const);
 export type RegionId = (typeof REGION_IDS)[number];
-export const REGION_NAMES = deepFreeze({ urban: "Urban", mixed: "Mixed", outlying: "Outlying" });
+export const REGION_NAMES = deepFreeze({ urban: "Urban", mixed: "Mixed", outlying: "Outlying", centre: "Bellweather Centre" });
 
 export const DISTRICT_IDS = deepFreeze([
   "harbormouth",
@@ -28,7 +28,7 @@ export interface DistrictDefinition {
   readonly id: DistrictId;
   readonly name: string;
   readonly capacity: 2 | 3 | 4 | 6;
-  readonly regionId: RegionId | null;
+  readonly regionId: RegionId;
   readonly adjacentDistrictIds: readonly DistrictId[];
   readonly polygon: readonly (readonly [number, number])[];
   readonly label: readonly [number, number];
@@ -671,7 +671,7 @@ export const DISTRICTS = deepFreeze([
     "id": "bellweather-centre",
     "name": "Bellweather Centre",
     "capacity": 3,
-    "regionId": null,
+    "regionId": "centre",
     "adjacentDistrictIds": [
       "ironwood",
       "canal-ward",

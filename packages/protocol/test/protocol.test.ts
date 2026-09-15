@@ -150,13 +150,16 @@ describe("commands", () => {
     ).toBe(false);
   });
 
-  it("accepts all six Unbound Bonus choice shapes", () => {
+  it("accepts all nine Unbound Bonus choice shapes", () => {
     const choices = [
+      ["honeycomb-common-cause", {effect:"common_cause",districtId:"harbormouth",partnerPartyId:"old-shell"}],
+      ["foxglove-whisper-network", {effect:"whisper_network",sourceDistrictId:"harbormouth",destinationDistrictId:"grand-market",rivalPartyId:"old-shell"}],
+      ["many-wings-joint-campaign", {effect:"joint_campaign",regionId:"urban",forPolicy:true,destinationDistrictId:"grand-market",moves:[{sourceDistrictId:"harbormouth",partyId:"honeycomb"}]}],
       ["honeycomb-every-bee-counts", { effect: "every_bee_counts" }],
       ["old-shell-institutional-memory", {
         effect: "institutional_memory",
-        scoringCardId: "SC-01",
-        placements: [{ objectiveIndex: 0, destinationDistrictId: "ironwood" }]
+        regionId: "urban", forPolicy: true,
+        placements: [{ partyId: "honeycomb", destinationDistrictId: "ironwood" }]
       }],
       ["foxglove-shell-firm", { effect: "shell_firm", targetPartyId: "old-shell" }],
       ["riverworks-mass-transit", {

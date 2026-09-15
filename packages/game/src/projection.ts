@@ -1,7 +1,6 @@
 import type {
   GameState,
   OperationInventory,
-  ScoringCardSlots,
   SeatId
 } from "./model.js";
 import {
@@ -9,6 +8,7 @@ import {
   BONUS_CARDS_BY_ID,
   PARTY_IDS,
   type BonusCardId,
+  type ScoringCardId,
   type PartyId
 } from "@bellweather/content";
 import { assertCurrentRuleset, operationCount } from "./engine.js";
@@ -29,7 +29,7 @@ export interface ProjectedSeat {
   newYearBonusCardIds: BonusCardId[] | null;
   operations: OperationInventory | null;
   newYearOperations: OperationInventory | null;
-  scoringCardIds: ScoringCardSlots | null;
+  scoringCardId: ScoringCardId | null;
 }
 
 export interface GameView {
@@ -42,8 +42,10 @@ export interface GameView {
   seats: ProjectedSeat[];
   parties: GameState["parties"];
   support: GameState["support"];
-  courtSupport: GameState["courtSupport"];
-  coalitionTargets: GameState["coalitionTargets"];
+  pendingPolicies: GameState["pendingPolicies"];
+  enactedPolicyIds: GameState["enactedPolicyIds"];
+  discardedPolicyIds: GameState["discardedPolicyIds"];
+  policyDeckCount: number;
   bonusCardsAtParties: Record<PartyId, BonusCardId[]>;
   lobbyActions: GameState["lobbyActions"];
   resolvedOperations: GameState["resolvedOperations"];
@@ -105,15 +107,16 @@ export function projectGameState(
         newYearOperations: privateInformation
           ? { ...seat.newYearOperations }
           : null,
-        scoringCardIds: privateInformation || state.phase.type === "complete"
-          ? cloneScoringCardSlots(seat.scoringCardIds)
-          : visibleScoringCardSlots(state, seat.scoringCardIds)
+        scoringCardId: privateInformation || state.electionHistory.some(e => e.afterYear === 6)
+          ? seat.scoringCardId : null
       };
     }),
     parties: structuredClone(state.parties),
     support: structuredClone(state.support),
-    courtSupport: structuredClone(state.courtSupport),
-    coalitionTargets: { ...state.coalitionTargets },
+    pendingPolicies: { ...state.pendingPolicies },
+    enactedPolicyIds: [...state.enactedPolicyIds],
+    discardedPolicyIds: [...state.discardedPolicyIds],
+    policyDeckCount: state.policyDeck.length,
     bonusCardsAtParties: Object.fromEntries(
       PARTY_IDS.map((partyId) => [
         partyId,
@@ -143,21 +146,3 @@ function bonusCardsForSeat(
   });
 }
 
-function visibleScoringCardSlots(
-  state: GameState,
-  slots: ScoringCardSlots
-): ScoringCardSlots | null {
-  const visibleThrough = state.phase.type === "election"
-    ? state.phase.electionNumber
-    : state.electionNumber;
-  if (visibleThrough === 0) {
-    return null;
-  }
-  return slots.map((slot, index) =>
-    index < visibleThrough ? [...slot] : []
-  ) as ScoringCardSlots;
-}
-
-function cloneScoringCardSlots(slots: ScoringCardSlots): ScoringCardSlots {
-  return slots.map((slot) => [...slot]) as ScoringCardSlots;
-}

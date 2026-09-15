@@ -1,6 +1,7 @@
 import {
   BONUS_CARDS_BY_ID,
-  PARTY_IDS,
+  PARTY_IDS, DISTRICTS_BY_ID, MAP_BRIDGES,
+  type LawEffectId,
   type BonusCardId,
   type DistrictId,
   type PartyId
@@ -9,7 +10,7 @@ import type { SupportChange } from "./model.js";
 
 export const PARTIES = PARTY_IDS;
 export type Party = PartyId;
-export type Operation = "organise" | "rally" | "smear" | "court";
+export type Operation = "organise" | "rally" | "smear";
 
 export interface DistrictState {
   id: string;
@@ -20,35 +21,12 @@ export interface DistrictState {
 
 export interface OperationState {
   districts: Record<string, DistrictState>;
-  courtSupport: Record<Party, Partial<Record<Party, number>>>;
-  coalitionTargets: Record<Party, Party | null>;
+  laws: readonly LawEffectId[];
 }
 
-export type OperationChoice =
-  | {
-      operation: "organise";
-      destinationDistrictId: string;
-      sourceDistrictId?: string;
-      count?: number;
-    }
-  | {
-      operation: "rally";
-      districtId: string;
-      bonusDistrictId?: string;
-      bonusDistrictIds?: string[];
-    }
-  | {
-      operation: "smear";
-      districtId: string;
-      rivalParty: Party;
-      bonusCourtParty?: Party;
-    }
-  | {
-      operation: "court";
-      targetParty: Party;
-      bonusDistrictId?: string;
-      bonusCourtSourceParty?: Party;
-    };
+export type { OperationChoice } from "@bellweather/protocol";
+import { OperationChoiceSchema, type OperationChoice } from "@bellweather/protocol";
+export type FollowUpId = NonNullable<OperationChoice["followUpOrder"]>[number];
 
 export interface OperationRequest {
   party: Party;
@@ -74,6 +52,8 @@ export function resolveOperation(
   initialState: OperationState,
   request: OperationRequest
 ): OperationResolution {
+  const parsed = OperationChoiceSchema.safeParse(request.choice);
+  if (!parsed.success) return result(cloneState(initialState), false, false, null, "Invalid Operation choice", null, []);
   const state = cloneState(initialState);
   const supportChanges: SupportChange[] = [];
   const operation = request.choice.operation;
@@ -92,9 +72,6 @@ export function resolveOperation(
       supportChanges
     );
   }
-  if (bonusCard !== undefined && bonusCard.homePartyId !== request.party) {
-    resolveCourt(state, request.party, bonusCard.homePartyId);
-  }
   const baseline = applyBaseline(
     state,
     request.party,
@@ -106,31 +83,64 @@ export function resolveOperation(
   if (!baseline.applied) {
     return result(cloneState(initialState), false, false, bonusName, baseline.failure, null, []);
   }
-  if (request.bonusCardId === undefined) {
-    return result(state, true, false, bonusName, null, null, supportChanges);
+  const required = triggeredFollowUps(initialState, request, baseline);
+  const order = request.choice.followUpOrder ?? required;
+  if (order.length !== required.length || new Set(order).size !== order.length || order.some(id => !required.includes(id))) {
+    return result(cloneState(initialState), false, false, bonusName, "Resolve every triggered extra exactly once", null, []);
   }
+  for (const id of order) {
+    const extra = id === "bonus" ? applyBonus(state, request, baseline, supportChanges) : applyLawExtra(state, request, baseline, id, supportChanges);
+    if (!extra.applied) return result(cloneState(initialState), false, false, bonusName, extra.failure, extra.failure, []);
+  }
+  return result(state, true, request.bonusCardId !== undefined, bonusName, null, null, supportChanges);
+}
 
-  const bonus = applyBonus(state, request, baseline, supportChanges);
-  if (!bonus.applied) {
-    return result(
-      cloneState(initialState),
-      false,
-      false,
-      bonusName,
-      "The claimed immediate bonus cannot resolve",
-      bonus.failure,
-      []
-    );
+export function operationFollowUps(state: OperationState, request: OperationRequest): FollowUpId[] {
+  if (!OperationChoiceSchema.safeParse(request.choice).success) return [];
+  const baseline = applyBaseline(cloneState(state), request.party, request.choice, request.bonusCardId === "riverworks-canal-network", []);
+  return baseline.applied ? triggeredFollowUps(state, request, baseline) : [];
+}
+
+function triggeredFollowUps(state: OperationState, request: OperationRequest, baseline: BaselineResult): FollowUpId[] {
+  const ids: FollowUpId[] = [];
+  if (request.bonusCardId !== "riverworks-canal-network") {
+    if (baseline.wasAbsent && request.choice.operation !== "smear" && state.laws.includes(6)) ids.push(6);
+    if (request.choice.operation === "organise" && !baseline.wasAbsent) {
+      const source = baseline.sourceDistrictId!, destination = baseline.destinationDistrictId!;
+      if (state.laws.includes(17) && DISTRICTS_BY_ID[source as DistrictId]?.regionId !== DISTRICTS_BY_ID[destination as DistrictId]?.regionId) ids.push(17);
+      if (state.laws.includes(28)) ids.push(28);
+      if (state.laws.includes(29) && MAP_BRIDGES.some(bridge => (bridge.districtIds as readonly string[]).includes(source) && (bridge.districtIds as readonly string[]).includes(destination))) ids.push(29);
+    }
   }
-  return result(
-    state,
-    true,
-    bonus.applied,
-    bonusName,
-    null,
-    bonus.failure,
-    supportChanges
-  );
+  if (request.bonusCardId !== undefined) ids.push("bonus");
+  return ids;
+}
+
+function applyLawExtra(state: OperationState, request: OperationRequest, baseline: BaselineResult, id: Exclude<FollowUpId, "bonus">, changes: SupportChange[]) {
+  const {party, choice} = request;
+  if (id === 6) {
+    if (!Object.values(state.districts).some(hasFreeSpot)) return bonusApplied();
+    const destination = state.districts[choice.freshStartDistrictId ?? ""];
+    if (!destination || !hasFreeSpot(destination)) return bonusFailed("Fresh Start requires a second placement in a free district");
+    addSupport(destination, party, changes);
+    return bonusApplied();
+  }
+  const source = state.districts[baseline.sourceDistrictId!]!;
+  const destination = state.districts[baseline.destinationDistrictId!]!;
+  if (id === 17 || id === 29) {
+    const target = id === 17 ? source : destination;
+    if (hasFreeSpot(target)) addSupport(target, party, changes);
+    return bonusApplied();
+  }
+  const moved = choice.operation === "organise" ? choice.count ?? 1 : 0;
+  const eligible = source.neighbors.filter(id => {
+    const available = state.districts[id]?.support[party] ?? 0;
+    return available - (id === destination.id ? moved : 0) > 0;
+  });
+  if (!hasFreeSpot(source) || eligible.length === 0) return bonusApplied();
+  if (!eligible.includes(choice.chainSourceDistrictId ?? "")) return bonusFailed("Chain Migration requires a different Support from a neighboring district");
+  moveSupport(state.districts[choice.chainSourceDistrictId!]!, source, party, changes);
+  return bonusApplied();
 }
 
 export function supportCount(state: OperationState, party?: Party): number {
@@ -174,66 +184,6 @@ export function isOperationRequestLegal(
   );
 }
 
-export function hasLegalOperationChoice(
-  state: OperationState,
-  party: Party,
-  operation: Operation,
-  options: OperationLegalityOptions = {}
-): boolean {
-  const districts = Object.values(state.districts);
-  if (operation === "organise") {
-    if (supportCount(state, party) === 0) {
-      return districts.some((destination) =>
-        isOperationChoiceLegal(
-          state,
-          party,
-          {
-            operation,
-            destinationDistrictId: destination.id
-          },
-          options
-        )
-      );
-    }
-    return districts.some((source) =>
-      districts.some((destination) =>
-        isOperationChoiceLegal(
-          state,
-          party,
-          {
-            operation,
-            sourceDistrictId: source.id,
-            destinationDistrictId: destination.id
-          },
-          options
-        )
-      )
-    );
-  }
-  if (operation === "rally") {
-    return districts.some((district) =>
-      isOperationChoiceLegal(state, party, {
-        operation,
-        districtId: district.id
-      })
-    );
-  }
-  if (operation === "smear") {
-    return districts.some((district) =>
-      PARTIES.some((rivalParty) =>
-        isOperationChoiceLegal(state, party, {
-          operation,
-          districtId: district.id,
-          rivalParty
-        })
-      )
-    );
-  }
-  return PARTIES.some((targetParty) =>
-    isOperationChoiceLegal(state, party, { operation, targetParty })
-  );
-}
-
 interface BaselineResult {
   applied: boolean;
   failure: string | null;
@@ -245,125 +195,64 @@ interface BaselineResult {
 }
 
 function applyBaseline(
-  state: OperationState,
-  party: Party,
-  choice: OperationChoice,
-  allowCanalNetwork: boolean,
-  supportChanges: SupportChange[]
+  state: OperationState, party: Party, choice: OperationChoice,
+  allowCanalNetwork: boolean, supportChanges: SupportChange[]
 ): BaselineResult {
   const wasAbsent = supportCount(state, party) === 0;
+  const law = (id: LawEffectId) => !allowCanalNetwork && state.laws.includes(id);
+  const region = (id: string) => DISTRICTS_BY_ID[id as DistrictId]?.regionId;
   if (choice.operation === "organise") {
     const count = choice.count ?? 1;
-    if (!Number.isSafeInteger(count) || count < 1 || (!allowCanalNetwork && count !== 1)) {
-      return failed(wasAbsent, "Only Canal Network can move multiple Support; choose a positive whole number");
-    }
+    const swaps = choice.swapPartyIds ?? [];
+    if (!Number.isSafeInteger(count) || count < 1 || (!allowCanalNetwork && count > (law(7) ? 2 : 1))) return failed(wasAbsent, "Invalid Organise group size");
     const destination = state.districts[choice.destinationDistrictId];
-    if (destination === undefined || destination.capacity - districtTotal(destination) < count) {
-      return failed(wasAbsent, "Organise requires a free destination spot");
-    }
+    if (destination === undefined) return failed(wasAbsent, "Choose an Organise destination");
     if (wasAbsent) {
-      if (allowCanalNetwork) return failed(wasAbsent, "Canal Network requires existing Support");
+      if (allowCanalNetwork || count !== 1 || swaps.length || !hasFreeSpot(destination)) return failed(wasAbsent, "An absent party requires one free spot to return");
       addSupport(destination, party, supportChanges);
-      return {
-        applied: true,
-        failure: null,
-        wasAbsent,
-        destinationDistrictId: destination.id
-      };
+      return { applied: true, failure: null, wasAbsent, destinationDistrictId: destination.id };
     }
-    const source =
-      choice.sourceDistrictId === undefined
-        ? undefined
-        : state.districts[choice.sourceDistrictId];
-    if (
-      source === undefined ||
-      source.id === destination.id ||
-      (source.support[party] ?? 0) < count
-    ) {
-      return failed(wasAbsent, "Organise requires party Support in a different source");
-    }
-    if (
-      !source.neighbors.includes(destination.id) &&
-      !(
-        allowCanalNetwork &&
-        canalNetworkConnects(state, source.id, destination.id, party)
-      )
-    ) {
-      return failed(wasAbsent, "Organise destination must neighbor the source");
-    }
-    for (let index = 0; index < count; index += 1) {
-      moveSupport(source, destination, party, supportChanges);
-    }
-    return {
-      applied: true,
-      failure: null,
-      wasAbsent,
-      sourceDistrictId: source.id,
-      destinationDistrictId: destination.id
-    };
+    const source = state.districts[choice.sourceDistrictId ?? ""];
+    if (source === undefined || source.id === destination.id || (source.support[party] ?? 0) < count) return failed(wasAbsent, "Organise requires Support in a different source");
+    const allowed = source.neighbors.includes(destination.id)
+      || (allowCanalNetwork && canalNetworkConnects(state, source.id, destination.id, party))
+      || (law(9) && (destination.support[party] ?? 0) > 0)
+      || (law(30) && region(source.id) === region(destination.id));
+    if (!allowed) return failed(wasAbsent, "Destination is outside Organise range");
+    if (swaps.length > count || (swaps.length && !law(10)) || swaps.some(p => p === party || !PARTIES.includes(p))) return failed(wasAbsent, "Political Exchange requires rival Support");
+    for (const rival of PARTIES) if (swaps.filter(p => p === rival).length > (destination.support[rival] ?? 0)) return failed(wasAbsent, "Not enough rival Support to swap");
+    if (destination.capacity - districtTotal(destination) + swaps.length < count) return failed(wasAbsent, "Destination needs a free spot or swap for every arrival");
+    for (let i = 0; i < count; i++) removeSupport(source, party, supportChanges);
+    for (const rival of swaps) moveSupport(destination, source, rival, supportChanges);
+    for (let i = 0; i < count; i++) addSupport(destination, party, supportChanges);
+    // A swap is simultaneous; record each arriving Support as a move for map playback.
+    supportChanges.splice(supportChanges.length - count - swaps.length - count, count + swaps.length + count,
+      ...Array.from({length: count}, () => ({type: "move" as const, partyId: party, sourceDistrictId: source.id as DistrictId, destinationDistrictId: destination.id as DistrictId})),
+      ...swaps.map(rival => ({type: "move" as const, partyId: rival, sourceDistrictId: destination.id as DistrictId, destinationDistrictId: source.id as DistrictId})));
+    return { applied: true, failure: null, wasAbsent, sourceDistrictId: source.id, destinationDistrictId: destination.id };
   }
-
   if (choice.operation === "rally") {
-    const district = state.districts[choice.districtId];
-    if (
-      district === undefined ||
-      !hasFreeSpot(district) ||
-      (!wasAbsent && (district.support[party] ?? 0) === 0)
-    ) {
-      return failed(
-        wasAbsent,
-        wasAbsent
-          ? "Rally requires any free district"
-          : "Rally requires a free spot where the party is present"
-      );
-    }
-    addSupport(district, party, supportChanges);
-    return {
-      applied: true,
-      failure: null,
-      wasAbsent,
-      destinationDistrictId: district.id
-    };
+    const destination = state.districts[choice.districtId];
+    const source = state.districts[choice.sourceDistrictId ?? choice.districtId];
+    if (!destination || !hasFreeSpot(destination)) return failed(wasAbsent, "Rally requires a free spot");
+    const allowed = wasAbsent || (source && (source.support[party] ?? 0) > 0 && (
+      source.id === destination.id || (law(1) && source.neighbors.includes(destination.id))
+      || (law(22) && region(source.id) === region(destination.id) && (destination.support[party] ?? 0) === 0)));
+    if (!allowed) return failed(wasAbsent, "Choose a valid Rally source and destination");
+    addSupport(destination, party, supportChanges);
+    return { applied: true, failure: null, wasAbsent, destinationDistrictId: destination.id };
   }
-
-  if (choice.operation === "smear") {
-    const district = state.districts[choice.districtId];
-    if (
-      district === undefined ||
-      choice.rivalParty === party ||
-      (district.support[choice.rivalParty] ?? 0) < 1
-    ) {
-      return failed(wasAbsent, "Smear requires rival Support");
-    }
-    const inRange =
-      wasAbsent ||
-      (district.support[party] ?? 0) > 0 ||
-      district.neighbors.some(
-        (neighborId) =>
-          (state.districts[neighborId]?.support[party] ?? 0) > 0
-      );
-    if (!inRange) {
-      return failed(wasAbsent, "Smear target is outside the party's range");
-    }
-    removeSupport(district, choice.rivalParty, supportChanges);
-    return {
-      applied: true,
-      failure: null,
-      wasAbsent,
-      affectedDistrictId: district.id,
-      rivalParty: choice.rivalParty
-    };
-  }
-
-  if (choice.targetParty === party) {
-    return failed(wasAbsent, "Court must choose another party");
-  }
-  resolveCourt(state, party, choice.targetParty);
-  return {
-    applied: true,
-    failure: null,
-    wasAbsent
-  };
+  const district = state.districts[choice.districtId];
+  if (!district || choice.rivalParty === party || (district.support[choice.rivalParty] ?? 0) < 1) return failed(wasAbsent, "Smear requires rival Support");
+  const reachable = new Set([district.id, ...district.neighbors]);
+  if (law(11)) for (const neighbor of district.neighbors) for (const id of state.districts[neighbor]?.neighbors ?? []) reachable.add(id);
+  if (!wasAbsent && !(law(35) && !hasFreeSpot(district)) && ![...reachable].some(id => (state.districts[id]?.support[party] ?? 0) > 0)) return failed(wasAbsent, "Smear target is outside range");
+  if (choice.displacementDistrictId !== undefined) {
+    const destination = state.districts[choice.displacementDistrictId];
+    if (!law(14) || !destination || !district.neighbors.includes(destination.id) || !hasFreeSpot(destination)) return failed(wasAbsent, "Displacement requires a free neighboring district");
+    moveSupport(district, destination, choice.rivalParty, supportChanges);
+  } else removeSupport(district, choice.rivalParty, supportChanges);
+  return { applied: true, failure: null, wasAbsent, affectedDistrictId: district.id, rivalParty: choice.rivalParty };
 }
 
 function applyBonus(
@@ -385,24 +274,11 @@ function applyBonus(
       supportChanges
     );
   }
-  if (bonusCardId === "honeycomb-common-cause" && choice.operation === "court") {
-    const destination = state.districts[choice.bonusDistrictId ?? ""];
-    if (destination === undefined || (destination.support[choice.targetParty] ?? 0) < 1) {
-      return bonusFailed("Common Cause requires a district containing selected-party Support");
-    }
-    return addBonusSupport(state, destination.id, party, null, supportChanges);
-  }
-
   if (bonusCardId === "old-shell-dig-in") {
-    return baseline.wasAbsent
-      ? bonusFailed("Dig In requires a movement Organise")
-      : addBonusSupport(
-          state,
-          baseline.sourceDistrictId,
-          party,
-          "Dig In requires a free source spot",
-          supportChanges
-        );
+    if (baseline.wasAbsent) return bonusFailed("Dig In requires a movement Organise");
+    const source = state.districts[baseline.sourceDistrictId!]!;
+    if (hasFreeSpot(source)) addSupport(source, party, supportChanges);
+    return bonusApplied();
   }
   if (bonusCardId === "old-shell-stonewall") {
     return removeBonusSupport(
@@ -420,22 +296,6 @@ function applyBonus(
       null,
       supportChanges
     );
-  }
-  if (bonusCardId === "foxglove-whisper-network" && choice.operation === "court") {
-    const sourceParty = choice.bonusCourtSourceParty;
-    if (
-      sourceParty === undefined ||
-      sourceParty === party ||
-      sourceParty === choice.targetParty ||
-      (state.courtSupport[party][sourceParty] ?? 0) < 1
-    ) {
-      return bonusFailed(
-        "Whisper Network requires acting-party Court Support on a different Court space"
-      );
-    }
-    removeCourtSupport(state, party, sourceParty);
-    placeCourtSupport(state, party, choice.targetParty);
-    return bonusApplied();
   }
   if (bonusCardId === "riverworks-canal-network") {
     return baseline.wasAbsent
@@ -480,20 +340,6 @@ function applyBonus(
     }
     return bonusApplied();
   }
-  if (bonusCardId === "many-wings-joint-campaign" && choice.operation === "court") {
-    const district = state.districts[choice.bonusDistrictId ?? ""];
-    if (
-      district === undefined ||
-      !hasFreeSpot(district) ||
-      (district.support[party] ?? 0) < 1
-    ) {
-      return bonusFailed(
-        "Joint Campaign requires a free district containing acting-party Support"
-      );
-    }
-    addSupport(district, choice.targetParty, supportChanges);
-    return bonusApplied();
-  }
   if (
     bonusCardId === "night-parliament-quiet-hours" &&
     choice.operation === "rally"
@@ -506,19 +352,11 @@ function applyBonus(
     return bonusApplied();
   }
   if (bonusCardId === "night-parliament-midnight-leak" && choice.operation === "smear") {
-    const rivalParty = baseline.rivalParty;
-    const courtParty = choice.bonusCourtParty;
-    if (
-      rivalParty === undefined ||
-      courtParty === undefined ||
-      (state.courtSupport[rivalParty][courtParty] ?? 0) < 1
-    ) {
-      return bonusFailed(
-        "Midnight Leak requires rival Court Support on the selected Court space"
-      );
-    }
-    removeCourtSupport(state, rivalParty, courtParty);
-    updateCoalitionTarget(state, rivalParty);
+    const source = state.districts[baseline.affectedDistrictId!];
+    const eligible = source!.neighbors.filter(id => (state.districts[id]?.support[choice.rivalParty] ?? 0) > 0);
+    if (eligible.length === 0) return bonusApplied();
+    if (!eligible.includes(choice.bonusDistrictId ?? "")) return bonusFailed("Choose neighboring Support of the same rival for Midnight Leak");
+    removeSupport(state.districts[choice.bonusDistrictId!]!, choice.rivalParty, supportChanges);
     return bonusApplied();
   }
   return bonusFailed("The Bonus card does not match this action");
@@ -630,54 +468,8 @@ function cloneState(state: OperationState): OperationState {
         }
       ])
     ),
-    courtSupport: Object.fromEntries(
-      PARTIES.map((party) => [party, { ...state.courtSupport[party] }])
-    ) as OperationState["courtSupport"],
-    coalitionTargets: { ...state.coalitionTargets },
+    laws: [...state.laws]
   };
-}
-
-export function resolveCourt(state: Pick<OperationState, "courtSupport" | "coalitionTargets">, party: Party, targetParty: Party): void {
-  if (party === targetParty) throw new Error("Court must choose another party");
-  placeCourtSupport(state, party, targetParty);
-  placeCourtSupport(state, targetParty, party);
-}
-
-function placeCourtSupport(
-  state: Pick<OperationState, "courtSupport" | "coalitionTargets">,
-  party: Party,
-  targetParty: Party
-): void {
-  const support = state.courtSupport[party];
-  support[targetParty] = (support[targetParty] ?? 0) + 1;
-  updateCoalitionTarget(state, party);
-}
-
-function removeCourtSupport(
-  state: OperationState,
-  party: Party,
-  targetParty: Party
-): void {
-  const support = state.courtSupport[party];
-  const next = (support[targetParty] ?? 0) - 1;
-  if (next <= 0) {
-    delete support[targetParty];
-  } else {
-    support[targetParty] = next;
-  }
-}
-
-function updateCoalitionTarget(state: Pick<OperationState, "courtSupport" | "coalitionTargets">, party: Party): void {
-  const support = state.courtSupport[party];
-  const ranked = PARTIES.filter((candidate) => candidate !== party)
-    .map((candidate) => ({
-      party: candidate,
-      support: support[candidate] ?? 0
-    }))
-    .sort((left, right) => right.support - left.support);
-  if (ranked[0]!.support > ranked[1]!.support) {
-    state.coalitionTargets[party] = ranked[0]!.party;
-  }
 }
 
 function hasFreeSpot(district: DistrictState): boolean {

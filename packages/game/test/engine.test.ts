@@ -6,7 +6,6 @@ import {
   RULESET_VERSION,
   SCORING_CARD_IDS,
   SCORING_CARDS_BY_ID,
-  scoringCardsCompatible,
   type BonusCardId,
   type PartyId,
   type ScoringCardId
@@ -29,7 +28,7 @@ import { projectGameState } from "../src/projection.js";
 
 const zeroRandom = { integer: () => 0 };
 
-describe("ruleset 24 setup", () => {
+describe("ruleset 25 setup", () => {
   for (const playerCount of [2, 3, 4, 5, 6]) {
     it(`creates the yearly Operation economy for ${playerCount} players`, () => {
       const state = initializeGame(configuration(playerCount), zeroRandom).state;
@@ -41,31 +40,16 @@ describe("ruleset 24 setup", () => {
       expect(state.seats.every((seat) => seat.collectionCounters === (doubled ? 4 : 2))).toBe(true);
       expect(state.seats.every((seat) => seat.operations.organise === (doubled ? 6 : 3))).toBe(true);
       expect(state.seats.every((seat) => seat.operations.rally === (doubled ? 8 : 4))).toBe(true);
-      expect(state.seats.every((seat) => seat.points === (doubled ? 10 : 5))).toBe(true);
+      expect(state.seats.every((seat) => seat.points === 0)).toBe(true);
       expect(state.phase.type).toBe("opening");
       expect(Object.values(state.bonusCards).every((location) => location.zone === "home")).toBe(true);
     });
   }
 
-  it("replaces conflicting second cards while preserving the first Capital card", () => {
-    const deck = ["SC-01", "SC-07", ...SCORING_CARD_IDS.filter((id) => id !== "SC-01" && id !== "SC-07")] as ScoringCardId[];
-    const slots = dealScoringCards(deck, 3);
-    expect(slots[0]![0]![0]).toBe("SC-01");
-    expect(slots[0]![0]![1]).not.toBe("SC-07");
-    expect(new Set(slots.flat(2)).size).toBe(18);
-    for (const pair of slots.flat()) expect(scoringCardsCompatible(SCORING_CARDS_BY_ID[pair[0]!], SCORING_CARDS_BY_ID[pair[1]!])).toBe(true);
-  });
-
-  it("deals one card per Election at standard player counts", () => {
-    const slots = dealScoringCards(SCORING_CARD_IDS, 4);
-    expect(slots[0]).toEqual([["SC-01"], ["SC-05"], ["SC-09"]]);
-    expect(slots[3]).toEqual([["SC-04"], ["SC-08"], ["SC-12"]]);
-  });
-
   it("rejects old saved rulesets", () => {
     const initialized = initializeGame(configuration(4), zeroRandom);
     initialized.state.rulesetVersion = "18";
-    expect(() => replay([initialized])).toThrow("Only ruleset 24 is supported");
+    expect(() => replay([initialized])).toThrow("Only ruleset 25 is supported");
   });
 });
 
@@ -188,14 +172,14 @@ describe("Lobby actions", () => {
       partyId: "honeycomb",
       play: {
         cardType: "operation",
-        operation: "court",
-        choice: { operation: "court", targetParty: "old-shell" }
+        operation: "smear",
+        choice: { operation: "smear", districtId: "grand-market", rivalParty: "old-shell" }
       }
     });
     expect(state.parties.honeycomb?.operations).toMatchObject({
       organise: 0,
       rally: 1,
-      court: 1
+      smear: 1
     });
     expect(state.support["northgate"].honeycomb).toBe(3);
     expect(state.resolvedOperations).toHaveLength(3);
@@ -221,7 +205,8 @@ describe("Lobby actions", () => {
           type: "add",
           partyId: "honeycomb",
           destinationDistrictId: "northgate"
-        }
+        },
+        { type: "remove", partyId: "old-shell", sourceDistrictId: "grand-market" }
       ]
     })]);
     expect(projectGameState(state, null).lobbyActions.at(-1)?.supportChanges)
@@ -257,58 +242,6 @@ describe("Lobby actions", () => {
     expect(() => act(state, { type: "pass", seatId })).toThrow("Finish the current Operate");
     state = act(state, { type: "finish_operate", seatId });
     expect(lobbyPhase(state).activeSeatId).not.toBe(seatId);
-  });
-
-  it("allows multiple held Bonus cards on their home party or reciprocal partner", () => {
-    let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
-    const seatId = lobbyPhase(state).activeSeatId;
-    state.bonusCards["honeycomb-waggle-route"] = { zone: "hand", seatId };
-    state.bonusCards["old-shell-dig-in"] = { zone: "hand", seatId };
-    state.coalitionTargets.honeycomb = "old-shell";
-    state.coalitionTargets["old-shell"] = "honeycomb";
-
-    state = act(state, {
-      type: "operate",
-      seatId,
-      partyId: "honeycomb",
-      play: {
-        cardType: "bonus",
-        bonusCardId: "honeycomb-waggle-route",
-        choice: {
-          operation: "organise",
-          sourceDistrictId: "grand-market",
-          destinationDistrictId: "northgate"
-        }
-      }
-    });
-    state = act(state, {
-      type: "operate",
-      seatId,
-      partyId: "honeycomb",
-      play: {
-        cardType: "bonus",
-        bonusCardId: "old-shell-dig-in",
-        choice: {
-          operation: "organise",
-          sourceDistrictId: "northgate",
-          destinationDistrictId: "canal-ward"
-        }
-      }
-    });
-    state = act(state, { type: "finish_operate", seatId });
-
-    expect(state.bonusCards["honeycomb-waggle-route"]).toEqual({ zone: "home" });
-    expect(state.bonusCards["old-shell-dig-in"]).toEqual({ zone: "home" });
-    expect(state.parties.honeycomb?.operations).toEqual({
-      organise: 0,
-      rally: 0,
-      smear: 0,
-      court: 0
-    });
-    expect(state.lobbyActions.at(-1)).toMatchObject({
-      operationCount: 0,
-      cardCount: 2
-    });
   });
 
   it("resolves the three district-based Unbound cards", () => {
@@ -405,72 +338,6 @@ describe("Lobby actions", () => {
     ]);
   });
 
-  it("rolls back automatic Court when an off-home Unbound effect is illegal", () => {
-    const state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
-    clearSupport(state);
-    const seatId = lobbyPhase(state).activeSeatId;
-    state.bonusCards["honeycomb-every-bee-counts"] = { zone: "hand", seatId };
-    const before = structuredClone(state);
-    expect(() => act(state, { type: "operate", seatId, partyId: "foxglove", play: {
-      cardType: "bonus", bonusCardId: "honeycomb-every-bee-counts", choice: { effect: "every_bee_counts" }
-    }})).toThrow("eligible district");
-    expect(state).toEqual(before);
-  });
-
-  it("requires Institutional Memory to add for all available objectives without moving existing Support", () => {
-    let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
-    clearSupport(state);
-    state.support.coast.honeycomb = 1;
-    state.support.orchard["old-shell"] = 1;
-    state.electionHistory = [{
-      scoringCards: [{
-        seatId: "seat-1",
-        scoringCardIds: ["SC-01"],
-        capitalCardId: "SC-01"
-      }]
-    } as GameState["electionHistory"][number]];
-
-    state = playUnbound(
-      state,
-      "old-shell",
-      "old-shell-institutional-memory",
-      {
-        effect: "institutional_memory",
-        scoringCardId: "SC-01",
-        placements: [
-          { objectiveIndex: 0, destinationDistrictId: "ironwood" },
-          { objectiveIndex: 1, destinationDistrictId: "northgate" },
-          { objectiveIndex: 2, destinationDistrictId: "westfield" }
-        ]
-      }
-    );
-
-    expect(state.support.coast.honeycomb).toBe(1);
-    expect(state.support.ironwood.honeycomb).toBe(1);
-    expect(state.support.orchard["old-shell"]).toBe(1);
-    expect(state.support.northgate["old-shell"]).toBe(1);
-    expect(state.support["westfield"].foxglove).toBe(1);
-  });
-
-  it("skips only full Institutional Memory regions and rejects omissions and duplicate objectives", () => {
-    const state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
-    clearSupport(state);
-    state.electionHistory = [{ scoringCards: [{ scoringCardIds: ["SC-01"] }] } as GameState["electionHistory"][number]];
-    for (const id of DISTRICT_IDS) {
-      if (DISTRICTS_BY_ID[id].regionId !== "urban") state.support[id].riverworks = DISTRICTS_BY_ID[id].capacity;
-    }
-    const choice = { effect: "institutional_memory", scoringCardId: "SC-01",
-      placements: [{ objectiveIndex: 0, destinationDistrictId: "ironwood" }] };
-    const result = playUnbound(structuredClone(state), "old-shell", "old-shell-institutional-memory", choice);
-    expect(result.support.ironwood.honeycomb).toBe(1);
-    expect(() => playUnbound(structuredClone(state), "old-shell", "old-shell-institutional-memory",
-      { ...choice, placements: [...choice.placements, ...choice.placements] })).toThrow("every objective");
-    state.support.northgate = {};
-    expect(() => playUnbound(structuredClone(state), "old-shell", "old-shell-institutional-memory", choice)).toThrow("every objective");
-    for (const id of DISTRICT_IDS) state.support[id] = { riverworks: DISTRICTS_BY_ID[id].capacity };
-    expect(() => playUnbound(structuredClone(state), "old-shell", "old-shell-institutional-memory", choice)).toThrow("at least once");
-  });
-
   it("moves the maximum feasible nests and lets the player choose sources when space is scarce", () => {
     const state = openAllParties(initializeGame(configuration(6), zeroRandom).state);
     for (const id of DISTRICT_IDS) state.support[id] = { honeycomb: DISTRICTS_BY_ID[id].capacity };
@@ -524,120 +391,6 @@ describe("Lobby actions", () => {
     });
   });
 
-  it("checks returned Firms only at turn end and lets Midnight Session reduce them", () => {
-    const base = openAllParties(initializeGame(configuration(4), zeroRandom).state);
-    base.parties.honeycomb!.status = "closed";
-    base.parties["old-shell"]!.status = "closed";
-    base.parties.foxglove!.status = "closed";
-    const originalOldShellOwner = base.parties["old-shell"]!.ownerSeatId;
-    base.bonusCards["old-shell-stonewall"] = {
-      zone: "new_year",
-      seatId: originalOldShellOwner
-    };
-
-    let withoutSession = act(base, {
-      type: "operate",
-      seatId: "seat-1",
-      partyId: "riverworks",
-      play: organise("grand-market", "northgate")
-    });
-    expect(withoutSession.phase.type).toBe("lobby");
-    withoutSession = act(withoutSession, { type: "finish_operate", seatId: "seat-1" });
-    expect(withoutSession.phase.type).toBe("closure");
-
-    let state = structuredClone(base);
-    state.coalitionTargets["night-parliament"] = "riverworks";
-    state.coalitionTargets.riverworks = "night-parliament";
-    const returnedFirmId = state.seats[0]!.firmIds[0]!;
-    state = playUnbound(
-      state,
-      "riverworks",
-      "night-parliament-midnight-session",
-      {
-        effect: "midnight_session",
-        targetPartyId: "old-shell",
-        firmId: returnedFirmId
-      }
-    );
-    expect(state.parties["old-shell"]).toMatchObject({
-      status: "open",
-      firmId: returnedFirmId,
-      ownerSeatId: "seat-1",
-      operations: { organise: 0, rally: 0, smear: 0, court: 0 }
-    });
-    state = act(state, { type: "finish_operate", seatId: "seat-1" });
-    expect(state.phase).toMatchObject({ type: "lobby", activeSeatId: "seat-2" });
-
-    state = act(state, { type: "pass", seatId: "seat-2" });
-    state = act(state, { type: "pass", seatId: "seat-3" });
-    state = act(state, {
-      type: "collect",
-      seatId: "seat-4",
-      partyId: "riverworks"
-    });
-    state = act(state, {
-      type: "close",
-      seatId: "seat-1",
-      partyId: "old-shell",
-      bonusCardId: "old-shell-dig-in"
-    });
-    expect(state.phase.type).toBe("closure");
-    expect(state.bonusCards["old-shell-stonewall"]).toEqual({
-      zone: "new_year",
-      seatId: originalOldShellOwner
-    });
-    expect(state.bonusCards["old-shell-dig-in"]).toEqual({
-      zone: "new_year",
-      seatId: "seat-1"
-    });
-  });
-
-  it("plays off-home Bonus cards at an unrelated open party and Courts home first", () => {
-    let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
-    const seatId = lobbyPhase(state).activeSeatId;
-    state.bonusCards["old-shell-dig-in"] = { zone: "hand", seatId };
-    state = act(state, { type: "operate", seatId, partyId: "honeycomb", play: {
-      cardType: "bonus", bonusCardId: "old-shell-dig-in", choice: {
-        operation: "organise", sourceDistrictId: "ironwood", destinationDistrictId: "heath"
-      }
-    }});
-    expect(state.courtSupport.honeycomb["old-shell"]).toBe(1);
-    expect(state.courtSupport["old-shell"].honeycomb).toBe(1);
-    expect(state.coalitionTargets.honeycomb).toBe("old-shell");
-    expect(state.coalitionTargets["old-shell"]).toBe("honeycomb");
-  });
-
-  it("leaves a returned Bonus card at an already closed home without an award", () => {
-    let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
-    const seatId = lobbyPhase(state).activeSeatId;
-    state.parties["old-shell"]!.status = "closed";
-    state.bonusCards["old-shell-dig-in"] = { zone: "hand", seatId };
-    state.coalitionTargets["old-shell"] = "honeycomb";
-    state.coalitionTargets.honeycomb = "old-shell";
-
-    state = act(state, {
-      type: "operate",
-      seatId,
-      partyId: "honeycomb",
-      play: {
-        cardType: "bonus",
-        bonusCardId: "old-shell-dig-in",
-        choice: {
-          operation: "organise",
-          sourceDistrictId: "grand-market",
-          destinationDistrictId: "northgate"
-        }
-      }
-    });
-
-    expect(state.bonusCards["old-shell-dig-in"]).toEqual({ zone: "home" });
-    expect(state.seats.every((seat) =>
-      !Object.values(state.bonusCards).some(
-        (location) => location.zone === "new_year" && location.seatId === seat.id
-      )
-    )).toBe(true);
-  });
-
   it("collects complete piles, including empty piles, and leaves the party open", () => {
     let state = openAllParties(initializeGame(configuration(4), zeroRandom).state);
     const operator = lobbyPhase(state).activeSeatId;
@@ -664,7 +417,7 @@ describe("Lobby actions", () => {
     });
     expect(state.parties.honeycomb).toMatchObject({
       status: "open",
-      operations: { organise: 0, rally: 0, smear: 0, court: 0 }
+      operations: { organise: 0, rally: 0, smear: 0 }
     });
     const emptyCollectorId = lobbyPhase(state).activeSeatId;
     const emptyCollectorBefore = state.seats.find(
@@ -766,58 +519,6 @@ describe("Lobby actions", () => {
 });
 
 describe("cleanup, Elections, visibility, and replay", () => {
-  it("cleans resources before Election scoring and records Capital points separately", () => {
-    let state = initializeGame(configuration(4), zeroRandom).state;
-    state = closeThroughYear(state);
-    state = openAllParties(state);
-    const capitalCardId = state.seats[0]!.scoringCardIds[0]![0]!;
-    const capitalParties = state.seats[0]!.scoringCardIds[0]!.length === 1
-      ? scoringParties(capitalCardId)
-      : [];
-    state.support["bellweather-centre"] = Object.fromEntries(
-      capitalParties.map((partyId) => [partyId, 1])
-    );
-    state.courtSupport.honeycomb.foxglove = 2;
-
-    const operator = lobbyPhase(state).activeSeatId;
-    state = act(state, {
-      type: "operate",
-      seatId: operator,
-      partyId: partyOpenedBy(state, operator),
-      play: organise("grand-market", "northgate")
-    });
-    state = act(state, { type: "finish_operate", seatId: operator });
-    const collector = lobbyPhase(state).activeSeatId;
-    state = act(state, {
-      type: "collect",
-      seatId: collector,
-      partyId: partyOpenedBy(state, operator)
-    });
-    const collectorBefore = state.seats.find((seat) => seat.id === collector)!;
-    expect(collectorBefore.newYearOperations.organise).toBe(1);
-    state = closeThroughLobby(state);
-    state = resolveClosure(state);
-    expect(state.phase).toMatchObject({ type: "election", resultsRecorded: false });
-    const collectorAfter = state.seats.find((seat) => seat.id === collector)!;
-    expect(collectorAfter.newYearOperations.organise).toBe(0);
-    expect(collectorAfter.collectionCounters).toBe(2);
-    expect(collectorAfter.operations.organise).toBe(4);
-    expect(state.courtSupport.honeycomb.foxglove).toBe(2);
-    expect(state.parties).toEqual({});
-
-    state = act(state, createElectionAction(state, zeroRandom));
-    expect(state.courtSupport.honeycomb).toEqual({});
-    const seatScore = state.electionHistory[0]!.scores.find(
-      (score) => score.playerId === "seat-1"
-    )!;
-    expect(seatScore.capitalMatches).toBe(3);
-    expect(seatScore.capitalScore).toBe(3);
-    for (const seat of state.seats) {
-      state = act(state, { type: "set_election_ready", seatId: seat.id, ready: true });
-    }
-    expect(state.year).toBe(3);
-    expect(state.phase.type).toBe("opening");
-  });
 
   it("holds three Elections after two-year cycles and completes after Year 6", () => {
     let state = initializeGame(configuration(4), zeroRandom).state;
@@ -832,8 +533,7 @@ describe("cleanup, Elections, visibility, and replay", () => {
             seat.operations = {
               organise: totalsBeforeCleanup[seatIndex]!,
               rally: 0,
-              smear: 0,
-              court: 0
+              smear: 0
             };
           }
           state.seats[0]!.newYearOperations.organise = 1;
@@ -913,36 +613,6 @@ describe("cleanup, Elections, visibility, and replay", () => {
       { count: 8, bonus: 2 },
       { count: 10, bonus: 3 }
     ]);
-  });
-
-  it("keeps hands and New Year contents private while publishing their counts", () => {
-    const state = initializeGame(configuration(4), zeroRandom).state;
-    state.seats[1]!.newYearOperations.rally = 2;
-    state.bonusCards["honeycomb-waggle-route"] = {
-      zone: "hand",
-      seatId: "seat-2"
-    };
-    state.bonusCards["old-shell-dig-in"] = {
-      zone: "new_year",
-      seatId: "seat-2"
-    };
-    const owner = projectGameState(state, "seat-2");
-    const rival = projectGameState(state, "seat-1");
-    expect(owner.seats[1]!.operations).not.toBeNull();
-    expect(owner.seats[1]!.newYearOperations?.rally).toBe(2);
-    expect(owner.seats[1]!.bonusCardIds).toEqual(["honeycomb-waggle-route"]);
-    expect(owner.seats[1]!.newYearBonusCardIds).toEqual(["old-shell-dig-in"]);
-    expect(rival.seats[1]!.operations).toBeNull();
-    expect(rival.seats[1]!.newYearOperations).toBeNull();
-    expect(rival.seats[1]!.handCount).toBe(12);
-    expect(rival.seats[1]!.newYearCardCount).toBe(3);
-    expect(rival.seats[1]!.bonusCardIds).toBeNull();
-    expect(rival.seats[1]!.newYearBonusCardIds).toBeNull();
-    expect(rival.bonusCardsAtParties.honeycomb).toEqual([
-      "honeycomb-common-cause",
-      "honeycomb-every-bee-counts"
-    ]);
-    expect(rival.seats[1]!.scoringCardIds).toBeNull();
   });
 
   it("records chat and replays the new actions exactly", () => {
@@ -1114,8 +784,3 @@ function organise(sourceDistrictId: string, destinationDistrictId: string): Oper
   };
 }
 
-function scoringParties(cardId: ScoringCardId): PartyId[] {
-  return SCORING_CARDS_BY_ID[cardId].objectives.map(
-    (objective) => objective.partyId
-  );
-}

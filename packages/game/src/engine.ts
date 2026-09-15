@@ -1,3 +1,4 @@
+import { OperationChoiceSchema } from "@bellweather/protocol";
 import {
   BONUS_CARD_IDS,
   BONUS_CARDS_BY_ID,
@@ -12,7 +13,7 @@ import {
   PARTY_IDS,
   RULESET_VERSION,
   SCORING_CARD_IDS,
-  scoringCardsCompatible,
+  POLICY_IDS, REGION_IDS, activeLawEffects,
   SCORING_CARDS_BY_ID,
   STANDARD_PLAYER_SETUP,
   type BonusCardId,
@@ -25,7 +26,6 @@ import {
 import {
   retainElectionSupport,
   scoreElectionDay,
-  toElectionScoringCard,
   type ElectionPlayer
 } from "./election.js";
 import type {
@@ -40,7 +40,6 @@ import type {
   OperationPlayInput,
   PartyYearState,
   RandomSource,
-  ScoringCardSlots,
   SeatId,
   SeatState,
   SupportChange
@@ -48,7 +47,6 @@ import type {
 import { GameRuleError } from "./model.js";
 import {
   resolveOperation,
-  resolveCourt,
   type OperationChoice,
   type OperationState
 } from "./operations.js";
@@ -79,7 +77,7 @@ export function initializeGame(
     collectionCounters: setup.collectionCounters,
     collectionCounterLimit: setup.collectionCounters,
     points: setup.points,
-    scoringCardIds: scoringCards[position]!
+    scoringCardId: scoringCards[position]!
   }));
 
   const support = Object.fromEntries(
@@ -90,12 +88,6 @@ export function initializeGame(
       support[districtId][partyId] = 1;
     }
   }
-  const courtSupport = Object.fromEntries(
-    PARTY_IDS.map((partyId) => [partyId, {}])
-  ) as GameState["courtSupport"];
-  const coalitionTargets = Object.fromEntries(
-    PARTY_IDS.map((partyId) => [partyId, null])
-  ) as GameState["coalitionTargets"];
   const earlyBirdSeatId = seats[earlyBirdIndex]!.id;
   const state: GameState = {
     rulesetVersion: RULESET_VERSION,
@@ -105,8 +97,10 @@ export function initializeGame(
     seats,
     parties: {},
     support,
-    courtSupport,
-    coalitionTargets,
+    policyDeck: shuffle([...POLICY_IDS], random),
+    pendingPolicies: {},
+    enactedPolicyIds: [],
+    discardedPolicyIds: [],
     bonusCards: Object.fromEntries(
       BONUS_CARD_IDS.map((cardId) => [cardId, { zone: "home" }])
     ) as GameState["bonusCards"],
@@ -118,6 +112,7 @@ export function initializeGame(
     phase: openingPhase(seats, earlyBirdSeatId),
     nextEntitySequence: 1
   };
+  dealPolicies(state);
   return { type: "game_initialized", state };
 }
 
@@ -172,7 +167,9 @@ export function createElectionAction(
   const randomValues: number[] = [];
   scoreElectionDay({
     state: toOperationState(state),
-    players: electionPlayers(state, phase.electionNumber),
+    players: electionPlayers(state),
+    pendingPolicies: state.pendingPolicies,
+    enactedPolicyIds: state.enactedPolicyIds,
     random: () => {
       const value = random.integer(1_000_000);
       validateRandomInteger(value, 1_000_000);
@@ -300,7 +297,6 @@ function operate(
     ? requirePlayableBonusCard(state, seatId, play.bonusCardId)
     : null;
   if (play.cardType === "bonus" && bonusCard?.operation === null) {
-    if (partyId !== bonusCard.homePartyId) resolveCourt(state, partyId, bonusCard.homePartyId);
     const resolution = resolveUnboundBonus(
       state,
       seatId,
@@ -695,7 +691,9 @@ function completeElection(state: GameState, randomValues: number[]): void {
   let randomIndex = 0;
   const result = scoreElectionDay({
     state: toOperationState(state),
-    players: electionPlayers(state, phase.electionNumber),
+    players: electionPlayers(state),
+    pendingPolicies: state.pendingPolicies,
+    enactedPolicyIds: state.enactedPolicyIds,
     random: () => {
       const value = randomValues[randomIndex];
       randomIndex += 1;
@@ -716,22 +714,19 @@ function completeElection(state: GameState, randomValues: number[]): void {
   for (const score of result.scores) {
     getSeat(state, score.playerId).points = score.resultingPoints;
   }
-  state.courtSupport = Object.fromEntries(
-    PARTY_IDS.map((partyId) => [partyId, {}])
-  ) as GameState["courtSupport"];
   state.electionNumber = phase.electionNumber;
-  const scoringCards = state.seats.map((seat) => {
-    const scoringCardIds = [...seat.scoringCardIds[phase.electionNumber - 1]!];
-    return {
-      seatId: seat.id,
-      scoringCardIds,
-      capitalCardId: scoringCardIds[0]!
-    };
-  });
+  for (const vote of result.policyVotes) {
+    (vote.passed ? state.enactedPolicyIds : state.discardedPolicyIds).push(vote.policyId);
+  }
+  const scoringCards = phase.afterYear === FINAL_ELECTION_YEAR
+    ? state.seats.map(seat => ({ seatId: seat.id, scoringCardId: seat.scoringCardId })) : [];
+  state.pendingPolicies = {};
+  if (phase.afterYear !== FINAL_ELECTION_YEAR) dealPolicies(state);
   state.electionHistory.push({
     electionNumber: phase.electionNumber,
     afterYear: phase.afterYear,
     scoringCards,
+    policyVotes: result.policyVotes,
     draws: result.draws as GameState["electionHistory"][number]["draws"],
     scores: result.scores,
     winnerSeatIds: result.winnerIds
@@ -900,38 +895,9 @@ function requirePlayableBonusCard(
 }
 
 function operationChoice(value: unknown): OperationChoice {
-  if (typeof value !== "object" || value === null || !("operation" in value)) {
-    throw new GameRuleError("invalid_operation_choice", "An Operation choice is required");
-  }
-  const choice = value as Record<string, unknown>;
-  const operation = choice.operation;
-  if (!(OPERATION_IDS as readonly unknown[]).includes(operation)) {
-    throw new GameRuleError("invalid_operation_choice", "The Operation choice has an unknown family");
-  }
-  if (operation === "organise") {
-    requireDistrictId(choice.destinationDistrictId, "destinationDistrictId");
-    optionalDistrictId(choice.sourceDistrictId, "sourceDistrictId");
-  } else if (operation === "rally") {
-    requireDistrictId(choice.districtId, "districtId");
-    optionalDistrictId(choice.bonusDistrictId, "bonusDistrictId");
-    if (choice.bonusDistrictIds !== undefined) {
-      if (!Array.isArray(choice.bonusDistrictIds)) {
-        throw new GameRuleError("invalid_operation_choice", "bonusDistrictIds must be an array");
-      }
-      for (const districtId of choice.bonusDistrictIds) {
-        requireDistrictId(districtId, "bonusDistrictIds");
-      }
-    }
-  } else if (operation === "smear") {
-    requireDistrictId(choice.districtId, "districtId");
-    requirePartyId(choice.rivalParty, "rivalParty");
-    optionalPartyId(choice.bonusCourtParty, "bonusCourtParty");
-  } else {
-    requirePartyId(choice.targetParty, "targetParty");
-    optionalDistrictId(choice.bonusDistrictId, "bonusDistrictId");
-    optionalPartyId(choice.bonusCourtSourceParty, "bonusCourtSourceParty");
-  }
-  return choice as unknown as OperationChoice;
+  const parsed = OperationChoiceSchema.safeParse(value);
+  if (!parsed.success) throw new GameRuleError("invalid_operation_choice", parsed.error.issues[0]?.message ?? "Invalid Operation choice");
+  return parsed.data;
 }
 
 function requireDistrictId(value: unknown, field: string): asserts value is string {
@@ -958,28 +924,23 @@ function optionalPartyId(value: unknown, field: string): void {
   }
 }
 
-function electionPlayers(
-  state: GameState,
-  electionNumber: 1 | 2 | 3
-): ElectionPlayer[] {
-  return state.seats.map((seat) => {
-    const cards = seat.scoringCardIds[electionNumber - 1]!.map((cardId) =>
-      toElectionScoringCard(SCORING_CARDS_BY_ID[cardId])
-    );
-    return {
-      id: seat.id,
-      position: seat.position,
-      points: seat.points,
-      cards,
-      capitalCard: cards[0]!,
-      finalCardCount:
-        operationCount(seat.operations) +
-        BONUS_CARD_IDS.filter((cardId) => {
-          const location = state.bonusCards[cardId];
-          return location.zone === "hand" && location.seatId === seat.id;
-        }).length
-    };
-  });
+function electionPlayers(state: GameState): ElectionPlayer[] {
+  return state.seats.map(seat => ({
+    id: seat.id, position: seat.position, points: seat.points,
+    card: SCORING_CARDS_BY_ID[seat.scoringCardId],
+    finalCardCount: operationCount(seat.operations) + BONUS_CARD_IDS.filter(id => {
+      const location = state.bonusCards[id];
+      return location.zone === "hand" && location.seatId === seat.id;
+    }).length
+  }));
+}
+
+function dealPolicies(state: GameState): void {
+  for (const regionId of REGION_IDS) {
+    const policyId = state.policyDeck.shift();
+    if (policyId === undefined) throw new GameRuleError("empty_policy_deck", "The policy deck is empty");
+    state.pendingPolicies[regionId] = policyId;
+  }
 }
 
 export function openingTurnSeatIds(
@@ -1023,50 +984,11 @@ function lobbyPhase(
   };
 }
 
-export function dealScoringCards(
-  deck: readonly ScoringCardId[],
-  playerCount: number
-): ScoringCardSlots[] {
-  if (!Number.isInteger(playerCount) || playerCount < 2 || playerCount > 6) {
-    throw new GameRuleError("invalid_player_count", "Scoring cards require two to six players");
-  }
-  const cardsPerSlot = playerCount <= 3 ? 2 : 1;
-  const required = playerCount * 3 * cardsPerSlot;
-  if (deck.length < required) {
-    throw new GameRuleError("insufficient_scoring_cards", "The scoring deck is too small");
-  }
-  if (new Set(deck).size !== deck.length || deck.some((id) => !SCORING_CARD_IDS.includes(id))) {
-    throw new GameRuleError("invalid_scoring_deck", "Scoring cards must be distinct known cards");
-  }
-  const arranged = cardsPerSlot === 2 ? compatibleDeal([...deck], required / 2) : [...deck];
-  if (arranged === null) throw new GameRuleError("invalid_scoring_pair", "The deck cannot supply compatible pairs");
-  const slots = Array.from(
-    { length: playerCount },
-    (): ScoringCardSlots => [[], [], []]
-  );
-  let cardIndex = 0;
-  for (let electionIndex = 0; electionIndex < 3; electionIndex += 1) {
-    for (let seatIndex = 0; seatIndex < playerCount; seatIndex += 1) {
-      slots[seatIndex]![electionIndex] = arranged.slice(
-        cardIndex,
-        cardIndex + cardsPerSlot
-      );
-      cardIndex += cardsPerSlot;
-    }
-  }
-  return slots;
-}
-
-function compatibleDeal(deck: ScoringCardId[], pairs: number): ScoringCardId[] | null {
-  if (pairs === 0) return [];
-  const first = deck[0]!;
-  for (let index = 1; index < deck.length; index += 1) {
-    const second = deck[index]!;
-    if (!scoringCardsCompatible(SCORING_CARDS_BY_ID[first], SCORING_CARDS_BY_ID[second])) continue;
-    const rest = compatibleDeal(deck.filter((_, i) => i !== 0 && i !== index), pairs - 1);
-    if (rest !== null) return [first, second, ...rest];
-  }
-  return null;
+export function dealScoringCards(deck: readonly ScoringCardId[], playerCount: number): ScoringCardId[] {
+  if (!Number.isInteger(playerCount) || playerCount < 2 || playerCount > 6) throw new GameRuleError("invalid_player_count", "Scoring cards require two to six players");
+  if (deck.length < playerCount) throw new GameRuleError("insufficient_scoring_cards", "The scoring deck is too small");
+  if (new Set(deck).size !== deck.length || deck.some(id => !SCORING_CARD_IDS.includes(id))) throw new GameRuleError("invalid_scoring_deck", "Scoring cards must be distinct known cards");
+  return deck.slice(0, playerCount);
 }
 
 export function toOperationState(state: GameState): OperationState {
@@ -1082,8 +1004,7 @@ export function toOperationState(state: GameState): OperationState {
         }
       ])
     ),
-    courtSupport: structuredClone(state.courtSupport),
-    coalitionTargets: { ...state.coalitionTargets }
+    laws: activeLawEffects(state.enactedPolicyIds)
   };
 }
 
@@ -1094,8 +1015,6 @@ function applyOperationState(state: GameState, operationState: OperationState): 
       { ...operationState.districts[districtId]!.support }
     ])
   ) as GameState["support"];
-  state.courtSupport = structuredClone(operationState.courtSupport);
-  state.coalitionTargets = { ...operationState.coalitionTargets };
 }
 
 export function operationCount(operations: Readonly<OperationInventory>): number {
@@ -1103,7 +1022,7 @@ export function operationCount(operations: Readonly<OperationInventory>): number
 }
 
 export function emptyOperationInventory(): OperationInventory {
-  return { organise: 0, rally: 0, smear: 0, court: 0 };
+  return { organise: 0, rally: 0, smear: 0 };
 }
 
 function operationInventory(

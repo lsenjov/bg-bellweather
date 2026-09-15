@@ -5,16 +5,11 @@ import type {
   FirmId,
   OperationId,
   PartyId,
-  ScoringCardId
+  ScoringCardId, PolicyId, RegionId
 } from "@bellweather/content";
 
 export type SeatId = string;
 export type OperationInventory = Record<OperationId, number>;
-export type ScoringCardSlots = [
-  ScoringCardId[],
-  ScoringCardId[],
-  ScoringCardId[]
-];
 
 export interface SeatConfiguration {
   id: SeatId;
@@ -34,7 +29,7 @@ export interface SeatState extends SeatConfiguration {
   collectionCounters: number;
   collectionCounterLimit: number;
   points: number;
-  scoringCardIds: ScoringCardSlots;
+  scoringCardId: ScoringCardId;
 }
 
 export interface PartyYearState {
@@ -154,11 +149,8 @@ export interface CompletePhase {
 export interface ElectionRecord {
   electionNumber: 1 | 2 | 3;
   afterYear: ElectionYear;
-  scoringCards: Array<{
-    seatId: SeatId;
-    scoringCardIds: ScoringCardId[];
-    capitalCardId: ScoringCardId;
-  }>;
+  scoringCards: Array<{ seatId: SeatId; scoringCardId: ScoringCardId }>;
+  policyVotes: Array<{ regionId: RegionId; policyId: PolicyId; forVotes: number; againstVotes: number; passed: boolean }>;
   draws: Record<
     string,
     {
@@ -168,10 +160,8 @@ export interface ElectionRecord {
   >;
   scores: Array<{
     playerId: SeatId;
-    baseRegionScore: number;
-    seatModifier: number;
-    capitalMatches: number;
-    capitalScore: number;
+    policyScore: number;
+    policyScores: Array<{ policyId: PolicyId; gain: number; loss: number; net: number }>;
     finalCardCount: number | null;
     finalCardRankBonus: number;
     pointsChange: number;
@@ -204,8 +194,10 @@ export interface GameState {
   seats: SeatState[];
   parties: Partial<Record<PartyId, PartyYearState>>;
   support: Record<DistrictId, Partial<Record<PartyId, number>>>;
-  courtSupport: Record<PartyId, Partial<Record<PartyId, number>>>;
-  coalitionTargets: Record<PartyId, PartyId | null>;
+  policyDeck: PolicyId[];
+  pendingPolicies: Partial<Record<RegionId, PolicyId>>;
+  enactedPolicyIds: PolicyId[];
+  discardedPolicyIds: PolicyId[];
   bonusCards: Record<BonusCardId, BonusCardLocation>;
   chat: ChatMessage[];
   lobbyActions: LobbyActionRecord[];

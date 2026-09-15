@@ -14,10 +14,9 @@ export const STANDARD_PLAYER_SETUP = deepFreeze({
   operations: {
     organise: 3,
     rally: 4,
-    smear: 2,
-    court: 2
+    smear: 2
   },
-  points: 5,
+  points: 0,
   collectionCounters: 2
 } as const satisfies PlayerSetup);
 
@@ -26,10 +25,9 @@ export const DOUBLED_PLAYER_SETUP = deepFreeze({
   operations: {
     organise: 6,
     rally: 8,
-    smear: 4,
-    court: 4
+    smear: 4
   },
-  points: 10,
+  points: 0,
   collectionCounters: 4
 } as const satisfies PlayerSetup);
 
@@ -43,4 +41,4 @@ export const SUPPORT_SUPPLY = "unlimited" as const;
 export const ELECTION_YEARS = deepFreeze([2, 4, 6] as const);
 export type ElectionYear = (typeof ELECTION_YEARS)[number];
 export const FINAL_ELECTION_YEAR = ELECTION_YEARS[2];
-export const RULESET_VERSION = "24" as const;
+export const RULESET_VERSION = "25" as const;

@@ -232,8 +232,7 @@ export const OperationInventorySchema = z
   .object({
     organise: z.number().int().nonnegative(),
     rally: z.number().int().nonnegative(),
-    smear: z.number().int().nonnegative(),
-    court: z.number().int().nonnegative()
+    smear: z.number().int().nonnegative()
   })
   .strict();
 export type OperationInventory = z.infer<typeof OperationInventorySchema>;
@@ -274,8 +273,7 @@ export const FirmIdSchema = z.enum([
 export const OperationIdSchema = z.enum([
   "organise",
   "rally",
-  "smear",
-  "court"
+  "smear"
 ]);
 export const BonusCardIdSchema = z.enum([
   "honeycomb-waggle-route",
@@ -297,90 +295,48 @@ export const BonusCardIdSchema = z.enum([
   "night-parliament-midnight-leak",
   "night-parliament-midnight-session"
 ]);
-const OrganiseChoiceSchema = z
-  .object({
-    operation: z.literal("organise"),
-    destinationDistrictId: z.string().trim().min(1).max(100),
-    sourceDistrictId: z.string().trim().min(1).max(100).optional(),
-    count: z.number().int().positive().optional()
-  })
-  .strict();
-const RallyChoiceSchema = z
-  .object({
-    operation: z.literal("rally"),
-    districtId: z.string().trim().min(1).max(100),
-    bonusDistrictId: z.string().trim().min(1).max(100).optional(),
-    bonusDistrictIds: z
-      .array(z.string().trim().min(1).max(100))
-      .max(20)
-      .optional()
-  })
-  .strict();
-const SmearChoiceSchema = z
-  .object({
-    operation: z.literal("smear"),
-    districtId: z.string().trim().min(1).max(100),
-    rivalParty: PartyIdSchema,
-    bonusCourtParty: PartyIdSchema.optional()
-  })
-  .strict();
-const CourtChoiceSchema = z
-  .object({
-    operation: z.literal("court"),
-    targetParty: PartyIdSchema,
-    bonusDistrictId: z.string().trim().min(1).max(100).optional(),
-    bonusCourtSourceParty: PartyIdSchema.optional()
-  })
-  .strict();
-export const OperationChoiceSchema = z.discriminatedUnion("operation", [
-  OrganiseChoiceSchema,
-  RallyChoiceSchema,
-  SmearChoiceSchema,
-  CourtChoiceSchema
-]);
+const DistrictChoiceSchema = z.string().trim().min(1).max(100);
+export const RegionIdSchema = z.enum(["urban", "mixed", "outlying", "centre"]);
+export const FollowUpIdSchema = z.union([z.literal(6), z.literal(17), z.literal(28), z.literal(29), z.literal("bonus")]);
+const LawChoices = {
+  followUpOrder: z.array(FollowUpIdSchema).max(5).optional(),
+  freshStartDistrictId: DistrictChoiceSchema.optional(),
+  chainSourceDistrictId: DistrictChoiceSchema.optional()
+};
+const OrganiseChoiceSchema = z.object({
+  operation: z.literal("organise"),
+  destinationDistrictId: DistrictChoiceSchema,
+  sourceDistrictId: DistrictChoiceSchema.optional(),
+  count: z.number().int().positive().max(54).optional(),
+  swapPartyIds: z.array(PartyIdSchema).max(2).optional(),
+  ...LawChoices
+}).strict();
+const RallyChoiceSchema = z.object({
+  operation: z.literal("rally"), districtId: DistrictChoiceSchema,
+  sourceDistrictId: DistrictChoiceSchema.optional(),
+  bonusDistrictId: DistrictChoiceSchema.optional(),
+  bonusDistrictIds: z.array(DistrictChoiceSchema).max(16).optional(),
+  ...LawChoices
+}).strict();
+const SmearChoiceSchema = z.object({
+  operation: z.literal("smear"), districtId: DistrictChoiceSchema,
+  rivalParty: PartyIdSchema,
+  displacementDistrictId: DistrictChoiceSchema.optional(),
+  bonusDistrictId: DistrictChoiceSchema.optional(),
+  ...LawChoices
+}).strict();
+export const OperationChoiceSchema = z.discriminatedUnion("operation", [OrganiseChoiceSchema, RallyChoiceSchema, SmearChoiceSchema]);
 export type OperationChoice = z.infer<typeof OperationChoiceSchema>;
-const InstitutionalMemoryPlacementSchema = z
-  .object({
-    objectiveIndex: z.union([z.literal(0), z.literal(1), z.literal(2)]),
-    destinationDistrictId: z.string().trim().min(1).max(100)
-  })
-  .strict();
 export const UnboundBonusChoiceSchema = z.discriminatedUnion("effect", [
   z.object({ effect: z.literal("every_bee_counts") }).strict(),
-  z
-    .object({
-      effect: z.literal("institutional_memory"),
-      scoringCardId: z.enum([
-        "SC-01", "SC-02", "SC-03", "SC-04", "SC-05", "SC-06",
-        "SC-07", "SC-08", "SC-09", "SC-10", "SC-11", "SC-12",
-        "SC-13", "SC-14", "SC-15", "SC-16", "SC-17", "SC-18",
-        "SC-19", "SC-20", "SC-21", "SC-22", "SC-23", "SC-24"
-      ]),
-      placements: z.array(InstitutionalMemoryPlacementSchema).min(1).max(3)
-    })
-    .strict(),
+  z.object({ effect: z.literal("common_cause"), districtId: DistrictChoiceSchema, partnerPartyId: PartyIdSchema }).strict(),
+  z.object({ effect: z.literal("whisper_network"), sourceDistrictId: DistrictChoiceSchema, destinationDistrictId: DistrictChoiceSchema, rivalPartyId: PartyIdSchema }).strict(),
+  z.object({ effect: z.literal("joint_campaign"), regionId: RegionIdSchema, forPolicy: z.boolean(), destinationDistrictId: DistrictChoiceSchema, moves: z.array(z.object({ sourceDistrictId: DistrictChoiceSchema, partyId: PartyIdSchema }).strict()).min(1).max(3) }).strict(),
+  z.object({ effect: z.literal("institutional_memory"), regionId: RegionIdSchema, forPolicy: z.boolean(), placements: z.array(z.object({ partyId: PartyIdSchema, destinationDistrictId: DistrictChoiceSchema }).strict()).min(1).max(3) }).strict(),
   z.object({ effect: z.literal("shell_firm"), targetPartyId: PartyIdSchema }).strict(),
-  z
-    .object({
-      effect: z.literal("mass_transit"),
-      districtIds: z.array(z.string().trim().min(1).max(100)).min(2).max(5),
-      supportPartyIds: z.array(PartyIdSchema).min(1).max(4)
-    })
-    .strict(),
-  z
-    .object({
-      effect: z.literal("empty_every_nest"),
-      sourceDistrictIds: z.array(z.string().trim().min(1).max(100)).min(1).max(16),
-      destinationDistrictIds: z.array(z.string().trim().min(1).max(100)).min(1).max(16)
-    })
-    .strict(),
-  z
-    .object({
-      effect: z.literal("midnight_session"),
-      targetPartyId: PartyIdSchema,
-      firmId: FirmIdSchema
-    })
-    .strict()
+  z.object({ effect: z.literal("mass_transit"), districtIds: z.array(DistrictChoiceSchema).min(2).max(5), supportPartyIds: z.array(PartyIdSchema).min(1).max(4) }).strict(),
+  z.object({ effect: z.literal("empty_every_nest"), sourceDistrictIds: z.array(DistrictChoiceSchema).min(1).max(16), destinationDistrictIds: z.array(DistrictChoiceSchema).min(1).max(16) }).strict(),
+  z.object({ effect: z.literal("midnight_session"), targetPartyId: PartyIdSchema, firmId: FirmIdSchema }).strict()
 ]);
 export type UnboundBonusChoice = z.infer<typeof UnboundBonusChoiceSchema>;
 export const BonusCardChoiceSchema = z.union([

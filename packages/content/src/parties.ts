@@ -3,8 +3,7 @@ import { deepFreeze } from "./immutable.js";
 export const OPERATION_IDS = deepFreeze([
   "organise",
   "rally",
-  "smear",
-  "court"
+  "smear"
 ] as const);
 export type OperationId = (typeof OPERATION_IDS)[number];
 
@@ -54,7 +53,7 @@ export interface PartyDefinition {
   readonly shortName: string;
   readonly animal: string;
   readonly color: `#${string}`;
-  readonly favoredOperations: readonly [OperationId, OperationId];
+  readonly favoredOperations: readonly OperationId[];
   readonly bonusCards: readonly [
     BonusCardDefinition,
     BonusCardDefinition,
@@ -69,7 +68,7 @@ export const PARTIES = deepFreeze([
     shortName: "Honeycomb",
     animal: "Bees",
     color: "#d7aa12",
-    favoredOperations: ["organise", "court"],
+    favoredOperations: ["organise"],
     bonusCards: [
       {
         id: "honeycomb-waggle-route",
@@ -82,10 +81,10 @@ export const PARTIES = deepFreeze([
       {
         id: "honeycomb-common-cause",
         homePartyId: "honeycomb",
-        operation: "court",
+        operation: null,
         name: "Common Cause",
         effect:
-          "Resolve Court. Then add acting-party Support to a free spot in a district containing selected-party Support."
+          "Choose a district containing another party that shares Honeycomb’s vote on its pending policy. Add one Honeycomb Support and one of that party’s Support there. Requires two free spots."
       },
       {
         id: "honeycomb-every-bee-counts",
@@ -127,7 +126,7 @@ export const PARTIES = deepFreeze([
         operation: null,
         name: "Institutional Memory",
         effect:
-          "Choose a revealed scoring card. For each objective, add one Support of the named party to a district in its region with a free spot, if possible."
+          "Choose a region and For or Against its pending policy. Add one Support of each party voting that way to that region, wherever space permits. Add at least one Support."
       }
     ]
   },
@@ -137,7 +136,7 @@ export const PARTIES = deepFreeze([
     shortName: "Foxglove",
     animal: "Foxes",
     color: "#b83d6d",
-    favoredOperations: ["smear", "court"],
+    favoredOperations: ["smear"],
     bonusCards: [
       {
         id: "foxglove-spin",
@@ -150,10 +149,10 @@ export const PARTIES = deepFreeze([
       {
         id: "foxglove-whisper-network",
         homePartyId: "foxglove",
-        operation: "court",
+        operation: null,
         name: "Whisper Network",
         effect:
-          "Resolve Court for the acting party, then move its Court Support from another party's space to the selected party and update its Coalition Target again."
+          "Choose a district containing acting-party Support. Move one rival Support from there to a neighboring district with a free spot."
       },
       {
         id: "foxglove-shell-firm",
@@ -205,7 +204,7 @@ export const PARTIES = deepFreeze([
     shortName: "Many Wings",
     animal: "Starlings",
     color: "#d86f24",
-    favoredOperations: ["rally", "court"],
+    favoredOperations: ["rally"],
     bonusCards: [
       {
         id: "many-wings-scatter-the-flock",
@@ -218,10 +217,10 @@ export const PARTIES = deepFreeze([
       {
         id: "many-wings-joint-campaign",
         homePartyId: "many-wings",
-        operation: "court",
+        operation: null,
         name: "Joint Campaign",
         effect:
-          "Resolve Court for the acting party, then add selected-party Support to a free district containing acting-party Support."
+          "Choose a region’s pending policy and For or Against. Move up to three Support voting that way into one district in that region, each from a neighboring district. Requires room; move at least one."
       },
       {
         id: "many-wings-empty-every-nest",
@@ -255,7 +254,7 @@ export const PARTIES = deepFreeze([
         operation: "smear",
         name: "Midnight Leak",
         effect:
-          "Resolve Smear for the acting party, then remove rival Court Support and update that rival's Coalition Target."
+          "Resolve Smear. Then remove one additional Support of the same rival party from a district neighboring the Smear target district, if possible."
       },
       {
         id: "night-parliament-midnight-session",

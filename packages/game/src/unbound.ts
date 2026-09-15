@@ -1,16 +1,16 @@
+import { UnboundBonusChoiceSchema } from "@bellweather/protocol";
 import {
   DISTRICTS_BY_ID,
   DISTRICT_IDS,
   FIRM_IDS,
   OPERATION_IDS,
   PARTY_IDS,
-  SCORING_CARD_IDS,
-  SCORING_CARDS_BY_ID,
+  POLICIES_BY_ID, votesFor, type RegionId,
   type BonusCardId,
   type DistrictId,
   type FirmId,
   type PartyId,
-  type ScoringCardId
+  type PolicyId
 } from "@bellweather/content";
 import type {
   GameState,
@@ -20,12 +20,18 @@ import type {
 } from "./model.js";
 import { GameRuleError } from "./model.js";
 
+export type UnboundState = Pick<GameState, "parties" | "support" | "pendingPolicies"> & { seats: Array<{ id: SeatId; firmIds: readonly FirmId[] }> };
+
 export type UnboundBonusChoice =
   | { effect: "every_bee_counts" }
+  | { effect: "common_cause"; districtId: DistrictId; partnerPartyId: PartyId }
+  | { effect: "whisper_network"; sourceDistrictId: DistrictId; destinationDistrictId: DistrictId; rivalPartyId: PartyId }
+  | { effect: "joint_campaign"; regionId: RegionId; forPolicy: boolean; destinationDistrictId: DistrictId; moves: Array<{sourceDistrictId: DistrictId; partyId: PartyId}> }
   | {
       effect: "institutional_memory";
-      scoringCardId: ScoringCardId;
-      placements: Array<{ objectiveIndex: 0 | 1 | 2; destinationDistrictId: DistrictId }>;
+      regionId: RegionId;
+      forPolicy: boolean;
+      placements: Array<{ partyId: PartyId; destinationDistrictId: DistrictId }>;
     }
   | { effect: "shell_firm"; targetPartyId: PartyId }
   | {
@@ -43,6 +49,9 @@ export interface UnboundBonusResolution {
 }
 
 const UNBOUND_EFFECTS = {
+  "honeycomb-common-cause": "common_cause",
+  "foxglove-whisper-network": "whisper_network",
+  "many-wings-joint-campaign": "joint_campaign",
   "honeycomb-every-bee-counts": "every_bee_counts",
   "old-shell-institutional-memory": "institutional_memory",
   "foxglove-shell-firm": "shell_firm",
@@ -52,7 +61,7 @@ const UNBOUND_EFFECTS = {
 } as const satisfies Partial<Record<BonusCardId, UnboundBonusChoice["effect"]>>;
 
 export function resolveUnboundBonus(
-  state: GameState,
+  state: UnboundState,
   seatId: SeatId,
   actingPartyId: PartyId,
   bonusCardId: BonusCardId,
@@ -69,6 +78,25 @@ export function resolveUnboundBonus(
 
   if (choice.effect === "every_bee_counts") {
     everyBeeCounts(state, actingPartyId, supportChanges);
+  } else if (choice.effect === "common_cause") {
+    const policy = pendingPolicy(state, DISTRICTS_BY_ID[choice.districtId].regionId);
+    if (choice.partnerPartyId === "honeycomb" || votesFor(choice.partnerPartyId, policy) !== votesFor("honeycomb", policy)
+      || (state.support[choice.districtId][choice.partnerPartyId] ?? 0) === 0
+      || freeSpots(state, choice.districtId) < 2) illegalBonus("Common Cause requires a same-voting partner and two free spots");
+    addSupport(state, choice.districtId, "honeycomb", supportChanges);
+    addSupport(state, choice.districtId, choice.partnerPartyId, supportChanges);
+  } else if (choice.effect === "whisper_network") {
+    if (choice.rivalPartyId === actingPartyId || (state.support[choice.sourceDistrictId][actingPartyId] ?? 0) === 0
+      || (state.support[choice.sourceDistrictId][choice.rivalPartyId] ?? 0) === 0
+      || !adjacent(choice.sourceDistrictId, choice.destinationDistrictId) || !hasFreeSpot(state, choice.destinationDistrictId)) illegalBonus("Whisper Network requires a rival alongside acting-party Support and a free neighbor");
+    moveSupport(state, choice.sourceDistrictId, choice.destinationDistrictId, choice.rivalPartyId, supportChanges);
+  } else if (choice.effect === "joint_campaign") {
+    const policy = pendingPolicy(state, choice.regionId);
+    if (DISTRICTS_BY_ID[choice.destinationDistrictId].regionId !== choice.regionId || freeSpots(state, choice.destinationDistrictId) < choice.moves.length) illegalBonus("Joint Campaign requires room in the selected region");
+    for (const move of choice.moves) {
+      if (!adjacent(move.sourceDistrictId, choice.destinationDistrictId) || votesFor(move.partyId, policy) !== choice.forPolicy || (state.support[move.sourceDistrictId][move.partyId] ?? 0) < 1) illegalBonus("Every campaign Support must neighbor the destination and vote on the selected side");
+      moveSupport(state, move.sourceDistrictId, choice.destinationDistrictId, move.partyId, supportChanges);
+    }
   } else if (choice.effect === "institutional_memory") {
     institutionalMemory(state, choice, supportChanges);
   } else if (choice.effect === "shell_firm") {
@@ -95,7 +123,7 @@ export function resolveUnboundBonus(
 }
 
 function everyBeeCounts(
-  state: GameState,
+  state: UnboundState,
   partyId: PartyId,
   supportChanges: SupportChange[]
 ): void {
@@ -113,47 +141,31 @@ function everyBeeCounts(
 }
 
 function institutionalMemory(
-  state: GameState,
+  state: UnboundState,
   choice: Extract<UnboundBonusChoice, { effect: "institutional_memory" }>,
   supportChanges: SupportChange[]
 ): void {
-  const revealed = new Set(
-    state.electionHistory.flatMap((election) =>
-      election.scoringCards.flatMap((cards) => cards.scoringCardIds)
-    )
-  );
-  if (!revealed.has(choice.scoringCardId)) {
-    illegalBonus("Institutional Memory requires a revealed scoring card");
-  }
-  const scoringCard = SCORING_CARDS_BY_ID[choice.scoringCardId];
-  const required = scoringCard.objectives.flatMap((objective, index) =>
-    DISTRICT_IDS.some((id) => DISTRICTS_BY_ID[id].regionId === objective.regionId && hasFreeSpot(state, id))
-      ? [index] : []
-  );
-  if (
-    required.length === 0 ||
-    choice.placements.length !== required.length ||
-    new Set(choice.placements.map((placement) => placement.objectiveIndex)).size !== required.length ||
-    choice.placements.some((placement) => !required.includes(placement.objectiveIndex))
-  ) {
-    illegalBonus("Institutional Memory must add Support for every objective with regional space, at least once");
-  }
+  const policy = pendingPolicy(state, choice.regionId);
+  const available = DISTRICT_IDS.filter(id => DISTRICTS_BY_ID[id].regionId === choice.regionId).reduce((n, id) => n + freeSpots(state, id), 0);
+  const eligible = PARTY_IDS.filter(party => votesFor(party, policy) === choice.forPolicy);
+  const required = Math.min(eligible.length, available);
+  if (required === 0 || choice.placements.length !== required || new Set(choice.placements.map(p => p.partyId)).size !== required) illegalBonus("Institutional Memory must place one of each selected-side party while space permits");
   for (const placement of choice.placements) {
-    const objective = scoringCard.objectives[placement.objectiveIndex];
-    if (
-      DISTRICTS_BY_ID[placement.destinationDistrictId].regionId !== objective.regionId ||
-      !hasFreeSpot(state, placement.destinationDistrictId)
-    ) {
-      illegalBonus("Every Institutional Memory destination must have a free spot in its objective's region");
-    }
-  }
-  for (const placement of choice.placements) {
-    addSupport(state, placement.destinationDistrictId, scoringCard.objectives[placement.objectiveIndex].partyId, supportChanges);
+    if (!eligible.includes(placement.partyId) || DISTRICTS_BY_ID[placement.destinationDistrictId].regionId !== choice.regionId || !hasFreeSpot(state, placement.destinationDistrictId)) illegalBonus("Choose free spots in the policy region and different parties on the selected side");
+    addSupport(state, placement.destinationDistrictId, placement.partyId, supportChanges);
   }
 }
 
+function pendingPolicy(state: UnboundState, regionId: RegionId) {
+  const id = state.pendingPolicies[regionId];
+  if (id === undefined) illegalBonus("This region has no pending policy");
+  return POLICIES_BY_ID[id];
+}
+function freeSpots(state: UnboundState, id: DistrictId): number { return DISTRICTS_BY_ID[id].capacity - districtTotal(state, id); }
+function adjacent(a: DistrictId, b: DistrictId): boolean { return (DISTRICTS_BY_ID[a].adjacentDistrictIds as readonly DistrictId[]).includes(b); }
+
 function shellFirm(
-  state: GameState,
+  state: UnboundState,
   actingPartyId: PartyId,
   targetPartyId: PartyId
 ): void {
@@ -181,7 +193,7 @@ function shellFirm(
 }
 
 function massTransit(
-  state: GameState,
+  state: UnboundState,
   choice: Extract<UnboundBonusChoice, { effect: "mass_transit" }>,
   supportChanges: SupportChange[]
 ): void {
@@ -223,7 +235,7 @@ function massTransit(
 }
 
 function emptyEveryNest(
-  state: GameState,
+  state: UnboundState,
   actingPartyId: PartyId,
   sourceDistrictIds: DistrictId[],
   destinationDistrictIds: DistrictId[],
@@ -251,7 +263,7 @@ function emptyEveryNest(
 }
 
 function midnightSession(
-  state: GameState,
+  state: UnboundState,
   seatId: SeatId,
   targetPartyId: PartyId,
   firmId: FirmId
@@ -279,104 +291,23 @@ function midnightSession(
 }
 
 function unboundBonusChoice(value: unknown): UnboundBonusChoice {
-  if (typeof value !== "object" || value === null || !("effect" in value)) {
-    invalidChoice("An Unbound Bonus choice is required");
+  const parsed = UnboundBonusChoiceSchema.safeParse(value);
+  if (!parsed.success) invalidChoice(parsed.error.issues[0]?.message ?? "Invalid Bonus choice");
+  function validateDistricts(input: unknown, key = ""): void {
+    if (typeof input === "string" && (key.endsWith("DistrictId") || key === "districtId" || key.endsWith("DistrictIds") || key === "districtIds")) {
+      if (!(DISTRICT_IDS as readonly string[]).includes(input)) invalidChoice("The choice must name a district");
+    } else if (Array.isArray(input)) input.forEach(item => validateDistricts(item, key));
+    else if (typeof input === "object" && input !== null) Object.entries(input).forEach(([name, item]) => validateDistricts(item, name));
   }
-  const choice = value as Record<string, unknown>;
-  if (choice.effect === "every_bee_counts") {
-    return { effect: choice.effect };
-  }
-  if (choice.effect === "institutional_memory") {
-    requireScoringCardId(choice.scoringCardId);
-    if (!Array.isArray(choice.placements)) invalidChoice("placements must be an array");
-    const placements = choice.placements.map((move) => {
-      if (typeof move !== "object" || move === null) invalidChoice("placements must be objects");
-      const fields = move as Record<string, unknown>;
-      if (![0, 1, 2].includes(fields.objectiveIndex as number)) {
-        invalidChoice("objectiveIndex must be 0, 1, or 2");
-      }
-      requireDistrictId(fields.destinationDistrictId);
-      return {
-        objectiveIndex: fields.objectiveIndex as 0 | 1 | 2,
-        destinationDistrictId: fields.destinationDistrictId
-      };
-    });
-    return { effect: choice.effect, scoringCardId: choice.scoringCardId, placements };
-  }
-  if (choice.effect === "shell_firm") {
-    requirePartyId(choice.targetPartyId);
-    return { effect: choice.effect, targetPartyId: choice.targetPartyId };
-  }
-  if (choice.effect === "mass_transit") {
-    return {
-      effect: choice.effect,
-      districtIds: districtIdArray(choice.districtIds, "districtIds"),
-      supportPartyIds: partyIdArray(choice.supportPartyIds, "supportPartyIds")
-    };
-  }
-  if (choice.effect === "empty_every_nest") {
-    return {
-      effect: choice.effect,
-      sourceDistrictIds: districtIdArray(choice.sourceDistrictIds, "sourceDistrictIds"),
-      destinationDistrictIds: districtIdArray(
-        choice.destinationDistrictIds,
-        "destinationDistrictIds"
-      )
-    };
-  }
-  if (choice.effect === "midnight_session") {
-    requirePartyId(choice.targetPartyId);
-    requireFirmId(choice.firmId);
-    return {
-      effect: choice.effect,
-      targetPartyId: choice.targetPartyId,
-      firmId: choice.firmId
-    };
-  }
-  invalidChoice("The Unbound Bonus choice has an unknown effect");
+  validateDistricts(parsed.data);
+  return parsed.data as UnboundBonusChoice;
 }
 
-function districtIdArray(value: unknown, field: string): DistrictId[] {
-  if (!Array.isArray(value)) invalidChoice(`${field} must be an array`);
-  for (const districtId of value) requireDistrictId(districtId);
-  return value;
-}
-
-function partyIdArray(value: unknown, field: string): PartyId[] {
-  if (!Array.isArray(value)) invalidChoice(`${field} must be an array`);
-  for (const partyId of value) requirePartyId(partyId);
-  return value;
-}
-
-function requireDistrictId(value: unknown): asserts value is DistrictId {
-  if (!(DISTRICT_IDS as readonly unknown[]).includes(value)) {
-    invalidChoice("The choice must name a district");
-  }
-}
-
-function requirePartyId(value: unknown): asserts value is PartyId {
-  if (!(PARTY_IDS as readonly unknown[]).includes(value)) {
-    invalidChoice("The choice must name a party");
-  }
-}
-
-function requireFirmId(value: unknown): asserts value is FirmId {
-  if (!(FIRM_IDS as readonly unknown[]).includes(value)) {
-    invalidChoice("The choice must name a Firm marker");
-  }
-}
-
-function requireScoringCardId(value: unknown): asserts value is ScoringCardId {
-  if (!(SCORING_CARD_IDS as readonly unknown[]).includes(value)) {
-    invalidChoice("The choice must name a scoring card");
-  }
-}
-
-function hasFreeSpot(state: GameState, districtId: DistrictId): boolean {
+function hasFreeSpot(state: UnboundState, districtId: DistrictId): boolean {
   return districtTotal(state, districtId) < DISTRICTS_BY_ID[districtId].capacity;
 }
 
-function districtTotal(state: GameState, districtId: DistrictId): number {
+function districtTotal(state: UnboundState, districtId: DistrictId): number {
   return PARTY_IDS.reduce(
     (total, partyId) => total + (state.support[districtId][partyId] ?? 0),
     0
@@ -384,7 +315,7 @@ function districtTotal(state: GameState, districtId: DistrictId): number {
 }
 
 function addSupport(
-  state: GameState,
+  state: UnboundState,
   districtId: DistrictId,
   partyId: PartyId,
   supportChanges: SupportChange[]
@@ -395,7 +326,7 @@ function addSupport(
 }
 
 function moveSupport(
-  state: GameState,
+  state: UnboundState,
   sourceDistrictId: DistrictId,
   destinationDistrictId: DistrictId,
   partyId: PartyId,

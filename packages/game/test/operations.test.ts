@@ -1,620 +1,137 @@
 import { describe, expect, it } from "vitest";
-import { BONUS_CARDS } from "@bellweather/content";
-import {
-  hasLegalOperationChoice,
-  isOperationChoiceLegal,
-  isOperationRequestLegal,
-  PARTIES,
-  resolveOperation,
-  supportCount,
-  type OperationState,
-  type Party
-} from "../src/operations.js";
-
-describe("operation baselines", () => {
-  it("resolves Organise movement and supportless recovery without mutating input", () => {
-    const initial = state({ a: { honeycomb: 1 } });
-    const moved = resolveOperation(initial, {
-      party: "honeycomb",
-      choice: {
-        operation: "organise",
-        sourceDistrictId: "a",
-        destinationDistrictId: "b"
-      }
-    });
-    expect(moved.baselineApplied).toBe(true);
-    expect(moved.state.districts.a?.support.honeycomb).toBeUndefined();
-    expect(moved.state.districts.b?.support.honeycomb).toBe(1);
-    expect(initial.districts.a?.support.honeycomb).toBe(1);
-
-    const recovered = resolveOperation(state(), {
-      party: "honeycomb",
-      choice: { operation: "organise", destinationDistrictId: "c" }
-    });
-    expect(recovered.state.districts.c?.support.honeycomb).toBe(1);
+import { DISTRICTS, type DistrictId, type PartyId, type LawEffectId, type BonusCardId } from "@bellweather/content";
+import { resolveOperation, type OperationState, type OperationChoice } from "../src/operations.js";
+const HC='honeycomb', FG='foxglove';
+function state(laws: LawEffectId[]=[]): OperationState {
+  return {laws,districts:Object.fromEntries(DISTRICTS.map(d=>[d.id,{id:d.id,capacity:d.capacity,neighbors:d.adjacentDistrictIds,support:{}}]))};
+}
+function put(s:OperationState,id:DistrictId,party:PartyId,n=1){s.districts[id]!.support[party]=n;}
+function play(s:OperationState,choice:OperationChoice,bonusCardId?:BonusCardId){return resolveOperation(s,{party:HC,choice,...(bonusCardId?{bonusCardId}:{})});}
+const move=(sourceDistrictId:string,destinationDistrictId:string):OperationChoice=>({operation:'organise',sourceDistrictId,destinationDistrictId});
+describe('Operation baselines',()=>{
+  it('moves, rallies and smears without mutating input',()=>{
+    const s=state();put(s,'harbormouth',HC);put(s,'ironwood',FG);
+    expect(play(s,move('harbormouth','grand-market')).state.districts['grand-market']!.support[HC]).toBe(1);
+    expect(s.districts.harbormouth!.support[HC]).toBe(1);
+    expect(play(s,{operation:'rally',districtId:'harbormouth'}).state.districts.harbormouth!.support[HC]).toBe(2);
+    expect(play(s,{operation:'smear',districtId:'ironwood',rivalParty:FG}).state.districts.ironwood!.support[FG]).toBeUndefined();
   });
-
-  it("enforces Rally presence, Smear range, and district capacity", () => {
-    const initial = state({
-      a: { riverworks: 1 },
-      b: { foxglove: 1 },
-      c: { honeycomb: 2 }
-    });
-    expect(
-      resolveOperation(initial, {
-        party: "riverworks",
-        choice: { operation: "rally", districtId: "a" }
-      }).state.districts.a?.support.riverworks
-    ).toBe(2);
-    expect(
-      resolveOperation(initial, {
-        party: "riverworks",
-        choice: {
-          operation: "smear",
-          districtId: "b",
-          rivalParty: "foxglove"
-        }
-      }).baselineApplied
-    ).toBe(true);
-    expect(
-      resolveOperation(initial, {
-        party: "riverworks",
-        choice: { operation: "rally", districtId: "c" }
-      }).baselineApplied
-    ).toBe(false);
-    expect(
-      resolveOperation(initial, {
-        party: "riverworks",
-        choice: {
-          operation: "smear",
-          districtId: "d",
-          rivalParty: "night-parliament"
-        }
-      }).baselineApplied
-    ).toBe(false);
+  it('restores absent parties and rejects impossible ranges or full destinations',()=>{
+    const s=state();expect(play(s,{operation:'organise',destinationDistrictId:'coast'}).baselineApplied).toBe(true);
+    expect(play(s,{operation:'rally',districtId:'coast'}).baselineApplied).toBe(true);
+    put(s,'harbormouth',HC);put(s,'coast',FG,4);
+    expect(play(s,move('harbormouth','coast')).baselineApplied).toBe(false);
+    expect(play(s,{operation:'smear',districtId:'coast',rivalParty:FG}).baselineApplied).toBe(false);
+    expect(play(s,{operation:'rally',districtId:'coast'}).baselineApplied).toBe(false);
   });
-
-  it("adds reciprocal Court Support and independently preserves tied Targets", () => {
-    const initial = state();
-    initial.courtSupport.foxglove["old-shell"] = 1;
-    initial.coalitionTargets.foxglove = "old-shell";
-    const resolved = resolveOperation(initial, { party: "honeycomb", choice: { operation: "court", targetParty: "foxglove" }});
-    expect(resolved.state.courtSupport.honeycomb.foxglove).toBe(1);
-    expect(resolved.state.courtSupport.foxglove.honeycomb).toBe(1);
-    expect(resolved.state.coalitionTargets.honeycomb).toBe("foxglove");
-    expect(resolved.state.coalitionTargets.foxglove).toBe("old-shell");
-    expect(initial.courtSupport.honeycomb).toEqual({});
-  });
-
-  it("adds off-home Court before the printed Court and rolls back both on failure", () => {
-    const initial = state({ a: { foxglove: 1 }, b: { honeycomb: 1 } });
-    const request = { party: "foxglove", bonusCardId: "honeycomb-common-cause", choice: {
-      operation: "court", targetParty: "honeycomb", bonusDistrictId: "b"
-    }} as const;
-    const resolved = resolveOperation(initial, request);
-    expect(resolved.bonusApplied).toBe(true);
-    expect(resolved.state.courtSupport.foxglove.honeycomb).toBe(2);
-    expect(resolved.state.courtSupport.honeycomb.foxglove).toBe(2);
-    const failed = resolveOperation(initial, { ...request, choice: { ...request.choice, bonusDistrictId: "c" } });
-    expect(failed.baselineApplied).toBe(false);
-    expect(failed.state).toEqual(initial);
-    const tied = resolveOperation(initial, { ...request, choice: { ...request.choice, targetParty: "old-shell" } });
-    expect(tied.baselineApplied).toBe(false);
-    expect(tied.state).toEqual(initial);
-  });
-
-  it("adds Common Cause Support even when Court does not change the acting Target", () => {
-    const initial = state({ c: { foxglove: 1 } });
-    initial.courtSupport.honeycomb["old-shell"] = 3;
-    initial.coalitionTargets.honeycomb = "old-shell";
-    const result = resolveOperation(initial, { party: "honeycomb", bonusCardId: "honeycomb-common-cause",
-      choice: { operation: "court", targetParty: "foxglove", bonusDistrictId: "c" } });
-    expect(result.bonusApplied).toBe(true);
-    expect(result.state.coalitionTargets.honeycomb).toBe("old-shell");
-    expect(result.state.districts.c?.support.honeycomb).toBe(1);
-  });
-
-  it("moves a chosen Canal Network group and rejects invalid quantities and broken routes atomically", () => {
-    const initial = state({ a: { riverworks: 3 }, b: { riverworks: 1 } });
-    const request = { party: "riverworks", bonusCardId: "riverworks-canal-network",
-      choice: { operation: "organise", sourceDistrictId: "a", destinationDistrictId: "c", count: 2 } } as const;
-    const result = resolveOperation(initial, request);
-    expect(result.bonusApplied).toBe(true);
-    expect(result.state.districts.a?.support.riverworks).toBe(1);
-    expect(result.state.districts.b?.support.riverworks).toBe(1);
-    expect(result.state.districts.c?.support.riverworks).toBe(2);
-    for (const count of [0, -1, 1.5, 3, 4, NaN]) {
-      const failed = resolveOperation(initial, { ...request, choice: { ...request.choice, count } });
-      expect(failed.baselineApplied).toBe(false);
-      expect(failed.state).toEqual(initial);
-    }
-    const broken = state({ a: { riverworks: 3 } });
-    expect(resolveOperation(broken, request).state).toEqual(broken);
-    expect(resolveOperation(initial, { party: "riverworks", choice: request.choice }).baselineApplied).toBe(false);
-  });
-
-  it("moves the Coalition Target only when Court Support has a unique leader", () => {
-    let result = resolveOperation(state(), {
-      party: "honeycomb",
-      choice: { operation: "court", targetParty: "night-parliament" }
-    });
-    expect(result.state.courtSupport.honeycomb["night-parliament"]).toBe(1);
-    expect(result.state.coalitionTargets.honeycomb).toBe("night-parliament");
-
-    result = resolveOperation(result.state, {
-      party: "honeycomb",
-      choice: { operation: "court", targetParty: "foxglove" }
-    });
-    expect(result.state.coalitionTargets.honeycomb).toBe("night-parliament");
-
-    result = resolveOperation(result.state, {
-      party: "honeycomb",
-      choice: { operation: "court", targetParty: "foxglove" }
-    });
-    expect(result.state.coalitionTargets.honeycomb).toBe("foxglove");
-
-    expect(
-      resolveOperation(result.state, {
-        party: "honeycomb",
-        choice: { operation: "court", targetParty: "honeycomb" }
-      }).baselineApplied
-    ).toBe(false);
-  });
-
-  it("reports current baseline legality without mutating the board", () => {
-    const initial = state({
-      a: { honeycomb: 1, foxglove: 1 },
-      c: { riverworks: 1 }
-    });
-
-    expect(
-      isOperationChoiceLegal(initial, "honeycomb", {
-        operation: "organise",
-        sourceDistrictId: "a",
-        destinationDistrictId: "b"
-      })
-    ).toBe(true);
-    expect(
-      isOperationChoiceLegal(initial, "honeycomb", {
-        operation: "organise",
-        sourceDistrictId: "a",
-        destinationDistrictId: "c"
-      })
-    ).toBe(false);
-    expect(
-      isOperationChoiceLegal(
-        state({ a: { honeycomb: 1 }, b: { riverworks: 1 }, c: { riverworks: 1 } }),
-        "riverworks",
-        {
-          operation: "organise",
-          sourceDistrictId: "c",
-          destinationDistrictId: "a"
-        },
-        { allowCanalNetwork: true }
-      )
-    ).toBe(true);
-    expect(initial.districts.a?.support.honeycomb).toBe(1);
-    expect(initial.districts.b?.support.honeycomb).toBeUndefined();
-  });
-
-  it("detects whether each operation family has any legal baseline choice", () => {
-    const initial = state({
-      a: { honeycomb: 5 },
-      b: { foxglove: 4 },
-      c: { riverworks: 1 },
-      d: { "night-parliament": 1, "old-shell": 1 }
-    });
-
-    expect(hasLegalOperationChoice(initial, "honeycomb", "organise")).toBe(
-      false
-    );
-    expect(
-      hasLegalOperationChoice(
-        state({
-          a: { honeycomb: 4 },
-          b: { riverworks: 1 },
-          c: { riverworks: 1 },
-          d: { "night-parliament": 1, "old-shell": 1 }
-        }),
-        "riverworks",
-        "organise",
-        { allowCanalNetwork: true }
-      )
-    ).toBe(true);
-    expect(hasLegalOperationChoice(initial, "honeycomb", "rally")).toBe(
-      false
-    );
-    expect(hasLegalOperationChoice(initial, "honeycomb", "smear")).toBe(
-      true
-    );
-    expect(hasLegalOperationChoice(initial, "honeycomb", "court")).toBe(
-      true
-    );
-
-    const emptyMap = state({
-      a: { honeycomb: 5 },
-      b: { honeycomb: 4 },
-      c: { honeycomb: 2 },
-      d: { honeycomb: 1 }
-    });
-    expect(hasLegalOperationChoice(emptyMap, "foxglove", "organise")).toBe(
-      false
-    );
-    expect(hasLegalOperationChoice(emptyMap, "foxglove", "rally")).toBe(
-      false
-    );
-    expect(hasLegalOperationChoice(emptyMap, "foxglove", "smear")).toBe(
-      true
-    );
-  });
-
-  it("reports complete Bonus card request legality", () => {
-    expect(
-      isOperationRequestLegal(
-        state({ a: { honeycomb: 1 }, b: { foxglove: 3 } }),
-        {
-        party: "honeycomb",
-        choice: {
-          operation: "organise",
-          sourceDistrictId: "a",
-          destinationDistrictId: "b"
-        },
-        bonusCardId: "honeycomb-waggle-route"
-        }
-      )
-    ).toBe(false);
-    expect(
-      isOperationRequestLegal(
-        state({ a: { "old-shell": 1, foxglove: 1 } }),
-        {
-          party: "old-shell",
-          choice: {
-            operation: "smear",
-            districtId: "a",
-            rivalParty: "foxglove"
-          },
-          bonusCardId: "old-shell-stonewall"
-        }
-      )
-    ).toBe(false);
-    expect(
-      isOperationRequestLegal(state({ a: { riverworks: 1 } }), {
-        party: "riverworks",
-        choice: {
-          operation: "rally",
-          districtId: "a",
-          bonusDistrictId: "c"
-        },
-        bonusCardId: "riverworks-public-works"
-      })
-    ).toBe(false);
-    expect(
-      isOperationRequestLegal(state({ a: { "many-wings": 1 } }), {
-        party: "many-wings",
-        choice: {
-          operation: "rally",
-          districtId: "a"
-        },
-        bonusCardId: "many-wings-scatter-the-flock"
-      })
-    ).toBe(false);
-    expect(
-      isOperationRequestLegal(state({ a: { "night-parliament": 1 } }), {
-        party: "night-parliament",
-        choice: {
-          operation: "rally",
-          districtId: "a",
-          bonusDistrictId: "c"
-        },
-        bonusCardId: "night-parliament-quiet-hours"
-      })
-    ).toBe(true);
-    expect(
-      isOperationRequestLegal(state({ a: { "night-parliament": 1 } }), {
-        party: "night-parliament",
-        choice: { operation: "rally", districtId: "a" },
-        bonusCardId: "night-parliament-quiet-hours"
-      })
-    ).toBe(false);
-    expect(
-      isOperationRequestLegal(state({ a: { "night-parliament": 1 } }), {
-        party: "night-parliament",
-        choice: {
-          operation: "rally",
-          districtId: "a",
-          bonusDistrictId: "a"
-        },
-        bonusCardId: "night-parliament-quiet-hours"
-      })
-    ).toBe(false);
+  it('rejects retired Court and invalid group sizes',()=>{
+    const s=state();put(s,'harbormouth',HC,2);
+    expect(play(s,{operation:'court'} as unknown as OperationChoice).baselineApplied).toBe(false);
+    expect(play(s,{...move('harbormouth','grand-market'),count:2} as OperationChoice).baselineApplied).toBe(false);
   });
 });
-
-describe("all twelve Operation-bound Bonus card actions", () => {
-  it("defines exactly two Operation-bound Bonus cards for every party", () => {
-    expect(BONUS_CARDS.filter((card) => card.operation !== null)).toHaveLength(
-      PARTIES.length * 2
-    );
+describe('global law permissions',()=>{
+  it('extends Rally with Grassroots Expansion and New Constituencies',()=>{
+    const s=state([1,22]);put(s,'ironwood',HC);
+    expect(play(s,{operation:'rally',sourceDistrictId:'ironwood',districtId:'heath'}).baselineApplied).toBe(true);
+    expect(play(s,{operation:'rally',sourceDistrictId:'ironwood',districtId:'grand-market'}).baselineApplied).toBe(true);
+    expect(play(s,{operation:'rally',sourceDistrictId:'ironwood',districtId:'meadow'}).baselineApplied).toBe(false);
   });
-
-  it("applies Honeycomb Waggle Route and Common Cause", () => {
-    const route = resolveOperation(state({ a: { honeycomb: 1 } }), {
-      party: "honeycomb",
-      choice: {
-        operation: "organise",
-        sourceDistrictId: "a",
-        destinationDistrictId: "b"
-      },
-      bonusCardId: "honeycomb-waggle-route"
-    });
-    expect(route.bonusApplied).toBe(true);
-    expect(route.state.districts.b?.support.honeycomb).toBe(2);
-
-    const cause = resolveOperation(
-      state({ a: { honeycomb: 1 }, c: { foxglove: 1 } }),
-      {
-        party: "honeycomb",
-        choice: {
-          operation: "court",
-          targetParty: "foxglove",
-          bonusDistrictId: "c"
-        },
-        bonusCardId: "honeycomb-common-cause"
-      }
-    );
-    expect(cause.bonusApplied).toBe(true);
-    expect(cause.state.districts.a?.support.honeycomb).toBe(1);
-    expect(cause.state.districts.c?.support.honeycomb).toBe(1);
+  it('moves groups with Carpooling and swaps each arrival with Political Exchange',()=>{
+    const s=state([7,10]);put(s,'harbormouth',HC,2);put(s,'grand-market',FG,6);
+    const result=play(s,{operation:'organise',sourceDistrictId:'harbormouth',destinationDistrictId:'grand-market',count:2,swapPartyIds:[FG,FG]});
+    expect(result.baselineApplied).toBe(true);expect(result.state.districts['grand-market']!.support).toEqual({[HC]:2,[FG]:4});
+    expect(result.state.districts.harbormouth!.support).toEqual({[FG]:2});
+    expect(result.supportChanges).toHaveLength(4);
+    expect(play(s,{operation:'organise',sourceDistrictId:'harbormouth',destinationDistrictId:'grand-market',count:2,swapPartyIds:[FG]}).baselineApplied).toBe(false);
   });
-
-  it("applies Old Shell Dig In and Stonewall", () => {
-    const dugIn = resolveOperation(state({ a: { "old-shell": 1 } }), {
-      party: "old-shell",
-      choice: {
-        operation: "organise",
-        sourceDistrictId: "a",
-        destinationDistrictId: "b"
-      },
-      bonusCardId: "old-shell-dig-in"
-    });
-    expect(dugIn.state.districts.a?.support["old-shell"]).toBe(1);
-
-    expect(
-      resolveOperation(state(), {
-        party: "old-shell",
-        choice: { operation: "organise", destinationDistrictId: "a" },
-        bonusCardId: "old-shell-dig-in"
-      }).bonusApplied
-    ).toBe(false);
-
-    const stonewall = resolveOperation(
-      state({ a: { "old-shell": 1, foxglove: 2 } }),
-      {
-        party: "old-shell",
-        choice: {
-          operation: "smear",
-          districtId: "a",
-          rivalParty: "foxglove"
-        },
-        bonusCardId: "old-shell-stonewall"
-      }
-    );
-    expect(stonewall.state.districts.a?.support.foxglove).toBeUndefined();
+  it('combines Established Networks, Regional Express and exchanges',()=>{
+    const s=state([9,30,10]);put(s,'harbormouth',HC);put(s,'coast',HC);put(s,'westfield',HC);put(s,'heath',FG,2);
+    expect(play(s,move('harbormouth','coast')).baselineApplied).toBe(true);
+    expect(play(s,{operation:'organise',sourceDistrictId:'westfield',destinationDistrictId:'heath',swapPartyIds:[FG]}).baselineApplied).toBe(true);
+    expect(play(s,move('harbormouth','meadow')).baselineApplied).toBe(false);
   });
-
-  it("applies Foxglove Spin and Whisper Network", () => {
-    const spin = resolveOperation(
-      state({ a: { foxglove: 1, honeycomb: 1 } }),
-      {
-        party: "foxglove",
-        choice: {
-          operation: "smear",
-          districtId: "a",
-          rivalParty: "honeycomb"
-        },
-        bonusCardId: "foxglove-spin"
-      }
-    );
-    expect(spin.state.districts.a?.support.foxglove).toBe(2);
-
-    const court = state();
-    court.courtSupport.foxglove["old-shell"] = 1;
-    court.coalitionTargets.foxglove = "old-shell";
-    const whisper = resolveOperation(court, {
-      party: "foxglove",
-      choice: {
-        operation: "court",
-        targetParty: "riverworks",
-        bonusCourtSourceParty: "old-shell"
-      },
-      bonusCardId: "foxglove-whisper-network"
-    });
-    expect(whisper.state.courtSupport.foxglove).toEqual({ riverworks: 2 });
-    expect(whisper.state.coalitionTargets.foxglove).toBe("riverworks");
+  it('extends Smear by two adjacency steps or to a full district',()=>{
+    const s=state([11,35]);put(s,'harbormouth',HC);put(s,'northgate',FG);put(s,'coast',FG,4);put(s,'meadow',FG);
+    expect(play(s,{operation:'smear',districtId:'northgate',rivalParty:FG}).baselineApplied).toBe(true);
+    expect(play(s,{operation:'smear',districtId:'coast',rivalParty:FG}).baselineApplied).toBe(true);
+    expect(play(s,{operation:'smear',districtId:'meadow',rivalParty:FG}).baselineApplied).toBe(false);
   });
-
-  it("applies Riverworks Canal Network and Public Works", () => {
-    const canal = resolveOperation(
-      state({ a: { riverworks: 1 }, b: { riverworks: 1 } }),
-      {
-        party: "riverworks",
-        choice: {
-          operation: "organise",
-          sourceDistrictId: "a",
-          destinationDistrictId: "c"
-        },
-        bonusCardId: "riverworks-canal-network"
-      }
-    );
-    expect(canal.baselineApplied).toBe(true);
-    expect(canal.state.districts.c?.support.riverworks).toBe(1);
-    expect(
-      resolveOperation(state(), {
-        party: "riverworks",
-        choice: { operation: "organise", destinationDistrictId: "a" },
-        bonusCardId: "riverworks-canal-network"
-      }).bonusApplied
-    ).toBe(false);
-
-    const works = resolveOperation(state({ a: { riverworks: 1 } }), {
-      party: "riverworks",
-      choice: {
-        operation: "rally",
-        districtId: "a",
-        bonusDistrictId: "b"
-      },
-      bonusCardId: "riverworks-public-works"
-    });
-    expect(works.state.districts.b?.support.riverworks).toBe(1);
-  });
-
-  it("applies Many Wings Scatter the Flock and Joint Campaign", () => {
-    const scatter = resolveOperation(state({ b: { "many-wings": 2 } }), {
-      party: "many-wings",
-      choice: {
-        operation: "rally",
-        districtId: "b",
-        bonusDistrictIds: ["a", "c"]
-      },
-      bonusCardId: "many-wings-scatter-the-flock"
-    });
-    expect(scatter.bonusApplied).toBe(true);
-    expect(scatter.state.districts.b?.support["many-wings"]).toBe(1);
-    expect(scatter.state.districts.a?.support["many-wings"]).toBe(1);
-    expect(scatter.state.districts.c?.support["many-wings"]).toBe(1);
-
-    const campaign = resolveOperation(
-      state({ c: { "many-wings": 1 } }),
-      {
-        party: "many-wings",
-        choice: {
-          operation: "court",
-          targetParty: "foxglove",
-          bonusDistrictId: "c"
-        },
-        bonusCardId: "many-wings-joint-campaign"
-      }
-    );
-    expect(campaign.state.districts.c?.support.foxglove).toBe(1);
-  });
-
-  it("applies immediate Quiet Hours and Midnight Leak", () => {
-    const quietHoursState = state({ a: { "night-parliament": 1 } });
-    quietHoursState.districts["bellweather-centre"] = district(
-      "bellweather-centre",
-      3,
-      []
-    );
-    const quietHours = resolveOperation(quietHoursState, {
-      party: "night-parliament",
-      choice: {
-        operation: "rally",
-        districtId: "a",
-        bonusDistrictId: "bellweather-centre"
-      },
-      bonusCardId: "night-parliament-quiet-hours"
-    });
-    expect(quietHours.bonusName).toBe("Quiet Hours");
-    expect(quietHours.bonusApplied).toBe(true);
-    expect(quietHours.state.districts.a?.support["night-parliament"]).toBe(2);
-    expect(
-      quietHours.state.districts["bellweather-centre"]?.support["night-parliament"]
-    ).toBe(1);
-
-    const occupied = state({
-      a: { "night-parliament": 1 },
-      c: { honeycomb: 1 }
-    });
-    const failedQuietHours = resolveOperation(occupied, {
-      party: "night-parliament",
-      choice: {
-        operation: "rally",
-        districtId: "a",
-        bonusDistrictId: "c"
-      },
-      bonusCardId: "night-parliament-quiet-hours"
-    });
-    expect(failedQuietHours.baselineApplied).toBe(false);
-    expect(failedQuietHours.bonusFailure).toBe(
-      "Quiet Hours requires an otherwise empty district"
-    );
-    expect(failedQuietHours.state).toEqual(occupied);
-
-    const leakState = state({ a: { "night-parliament": 1, foxglove: 1 } });
-    leakState.courtSupport.foxglove = { honeycomb: 2, riverworks: 2 };
-    leakState.coalitionTargets.foxglove = "honeycomb";
-    const leak = resolveOperation(leakState, {
-      party: "night-parliament",
-      choice: {
-        operation: "smear",
-        districtId: "a",
-        rivalParty: "foxglove",
-        bonusCourtParty: "honeycomb"
-      },
-      bonusCardId: "night-parliament-midnight-leak"
-    });
-    expect(leak.state.courtSupport.foxglove).toEqual({
-      honeycomb: 1,
-      riverworks: 2
-    });
-    expect(leak.state.coalitionTargets.foxglove).toBe("riverworks");
-  });
-
-  it("uses unlimited reserves while respecting printed capacity", () => {
-    let current = state({ a: { honeycomb: 1 } });
-    for (let count = 0; count < 4; count += 1) {
-      current = resolveOperation(current, {
-        party: "honeycomb",
-        choice: { operation: "rally", districtId: "a" }
-      }).state;
-    }
-    expect(supportCount(current, "honeycomb")).toBe(5);
-    expect(
-      resolveOperation(current, {
-        party: "honeycomb",
-        choice: { operation: "rally", districtId: "a" }
-      }).baselineApplied
-    ).toBe(false);
+  it('displaces only into a free neighboring district',()=>{
+    const s=state([14]);put(s,'harbormouth',HC);put(s,'grand-market',FG);
+    const r=play(s,{operation:'smear',districtId:'grand-market',rivalParty:FG,displacementDistrictId:'northgate'});
+    expect(r.baselineApplied).toBe(true);expect(r.state.districts.northgate!.support[FG]).toBe(1);
+    expect(play(s,{operation:'smear',districtId:'grand-market',rivalParty:FG,displacementDistrictId:'coast'}).baselineApplied).toBe(false);
   });
 });
-
-function state(
-  support: Partial<Record<string, Partial<Record<Party, number>>>> = {}
-): OperationState {
-  return {
-    districts: {
-      a: district("a", 5, ["b"], support.a),
-      b: district("b", 4, ["a", "c"], support.b),
-      c: district("c", 2, ["b", "d"], support.c),
-      d: district("d", 2, ["c"], {
-        "night-parliament": 1,
-        ...support.d
-      })
-    },
-    courtSupport: {
-      honeycomb: {},
-      "old-shell": {},
-      foxglove: {},
-      riverworks: {},
-      "many-wings": {},
-      "night-parliament": {}
-    },
-    coalitionTargets: {
-      honeycomb: null,
-      "old-shell": null,
-      foxglove: null,
-      riverworks: null,
-      "many-wings": null,
-      "night-parliament": null
-    }
-  };
-}
-
-function district(
-  id: string,
-  capacity: number,
-  neighbors: readonly string[],
-  support: Partial<Record<Party, number>> = {}
-) {
-  return { id, capacity, neighbors, support };
-}
+describe('mandatory extras and ordering',()=>{
+  it('requires Fresh Start once, even with duplicate laws',()=>{
+    const s=state([6,6]);
+    expect(play(s,{operation:'rally',districtId:'harbormouth'}).baselineApplied).toBe(false);
+    const r=play(s,{operation:'rally',districtId:'harbormouth',freshStartDistrictId:'coast'});
+    expect(r.baselineApplied).toBe(true);expect(r.supportChanges).toHaveLength(2);
+    for(const d of Object.values(s.districts)) d.support={[FG]:d.capacity};
+    s.districts.harbormouth!.support[FG]=5;
+    expect(play(s,{operation:'rally',districtId:'harbormouth'}).baselineApplied).toBe(true);
+  });
+  it('adds one per bridge and region law, not one per moving Support',()=>{
+    const s=state([7,17,29]);put(s,'grand-market',HC,2);
+    const r=play(s,{operation:'organise',sourceDistrictId:'grand-market',destinationDistrictId:'northgate',count:2});
+    expect(r.baselineApplied).toBe(true);expect(r.state.districts['grand-market']!.support[HC]).toBe(1);expect(r.state.districts.northgate!.support[HC]).toBe(3);
+  });
+  it('does not count hypothetical bridges on long-distance moves',()=>{
+    const s=state([9,29]);put(s,'harbormouth',HC);put(s,'coast',HC);
+    expect(play(s,move('harbormouth','coast')).state.districts.coast!.support[HC]).toBe(2);
+  });
+  it('requires a different Support for Chain Migration without triggering loops',()=>{
+    const s=state([28,17,29]);put(s,'grand-market',HC);put(s,'harbormouth',HC);
+    expect(play(s,move('grand-market','northgate')).baselineApplied).toBe(false);
+    const r=play(s,{operation:'organise',sourceDistrictId:'grand-market',destinationDistrictId:'northgate',chainSourceDistrictId:'harbormouth'});
+    expect(r.baselineApplied).toBe(true);expect(r.state.districts['grand-market']!.support[HC]).toBe(2);expect(r.state.districts.northgate!.support[HC]).toBe(2);
+    const alone=state([28]);put(alone,'grand-market',HC);
+    expect(play(alone,move('grand-market','northgate')).supportChanges).toHaveLength(1);
+  });
+  it('orders Bonus and law extras freely, skips impossible extras and rejects omission',()=>{
+    const s=state([28]);put(s,'harbormouth',HC);put(s,'harbormouth',FG,5);put(s,'ironwood',HC);
+    const choice={operation:'organise' as const,sourceDistrictId:'harbormouth',destinationDistrictId:'grand-market',chainSourceDistrictId:'ironwood'};
+    const digFirst=play(s,{...choice,followUpOrder:['bonus',28]},'old-shell-dig-in');
+    expect(digFirst.baselineApplied).toBe(true);expect(digFirst.state.districts.ironwood!.support[HC]).toBe(1);
+    const chainFirst=play(s,{...choice,followUpOrder:[28,'bonus']},'old-shell-dig-in');
+    expect(chainFirst.baselineApplied).toBe(true);expect(chainFirst.state.districts.ironwood!.support[HC]).toBeUndefined();
+    expect(play(s,{...choice,followUpOrder:['bonus']},'old-shell-dig-in').baselineApplied).toBe(false);
+    expect(play(s,{...choice,followUpOrder:[28,28]},'old-shell-dig-in').baselineApplied).toBe(false);
+  });
+});
+describe('retained Operation Bonuses',()=>{
+  it('resolves Waggle Route and atomically rejects unavailable extras',()=>{
+    const s=state();put(s,'harbormouth',HC);put(s,'grand-market',FG,5);
+    const before=structuredClone(s);const r=play(s,move('harbormouth','grand-market'),'honeycomb-waggle-route');
+    expect(r.baselineApplied).toBe(false);expect(r.state).toEqual(before);expect(s).toEqual(before);
+    s.districts['grand-market']!.support[FG]=4;
+    expect(play(s,move('harbormouth','grand-market'),'honeycomb-waggle-route').state.districts['grand-market']!.support[HC]).toBe(2);
+  });
+  it('skips Dig In refill after an exchange fills its source',()=>{
+    const s=state([10]);put(s,'harbormouth',HC);put(s,'harbormouth',FG,5);put(s,'grand-market',FG,6);
+    expect(play(s,{operation:'organise',sourceDistrictId:'harbormouth',destinationDistrictId:'grand-market',swapPartyIds:[FG]},'old-shell-dig-in').baselineApplied).toBe(true);
+  });
+  it.each(['foxglove-spin','old-shell-stonewall','night-parliament-midnight-leak'] as const)('resolves %s normally after displacement',bonus=>{
+    const s=state([14]);put(s,'harbormouth',HC);put(s,'grand-market',FG,2);put(s,'ironwood',FG);
+    const r=play(s,{operation:'smear',districtId:'grand-market',rivalParty:FG,displacementDistrictId:'northgate',bonusDistrictId:'ironwood'},bonus);
+    expect(r.baselineApplied).toBe(true);expect(r.bonusApplied).toBe(true);expect(r.state.districts.northgate!.support[FG]).toBe(1);
+  });
+  it('skips Midnight Leak when no neighboring rival remains',()=>{
+    const s=state();put(s,'harbormouth',HC);put(s,'grand-market',FG);
+    expect(play(s,{operation:'smear',districtId:'grand-market',rivalParty:FG},'night-parliament-midnight-leak').bonusApplied).toBe(true);
+  });
+  it('keeps Canal Network standalone, including its route and group size',()=>{
+    const s=state([17,29,28]);put(s,'harbormouth',HC,3);put(s,'grand-market',HC);
+    const r=play(s,{operation:'organise',sourceDistrictId:'harbormouth',destinationDistrictId:'northgate',count:3},'riverworks-canal-network');
+    expect(r.baselineApplied).toBe(true);expect(r.supportChanges).toHaveLength(3);
+  });
+  it('resolves Public Works, Quiet Hours and Scatter the Flock',()=>{
+    const s=state();put(s,'harbormouth',HC);
+    expect(play(s,{operation:'rally',districtId:'harbormouth',bonusDistrictId:'grand-market'},'riverworks-public-works').bonusApplied).toBe(true);
+    expect(play(s,{operation:'rally',districtId:'harbormouth',bonusDistrictId:'coast'},'night-parliament-quiet-hours').bonusApplied).toBe(true);
+    expect(play(s,{operation:'rally',districtId:'harbormouth',bonusDistrictIds:['grand-market','ironwood']},'many-wings-scatter-the-flock').bonusApplied).toBe(true);
+  });
+});

@@ -1,62 +1,11 @@
-import type { DistrictState, OperationState, Party } from "./operations.js";
-import {
-  DISTRICTS,
-  type RegionId,
-  type ScoringCard as ContentScoringCard,
-  type SeatReference
-} from "@bellweather/content";
+import { DISTRICTS, REGION_IDS, POLICIES_BY_ID, activeLawEffects, votesFor, type RegionId, type PolicyId, type ScoringCard } from "@bellweather/content";
+import type { DistrictState, Party } from "./operations.js";
+import type { ElectionRecord } from "./model.js";
 
-export type RelativeSeat =
-  | "left"
-  | "right"
-  | "second-left"
-  | "second-right";
-
-export interface ElectionObjective {
-  regionId: RegionId;
-  party: Party;
-}
-
-export interface ScoringCard {
-  id: string;
-  objectives: readonly ElectionObjective[];
-  positiveSeat?: RelativeSeat;
-  negativeSeat?: RelativeSeat;
-}
-
-export interface ElectionPlayer {
-  id: string;
-  position: number;
-  points: number;
-  cards: ScoringCard[];
-  capitalCard: ScoringCard;
-  finalCardCount: number;
-}
-
-export interface RecordedDistrictDraw {
-  districtId: string;
-  parties: Party[];
-}
-
-export interface ElectionScore {
-  playerId: string;
-  baseRegionScore: number;
-  seatModifier: number;
-  capitalMatches: number;
-  capitalScore: number;
-  finalCardCount: number | null;
-  finalCardRankBonus: number;
-  pointsChange: number;
-  resultingPoints: number;
-}
-
-export interface ElectionResult {
-  draws: Record<string, RecordedDistrictDraw>;
-  scores: ElectionScore[];
-  players: ElectionPlayer[];
-  winnerIds: string[];
-}
-
+export interface ElectionPlayer { id: string; position: number; points: number; card: ScoringCard; finalCardCount: number; }
+export interface RecordedDistrictDraw { districtId: string; parties: Party[]; }
+export type ElectionScore = ElectionRecord["scores"][number];
+export interface ElectionResult { draws: Record<string, RecordedDistrictDraw>; scores: ElectionScore[]; policyVotes: ElectionRecord["policyVotes"]; winnerIds: string[]; }
 export function recordElectionDraws(
   districts: Readonly<Record<string, DistrictState>>,
   random: () => number
@@ -111,89 +60,54 @@ export function retainElectionSupport(
   return retained;
 }
 
+
 export function scoreElectionDay(input: {
-  state: Pick<OperationState, "districts" | "coalitionTargets">;
+  state: { districts: Record<string, DistrictState> };
+  pendingPolicies: Partial<Record<RegionId, PolicyId>>;
+  enactedPolicyIds: readonly PolicyId[];
   players: readonly ElectionPlayer[];
   random: () => number;
   finalElection: boolean;
 }): ElectionResult {
-  if (input.players.length < 2 || input.players.length > 6) {
-    throw new Error("Election Day requires two to six players");
-  }
-  const players = [...input.players].sort(
-    (left, right) => left.position - right.position
-  );
-  if (
-    players.some((player, index) => player.position !== index)
-  ) {
-    throw new Error("Election players require unique contiguous seat positions");
-  }
-  const draws = recordElectionDraws(
-    input.state.districts,
-    input.random
-  );
-  const baseScores = new Map(
-    players.map((player) => [
-      player.id,
-      player.cards.reduce(
-        (score, card) =>
-          score + scoreCard(card, draws, input.state.coalitionTargets),
-        0
-      )
-    ])
-  );
-  const finalCardBonuses = input.finalElection
-    ? finalCardRankBonuses(players)
-    : new Map<string, number>();
-  const scores = players.map((player, seatIndex): ElectionScore => {
-    const baseRegionScore = baseScores.get(player.id)!;
-    const seatModifier =
-      players.length < 4
-        ? 0
-        : referencedScore(
-            players,
-            seatIndex,
-            singleScoringCard(player).positiveSeat,
-            baseScores
-          ) -
-          referencedScore(
-            players,
-            seatIndex,
-            singleScoringCard(player).negativeSeat,
-            baseScores
-          );
-    const { matches: capitalMatches, score: capitalScore } = scoreCapital(
-      player.capitalCard,
-      input.state.districts["bellweather-centre"]
-    );
-    const finalCardRankBonus = finalCardBonuses.get(player.id) ?? 0;
-    const pointsChange =
-      baseRegionScore + seatModifier + capitalScore + finalCardRankBonus;
-    return {
-      playerId: player.id,
-      baseRegionScore,
-      seatModifier,
-      capitalMatches,
-      capitalScore,
-      finalCardCount: input.finalElection ? player.finalCardCount : null,
-      finalCardRankBonus,
-      pointsChange,
-      resultingPoints: player.points + pointsChange
-    };
+  const draws = recordElectionDraws(input.state.districts, input.random);
+  const support = retainElectionSupport(input.state.districts, draws);
+  const policyVotes = REGION_IDS.map(regionId => {
+    const policyId = input.pendingPolicies[regionId];
+    if (policyId === undefined) throw new Error(`Missing policy for ${regionId}`);
+    const policy = POLICIES_BY_ID[policyId];
+    let forVotes = 0, againstVotes = 0;
+    for (const district of DISTRICTS.filter(d => d.regionId === regionId)) {
+      for (const [party, count] of Object.entries(support[district.id]!)) {
+        if (votesFor(party as Party, policy)) forVotes += count ?? 0;
+        else againstVotes += count ?? 0;
+      }
+    }
+    return { regionId, policyId, forVotes, againstVotes, passed: forVotes > againstVotes };
   });
-  const scoredPlayers = players.map((player) => ({
-    ...player,
-    points: scores.find((score) => score.playerId === player.id)!.resultingPoints
-  }));
-
-  return {
-    draws,
-    scores,
-    players: scoredPlayers,
-    winnerIds: input.finalElection ? determineWinners(scoredPlayers) : []
-  };
+  const enacted = [...input.enactedPolicyIds, ...policyVotes.filter(v => v.passed).map(v => v.policyId)];
+  const bonuses = finalCardRankBonuses(input.players);
+  const scores = input.players.map(player => {
+    const policyScores = input.finalElection ? scorePolicies(player.card, enacted) : [];
+    const policyScore = policyScores.reduce((total, score) => total + score.net, 0);
+    const finalCardRankBonus = input.finalElection ? bonuses.get(player.id)! : 0;
+    const pointsChange = policyScore + finalCardRankBonus;
+    return { playerId: player.id, policyScore, policyScores, finalCardCount: input.finalElection ? player.finalCardCount : null, finalCardRankBonus, pointsChange, resultingPoints: player.points + pointsChange };
+  });
+  return { draws, policyVotes, scores, winnerIds: input.finalElection ? determineWinners(scores.map(s => ({id: s.playerId, points: s.resultingPoints}))) : [] };
 }
 
+export function scorePolicies(card: ScoringCard, policyIds: readonly PolicyId[]): ElectionScore["policyScores"] {
+  const effects = activeLawEffects(policyIds);
+  const value = (category: ScoringCard["order"][number]) => {
+    const printed = 6 - card.order.indexOf(category);
+    return printed === 6 && effects.includes(19) ? 4 : printed === 1 && effects.includes(20) ? 3 : printed;
+  };
+  return policyIds.map(policyId => {
+    const policy = POLICIES_BY_ID[policyId];
+    const gain = value(policy.plus), loss = value(policy.minus);
+    return { policyId, gain, loss, net: gain - loss };
+  });
+}
 export function finalCardRankBonuses(
   players: readonly Pick<ElectionPlayer, "id" | "finalCardCount">[]
 ): Map<string, number> {
@@ -210,63 +124,6 @@ export function finalCardRankBonuses(
   ]));
 }
 
-export function scoreCapital(
-  card: ScoringCard,
-  capital: DistrictState | undefined
-): { matches: number; score: number } {
-  if (capital === undefined) {
-    throw new Error("Bellweather Centre is required for Capital scoring");
-  }
-  const parties = new Set(card.objectives.map((objective) => objective.party));
-  const matches = [...parties].filter(
-    (party) => (capital.support[party] ?? 0) > 0
-  ).length;
-  return {
-    matches,
-    score: matches === 3 ? 3 : matches === 2 ? 1 : 0
-  };
-}
-
-function singleScoringCard(player: ElectionPlayer): ScoringCard {
-  if (player.cards.length !== 1) {
-    throw new Error("Four-to-six-player elections require one scoring card per player");
-  }
-  return player.cards[0]!;
-}
-
-export function toElectionScoringCard(card: ContentScoringCard): ScoringCard {
-  return {
-    id: card.id,
-    objectives: card.objectives.map((objective) => ({
-      regionId: objective.regionId,
-      party: objective.partyId
-    })),
-    positiveSeat: card.gain as SeatReference,
-    negativeSeat: card.lose as SeatReference
-  };
-}
-
-export function scoreCard(
-  card: ScoringCard,
-  draws: Readonly<Record<string, RecordedDistrictDraw>>,
-  coalitionTargets: Readonly<Record<Party, Party | null>>
-): number {
-  if (card.objectives.length !== 3 || new Set(card.objectives.map((o) => o.regionId)).size !== 3) {
-    throw new Error("A scoring card requires one objective per region");
-  }
-  const scores = card.objectives.map((objective) => {
-    const matchingParties = new Set<Party>([objective.party]);
-    const target = coalitionTargets[objective.party];
-    if (target !== null && coalitionTargets[target] === objective.party) matchingParties.add(target);
-    return DISTRICTS.filter((district) => district.regionId === objective.regionId).reduce((total, district) => {
-      const draw = draws[district.id];
-      if (draw === undefined) throw new Error(`Missing recorded draw for ${district.id}`);
-      return total + draw.parties.filter((party) => matchingParties.has(party)).length;
-    }, 0);
-  });
-  return scores.sort((a, b) => a - b)[1]!;
-}
-
 export function determineWinners(
   players: readonly Pick<ElectionPlayer, "id" | "points">[]
 ): string[] {
@@ -277,46 +134,6 @@ export function determineWinners(
   return players
     .filter((player) => player.points === highest)
     .map((player) => player.id);
-}
-
-export function relativeSeatIndex(
-  seatIndex: number,
-  playerCount: number,
-  relativeSeat: RelativeSeat
-): number {
-  if (
-    !Number.isInteger(seatIndex) ||
-    !Number.isInteger(playerCount) ||
-    playerCount < 2 ||
-    seatIndex < 0 ||
-    seatIndex >= playerCount
-  ) {
-    throw new Error("Invalid player seating");
-  }
-  const offset =
-    relativeSeat === "left"
-      ? -1
-      : relativeSeat === "right"
-        ? 1
-        : relativeSeat === "second-left"
-          ? -2
-          : 2;
-  return (seatIndex + offset + playerCount) % playerCount;
-}
-
-function referencedScore(
-  players: readonly ElectionPlayer[],
-  seatIndex: number,
-  reference: RelativeSeat | undefined,
-  baseScores: ReadonlyMap<string, number>
-): number {
-  if (reference === undefined) {
-    throw new Error(
-      "Four-to-six-player scoring cards require both seat references"
-    );
-  }
-  const player = players[relativeSeatIndex(seatIndex, players.length, reference)]!;
-  return baseScores.get(player.id)!;
 }
 
 function drawCount(capacity: number): number {
