@@ -36,6 +36,7 @@ for font_requirement in "${font_requirements[@]}"; do
 done
 
 python "$repository_root/scripts/generate-default-map.py"
+python "$repository_root/scripts/generate-physical-map.py"
 node --conditions=development --import tsx "$repository_root/scripts/generate-scoring-cards.ts"
 node "$repository_root/scripts/generate-candidate-bonus-cards.mjs"
 

@@ -27,28 +27,30 @@
       <section>
         <span class="status decided">Decided</span>
         <h2 id="district-map">District map</h2>
-        <p>The default inland map has sixteen districts, 57 Support spaces and 23 adjacencies: fourteen shared borders and nine bridges. Urban, Mixed and Outlying each hold 18 Support; Bellweather Centre holds 3 separately. Water severs adjacency for every effect, including Smear, except at a marked bridge. Point contacts do not count.</p>
+        <p>The physical inland map has fifteen districts, 51 Support spaces and 21 adjacencies: thirteen shared borders and eight bridges. Urban holds 18 Support (9 votes), Industrial Belt 14 (7 votes), and Outlying 16 (8 votes); Bellweather Centre keeps its 3 Support and votes without thinning. Water severs adjacency for every effect, including Smear, except at a marked bridge. Point contacts do not count.</p>
         <div class="table-wrap" role="region" aria-label="District capacities and neighbors" tabindex="0"><table>
           <thead><tr><th>District</th><th>Region</th><th>Support</th><th>Votes</th><th>Neighbors</th></tr></thead>
           <tbody>
 <tr><td>Harbormouth</td><td>Urban</td><td>6</td><td>3</td><td>Grand Market, Ironwood</td></tr>
-<tr><td>Grand Market</td><td>Urban</td><td>6</td><td>3</td><td>Harbormouth, Ironwood, Northgate</td></tr>
+<tr><td>Grand Market</td><td>Urban</td><td>6</td><td>3</td><td>Harbormouth, Ironwood, Crown Road</td></tr>
 <tr><td>Ironwood</td><td>Urban</td><td>6</td><td>3</td><td>Harbormouth, Grand Market, Heath, Bellweather Centre</td></tr>
-<tr><td>Northgate</td><td>Mixed</td><td>6</td><td>3</td><td>Grand Market, Canal Ward</td></tr>
-<tr><td>Canal Ward</td><td>Mixed</td><td>4</td><td>2</td><td>Northgate, Crown Road, Bellweather Centre</td></tr>
-<tr><td>Crown Road</td><td>Mixed</td><td>4</td><td>2</td><td>Canal Ward, Orchard, Meadow</td></tr>
-<tr><td>Orchard</td><td>Mixed</td><td>2</td><td>1</td><td>Crown Road, Meadow</td></tr>
-<tr><td>Meadow</td><td>Mixed</td><td>2</td><td>1</td><td>Crown Road, Orchard, Eastfield</td></tr>
+<tr><td>Northgate</td><td>Industrial Belt</td><td>6</td><td>3</td><td>Canal Ward</td></tr>
+<tr><td>Canal Ward</td><td>Industrial Belt</td><td>4</td><td>2</td><td>Northgate, Crown Road, Meadow, Bellweather Centre</td></tr>
+<tr><td>Crown Road</td><td>Industrial Belt</td><td>2</td><td>1</td><td>Grand Market, Canal Ward</td></tr>
+<tr><td>Meadow</td><td>Industrial Belt</td><td>2</td><td>1</td><td>Canal Ward, Eastfield</td></tr>
 <tr><td>Westfield</td><td>Outlying</td><td>2</td><td>1</td><td>Eastfield, Marsh, Vale, Bellweather Centre</td></tr>
 <tr><td>Eastfield</td><td>Outlying</td><td>4</td><td>2</td><td>Meadow, Westfield, Marsh</td></tr>
 <tr><td>Marsh</td><td>Outlying</td><td>2</td><td>1</td><td>Westfield, Eastfield</td></tr>
 <tr><td>Heath</td><td>Outlying</td><td>2</td><td>1</td><td>Ironwood, Downs, Coast</td></tr>
 <tr><td>Downs</td><td>Outlying</td><td>2</td><td>1</td><td>Heath, Vale, Bellweather Centre</td></tr>
 <tr><td>Vale</td><td>Outlying</td><td>2</td><td>1</td><td>Westfield, Downs, Coast</td></tr>
-<tr><td>Coast</td><td>Outlying</td><td>4</td><td>2</td><td>Heath, Vale</td></tr>
+<tr><td>Coast</td><td>Outlying</td><td>2</td><td>1</td><td>Heath, Vale</td></tr>
 <tr><td>Bellweather Centre</td><td>Centre</td><td>3</td><td>3 (no thinning)</td><td>Ironwood, Canal Ward, Westfield, Downs</td></tr>
-</tbody>
+        </tbody>
         </table></div>
+        <p>Industrial Belt has a capacity-six industrial core (Northgate) behind a capacity-four suburb (Canal Ward), with capacity-two Crown Road and Meadow buffering the Urban and Outlying approaches. Orchard is retired. Outlying has one capacity-four town (Eastfield) and six capacity-two villages, including Coast.</p>
+        <p>The outer regions have 48 spaces and retain at most 24 Support. A full outer map removes 24 at an Election; partially occupied districts remove fewer. The tighter space budget deliberately rewards movement before late-cycle crowding. Urban setup, Centre capacity, Centre retention, and its four neighboring districts are unchanged.</p>
+        <p><strong>Physical prototype only:</strong> the browser app and <a href="../rules/current-rules.html">current rulebook</a> still use the preceding Mixed-region map. Use this component specification for the physical map. <a href="../../archive/components/before-industrial-belt-2026-09-16/board.html">Previous board specification</a> · <a href="../../archive/components/before-industrial-belt-2026-09-16/policy-district-map.svg">Previous map</a>.</p>
         <p>At setup, Harbormouth, Grand Market, and Ironwood each contain one Support from every party and therefore begin full. Bellweather Centre does not participate in ordinary Election draws; it remains intact and casts up to three votes on its own policy as the fourth region.</p>
         <p><a href="../../assets/print/policy-district-map-a3.pdf">Open the current A3 map PDF →</a></p>
       </section>
@@ -72,6 +74,6 @@
         <p>Print the <a href="../assets/policy-district-map.svg">default map SVG</a> or <a href="../../assets/print/policy-district-map-a3.pdf">A3 map PDF</a> at 100% on landscape A3 (420 × 297 mm). The map uses enlarged inland territories and a separate central Bellweather island. Support circles are approximately 6.4 mm across; final physical Support-token size remains an open fit question. Keep party boards beside the map. The <a href="../../archive/rules/ruleset-23.html">replaced rules and components</a> remain archived.</p>
       </section>
     </main>
-    <footer class="page-footer"><div class="page-footer-inner"><a href="cards.html">Next component: Cards →</a><span class="stamp">16 districts / 6 years / 4 policy regions</span></div></footer>
+    <footer class="page-footer"><div class="page-footer-inner"><a href="cards.html">Next component: Cards →</a><span class="stamp">15 districts / 6 years / 4 policy regions</span></div></footer>
   </body>
 </html>

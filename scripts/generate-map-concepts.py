@@ -343,7 +343,7 @@ def study_page(study,report):
     return '\n'.join(page)+'\n'
 
 
-def border_edges(study):
+def border_edges(study, allow_bottlenecks=False):
     nodes=study['nodes']
     edges=list(study['required'])
     keys=list(nodes)
@@ -376,7 +376,8 @@ def border_edges(study):
     graph=graph_from(nodes,edges)
     assert len(components(graph))==1
     facts=graph_facts(study,edges,graph)
-    assert not facts['dead_ends'] and not facts['cut_districts'] and not facts['cut_routes']
+    if not allow_bottlenecks:
+        assert not facts['dead_ends'] and not facts['cut_districts'] and not facts['cut_routes']
     assert len(facts['region_components']['Urban'])==1
     return edges,graph
 
