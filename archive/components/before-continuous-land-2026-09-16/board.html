@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="District map, policy display, Year register, and yearly party access areas for Bellweather policy prototype.">
+    <title>Board — Ladder Bidding</title>
+    <link rel="stylesheet" href="../../../docs/styles.css">
+  </head>
+  <body>
+    <header class="page-header"><div class="header-inner"><a class="brand" href="../../../docs/index.html"><span class="brand-mark" aria-hidden="true">LB</span>Design archive / 03.1</a><h1>Board</h1><p class="meta">District Support, policy proposals, and yearly party access.</p></div></header>
+    <main>
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../../../docs/index.html">Index</a><span>/</span>Board</nav>
+      <p class="intro">The physical table has a fixed Support map, a shared enacted-laws display and Year tracker, and six party areas. There is no shared auction or persistent party-order track.</p>
+      <section>
+        <span class="status decided">Decided</span>
+        <h2>Party areas</h2>
+        <p>Each party area must show its identity, three blank card-sized Bonus spaces, a fixed public issue ranking, annual Firm opening position, and public Operation pile. The party’s three Bonus cards occupy all three spaces. A Firm marker on a party identifies who receives that party’s pile when it closes; it is not a bid. Its presence also means the party is open.</p>
+        <ul>
+          <li>The pile must hold and expose the families of played Operation cards.</li>
+          <li>A Bonus card’s presence in any blank space visibly shows that it is available at its home party.</li>
+          <li>Returning a Firm marker closes its party. No separate Closed state or marker is required.</li>
+          <li>Quiet Hours needs no delayed marker; its chosen empty district is resolved immediately after Rally.</li>
+        </ul>
+        <p>The <a href="../../../docs/components/party-boards.html">printable party workspaces</a> place an exact card-sized Firm opening and public Operation pile beside three blank, card-sized <a href="../../../docs/components/bonus-cards.html">Bonus-card spaces</a>; its fixed issue ranking determines its vote on every policy.</p>
+      </section>
+      <section>
+        <span class="status decided">Decided</span>
+        <h2 id="district-map">District map</h2>
+        <p>The physical inland map has fifteen districts, 51 Support spaces and 21 adjacencies: thirteen shared borders and eight bridges. Urban holds 18 Support (9 votes), Industrial Belt 14 (7 votes), and Outlying 16 (8 votes); Bellweather Centre keeps its 3 Support and votes without thinning. Water severs adjacency for every effect, including Smear, except at a marked bridge. Point contacts do not count.</p>
+        <div class="table-wrap" role="region" aria-label="District capacities and neighbors" tabindex="0"><table>
+          <thead><tr><th>District</th><th>Region</th><th>Support</th><th>Votes</th><th>Neighbors</th></tr></thead>
+          <tbody>
+<tr><td>Harbormouth</td><td>Urban</td><td>6</td><td>3</td><td>Grand Market, Ironwood</td></tr>
+<tr><td>Grand Market</td><td>Urban</td><td>6</td><td>3</td><td>Harbormouth, Ironwood, Crown Road</td></tr>
+<tr><td>Ironwood</td><td>Urban</td><td>6</td><td>3</td><td>Harbormouth, Grand Market, Heath, Bellweather Centre</td></tr>
+<tr><td>Northgate</td><td>Industrial Belt</td><td>6</td><td>3</td><td>Canal Ward</td></tr>
+<tr><td>Canal Ward</td><td>Industrial Belt</td><td>4</td><td>2</td><td>Northgate, Crown Road, Meadow, Bellweather Centre</td></tr>
+<tr><td>Crown Road</td><td>Industrial Belt</td><td>2</td><td>1</td><td>Grand Market, Canal Ward</td></tr>
+<tr><td>Meadow</td><td>Industrial Belt</td><td>2</td><td>1</td><td>Canal Ward, Eastfield</td></tr>
+<tr><td>Westfield</td><td>Outlying</td><td>2</td><td>1</td><td>Eastfield, Marsh, Vale, Bellweather Centre</td></tr>
+<tr><td>Eastfield</td><td>Outlying</td><td>4</td><td>2</td><td>Meadow, Westfield, Marsh</td></tr>
+<tr><td>Marsh</td><td>Outlying</td><td>2</td><td>1</td><td>Westfield, Eastfield</td></tr>
+<tr><td>Heath</td><td>Outlying</td><td>2</td><td>1</td><td>Ironwood, Downs, Coast</td></tr>
+<tr><td>Downs</td><td>Outlying</td><td>2</td><td>1</td><td>Heath, Vale, Bellweather Centre</td></tr>
+<tr><td>Vale</td><td>Outlying</td><td>2</td><td>1</td><td>Westfield, Downs, Coast</td></tr>
+<tr><td>Coast</td><td>Outlying</td><td>2</td><td>1</td><td>Heath, Vale</td></tr>
+<tr><td>Bellweather Centre</td><td>Centre</td><td>3</td><td>3 (no thinning)</td><td>Ironwood, Canal Ward, Westfield, Downs</td></tr>
+        </tbody>
+        </table></div>
+        <p>Industrial Belt has a capacity-six industrial core (Northgate) behind a capacity-four suburb (Canal Ward), with capacity-two Crown Road and Meadow buffering the Urban and Outlying approaches. Orchard is retired. Outlying has one capacity-four town (Eastfield) and six capacity-two villages, including Coast.</p>
+        <p>The outer regions have 48 spaces and retain at most 24 Support. A full outer map removes 24 at an Election; partially occupied districts remove fewer. The tighter space budget deliberately rewards movement before late-cycle crowding. Urban setup, Centre capacity, Centre retention, and its four neighboring districts are unchanged.</p>
+        <p><strong>Physical prototype only:</strong> the browser app and <a href="../../../docs/rules/current-rules.html">current rulebook</a> still use the preceding Mixed-region map. Use this component specification for the physical map. <a href="../before-industrial-belt-2026-09-16/board.html">Previous board specification</a> · <a href="../before-industrial-belt-2026-09-16/policy-district-map.svg">Previous map</a>.</p>
+        <p>At setup, Harbormouth, Grand Market, and Ironwood each contain one Support from every party and therefore begin full. Bellweather Centre does not participate in ordinary Election draws; it remains intact and casts up to three votes on its own policy as the fourth region.</p>
+        <p><a href="policy-district-map-a3.pdf">Open the current A3 map PDF →</a></p>
+      </section>
+      <section>
+        <span class="status decided">Decided</span>
+        <h2>Policy display</h2><p>Place one face-up policy beside each of the four <a href="../../../docs/components/policy-region-labels.html">region labels</a>. Use a separate shared display for enacted laws, with a draw deck and failed-policy discard. Enacted cards need no region-of-origin marker. Keep all law text visible; up to eight laws affect ongoing play.</p></section>
+      <section>
+        <span class="status decided">Decided</span>
+        <h2>Year register</h2>
+        <p>The landscape A3 map has a six-space round/year tracker along its bottom edge. Each approximately 32.5 × 32.5 mm space fits the existing 22 mm Year marker. Advance numerically from 1 through 6; Elections are marked after Years 2, 4 and 6.</p>
+        <p>Midterms are thematic boundaries with no additional procedure. After Years 2, 4, and 6, complete Cleanup and then resolve the corresponding Election. The separate <a href="../../../docs/components/campaign-score-trackers.html">A4 public ledger</a> now contains only the final score ledger, with space for negative totals.</p>
+      </section>
+      <section>
+        <span class="status">Superseded</span>
+        <h2>Retired Pecking Order</h2>
+        <p>The mandatory Pecking Order auction, six movable party-order tokens, adjacent swaps, and special low-to-high Operation resolution are retired. Their former role is summarized in the <a href="../auction-components-ruleset-14-2026-08-13.html">component archive</a>; the current Early Bird, Year and Firm pieces are on the <a href="../../../docs/components/shared-state-tokens.html">shared state sheet</a>.</p>
+      </section>
+      <section>
+        <span class="status decided">Decided</span>
+        <h2>Print layout</h2>
+        <p>Print the <a href="policy-district-map.svg">default map SVG</a> or <a href="policy-district-map-a3.pdf">A3 map PDF</a> at 100% on landscape A3 (420 × 297 mm). The map uses enlarged inland territories and a separate central Bellweather island. Support circles are approximately 6.4 mm across; final physical Support-token size remains an open fit question. Keep party boards beside the map. The <a href="../../rules/ruleset-23.html">replaced rules and components</a> remain archived.</p>
+      </section>
+    </main>
+    <footer class="page-footer"><div class="page-footer-inner"><a href="../../../docs/components/cards.html">Next component: Cards →</a><span class="stamp">15 districts / 6 years / 4 policy regions</span></div></footer>
+  </body>
+</html>

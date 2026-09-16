@@ -27,14 +27,17 @@ def main():
         keys = {k for k, d in study['districts'].items() if d['region'] == region}
         assert sorted(study['districts'][k]['capacity'] for k in keys) == capacities
         assert len(concepts.components({k: graph[k] & keys for k in keys})) == 1
-    assert graph['X'] == {'C', 'E', 'I', 'M'}
-    assert graph['D'] == {'E'}
+    assert not study['required'] and not study['water_labels']
+    area = sum(abs(sum(x1*y2-x2*y1 for (x1,y1),(x2,y2) in zip(node['polygon'], node['polygon'][1:] + node['polygon'][:1]))) / 2 for node in study['nodes'].values())
+    assert area == 1108 * 583, 'Districts must cover the whole land rectangle'
     svg = concepts.render_border_map(study, edges, concepts.graph_facts(study, edges, graph))
     for before, after in {
         'Island chain — landscape A4 prototype': 'Bellweather — physical district map',
         'ISLAND CHAIN': 'BELLWEATHER',
         '08 / Inland waterways · A4 landscape': 'Physical prototype / September 2026 · A3 landscape',
         'width="297mm" height="210mm"': 'width="420mm" height="297mm"',
+        'Urban districts share continuous land. Bellweather occupies an island among inland lakes and rivers. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency.': 'Continuous land: shared borders define adjacency for every effect. Point contacts do not count.',
+        'fill="#d9edf5"': 'fill="#f4f1e8"',
         'Three regions of eighteen Support; district elections.': 'Urban 18 Support, Industrial Belt 14, Outlying 16, Centre 3. One policy per region.',
         'Mixed 18 / 9 votes': 'Industrial Belt 14 / 7 votes',
         'Outlying 18 / 9 votes': 'Outlying 16 / 8 votes',
