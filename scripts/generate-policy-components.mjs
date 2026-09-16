@@ -108,7 +108,7 @@ function voteRow(card, forPolicy) {
   }).join('');
   return `<section class="vote-row" aria-label="${label}: ${issue}"><h3><span>${forPolicy ? '+' : '−'} ${issue}</span><small>${label}</small></h3><div class="party-tiles">${tiles}</div></section>`;
 }
-output('docs/components/printable-policy-cards.html', printPage('Policy deck', 'Thirty 63 × 88 mm cards on four sheets. Deal one face up per region. Use identical opaque sleeves for the draw deck.', 'policy-sheet', policies.map((c) => `<article class="policy-card"><header><b>${effectFor(c).scope} policy</b><span>${c.id}</span></header><h2>${escape(c.name)}</h2><div class="policy-votes">${voteRow(c, true)}${voteRow(c, false)}</div><div class="law"><h3>${effectFor(c).name}</h3><p>${effectFor(c).text}</p></div><footer>Pass: For &gt; Against · ${effectFor(c).scope} law<br>${effectFor(c).scope === 'Party' ? 'Most For votes gets effect · ties: leftmost For<br>Recipient’s Operations only · duplicates do not stack' : 'Everyone’s scoring · duplicates do not stack'}</footer></article>`), 9));
+output('docs/components/printable-policy-cards.html', printPage('Policy deck', 'Thirty 63 × 88 mm cards on four sheets. Deal one face up per region. Use identical opaque sleeves for the draw deck.', 'policy-sheet', policies.map((c) => `<article class="policy-card"><header><b>${effectFor(c).scope} policy</b><span>${c.id} · Rev 27</span></header><h2>${escape(c.name)}</h2><div class="policy-votes">${voteRow(c, true)}${voteRow(c, false)}</div><div class="law"><h3>${effectFor(c).name}</h3><p>${effectFor(c).text}</p></div></article>`), 9));
 const boardPath = 'docs/components/party-boards.html';
 let board = readFileSync(root + boardPath, 'utf8');
 for (const p of parties) {
