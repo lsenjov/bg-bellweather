@@ -55,13 +55,13 @@ def main():
         'Mixed 18 / 9 votes': 'Industrial Belt 14 / 7 votes',
         'Outlying 18 / 9 votes': 'Outlying 16 / 8 votes',
         'Bellweather 3 / separate': 'Centre 3 / 3 votes',
-        'Centre · separate': 'Centre · no thinning',
+        'Centre · separate': 'Centre',
         'Industrial Belt · ': '',
         concepts.COLORS['Urban']: '#e6b6a6',
     }.items():
         svg = svg.replace(before, after)
     svg = re.sub(r'<g data-district="([^"]+)">.*?</g>', retained_slots, svg, flags=re.S)
-    legend = '<g aria-label="Retained Support reminder"><circle cx="46" cy="89" r="6" fill="white" stroke="#287a43" stroke-width="3"/><path d="M43,89 l2,2 l4,-5" fill="none" stroke="#287a43" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="60" y="93" font-size="12">Green check slots show how many survive; choose survivors randomly. Centre keeps all.</text></g>'
+    legend = '<g aria-label="Retained Support reminder"><circle cx="46" cy="89" r="6" fill="white" stroke="#287a43" stroke-width="3"/><path d="M43,89 l2,2 l4,-5" fill="none" stroke="#287a43" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="60" y="93" font-size="12">Green check slots show how many survive; choose survivors randomly.</text></g>'
     svg = svg.replace('<rect x="40" y="105"', legend + '\n<rect x="40" y="105"')
     old = default_map.map_trackers()
     old = re.sub(r'<text x="766".*?</text><text x="1024".*?</text>', '', old)

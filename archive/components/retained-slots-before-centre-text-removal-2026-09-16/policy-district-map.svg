@@ -9,7 +9,7 @@
 <rect x="310" y="56" width="16" height="16" fill="#dbeaca" stroke="#19354b"/><text x="334" y="69" font-size="13">Industrial Belt 14 / 7 votes</text>
 <rect x="580" y="56" width="16" height="16" fill="#f5e7ac" stroke="#19354b"/><text x="604" y="69" font-size="13">Outlying 16 / 8 votes</text>
 <rect x="875" y="56" width="16" height="16" fill="#e4dfea" stroke="#19354b"/><text x="899" y="69" font-size="13">Centre 3 / 3 votes</text>
-<g aria-label="Retained Support reminder"><circle cx="46" cy="89" r="6" fill="white" stroke="#287a43" stroke-width="3"/><path d="M43,89 l2,2 l4,-5" fill="none" stroke="#287a43" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="60" y="93" font-size="12">Green check slots show how many survive; choose survivors randomly.</text></g>
+<g aria-label="Retained Support reminder"><circle cx="46" cy="89" r="6" fill="white" stroke="#287a43" stroke-width="3"/><path d="M43,89 l2,2 l4,-5" fill="none" stroke="#287a43" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="60" y="93" font-size="12">Green check slots show how many survive; choose survivors randomly. Centre keeps all.</text></g>
 <rect x="40" y="105" width="1108" height="583" fill="#f4f1e8"/>
 <g data-district="A"><polygon points="260.0,215.0 65.0,230.0 40.0,230.0 40.0,105.0 280.0,105.0 280.0,130.0" fill="#e6b6a6" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="165" y="148" text-anchor="middle">Harbormouth</text><text class="detail" x="165" y="165" text-anchor="middle">Urban</text>
 <circle cx="141.0" cy="185" r="9" fill="white" stroke="#287a43" stroke-width="3" data-retained="true"/><path d="M137,185 l3,3 l5,-6" fill="none" stroke="#287a43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -87,7 +87,7 @@
 <circle cx="132.0" cy="591" r="9" fill="white" stroke="#287a43" stroke-width="3" data-retained="true"/><path d="M128,591 l3,3 l5,-6" fill="none" stroke="#287a43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 <circle cx="156.0" cy="591" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="X"><polygon points="500.0,300.0 610.0,230.0 680.0,300.0 750.0,480.0 650.0,490.0 500.0,470.0 400.0,380.0 500.0,350.0" fill="#e4dfea" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="590" y="373" text-anchor="middle">Bellweather</text><text class="detail" x="590" y="390" text-anchor="middle">Centre</text>
+<g data-district="X"><polygon points="500.0,300.0 610.0,230.0 680.0,300.0 750.0,480.0 650.0,490.0 500.0,470.0 400.0,380.0 500.0,350.0" fill="#e4dfea" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="590" y="373" text-anchor="middle">Bellweather</text><text class="detail" x="590" y="390" text-anchor="middle">Centre · no thinning</text>
 <circle cx="566.0" cy="410" r="9" fill="white" stroke="#287a43" stroke-width="3" data-retained="true"/><path d="M562,410 l3,3 l5,-6" fill="none" stroke="#287a43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 <circle cx="590.0" cy="410" r="9" fill="white" stroke="#287a43" stroke-width="3" data-retained="true"/><path d="M586,410 l3,3 l5,-6" fill="none" stroke="#287a43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 <circle cx="614.0" cy="410" r="9" fill="white" stroke="#287a43" stroke-width="3" data-retained="true"/><path d="M610,410 l3,3 l5,-6" fill="none" stroke="#287a43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
