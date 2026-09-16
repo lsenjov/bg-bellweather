@@ -12,8 +12,8 @@ import {
   type GameAction,
   type GameEvent,
   type GameState
-} from "@bellweather/game";
-import { MIN_PLAYER_COUNT } from "@bellweather/protocol";
+} from "@bellwether/game";
+import { MIN_PLAYER_COUNT } from "@bellwether/protocol";
 import {
   tokenLookup,
   verifySeatToken,

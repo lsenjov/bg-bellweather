@@ -5,7 +5,7 @@ import json
 
 ROOT = Path(__file__).resolve().parents[1]
 DISTRICTS = [
-    ('Bellweather Centre', 'Centre', 3, 0, 100, 135, 405),
+    ('Bellwether Centre', 'Centre', 3, 0, 100, 135, 405),
     ('Harbormouth', 'Urban', 6, 100, 215, 135, 225),
     ('Grand Market', 'Urban', 6, 100, 215, 225, 315),
     ('Ironwood', 'Urban', 6, 100, 215, 315, 405),
@@ -75,7 +75,7 @@ for index, a in enumerate(DISTRICTS):
                 region_neighbors[a[1]].add(b[1])
                 region_neighbors[b[1]].add(a[1])
 
-assert neighbors['Bellweather Centre'] == {'Harbormouth', 'Grand Market', 'Ironwood'}
+assert neighbors['Bellwether Centre'] == {'Harbormouth', 'Grand Market', 'Ironwood'}
 assert not neighbors['Northgate'] & {'Harbormouth', 'Grand Market', 'Ironwood'}
 assert all(len(adjacent) >= 2 for adjacent in neighbors.values())
 assert connected(neighbors)
@@ -96,11 +96,11 @@ for radius in range(0,430,5):
         assert len(covering) == 1
 
 svg = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 1080" role="img" aria-labelledby="title desc">',
-       '<title id="title">Bellweather port: a city around an open harbour</title>',
-       '<desc id="desc">Land forms a 270 degree fan around a 90 degree open harbour. Only the three urban districts touch Bellweather Centre. Mixed districts follow the right shoreline and outlying districts wrap around the left and inland edge. Every pair of regions shares a land border. Water severs adjacency for all effects; there are no harbour crossings. Each region holds 18 Support; Centre holds 3 separately. Every district lies on a loop.</desc>',
+       '<title id="title">Bellwether port: a city around an open harbour</title>',
+       '<desc id="desc">Land forms a 270 degree fan around a 90 degree open harbour. Only the three urban districts touch Bellwether Centre. Mixed districts follow the right shoreline and outlying districts wrap around the left and inland edge. Every pair of regions shares a land border. Water severs adjacency for all effects; there are no harbour crossings. Each region holds 18 Support; Centre holds 3 separately. Every district lies on a loop.</desc>',
        '<style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:10px}</style>',
        '<rect width="1060" height="1080" fill="white"/>',
-       '<text x="40" y="45" font-size="28" font-weight="700">Bellweather port</text>',
+       '<text x="40" y="45" font-size="28" font-weight="700">Bellwether port</text>',
        '<text x="40" y="73" font-size="14">Urban 18 / 9 votes    Mixed 18 / 9 votes    Outlying 18 / 9 votes    Centre 3 separate Support</text>',
        '<rect x="40" y="100" width="980" height="870" fill="#edf2e7"/>',
        '<path d="M 530,565 L 935,970 L 125,970 Z" fill="#b6deed"/>']
@@ -122,7 +122,7 @@ for name,region,capacity,inner,outer,start,end in DISTRICTS:
     if name == 'Crown Road':
         radius = 275
     x,y=point(radius,angle)
-    label = 'Bellweather' if region == 'Centre' else name
+    label = 'Bellwether' if region == 'Centre' else name
     detail = 'Centre · separate' if region == 'Centre' else f'{region} · {capacity//2} '+('vote' if capacity==2 else 'votes')
     svg.append(f'<g data-support-district="{name}" text-anchor="middle"><text class="name" x="{x:.2f}" y="{y-22:.2f}">{label}</text><text class="detail" x="{x:.2f}" y="{y-6:.2f}">{detail}</text>')
     columns = 3 if capacity in (3,6) else 2

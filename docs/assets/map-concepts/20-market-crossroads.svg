@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1020" role="img" aria-labelledby="title desc">
-<title id="title">20. Market crossroads — experimental Bellweather map</title>
-<desc id="desc">Four market approaches meet at Bellweather, with outer settlement routes that can bypass the central crossroads. Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellweather holds three separately.</desc>
+<title id="title">20. Market crossroads — experimental Bellwether map</title>
+<desc id="desc">Four market approaches meet at Bellwether, with outer settlement routes that can bypass the central crossroads. Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellwether holds three separately.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:12px;font-weight:700}.detail{font-size:10px}.terrain{font-size:15px;font-style:italic;fill:#355564}</style>
 <rect width="1200" height="1020" fill="white"/>
 <text x="40" y="44" font-size="27" font-weight="700">20. Market crossroads</text>
-<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellweather 3 separate</text>
+<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellwether 3 separate</text>
 <rect x="40" y="110" width="1120" height="790" rx="12" fill="#eff1e9"/>
-<g data-route="X-A"><title>Bellweather–Harbormouth: market road</title><path d="M 600,505 L 395,505" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,505 L 395,505" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="X-A"><title>Bellwether–Harbormouth: market road</title><path d="M 600,505 L 395,505" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,505 L 395,505" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="A-I"><title>Harbormouth–Westfield: market road</title><path d="M 395,505 L 150,505" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 395,505 L 150,505" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-route="X-B"><title>Bellweather–Grand Market: market road</title><path d="M 600,505 L 600,300" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,505 L 600,300" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="X-B"><title>Bellwether–Grand Market: market road</title><path d="M 600,505 L 600,300" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,505 L 600,300" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="B-K"><title>Grand Market–Marsh: market road</title><path d="M 600,300 L 480,170" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,300 L 480,170" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-route="X-C"><title>Bellweather–Ironwood: market road</title><path d="M 600,505 L 805,505" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,505 L 805,505" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="X-C"><title>Bellwether–Ironwood: market road</title><path d="M 600,505 L 805,505" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,505 L 805,505" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="C-G"><title>Ironwood–Orchard: market road</title><path d="M 805,505 L 1050,505" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 805,505 L 1050,505" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-route="X-D"><title>Bellweather–Northgate: market road</title><path d="M 600,505 L 600,820" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,505 L 600,820" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="X-D"><title>Bellwether–Northgate: market road</title><path d="M 600,505 L 600,820" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,505 L 600,820" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="B-L"><title>Grand Market–Heath: road</title><path d="M 600,300 L 700,160" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,300 L 700,160" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="H-L"><title>Meadow–Heath: road</title><path d="M 860,235 L 700,160" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 860,235 L 700,160" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="H-M"><title>Meadow–Downs: road</title><path d="M 860,235 L 1060,225" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 860,235 L 1060,225" fill="none" stroke="#ffffff" stroke-width="6"/></g>
@@ -57,7 +57,7 @@
 <circle cx="805.0" cy="529" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="818.0" cy="529" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 </g>
-<g data-district="X"><polygon points="546.9,462.0 641.6,462.0 664.0,485.6 660.2,536.0 622.4,548.0 555.2,545.4 536.0,520.0 536.0,483.5" fill="#e4dfea" stroke="#19354b" stroke-width="2"/><text class="name" x="600" y="487" text-anchor="middle">Bellweather</text><text class="detail" x="600" y="502" text-anchor="middle">Centre · separate</text>
+<g data-district="X"><polygon points="546.9,462.0 641.6,462.0 664.0,485.6 660.2,536.0 622.4,548.0 555.2,545.4 536.0,520.0 536.0,483.5" fill="#e4dfea" stroke="#19354b" stroke-width="2"/><text class="name" x="600" y="487" text-anchor="middle">Bellwether</text><text class="detail" x="600" y="502" text-anchor="middle">Centre · separate</text>
 <circle cx="587.0" cy="516" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="600.0" cy="516" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="613.0" cy="516" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>

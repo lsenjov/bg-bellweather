@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Four-agent ruleset-12 Bellweather API playtest of whole-map Election thinning on 11 August 2026.">
-    <title>Whole-Map Election API Playtest — Bellweather</title>
+    <meta name="description" content="Four-agent ruleset-12 Bellwether API playtest of whole-map Election thinning on 11 August 2026.">
+    <title>Whole-Map Election API Playtest — Bellwether</title>
     <link rel="stylesheet" href="../../styles.css">
   </head>
   <body>
@@ -33,8 +33,8 @@
               <tr><th>Configuration</th><td>Counterbid timer off; spectators allowed; game API only</td></tr>
               <tr><th>Game</th><td>C6A4SMMS / 1a030ca1-2907-4227-9372-b9d604a417db</td></tr>
               <tr><th>Duration</th><td>98 seconds from lobby creation to final acknowledgment; 222 replay events</td></tr>
-              <tr><th>Main question</th><td>Does every Election thin all fifteen non-Centre districts while leaving Bellweather Centre unchanged?</td></tr>
-              <tr><th>Expectation</th><td>Each Election records exactly fifteen capacity-based draws, Ironwood falls from its initial six Support to three at Election 1, Bellweather Centre has no draw, and scoring still uses only revealed card objectives.</td></tr>
+              <tr><th>Main question</th><td>Does every Election thin all fifteen non-Centre districts while leaving Bellwether Centre unchanged?</td></tr>
+              <tr><th>Expectation</th><td>Each Election records exactly fifteen capacity-based draws, Ironwood falls from its initial six Support to three at Election 1, Bellwether Centre has no draw, and scoring still uses only revealed card objectives.</td></tr>
             </tbody>
           </table>
         </div>
@@ -45,7 +45,7 @@
         <p>Each player ran the conservative example-agent policy in a detached process. Every round therefore contained four one-Leverage openings, four empty Pecking Order counterbids, and four Organise resolutions. Across the game the replay recorded 48 openings, 48 counterbids, 48 counterbid readiness actions, 48 Organise decisions, and 12 Election acknowledgments.</p>
         <ul>
           <li>This was a strong end-to-end retention and replay smoke test, not a strategic balance test.</li>
-          <li>The shared policy repeatedly used the same Harbormouth-to-Cloverfield route and did not use Court, Rally, Smear, or Bellweather Centre.</li>
+          <li>The shared policy repeatedly used the same Harbormouth-to-Cloverfield route and did not use Court, Rally, Smear, or Bellwether Centre.</li>
           <li>Capacity-four retention was executed but not stressed because those districts were empty at each Election. Focused engine tests remain the evidence for a populated capacity-four draw.</li>
         </ul>
       </section>
@@ -65,7 +65,7 @@
         </div>
         <p><strong>Non-empty draws:</strong> Northreach—Riverworks; Harbormouth—Old Shell, Many Wings, Honeycomb; Grand Market—Old Shell, Foxglove, Riverworks; Ironwood—Honeycomb, Night Parliament, Riverworks.</p>
         <ul>
-          <li>The history contained exactly fifteen district draws and no Bellweather Centre key.</li>
+          <li>The history contained exactly fifteen district draws and no Bellwether Centre key.</li>
           <li>Ironwood began with all six parties and retained exactly three, directly confirming the reported six-to-three failure is fixed.</li>
           <li>Eleven empty districts still produced explicit empty draw records. This makes whole-map processing auditable, but it makes the result substantially more verbose.</li>
           <li>Only Kestrel scored a district point. The broader retention scope did not broaden the scoring scope.</li>
@@ -87,7 +87,7 @@
         </div>
         <p><strong>Non-empty draws:</strong> Northreach—Many Wings; Harbormouth—Honeycomb, Foxglove, Old Shell; Grand Market—Riverworks, Night Parliament, Old Shell; Ironwood—Riverworks, Honeycomb.</p>
         <ul>
-          <li>All fifteen non-Centre districts were recorded again and Bellweather Centre was absent.</li>
+          <li>All fifteen non-Centre districts were recorded again and Bellwether Centre was absent.</li>
           <li>Ironwood had only two Support before the draw, so it correctly retained both rather than padding the result to its draw count of three.</li>
           <li>The same eleven districts were empty. The test exercised repeated whole-map processing but little post-Election repopulation.</li>
         </ul>
@@ -123,9 +123,9 @@
       <section>
         <h2>End-of-game findings</h2>
         <ul>
-          <li><strong>Rule implementation confirmed:</strong> every Election recorded all fifteen non-Centre districts, including districts absent from all revealed cards. Bellweather Centre never appeared in a draw.</li>
+          <li><strong>Rule implementation confirmed:</strong> every Election recorded all fifteen non-Centre districts, including districts absent from all revealed cards. Bellwether Centre never appeared in a draw.</li>
           <li><strong>Reported defect resolved:</strong> Ironwood retained three of its six initial Support at Election 1 instead of remaining at six.</li>
-          <li><strong>Centre remains untested strategically:</strong> Bellweather Centre was empty at the observed Election snapshots and at game end. This session confirms that no Centre draw was recorded, but it does not exercise preservation of non-empty Centre Support or provide evidence about the Centre's value as a jumping-off point or blocker.</li>
+          <li><strong>Centre remains untested strategically:</strong> Bellwether Centre was empty at the observed Election snapshots and at game end. This session confirms that no Centre draw was recorded, but it does not exercise preservation of non-empty Centre Support or provide evidence about the Centre's value as a jumping-off point or blocker.</li>
           <li><strong>Presentation question:</strong> 33 of the 45 district draw records were empty. Explicit empty draws improve auditability, but an Election bulletin may need compact grouping to keep the meaningful retained Support visible.</li>
           <li><strong>Agent-policy limit:</strong> identical conservative policies concentrated activity in four starting or adjacent districts. The next test should deliberately populate capacity-two, capacity-four, and capacity-six districts across the map and route Support through the Centre before every Election.</li>
         </ul>

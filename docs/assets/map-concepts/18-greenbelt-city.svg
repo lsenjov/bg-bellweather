@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1020" role="img" aria-labelledby="title desc">
-<title id="title">18. Greenbelt city — experimental Bellweather map</title>
-<desc id="desc">An urban core is separated from satellite settlements by a greenbelt. Four access corridors connect different parts of the core to the outer circuit. Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellweather holds three separately.</desc>
+<title id="title">18. Greenbelt city — experimental Bellwether map</title>
+<desc id="desc">An urban core is separated from satellite settlements by a greenbelt. Four access corridors connect different parts of the core to the outer circuit. Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellwether holds three separately.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:12px;font-weight:700}.detail{font-size:10px}.terrain{font-size:15px;font-style:italic;fill:#355564}</style>
 <rect width="1200" height="1020" fill="white"/>
 <text x="40" y="44" font-size="27" font-weight="700">18. Greenbelt city</text>
-<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellweather 3 separate</text>
+<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellwether 3 separate</text>
 <rect x="40" y="110" width="1120" height="790" rx="12" fill="#eff1e9"/>
 <ellipse cx="600" cy="520" rx="245" ry="245" fill="none" stroke="#9fbd94" stroke-width="34"/>
 <g data-route="A-J"><title>Harbormouth–Eastfield: gate</title><path d="M 455,470 L 250.0,520.0" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 455,470 L 250.0,520.0" fill="none" stroke="#ffffff" stroke-width="6"/></g>
@@ -13,7 +13,7 @@
 <g transform="translate(600.0 282.0) rotate(-90.0)" aria-label="gate"><rect x="-15" y="-8" width="30" height="16" fill="#fff5d8" stroke="#19354b" stroke-width="2"/><path d="M -15,-11 h30 M -15,11 h30" stroke="#19354b" stroke-width="2"/></g>
 <g data-route="C-O"><title>Ironwood–Coast: gate</title><path d="M 745,470 L 903.1,345.0" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 745,470 L 903.1,345.0" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g transform="translate(819.3 411.2) rotate(-38.3)" aria-label="gate"><rect x="-15" y="-8" width="30" height="16" fill="#fff5d8" stroke="#19354b" stroke-width="2"/><path d="M -15,-11 h30 M -15,11 h30" stroke="#19354b" stroke-width="2"/></g>
-<g data-route="X-G"><title>Bellweather–Orchard: gate</title><path d="M 600,605 L 600.0,845" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,605 L 600.0,845" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="X-G"><title>Bellwether–Orchard: gate</title><path d="M 600,605 L 600.0,845" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,605 L 600.0,845" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g transform="translate(600.0 756.2) rotate(90.0)" aria-label="gate"><rect x="-15" y="-8" width="30" height="16" fill="#fff5d8" stroke="#19354b" stroke-width="2"/><path d="M -15,-11 h30 M -15,11 h30" stroke="#19354b" stroke-width="2"/></g>
 <g data-route="F-G"><title>Crown Road–Orchard: road</title><path d="M 775.0,823.1 L 600.0,845" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 775.0,823.1 L 600.0,845" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="G-H"><title>Orchard–Meadow: road</title><path d="M 600.0,845 L 425.0,823.1" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600.0,845 L 425.0,823.1" fill="none" stroke="#ffffff" stroke-width="6"/></g>
@@ -29,9 +29,9 @@
 <g data-route="M-N"><title>Downs–Vale: road</title><path d="M 600.0,170.0 L 775.0,216.9" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600.0,170.0 L 775.0,216.9" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="A-B"><title>Harbormouth–Grand Market: road</title><path d="M 455,470 L 600,345" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 455,470 L 600,345" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="B-C"><title>Grand Market–Ironwood: road</title><path d="M 600,345 L 745,470" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,345 L 745,470" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-route="A-X"><title>Harbormouth–Bellweather: road</title><path d="M 455,470 L 600,605" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 455,470 L 600,605" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-route="C-X"><title>Ironwood–Bellweather: road</title><path d="M 745,470 L 600,605" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 745,470 L 600,605" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-route="B-X"><title>Grand Market–Bellweather: road</title><path d="M 600,345 L 600,605" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,345 L 600,605" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="A-X"><title>Harbormouth–Bellwether: road</title><path d="M 455,470 L 600,605" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 455,470 L 600,605" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="C-X"><title>Ironwood–Bellwether: road</title><path d="M 745,470 L 600,605" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 745,470 L 600,605" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="B-X"><title>Grand Market–Bellwether: road</title><path d="M 600,345 L 600,605" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600,345 L 600,605" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-district="A"><polygon points="406.9,428.0 492.7,428.0 513.0,451.1 509.5,500.2 475.3,512.0 414.4,509.5 397.0,484.7 397.0,449.0" fill="#d5e7f5" stroke="#19354b" stroke-width="2"/><text class="name" x="455" y="452" text-anchor="middle">Harbormouth</text><text class="detail" x="455" y="467" text-anchor="middle">Urban · 3 votes</text>
 <circle cx="442.0" cy="481" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="455.0" cy="481" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
@@ -56,7 +56,7 @@
 <circle cx="745.0" cy="494" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="758.0" cy="494" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 </g>
-<g data-district="X"><polygon points="546.9,562.0 641.6,562.0 664.0,585.6 660.2,636.0 622.4,648.0 555.2,645.4 536.0,620.0 536.0,583.5" fill="#e4dfea" stroke="#19354b" stroke-width="2"/><text class="name" x="600" y="587" text-anchor="middle">Bellweather</text><text class="detail" x="600" y="602" text-anchor="middle">Centre · separate</text>
+<g data-district="X"><polygon points="546.9,562.0 641.6,562.0 664.0,585.6 660.2,636.0 622.4,648.0 555.2,645.4 536.0,620.0 536.0,583.5" fill="#e4dfea" stroke="#19354b" stroke-width="2"/><text class="name" x="600" y="587" text-anchor="middle">Bellwether</text><text class="detail" x="600" y="602" text-anchor="middle">Centre · separate</text>
 <circle cx="587.0" cy="616" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="600.0" cy="616" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="613.0" cy="616" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>

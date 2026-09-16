@@ -4,7 +4,7 @@ Implement concepts 1–10 and 14–20: seventeen detailed maps, one per concept.
 
 ## Design
 
-Start from three regions of 18 Support, fifteen regional districts plus Bellweather Centre (capacity 3), district elections, and named districts. Vary geography and connectivity deliberately. Each map states departures from the earlier constraints and the gameplay hypothesis to test. These are experiments, not adopted production rules.
+Start from three regions of 18 Support, fifteen regional districts plus Bellwether Centre (capacity 3), district elections, and named districts. Vary geography and connectivity deliberately. Each map states departures from the earlier constraints and the gameplay hypothesis to test. These are experiments, not adopted production rules.
 
 Use a shared atlas palette: white paper #ffffff, navy ink #19354b, blue urban #d5e7f5, green mixed #dbeaca, yellow outlying #f5e7ac, water #a9d9ec. System sans-serif map labels; Georgia titles in the gallery. Maps occupy the main visual area; thumbnail index links to standalone HTML studies and SVGs. Each study includes a district adjacency table and specific discussion rather than generic praise.
 

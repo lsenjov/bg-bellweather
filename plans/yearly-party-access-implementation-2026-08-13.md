@@ -37,7 +37,7 @@ Commit when protocol, server, and testkit tests and typechecks pass.
 
 ## Step 3: web application
 
-- Preserve the existing Bellweather editorial/bureaucratic visual identity while replacing auction desks with a live yearly lobbying desk.
+- Preserve the existing Bellwether editorial/bureaucratic visual identity while replacing auction desks with a live yearly lobbying desk.
 - Show Early Bird, opening order, active Lobby player, party ownership, open/closed state, Operation piles, claimed bonuses, and Collection counters.
 - Provide opening controls and complete Operate/Collect/Close/Pass controls.
 - Reuse map-assisted legal Operation choice controls where they stay simple; keep all submitted Operate choices atomic.
@@ -90,4 +90,4 @@ After every Lobby action, check strict-majority closure. Track consecutive passe
 
 ### Elections
 
-The server continues to generate deterministic Election random values and records results automatically. Players acknowledge a recorded Election before the next year begins. Capital points are recorded separately and included in `pointsChange` after relative-seat adjustments. Election cleanup clears Court Support but leaves Coalition Targets and Bellweather Centre unchanged.
+The server continues to generate deterministic Election random values and records results automatically. Players acknowledge a recorded Election before the next year begins. Capital points are recorded separately and included in `pointsChange` after relative-seat adjustments. Election cleanup clears Court Support but leaves Coalition Targets and Bellwether Centre unchanged.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DISTRICTS, type DistrictId, type PartyId, type LawEffectId, type BonusCardId } from "@bellweather/content";
+import { DISTRICTS, type DistrictId, type PartyId, type LawEffectId, type BonusCardId } from "@bellwether/content";
 import { resolveOperation, type OperationState, type OperationChoice } from "../src/operations.js";
 const HC='honeycomb', FG='foxglove';
 function state(laws: LawEffectId[]=[]): OperationState {

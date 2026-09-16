@@ -1,21 +1,21 @@
-import { AgentClient, AgentClientError } from "@bellweather/testkit";
+import { AgentClient, AgentClientError } from "@bellwether/testkit";
 import {
   PARTIES,
   type FirmId
-} from "@bellweather/content";
+} from "@bellwether/content";
 import {
   type GameCommand,
   type GameId,
   type ParticipantSession,
   type ViewerStateEnvelope
-} from "@bellweather/protocol";
+} from "@bellwether/protocol";
 import { parsePlayerTarget } from "./playtest-settings.js";
 import { chooseLobbyAction, chooseBonus } from "./playtest-actions.js";
 
-const baseUrl = process.env["BELLWEATHER_URL"] ?? "http://127.0.0.1:4317";
-const inviteCode = process.env["BELLWEATHER_INVITE"];
-const displayName = process.env["BELLWEATHER_NAME"] ?? "Conservative Agent";
-const playerTarget = parsePlayerTarget(process.env["BELLWEATHER_PLAYERS"]);
+const baseUrl = process.env["BELLWETHER_URL"] ?? "http://127.0.0.1:4317";
+const inviteCode = process.env["BELLWETHER_INVITE"];
+const displayName = process.env["BELLWETHER_NAME"] ?? "Conservative Agent";
+const playerTarget = parsePlayerTarget(process.env["BELLWETHER_PLAYERS"]);
 const anonymous = new AgentClient({ baseUrl });
 
 const joined =

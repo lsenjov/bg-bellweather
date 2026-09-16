@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1110 940" role="img" aria-labelledby="title desc">
 <title id="title">Compact hub: three regions of eighteen Support</title>
-<desc id="desc">A compact three-city cluster occupies the northwest. The mixed region stretches east to a distant city, above broad southern countryside. Shared border segments define adjacency; corners do not. Bellweather Centre borders all three regions.</desc>
+<desc id="desc">A compact three-city cluster occupies the northwest. The mixed region stretches east to a distant city, above broad southern countryside. Shared border segments define adjacency; corners do not. Bellwether Centre borders all three regions.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:11px}</style>
 <rect width="1110" height="940" fill="white"/>
 <text x="35" y="34" font-size="24" font-weight="700">Compact hub</text>
@@ -379,7 +379,7 @@
 <circle cx="870.6" cy="783.2" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 <circle cx="889.6" cy="783.2" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 </g>
-<g text-anchor="middle"><text class="name" x="233.8" y="265.0">Bellweather</text>
+<g text-anchor="middle"><text class="name" x="233.8" y="265.0">Bellwether</text>
 <text class="detail" x="233.8" y="281.0">Centre · separate</text>
 <circle cx="214.8" cy="296.0" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 <circle cx="233.8" cy="296.0" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>

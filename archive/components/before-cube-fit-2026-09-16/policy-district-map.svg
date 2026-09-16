@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="297mm" viewBox="0 0 1188 840" role="img" aria-labelledby="title desc">
-<title id="title">Bellweather — physical district map</title>
+<title id="title">Bellwether — physical district map</title>
 <desc id="desc">Continuous land: shared borders define adjacency for every effect. Point contacts do not count. Urban 18 Support, Industrial Belt 14, Outlying 16, Centre 3. One policy per region. Six-year tracker beneath the map.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:12px}</style>
 <rect width="1188" height="840" fill="white"/>
-<text x="32" y="38" font-size="25" font-weight="700">BELLWEATHER</text>
+<text x="32" y="38" font-size="25" font-weight="700">BELLWETHER</text>
 <text x="1156" y="36" text-anchor="end" font-size="13">Physical prototype / September 2026 · A3 landscape</text>
 <rect x="32" y="56" width="16" height="16" fill="#e6b6a6" stroke="#19354b"/><text x="56" y="69" font-size="13">Urban 18 / 9 votes</text>
 <rect x="310" y="56" width="16" height="16" fill="#dbeaca" stroke="#19354b"/><text x="334" y="69" font-size="13">Industrial Belt 14 / 7 votes</text>
@@ -87,7 +87,7 @@
 <circle cx="132.0" cy="591" r="9" fill="white" stroke="#287a43" stroke-width="3" data-retained="true"/><path d="M128,591 l3,3 l5,-6" fill="none" stroke="#287a43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 <circle cx="156.0" cy="591" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="X"><polygon points="500.0,300.0 610.0,230.0 680.0,300.0 750.0,480.0 650.0,490.0 500.0,470.0 400.0,380.0 500.0,350.0" fill="#e4dfea" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="590" y="373" text-anchor="middle">Bellweather</text><text class="detail" x="590" y="390" text-anchor="middle">Centre</text>
+<g data-district="X"><polygon points="500.0,300.0 610.0,230.0 680.0,300.0 750.0,480.0 650.0,490.0 500.0,470.0 400.0,380.0 500.0,350.0" fill="#e4dfea" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="590" y="373" text-anchor="middle">Bellwether</text><text class="detail" x="590" y="390" text-anchor="middle">Centre</text>
 <circle cx="566.0" cy="410" r="9" fill="white" stroke="#287a43" stroke-width="3" data-retained="true"/><path d="M562,410 l3,3 l5,-6" fill="none" stroke="#287a43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 <circle cx="590.0" cy="410" r="9" fill="white" stroke="#287a43" stroke-width="3" data-retained="true"/><path d="M586,410 l3,3 l5,-6" fill="none" stroke="#287a43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 <circle cx="614.0" cy="410" r="9" fill="white" stroke="#287a43" stroke-width="3" data-retained="true"/><path d="M610,410 l3,3 l5,-6" fill="none" stroke="#287a43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>

@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1020" role="img" aria-labelledby="title desc">
-<title id="title">14. Ridge city — experimental Bellweather map</title>
-<desc id="desc">The urban districts form a ridge-top route above two lower neighborhoods. Several hillside approaches connect the slopes to different ridge districts. Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellweather holds three separately.</desc>
+<title id="title">14. Ridge city — experimental Bellwether map</title>
+<desc id="desc">The urban districts form a ridge-top route above two lower neighborhoods. Several hillside approaches connect the slopes to different ridge districts. Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellwether holds three separately.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:12px;font-weight:700}.detail{font-size:10px}.terrain{font-size:15px;font-style:italic;fill:#355564}</style>
 <rect width="1200" height="1020" fill="white"/>
 <text x="40" y="44" font-size="27" font-weight="700">14. Ridge city</text>
-<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellweather 3 separate</text>
+<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellwether 3 separate</text>
 <rect x="40" y="110" width="1120" height="790" rx="12" fill="#eff1e9"/>
 <polyline points="285.0,740.0 810.0,125.0" fill="none" stroke="#d4c6b0" stroke-width="105" stroke-linejoin="round"/>
 <path d="M 529.5,444.5 l 18,-28 l 18,28 M 540.5,427.5 l 7,6 l 6,-6" fill="none" stroke="#8b8174" stroke-width="2"/>
-<g data-route="X-A"><title>Bellweather–Harbormouth: ridge road</title><path d="M 345,665 L 480,500" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 345,665 L 480,500" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="X-A"><title>Bellwether–Harbormouth: ridge road</title><path d="M 345,665 L 480,500" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 345,665 L 480,500" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="A-B"><title>Harbormouth–Grand Market: ridge road</title><path d="M 480,500 L 620,345" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 480,500 L 620,345" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="B-C"><title>Grand Market–Ironwood: ridge road</title><path d="M 620,345 L 760,195" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 620,345 L 760,195" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-route="X-N"><title>Bellweather–Vale: pass</title><path d="M 345,665 L 340,810" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 345,665 L 340,810" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="X-N"><title>Bellwether–Vale: pass</title><path d="M 345,665 L 340,810" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 345,665 L 340,810" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g transform="translate(342.5 737.5) rotate(92.0)" aria-label="pass"><rect x="-15" y="-8" width="30" height="16" fill="#fff5d8" stroke="#19354b" stroke-width="2"/><path d="M -15,-11 h30 M -15,11 h30" stroke="#19354b" stroke-width="2"/></g>
 <g data-route="A-L"><title>Harbormouth–Heath: pass</title><path d="M 480,500 L 300,355" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 480,500 L 300,355" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g transform="translate(390.0 427.5) rotate(-141.1)" aria-label="pass"><rect x="-15" y="-8" width="30" height="16" fill="#fff5d8" stroke="#19354b" stroke-width="2"/><path d="M -15,-11 h30 M -15,11 h30" stroke="#19354b" stroke-width="2"/></g>
@@ -61,7 +61,7 @@
 <circle cx="760.0" cy="219" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="773.0" cy="219" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 </g>
-<g data-district="X"><polygon points="291.9,622.0 386.6,622.0 409.0,645.6 405.2,696.0 367.4,708.0 300.2,705.4 281.0,680.0 281.0,643.5" fill="#e4dfea" stroke="#19354b" stroke-width="2"/><text class="name" x="345" y="647" text-anchor="middle">Bellweather</text><text class="detail" x="345" y="662" text-anchor="middle">Centre · separate</text>
+<g data-district="X"><polygon points="291.9,622.0 386.6,622.0 409.0,645.6 405.2,696.0 367.4,708.0 300.2,705.4 281.0,680.0 281.0,643.5" fill="#e4dfea" stroke="#19354b" stroke-width="2"/><text class="name" x="345" y="647" text-anchor="middle">Bellwether</text><text class="detail" x="345" y="662" text-anchor="middle">Centre · separate</text>
 <circle cx="332.0" cy="676" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="345.0" cy="676" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="358.0" cy="676" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>

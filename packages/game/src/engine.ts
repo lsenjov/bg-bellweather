@@ -1,4 +1,4 @@
-import { OperationChoiceSchema } from "@bellweather/protocol";
+import { OperationChoiceSchema } from "@bellwether/protocol";
 import {
   BONUS_CARD_IDS,
   BONUS_CARDS_BY_ID,
@@ -22,7 +22,7 @@ import {
   type PartyId,
   type PlayerSetup,
   type ScoringCardId
-} from "@bellweather/content";
+} from "@bellwether/content";
 import {
   retainElectionSupport,
   scoreElectionDay,

@@ -2,7 +2,7 @@ import { deepFreeze } from "./immutable.js";
 
 export const REGION_IDS = deepFreeze(["urban", "mixed", "outlying", "centre"] as const);
 export type RegionId = (typeof REGION_IDS)[number];
-export const REGION_NAMES = deepFreeze({ urban: "Urban", mixed: "Mixed", outlying: "Outlying", centre: "Bellweather Centre" });
+export const REGION_NAMES = deepFreeze({ urban: "Urban", mixed: "Mixed", outlying: "Outlying", centre: "Bellwether Centre" });
 
 export const DISTRICT_IDS = deepFreeze([
   "harbormouth",
@@ -20,7 +20,7 @@ export const DISTRICT_IDS = deepFreeze([
   "downs",
   "vale",
   "coast",
-  "bellweather-centre"
+  "bellwether-centre"
 ] as const);
 export type DistrictId = (typeof DISTRICT_IDS)[number];
 
@@ -133,7 +133,7 @@ export const DISTRICTS = deepFreeze([
       "harbormouth",
       "grand-market",
       "heath",
-      "bellweather-centre"
+      "bellwether-centre"
     ],
     "polygon": [
       [
@@ -230,7 +230,7 @@ export const DISTRICTS = deepFreeze([
     "adjacentDistrictIds": [
       "northgate",
       "crown-road",
-      "bellweather-centre"
+      "bellwether-centre"
     ],
     "polygon": [
       [
@@ -394,7 +394,7 @@ export const DISTRICTS = deepFreeze([
       "eastfield",
       "marsh",
       "vale",
-      "bellweather-centre"
+      "bellwether-centre"
     ],
     "polygon": [
       [
@@ -557,7 +557,7 @@ export const DISTRICTS = deepFreeze([
     "adjacentDistrictIds": [
       "heath",
       "vale",
-      "bellweather-centre"
+      "bellwether-centre"
     ],
     "polygon": [
       [
@@ -668,8 +668,8 @@ export const DISTRICTS = deepFreeze([
     ]
   },
   {
-    "id": "bellweather-centre",
-    "name": "Bellweather Centre",
+    "id": "bellwether-centre",
+    "name": "Bellwether Centre",
     "capacity": 3,
     "regionId": "centre",
     "adjacentDistrictIds": [
@@ -801,7 +801,7 @@ export const MAP_BRIDGES = deepFreeze([
   {
     "districtIds": [
       "ironwood",
-      "bellweather-centre"
+      "bellwether-centre"
     ],
     "points": [
       [
@@ -817,7 +817,7 @@ export const MAP_BRIDGES = deepFreeze([
   {
     "districtIds": [
       "canal-ward",
-      "bellweather-centre"
+      "bellwether-centre"
     ],
     "points": [
       [
@@ -833,7 +833,7 @@ export const MAP_BRIDGES = deepFreeze([
   {
     "districtIds": [
       "westfield",
-      "bellweather-centre"
+      "bellwether-centre"
     ],
     "points": [
       [
@@ -849,7 +849,7 @@ export const MAP_BRIDGES = deepFreeze([
   {
     "districtIds": [
       "downs",
-      "bellweather-centre"
+      "bellwether-centre"
     ],
     "points": [
       [

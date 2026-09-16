@@ -4,7 +4,7 @@ import {
   initializeGame,
   type GameAction,
   type GameState
-} from "@bellweather/game";
+} from "@bellwether/game";
 import {
   projectEvent,
   publicEngineState,

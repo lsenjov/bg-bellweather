@@ -26,7 +26,7 @@ The intended tension is:
 
 The fixed agendas, district map, Support, operations, party bonuses, coalitions, and Election scoring remain unless separately revised.
 
-Bellweather Centre gains the Capital scoring rule described below. It remains absent from the ordinary district objectives and Election draw.
+Bellwether Centre gains the Capital scoring rule described below. It remains absent from the ordinary district objectives and Election draw.
 
 ## Player supplies
 
@@ -119,13 +119,13 @@ Collect remains available in year 12. The design accepts that its future-resourc
 
 ## Capital scoring
 
-Bellweather Centre has a capacity of three and retains its current connections to Crown Road, Canal Ward, and Old Quarter. It does not hold an Election: do not randomize, draw, return, or otherwise clear its Support on Election Day.
+Bellwether Centre has a capacity of three and retains its current connections to Crown Road, Canal Ward, and Old Quarter. It does not hold an Election: do not randomize, draw, return, or otherwise clear its Support on Election Day.
 
 At four to six players, each player's scoring card for the current Election is also their Capital card.
 
 At two or three players, the first scoring card drawn for each compatible pair is automatically its Capital card. Keep it in the pair's first or left-hand position so its identity remains physically fixed without another marker or secret choice. Both cards still provide their normal district objectives; only the first card provides Capital parties.
 
-On Election Day, count how many different parties printed on the player's Capital card are present in Bellweather Centre:
+On Election Day, count how many different parties printed on the player's Capital card are present in Bellwether Centre:
 
 | Printed parties present | Capital points |
 | ---: | ---: |
@@ -138,7 +138,7 @@ Only the exact printed parties count. Coalition-partner Support does not satisfy
 
 Capital points are not part of the player's base district score. Calculate base district scores and apply positive and negative relative-seat references first, then add Capital points to the result. A single matching party scores nothing.
 
-Support in Bellweather Centre remains in place after scoring, preserving its composition as a route, staging area, or blocker for the next Election period.
+Support in Bellwether Centre remains in place after scoring, preserving its composition as a route, staging area, or blocker for the next Election period.
 
 ## Tabletop handling
 
@@ -163,7 +163,7 @@ Support in Bellweather Centre remains in place after scoring, preserving its com
 - Early closure can deny a useful party to rivals.
 - Strict-majority closure lets enough opening players end the year despite opposition from a player with a large hand.
 - Hidden agendas remain the main source of uncertainty and misdirection after Bluff cards disappear.
-- Bellweather Centre rewards assembling exact three-party sets while duplicate Support can deny the final matching party a space.
+- Bellwether Centre rewards assembling exact three-party sets while duplicate Support can deny the final matching party a space.
 
 ## Risks to test
 

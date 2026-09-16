@@ -5,7 +5,7 @@ import {
   type BonusCardId,
   type DistrictId,
   type PartyId
-} from "@bellweather/content";
+} from "@bellwether/content";
 import type { SupportChange } from "./model.js";
 
 export const PARTIES = PARTY_IDS;
@@ -24,8 +24,8 @@ export interface OperationState {
   laws: readonly LawEffectId[];
 }
 
-export type { OperationChoice } from "@bellweather/protocol";
-import { OperationChoiceSchema, type OperationChoice } from "@bellweather/protocol";
+export type { OperationChoice } from "@bellwether/protocol";
+import { OperationChoiceSchema, type OperationChoice } from "@bellwether/protocol";
 export type FollowUpId = NonNullable<OperationChoice["followUpOrder"]>[number];
 
 export interface OperationRequest {

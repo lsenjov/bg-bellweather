@@ -2,7 +2,7 @@
 
 ## Goal
 
-Replace the first topology study with five new connection maps: one Civic Hub variant where each capacity-six district reaches Bellweather Centre through two capacity-two districts, and four heavily asymmetric alternatives.
+Replace the first topology study with five new connection maps: one Civic Hub variant where each capacity-six district reaches Bellwether Centre through two capacity-two districts, and four heavily asymmetric alternatives.
 
 ## Constraints
 
@@ -23,6 +23,6 @@ Replace the first topology study with five new connection maps: one Civic Hub va
 
 - `npm run check` passes: typechecking, 192 tests, documentation checks, and production builds.
 - Every option contains all sixteen districts, preserves the 57-Support capacity distribution, has eighteen unique connections, and is connected.
-- Capital Corridors uses three distinct Cap 6 → Cap 2 → Cap 2 → Bellweather Centre paths and uses every Cap 2 district once.
+- Capital Corridors uses three distinct Cap 6 → Cap 2 → Cap 2 → Bellwether Centre paths and uses every Cap 2 district once.
 - Browser checks found no node collisions, out-of-bounds nodes, or concealed edges at desktop and narrow widths.
 - The final independent review reported no high-, medium-, or low-severity issues.

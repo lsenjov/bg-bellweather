@@ -35,7 +35,7 @@ describe("policy content", () => {
   });
   it("preserves topology with Centre as a fourth capacity-three region", () => {
     expect(REGION_IDS).toEqual(["urban", "mixed", "outlying", "centre"]);
-    expect(DISTRICTS_BY_ID["bellweather-centre"]).toMatchObject({regionId:"centre",capacity:3});
+    expect(DISTRICTS_BY_ID["bellwether-centre"]).toMatchObject({regionId:"centre",capacity:3});
     expect(DISTRICTS.reduce((n,d)=>n+d.capacity,0)).toBe(57);
     expect(DISTRICTS.reduce((n,d)=>n+d.adjacentDistrictIds.length,0)).toBe(46);
     expect(MAP_BRIDGES).toHaveLength(9);

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 810" role="img" aria-labelledby="title desc">
 <title id="title">Rural fringe: three regions of eighteen Support</title>
-<desc id="desc">A northern city belt sits above the Centre, with mixed districts to the southwest and a broad rural fringe to the southeast. Shared border segments define adjacency; corners do not. Bellweather Centre borders all three regions.</desc>
+<desc id="desc">A northern city belt sits above the Centre, with mixed districts to the southwest and a broad rural fringe to the southeast. Shared border segments define adjacency; corners do not. Bellwether Centre borders all three regions.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:11px}</style>
 <rect width="850" height="810" fill="white"/>
 <text x="35" y="34" font-size="24" font-weight="700">Rural fringe</text>
@@ -291,7 +291,7 @@
 <circle cx="671.6" cy="679.8" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 <circle cx="690.6" cy="679.8" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 </g>
-<g text-anchor="middle"><text class="name" x="421.7" y="322.2">Bellweather</text>
+<g text-anchor="middle"><text class="name" x="421.7" y="322.2">Bellwether</text>
 <text class="detail" x="421.7" y="338.2">Centre · separate</text>
 <circle cx="402.7" cy="353.2" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 <circle cx="421.7" cy="353.2" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>

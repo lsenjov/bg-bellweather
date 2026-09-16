@@ -10,7 +10,7 @@ import {
   type BonusCardId,
   type ScoringCardId,
   type PartyId
-} from "@bellweather/content";
+} from "@bellwether/content";
 import { assertCurrentRuleset, operationCount } from "./engine.js";
 import { GameRuleError } from "./model.js";
 

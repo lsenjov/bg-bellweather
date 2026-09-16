@@ -18,8 +18,8 @@ describe("game server", () => {
     const directory = temporaryDirectory();
     const webRoot = resolve(directory, "web");
     mkdirSync(webRoot);
-    writeFileSync(resolve(webRoot, "index.html"), "<main>Bellweather</main>");
-    writeFileSync(resolve(webRoot, "app.js"), "globalThis.BELLWEATHER = true");
+    writeFileSync(resolve(webRoot, "index.html"), "<main>Bellwether</main>");
+    writeFileSync(resolve(webRoot, "app.js"), "globalThis.BELLWETHER = true");
     const app = createAppServer({
       databasePath: resolve(directory, "game.sqlite"),
       webRoot,
@@ -31,8 +31,8 @@ describe("game server", () => {
     const home = await fetch(new URL("/", baseUrl));
     const route = await fetch(new URL("/games/example", baseUrl));
     const asset = await fetch(new URL("/app.js", baseUrl));
-    expect(await home.text()).toContain("Bellweather");
-    expect(await route.text()).toContain("Bellweather");
+    expect(await home.text()).toContain("Bellwether");
+    expect(await route.text()).toContain("Bellwether");
     expect(asset.headers.get("content-type")).toContain("text/javascript");
     expect(asset.headers.get("content-security-policy")).toContain(
       "frame-ancestors 'none'"
@@ -608,7 +608,7 @@ function commandPath(game: TestGame): string {
 }
 
 function temporaryDirectory(): string {
-  const directory = mkdtempSync(resolve(tmpdir(), "bellweather-server-"));
+  const directory = mkdtempSync(resolve(tmpdir(), "bellwether-server-"));
   temporaryDirectories.push(directory);
   return directory;
 }

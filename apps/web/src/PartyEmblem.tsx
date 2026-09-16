@@ -1,4 +1,4 @@
-import type { PartyId } from "@bellweather/content";
+import type { PartyId } from "@bellwether/content";
 
 const PARTY_EMBLEM_PATHS: Record<PartyId, string> = {
   honeycomb: "M32 7l21 12v26L32 57 11 45V19z",

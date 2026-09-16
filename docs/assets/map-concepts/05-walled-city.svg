@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1020" role="img" aria-labelledby="title desc">
-<title id="title">5. Walled city — experimental Bellweather map</title>
-<desc id="desc">Four gates connect a compact old city to an outer circuit. Different gates give access to different inner districts. Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellweather holds three separately.</desc>
+<title id="title">5. Walled city — experimental Bellwether map</title>
+<desc id="desc">Four gates connect a compact old city to an outer circuit. Different gates give access to different inner districts. Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellwether holds three separately.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:12px;font-weight:700}.detail{font-size:10px}.terrain{font-size:15px;font-style:italic;fill:#355564}</style>
 <rect width="1200" height="1020" fill="white"/>
 <text x="40" y="44" font-size="27" font-weight="700">5. Walled city</text>
-<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellweather 3 separate</text>
+<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellwether 3 separate</text>
 <rect x="40" y="110" width="1120" height="790" rx="12" fill="#eff1e9"/>
 <ellipse cx="570" cy="430" rx="265" ry="235" fill="none" stroke="#8e969b" stroke-width="14"/>
 <ellipse cx="570" cy="430" rx="265" ry="235" fill="none" stroke="#596b76" stroke-width="20" stroke-dasharray="5 16"/>
@@ -14,11 +14,11 @@
 <g transform="translate(453.4 219.1) rotate(-152.4)" aria-label="gate"><rect x="-15" y="-8" width="30" height="16" fill="#fff5d8" stroke="#19354b" stroke-width="2"/><path d="M -15,-11 h30 M -15,11 h30" stroke="#19354b" stroke-width="2"/></g>
 <g data-route="C-K"><title>Ironwood–Marsh: gate</title><path d="M 715,415 L 995,520" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 715,415 L 995,520" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g transform="translate(832.6 459.1) rotate(20.6)" aria-label="gate"><rect x="-15" y="-8" width="30" height="16" fill="#fff5d8" stroke="#19354b" stroke-width="2"/><path d="M -15,-11 h30 M -15,11 h30" stroke="#19354b" stroke-width="2"/></g>
-<g data-route="X-H"><title>Bellweather–Meadow: gate</title><path d="M 570,510 L 610,805" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 570,510 L 610,805" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="X-H"><title>Bellwether–Meadow: gate</title><path d="M 570,510 L 610,805" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 570,510 L 610,805" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g transform="translate(590.8 663.4) rotate(82.3)" aria-label="gate"><rect x="-15" y="-8" width="30" height="16" fill="#fff5d8" stroke="#19354b" stroke-width="2"/><path d="M -15,-11 h30 M -15,11 h30" stroke="#19354b" stroke-width="2"/></g>
 <g data-route="I-J"><title>Westfield–Eastfield: road</title><path d="M 935,225 L 1060,330" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 935,225 L 1060,330" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-route="A-X"><title>Harbormouth–Bellweather: road</title><path d="M 430,420 L 570,510" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 430,420 L 570,510" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-route="C-X"><title>Ironwood–Bellweather: road</title><path d="M 715,415 L 570,510" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 715,415 L 570,510" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="A-X"><title>Harbormouth–Bellwether: road</title><path d="M 430,420 L 570,510" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 430,420 L 570,510" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="C-X"><title>Ironwood–Bellwether: road</title><path d="M 715,415 L 570,510" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 715,415 L 570,510" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="L-M"><title>Heath–Downs: road</title><path d="M 960,730 L 795,805" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 960,730 L 795,805" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="D-O"><title>Northgate–Coast: road</title><path d="M 170,200 L 350,165" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 170,200 L 350,165" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="H-M"><title>Meadow–Downs: road</title><path d="M 610,805 L 795,805" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 610,805 L 795,805" fill="none" stroke="#ffffff" stroke-width="6"/></g>
@@ -30,7 +30,7 @@
 <g data-route="A-B"><title>Harbormouth–Grand Market: road</title><path d="M 430,420 L 570,280" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 430,420 L 570,280" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="B-C"><title>Grand Market–Ironwood: road</title><path d="M 570,280 L 715,415" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 570,280 L 715,415" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="K-L"><title>Marsh–Heath: road</title><path d="M 995,520 L 960,730" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 995,520 L 960,730" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-route="B-X"><title>Grand Market–Bellweather: road</title><path d="M 570,280 L 570,510" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 570,280 L 570,510" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="B-X"><title>Grand Market–Bellwether: road</title><path d="M 570,280 L 570,510" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 570,280 L 570,510" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="F-G"><title>Crown Road–Orchard: road</title><path d="M 180,620 L 380,765" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 180,620 L 380,765" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="E-O"><title>Canal Ward–Coast: road</title><path d="M 200,395 L 350,165" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 200,395 L 350,165" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="I-K"><title>Westfield–Marsh: road</title><path d="M 935,225 L 995,520" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 935,225 L 995,520" fill="none" stroke="#ffffff" stroke-width="6"/></g>
@@ -60,7 +60,7 @@
 <circle cx="715.0" cy="439" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="728.0" cy="439" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 </g>
-<g data-district="X"><polygon points="516.9,467.0 611.6,467.0 634.0,490.6 630.2,541.0 592.4,553.0 525.2,550.4 506.0,525.0 506.0,488.5" fill="#e4dfea" stroke="#19354b" stroke-width="2"/><text class="name" x="570" y="492" text-anchor="middle">Bellweather</text><text class="detail" x="570" y="507" text-anchor="middle">Centre · separate</text>
+<g data-district="X"><polygon points="516.9,467.0 611.6,467.0 634.0,490.6 630.2,541.0 592.4,553.0 525.2,550.4 506.0,525.0 506.0,488.5" fill="#e4dfea" stroke="#19354b" stroke-width="2"/><text class="name" x="570" y="492" text-anchor="middle">Bellwether</text><text class="detail" x="570" y="507" text-anchor="middle">Centre · separate</text>
 <circle cx="557.0" cy="521" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="570.0" cy="521" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="583.0" cy="521" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>

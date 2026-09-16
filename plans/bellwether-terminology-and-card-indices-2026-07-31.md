@@ -1,8 +1,8 @@
-# Bellweather terminology and card indices
+# Bellwether terminology and card indices
 
 ## Goal
 
-Complete a breaking terminology migration from Bellwether, Clout, Court, and Overture to Bellweather, Leverage, Coalition, and Coalition Target, then redesign transferable bid cards with unique playing-card-style corner initials.
+Complete a breaking terminology migration from Bellwether, Clout, Court, and Overture to Bellwether, Leverage, Coalition, and Coalition Target, then redesign transferable bid cards with unique playing-card-style corner initials.
 
 ## Steps
 
@@ -15,12 +15,12 @@ Complete a breaking terminology migration from Bellwether, Clout, Court, and Ove
 
 ## Migration map
 
-- Bellwether / `bellwether` / `BELLWETHER` → Bellweather / `bellweather` / `BELLWEATHER`
+- Bellwether / `bellwether` / `BELLWETHER` → Bellwether / `bellwether` / `BELLWETHER`
 - Clout / `clout` → Leverage / `leverage`
 - Court / `court` → Coalition / `coalition`
 - Overture state → Coalition Target state / `coalitionTargets`
 - Reinforced Overture state → reinforced Coalition state
-- `@bellwether/*` → `@bellweather/*`
+- `@bellwether/*` → `@bellwether/*`
 
 ## Constraints
 

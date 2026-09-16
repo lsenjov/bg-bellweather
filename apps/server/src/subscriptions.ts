@@ -1,7 +1,7 @@
 import {
   ClientWebSocketFrameSchema,
   ServerWebSocketFrameSchema
-} from "@bellweather/protocol";
+} from "@bellwether/protocol";
 import type { WebSocket } from "ws";
 import { AppError, protocolErrorCode } from "./errors.js";
 import { projectEvent, projectState } from "./projection.js";

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PARTY_IDS, DISTRICT_IDS, POLICIES_BY_ID, votesFor } from "@bellweather/content";
+import { PARTY_IDS, DISTRICT_IDS, POLICIES_BY_ID, votesFor } from "@bellwether/content";
 import { initializeGame, executeAction, createElectionAction, projectGameState, replay, type GameState, type GameAction } from "../src/index.js";
 const random={integer:()=>0};
 function fresh(n=4){return initializeGame({seats:Array.from({length:n},(_,i)=>({id:`s${i}`,displayName:`S${i}`,controller:'human' as const}))},random).state;}

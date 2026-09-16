@@ -550,9 +550,9 @@
       ]
     }
   ],
-  "purpose": "One urban island faces a central Bellweather island, with a looping chain of mixed and outlying territories around them.",
-  "departures": "Districts fill their islands: shared borders define adjacency for every effect, and only marked bridges connect across water. All three urban districts share one island. Bellweather occupies its own central island and connects to all three regions. The sheet is landscape A4 with a six-year tracker below the map.",
-  "watch": "Compare the direct bridges through Bellweather with the outer island loop. Watch whether a full urban island makes access to the mixed region too dependent on Grand Market, and whether the outer rural bridges remain attractive.",
+  "purpose": "One urban island faces a central Bellwether island, with a looping chain of mixed and outlying territories around them.",
+  "departures": "Districts fill their islands: shared borders define adjacency for every effect, and only marked bridges connect across water. All three urban districts share one island. Bellwether occupies its own central island and connects to all three regions. The sheet is landscape A4 with a six-year tracker below the map.",
+  "watch": "Compare the direct bridges through Bellwether with the outer island loop. Watch whether a full urban island makes access to the mixed region too dependent on Grand Market, and whether the outer rural bridges remain attractive.",
   "target_edges": 24,
   "background": "water",
   "islands": true,

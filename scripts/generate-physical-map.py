@@ -55,11 +55,11 @@ def support_slot(x, y, retained):
 
 def render(study):
     svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="297mm" viewBox="0 0 420 297" role="img" aria-labelledby="title desc">',
-           '<title id="title">Bellweather — cube-fit physical board</title>',
+           '<title id="title">Bellwether — cube-fit physical board</title>',
            '<desc id="desc">Continuous land with 51 support slots sized for 8 mm cubes, four 63 by 88 mm policy wells and a six-year tracker. Shared borders define adjacency; point contacts do not. Green checks show the retained count; survivors are chosen randomly.</desc>',
            f'<style>text{{font-family:Arial,sans-serif;fill:{INK}}}</style>',
            '<rect width="420" height="297" fill="white"/>',
-           text(8, 13, 'BELLWEATHER', 7, 'start', 'bold')]
+           text(8, 13, 'BELLWETHER', 7, 'start', 'bold')]
     all_slots = []
     for key, node in study['nodes'].items():
         district = study['districts'][key]
@@ -69,7 +69,7 @@ def render(study):
         retained = district['capacity'] if key == 'X' else district['capacity'] // 2
         points = ' '.join(f'{x:.6f},{y:.6f}' for x, y in polygon)
         svg.append(f'<g data-district="{key}"><polygon points="{points}" fill="{COLORS[district["region"]]}" stroke="{INK}" stroke-width=".45" stroke-linejoin="round"/>')
-        name = 'Bellweather Centre' if key == 'X' else district['name']
+        name = 'Bellwether Centre' if key == 'X' else district['name']
         svg.append(text(*label, name, weight='bold'))
         for index, centre in enumerate(centres):
             assert concepts.inside(centre, polygon) and border_distance(centre, polygon) >= 7.5, (key, 'slot/border clearance')

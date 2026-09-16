@@ -9,7 +9,7 @@ import {
   type BonusCardId,
   type PartyId,
   type ScoringCardId
-} from "@bellweather/content";
+} from "@bellwether/content";
 import { describe, expect, it } from "vitest";
 import {
   createElectionAction,

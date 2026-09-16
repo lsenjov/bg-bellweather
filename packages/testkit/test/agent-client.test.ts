@@ -3,7 +3,7 @@ import {
   GameIdempotencyKeySchema,
   GameIdSchema,
   type CommandEnvelope,
-} from "@bellweather/protocol";
+} from "@bellwether/protocol";
 import { describe, expect, it } from "vitest";
 import {
   AgentClient,
@@ -73,7 +73,7 @@ describe("AgentClient event stream", () => {
     const socket = new FakeSocket();
     let socketUrl = "";
     const client = new AgentClient({
-      baseUrl: "https://bellweather.test",
+      baseUrl: "https://bellwether.test",
       accessToken,
       webSocketFactory: (url) => {
         socketUrl = url;
@@ -92,7 +92,7 @@ describe("AgentClient event stream", () => {
     );
 
     expect(socketUrl).toBe(
-      `wss://bellweather.test/api/v1/games/${gameId}/events`,
+      `wss://bellwether.test/api/v1/games/${gameId}/events`,
     );
     expect(JSON.parse(socket.sent[0] ?? "")).toEqual({
       type: "authenticate",

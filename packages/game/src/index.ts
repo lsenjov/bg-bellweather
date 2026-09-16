@@ -4,6 +4,6 @@ export * from "./operations.js";
 export * from "./projection.js";
 export * from "./unbound.js";
 
-export { RULESET_VERSION as engineVersion } from "@bellweather/content";
+export { RULESET_VERSION as engineVersion } from "@bellwether/content";
 
 export { scorePolicies } from "./election.js";

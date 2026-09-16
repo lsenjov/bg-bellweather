@@ -77,7 +77,7 @@ const document = `<!doctype html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Nine printable A4 sheets containing all 100 remaining Bellweather Bonus-card candidates after the Ruleset 23 selections.">
+    <meta name="description" content="Nine printable A4 sheets containing all 100 remaining Bellwether Bonus-card candidates after the Ruleset 23 selections.">
     <title>Printable Candidate Bonus Cards — Ladder Bidding</title>
     <link rel="stylesheet" href="../bonus-cards-print.css">
     <link rel="stylesheet" href="../candidate-bonus-cards-print.css">

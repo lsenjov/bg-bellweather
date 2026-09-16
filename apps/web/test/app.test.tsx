@@ -10,15 +10,15 @@ import {
   RULESET_VERSION,
   type BonusCardId,
   type PartyId
-} from "@bellweather/content";
+} from "@bellwether/content";
 import {
   executeAction,
   initializeGame,
   projectGameState,
   type GameAction,
   type GameState
-} from "@bellweather/game";
-import type { ViewerStateEnvelope } from "@bellweather/protocol";
+} from "@bellwether/game";
+import type { ViewerStateEnvelope } from "@bellwether/protocol";
 import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
@@ -105,7 +105,7 @@ describe("yearly browser play surface", () => {
 
   it("shows the current campaign schedule after a game starts", async () => {
     const state = initializeGame(configuration(2), random).state;
-    localStorage.setItem("bellweather-register-session", JSON.stringify(session()));
+    localStorage.setItem("bellwether-register-session", JSON.stringify(session()));
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
       Response.json(activeEnvelope(state, "seat-1"))
     );
@@ -144,7 +144,7 @@ describe("yearly browser play surface", () => {
     const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
     render(<DistrictMap view={view} />);
     expect(screen.getAllByRole("article")).toHaveLength(16);
-    expect(screen.getByLabelText("Bellweather Centre: 0 of 3 Support spaces occupied")).toBeTruthy();
+    expect(screen.getByLabelText("Bellwether Centre: 0 of 3 Support spaces occupied")).toBeTruthy();
     expect(screen.getByLabelText("Grand Market: 6 of 6 Support spaces occupied")).toBeTruthy();
   });
 
@@ -416,7 +416,7 @@ describe("yearly browser play surface", () => {
     expect(
       screen.getByLabelText("Grand Market: 6 of 6 Support spaces occupied").getAttribute("aria-disabled")
     ).toBe("true");
-    fireEvent.click(screen.getByLabelText("Bellweather Centre: 0 of 3 Support spaces occupied"));
+    fireEvent.click(screen.getByLabelText("Bellwether Centre: 0 of 3 Support spaces occupied"));
 
     expect(screen.getByText("Ready to resolve this card.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Resolve Quiet Hours" }));
@@ -431,7 +431,7 @@ describe("yearly browser play surface", () => {
           choice: {
             operation: "rally",
             districtId: "northgate",
-            bonusDistrictId: "bellweather-centre"
+            bonusDistrictId: "bellwether-centre"
           }
         }
       }

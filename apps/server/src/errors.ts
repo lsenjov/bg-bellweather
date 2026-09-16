@@ -1,4 +1,4 @@
-import type { ProtocolErrorCode } from "@bellweather/protocol";
+import type { ProtocolErrorCode } from "@bellwether/protocol";
 
 export class AppError extends Error {
   constructor(

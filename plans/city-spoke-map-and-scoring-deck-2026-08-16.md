@@ -2,7 +2,7 @@
 
 ## Goal
 
-Connect Bellweather Centre's three capacity-two spoke districts directly to the
+Connect Bellwether Centre's three capacity-two spoke districts directly to the
 three capacity-six city districts, then rebuild the scoring deck so every card
 still names one pairwise non-neighboring district at each scoring capacity.
 

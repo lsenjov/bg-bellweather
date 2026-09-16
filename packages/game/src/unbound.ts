@@ -1,4 +1,4 @@
-import { UnboundBonusChoiceSchema } from "@bellweather/protocol";
+import { UnboundBonusChoiceSchema } from "@bellwether/protocol";
 import {
   DISTRICTS_BY_ID,
   DISTRICT_IDS,
@@ -11,7 +11,7 @@ import {
   type FirmId,
   type PartyId,
   type PolicyId
-} from "@bellweather/content";
+} from "@bellwether/content";
 import type {
   GameState,
   OperationInventory,

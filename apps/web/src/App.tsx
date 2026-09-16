@@ -21,7 +21,7 @@ import {
   type OperationId,
   type PartyId,
   type ScoringCardId
-} from "@bellweather/content";
+} from "@bellwether/content";
 import {
   MAX_PLAYER_COUNT,
   MIN_PLAYER_COUNT,
@@ -31,7 +31,7 @@ import {
   type ReplayResponse,
   type UnboundBonusChoice,
   type ViewerStateEnvelope
-} from "@bellweather/protocol";
+} from "@bellwether/protocol";
 import {
   isOperationChoiceLegal, operationFollowUps, resolveUnboundBonus, type FollowUpId,
   isOperationRequestLegal,
@@ -42,7 +42,7 @@ import {
   type OperationState,
   type ProjectedSeat,
   type SupportChange
-} from "@bellweather/game";
+} from "@bellwether/game";
 import {
   type CSSProperties,
   type FormEvent,
@@ -64,7 +64,7 @@ import {
 import { FIRM_ACCENTS, FirmEmblem } from "./FirmEmblem.js";
 import { PartyEmblem } from "./PartyEmblem.js";
 
-const SESSION_KEY = "bellweather-register-session";
+const SESSION_KEY = "bellwether-register-session";
 
 export type GameView = EngineGameView;
 export type ViewSeat = ProjectedSeat;
@@ -224,7 +224,7 @@ export function App() {
     <div className="app-shell">
       <header className="masthead">
         <div>
-          <p className="kicker">The Bellweather Register · Influence Desk</p>
+          <p className="kicker">The Bellwether Register · Influence Desk</p>
           <h1>Access opens.<br />Influence follows.</h1>
         </div>
         <div className="edition-stamp">
@@ -341,7 +341,7 @@ function EntryDesk(props: {
   return (
     <main className="entry-page">
       <section className="entry-editorial">
-        <p className="kicker">The Bellweather Register</p>
+        <p className="kicker">The Bellwether Register</p>
         <h1>Every whisper<br />leaves a mark.</h1>
         <p className="standfirst">
           Six years of access, operations, and political capital—filed one
@@ -452,7 +452,7 @@ export function GameDesk(props: {
     <main className="game-grid">
       <PrivateFolio view={props.view} seat={props.ownSeat} spectator={props.spectator} />
       <section className="map-desk paper-panel">
-        <SectionHeading label="Constituency wire" title="Bellweather map" slug={`Year ${props.view.year}`} />
+        <SectionHeading label="Constituency wire" title="Bellwether map" slug={`Year ${props.view.year}`} />
         {interaction !== null && <p className="map-instruction">{interaction.prompt}</p>}
         <LatestLobbyAction view={props.view} action={latestAction} />
         <PartyBoard view={props.view} interaction={interaction} />
@@ -705,7 +705,7 @@ export function DistrictMap({
 }) {
   const targeting = interaction?.onDistrictClick !== undefined;
   return (
-    <div className="district-map-scroll"><div className="district-map" aria-label="Bellweather district map">
+    <div className="district-map-scroll"><div className="district-map" aria-label="Bellwether district map">
       <svg className="district-terrain" viewBox="40 105 1108 583" aria-hidden="true">
         <rect x="40" y="105" width="1108" height="583" fill="#d9edf5" />
         {MAP_BRIDGES.map((bridge) => <g key={bridge.districtIds.join("-")} data-bridge={bridge.districtIds.join(":")}>
@@ -745,9 +745,9 @@ export function DistrictMap({
                 aria-pressed={selected}
                 tabIndex={selectable ? 0 : -1}
                 onClick={() => { if (selectable) interaction?.onDistrictClick?.(district.id); }}
-              ><strong>{district.id === "bellweather-centre" ? "Bellweather" : district.name}</strong><small>{REGION_NAMES[district.regionId]} · {occupied}/{district.capacity}</small></button>
+              ><strong>{district.id === "bellwether-centre" ? "Bellwether" : district.name}</strong><small>{REGION_NAMES[district.regionId]} · {occupied}/{district.capacity}</small></button>
             ) : (
-              <div className="district-heading"><strong>{district.id === "bellweather-centre" ? "Bellweather" : district.name}</strong><small>{REGION_NAMES[district.regionId]} · {occupied}/{district.capacity}</small></div>
+              <div className="district-heading"><strong>{district.id === "bellwether-centre" ? "Bellwether" : district.name}</strong><small>{REGION_NAMES[district.regionId]} · {occupied}/{district.capacity}</small></div>
             )}
             <div className="support-groups">
               {PARTIES.map((party) => {
@@ -1995,5 +1995,5 @@ function leave(setSession: (session: ParticipantSession | null) => void): void {
 }
 
 function LoadingDesk(props: { error: string | null; onLeave(): void }) {
-  return <main className="loading-page"><p className="kicker">The Bellweather Register</p><h1>Pulling the file.</h1>{props.error !== null && <p className="form-error">{props.error}</p>}<button className="text-button" onClick={props.onLeave}>Return to front page</button></main>;
+  return <main className="loading-page"><p className="kicker">The Bellwether Register</p><h1>Pulling the file.</h1>{props.error !== null && <p className="form-error">{props.error}</p>}<button className="text-button" onClick={props.onLeave}>Return to front page</button></main>;
 }

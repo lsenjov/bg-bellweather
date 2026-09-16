@@ -1,4 +1,4 @@
-import { DISTRICTS, REGION_IDS, POLICIES_BY_ID, activeLawEffects, votesFor, type RegionId, type PolicyId, type ScoringCard } from "@bellweather/content";
+import { DISTRICTS, REGION_IDS, POLICIES_BY_ID, activeLawEffects, votesFor, type RegionId, type PolicyId, type ScoringCard } from "@bellwether/content";
 import type { DistrictState, Party } from "./operations.js";
 import type { ElectionRecord } from "./model.js";
 
@@ -13,7 +13,7 @@ export function recordElectionDraws(
   const draws: Record<string, RecordedDistrictDraw> = {};
 
   for (const [districtId, district] of Object.entries(districts)) {
-    if (districtId === "bellweather-centre") {
+    if (districtId === "bellwether-centre") {
       continue;
     }
     const pool = Object.entries(district.support).flatMap(([party, count]) =>

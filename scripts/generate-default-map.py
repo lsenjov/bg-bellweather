@@ -36,17 +36,17 @@ def main():
     args = parser.parse_args()
     study = next(s for s in concepts.DATA['studies'] if s['id'] == 8)
     edges, graph = concepts.border_edges(study)
-    ids = {k: 'bellweather-centre' if k == 'X' else concepts.DISTRICTS[k]['name'].lower().replace(' ', '-') for k in study['nodes']}
+    ids = {k: 'bellwether-centre' if k == 'X' else concepts.DISTRICTS[k]['name'].lower().replace(' ', '-') for k in study['nodes']}
     districts = []
     for key, node in study['nodes'].items():
         d = concepts.district(study, key)
-        districts.append(dict(id=ids[key], name='Bellweather Centre' if key == 'X' else d['name'], capacity=d['capacity'], regionId='centre' if key == 'X' else d['region'].lower(), adjacentDistrictIds=[ids[k] for k in sorted(graph[key])], polygon=node['polygon'], label=[node['x'], node['y']]))
+        districts.append(dict(id=ids[key], name='Bellwether Centre' if key == 'X' else d['name'], capacity=d['capacity'], regionId='centre' if key == 'X' else d['region'].lower(), adjacentDistrictIds=[ids[k] for k in sorted(graph[key])], polygon=node['polygon'], label=[node['x'], node['y']]))
     bridges = [dict(districtIds=[ids[e['a']],ids[e['b']]], points=e['points']) for e in edges if e['kind']=='bridge']
     content = '''import { deepFreeze } from "./immutable.js";
 
 export const REGION_IDS = deepFreeze(["urban", "mixed", "outlying", "centre"] as const);
 export type RegionId = (typeof REGION_IDS)[number];
-export const REGION_NAMES = deepFreeze({ urban: "Urban", mixed: "Mixed", outlying: "Outlying", centre: "Bellweather Centre" });
+export const REGION_NAMES = deepFreeze({ urban: "Urban", mixed: "Mixed", outlying: "Outlying", centre: "Bellwether Centre" });
 
 export const DISTRICT_IDS = deepFreeze('''+json.dumps(list(ids.values()), indent=2)+''' as const);
 export type DistrictId = (typeof DISTRICT_IDS)[number];
@@ -71,7 +71,7 @@ export const DISTRICTS_BY_ID = Object.freeze(
 
 export const MAP_BRIDGES = deepFreeze('''+json.dumps(bridges,indent=2)+''' as const);
 '''
-    svg = concepts.render_border_map(study, edges, concepts.graph_facts(study,edges,graph)).replace('Island chain — landscape A4 prototype','Bellweather — inland district map').replace('ISLAND CHAIN','BELLWEATHER').replace('08 / Inland waterways · A4 landscape','R24 / Inland regions · A3 landscape')
+    svg = concepts.render_border_map(study, edges, concepts.graph_facts(study,edges,graph)).replace('Island chain — landscape A4 prototype','Bellwether — inland district map').replace('ISLAND CHAIN','BELLWETHER').replace('08 / Inland waterways · A4 landscape','R24 / Inland regions · A3 landscape')
     svg = svg.replace('width="297mm" height="210mm"', 'width="420mm" height="297mm"')
     svg = svg.replace(concepts.COLORS['Urban'], '#e6b6a6')
     svg = svg.split('<text x="36" y="758"')[0] + map_trackers()

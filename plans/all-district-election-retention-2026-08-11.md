@@ -2,7 +2,7 @@
 
 ## Goal
 
-Change Election Day so every district except Bellweather Centre takes its capacity-based draw and retains only that Support, whether or not a revealed scoring card names the district. Bellweather Centre remains unchanged as a persistent jumping-off point and possible blocker.
+Change Election Day so every district except Bellwether Centre takes its capacity-based draw and retains only that Support, whether or not a revealed scoring card names the district. Bellwether Centre remains unchanged as a persistent jumping-off point and possible blocker.
 
 ## Steps
 
@@ -16,13 +16,13 @@ Change Election Day so every district except Bellweather Centre takes its capaci
 - Draw three Support from capacity-six districts, two from capacity-four districts, and one from capacity-two districts.
 - A district with fewer Support than its draw count keeps all available Support.
 - Each district has one shared recorded draw; objectives continue to score from the draw for their named district.
-- Bellweather Centre never draws, never thins, and never appears on a scoring card.
+- Bellwether Centre never draws, never thins, and never appears on a scoring card.
 - Coalition matching changes scoring only, not which Support is retained.
 - Ruleset version 12 has no saved-game migration.
 
 ## Verification
 
-- Focused Election and engine tests cover named and unnamed district retention plus Bellweather Centre persistence.
+- Focused Election and engine tests cover named and unnamed district retention plus Bellwether Centre persistence.
 - Full `npm run check` passes with 177 tests, documentation validation across 72 HTML files, and the production build.
 - A fresh independent review approved the final change with no high-, medium-, or low-severity findings.
 - The committed branch is pushed before the follow-up playtest begins.

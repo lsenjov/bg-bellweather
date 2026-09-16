@@ -10,7 +10,7 @@ counterpart.
 
 ## Design direction
 
-Treat the tracker as a small Bellweather register stamped into the map margin:
+Treat the tracker as a small Bellwether register stamped into the map margin:
 three interchangeable linked pairs, restrained black linework, and a compact
 reserve. Use the established 14 mm party discs, saturated party colours, and
 the six existing emblems so the summary reads at table distance without

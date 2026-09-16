@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1110 975" role="img" aria-labelledby="title desc">
 <title id="title">Outer country: three regions of eighteen Support</title>
-<desc id="desc">Outlying districts wrap around the northern, western, and southern edges. Compact cities sit inland; Bellweather Centre borders only the urban and mixed regions. Water blocks movement except at the three marked crossings; the river removes Canal Ward–Orchard and Orchard–Coast adjacency and the lake removes Eastfield–Meadow adjacency. Every district lies on a loop. Bellweather Centre borders only the urban and mixed regions.</desc>
+<desc id="desc">Outlying districts wrap around the northern, western, and southern edges. Compact cities sit inland; Bellwether Centre borders only the urban and mixed regions. Water blocks movement except at the three marked crossings; the river removes Canal Ward–Orchard and Orchard–Coast adjacency and the lake removes Eastfield–Meadow adjacency. Every district lies on a loop. Bellwether Centre borders only the urban and mixed regions.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:11px}</style>
 <rect width="1110" height="975" fill="white"/>
 <text x="35" y="34" font-size="24" font-weight="700">Outer country</text>
@@ -505,7 +505,7 @@
 <circle cx="743.3" cy="809.2" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 <circle cx="762.3" cy="809.2" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 </g>
-<g text-anchor="middle"><text class="name" x="359.2" y="524.6">Bellweather</text>
+<g text-anchor="middle"><text class="name" x="359.2" y="524.6">Bellwether</text>
 <text class="detail" x="359.2" y="540.6">Centre · separate</text>
 <circle cx="340.2" cy="555.6" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 <circle cx="359.2" cy="555.6" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>

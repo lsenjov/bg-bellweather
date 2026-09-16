@@ -1,4 +1,4 @@
-import type { FirmId } from "@bellweather/content";
+import type { FirmId } from "@bellwether/content";
 
 export const FIRM_ACCENTS: Record<FirmId, string> = {
   "one-fell-swoop": "#efcfca",

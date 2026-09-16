@@ -45,16 +45,16 @@ def main():
     assert area == 1108 * 583, 'Districts must cover the whole land rectangle'
     svg = concepts.render_border_map(study, edges, concepts.graph_facts(study, edges, graph))
     for before, after in {
-        'Island chain — landscape A4 prototype': 'Bellweather — physical district map',
-        'ISLAND CHAIN': 'BELLWEATHER',
+        'Island chain — landscape A4 prototype': 'Bellwether — physical district map',
+        'ISLAND CHAIN': 'BELLWETHER',
         '08 / Inland waterways · A4 landscape': 'Physical prototype / September 2026 · A3 landscape',
         'width="297mm" height="210mm"': 'width="420mm" height="297mm"',
-        'Urban districts share continuous land. Bellweather occupies an island among inland lakes and rivers. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency.': 'Continuous land: shared borders define adjacency for every effect. Point contacts do not count.',
+        'Urban districts share continuous land. Bellwether occupies an island among inland lakes and rivers. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency.': 'Continuous land: shared borders define adjacency for every effect. Point contacts do not count.',
         'fill="#d9edf5"': 'fill="#f4f1e8"',
         'Three regions of eighteen Support; district elections.': 'Urban 18 Support, Industrial Belt 14, Outlying 16, Centre 3. One policy per region.',
         'Mixed 18 / 9 votes': 'Industrial Belt 14 / 7 votes',
         'Outlying 18 / 9 votes': 'Outlying 16 / 8 votes',
-        'Bellweather 3 / separate': 'Centre 3 / 3 votes',
+        'Bellwether 3 / separate': 'Centre 3 / 3 votes',
         'Centre · separate': 'Centre',
         'Industrial Belt · ': '',
         concepts.COLORS['Urban']: '#e6b6a6',

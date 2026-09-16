@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { POLICIES } from "@bellweather/content";
+import { POLICIES } from "@bellwether/content";
 import { chooseLobbyAction } from "../playtest-actions.js";
 
 describe("playtest agent Lobby action selection", () => {

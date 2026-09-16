@@ -3,7 +3,7 @@
 Working repository for the board game currently titled **Ladder Bidding**.
 
 Rival lobbying Firms use reusable Operation cards to influence six animal
-political parties in the fictional Republic of Bellweather. Across six
+political parties in the fictional Republic of Bellwether. Across six
 years, players open parties, Operate, Collect public card piles, and Close
 access. Elections after Years 2, 4, and 6 vote on four regional policies;
 enacted policies score against one secret issue-priority card at game end.
@@ -34,7 +34,7 @@ npm start
 ```
 
 Open `http://127.0.0.1:4317`. The SQLite database is stored at
-`data/ladder-bidding.sqlite` unless `BELLWEATHER_DATABASE` overrides it.
+`data/ladder-bidding.sqlite` unless `BELLWETHER_DATABASE` overrides it.
 
 For source-reloading server and browser processes:
 
@@ -52,10 +52,10 @@ reusable client in `packages/testkit`. To launch the conservative example
 agent:
 
 ```sh
-BELLWEATHER_INVITE=ABC234XY npm run agent:example
+BELLWETHER_INVITE=ABC234XY npm run agent:example
 ```
 
-Omit `BELLWEATHER_INVITE` to have the agent create a new table and print its
+Omit `BELLWETHER_INVITE` to have the agent create a new table and print its
 invite code and session.
 
 ## Validate the archive

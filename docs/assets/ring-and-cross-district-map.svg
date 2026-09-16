@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="396mm" height="297mm" viewBox="0 0 1600 1200" role="img" aria-labelledby="title description">
-  <title id="title">Territorial district map of Bellweather</title>
-  <desc id="description">Sixteen named districts form an irregular land ring and three causeways across Crownwater to Bellweather Centre. Shared black borders define adjacency. Clockwise from north, the outer ring is Northreach with 2 Support spots, Cloverfield with 4, Harbormouth with 6, Millbank with 4, Reedwater with 2, Sunmeadow with 4, Grand Market with 6, Red Orchard with 4, Westgate with 2, Mossfield with 4, Ironwood with 6, and High Pastures with 4. Crown Road has 2 spots and borders Harbormouth and Bellweather Centre. Canal Ward has 2 spots and borders Grand Market and Bellweather Centre. Old Quarter has 2 spots and borders Ironwood and Bellweather Centre. Bellweather Centre has 3 spots and borders the three causeways. A compact right-side tracker holds three reciprocal coalition pairs and reserves unpaired party tokens. A lower-right register tracks Years 1 through 6, with Midterms after odd years and Elections after even years.</desc>
+  <title id="title">Territorial district map of Bellwether</title>
+  <desc id="description">Sixteen named districts form an irregular land ring and three causeways across Crownwater to Bellwether Centre. Shared black borders define adjacency. Clockwise from north, the outer ring is Northreach with 2 Support spots, Cloverfield with 4, Harbormouth with 6, Millbank with 4, Reedwater with 2, Sunmeadow with 4, Grand Market with 6, Red Orchard with 4, Westgate with 2, Mossfield with 4, Ironwood with 6, and High Pastures with 4. Crown Road has 2 spots and borders Harbormouth and Bellwether Centre. Canal Ward has 2 spots and borders Grand Market and Bellwether Centre. Old Quarter has 2 spots and borders Ironwood and Bellwether Centre. Bellwether Centre has 3 spots and borders the three causeways. A compact right-side tracker holds three reciprocal coalition pairs and reserves unpaired party tokens. A lower-right register tracks Years 1 through 6, with Midterms after odd years and Elections after even years.</desc>
   <defs>
     <pattern id="water" width="52" height="28" patternUnits="userSpaceOnUse">
       <rect width="52" height="28" fill="#c9d9da"/>
@@ -40,7 +40,7 @@
 
   <rect class="paper" width="1600" height="1200"/>
   <path class="registration" d="M28 52V28h24 M1548 28h24v24 M28 1172v18h24 M1548 1190h24v-18"/>
-  <text class="eyebrow" x="60" y="62">REPUBLIC OF BELLWEATHER / DISTRICT ATLAS 01</text>
+  <text class="eyebrow" x="60" y="62">REPUBLIC OF BELLWETHER / DISTRICT ATLAS 01</text>
   <text class="heading" x="60" y="103">The sixteen districts</text>
   <text class="map-note" x="1540" y="62" text-anchor="end">R23</text>
 
@@ -119,7 +119,7 @@
     <path class="district district-two" aria-label="Crown Road district, capacity 2" d="M1055 405Q1150 470 1148 535L900 710L800 540Z"/>
     <path class="district district-two" aria-label="Canal Ward district, capacity 2" d="M707 890Q800 920 893 890L900 710H700Z"/>
     <path class="district district-two" aria-label="Old Quarter district, capacity 2" d="M452 535Q480 460 545 405L800 540L700 710Z"/>
-    <path class="district district-center" aria-label="Bellweather Centre district, capacity 3" d="M800 540L900 710H700Z"/>
+    <path class="district district-center" aria-label="Bellwether Centre district, capacity 3" d="M800 540L900 710H700Z"/>
   </g>
 
   <g aria-hidden="true">
@@ -243,8 +243,8 @@
       <use href="#support-spot" x="626" y="555"/>
     </g>
 
-    <g aria-label="Bellweather Centre, 3 Support spots">
-      <text class="region-name region-name-centre" x="800" y="620">Bellweather</text>
+    <g aria-label="Bellwether Centre, 3 Support spots">
+      <text class="region-name region-name-centre" x="800" y="620">Bellwether</text>
       <text class="region-name region-name-centre" x="800" y="640">Centre</text>
       <use href="#support-spot" x="755" y="676"/>
       <use href="#support-spot" x="800" y="676"/>

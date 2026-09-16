@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1020" role="img" aria-labelledby="title desc">
-<title id="title">2. Lake city — experimental Bellweather map</title>
-<desc id="desc">A continuous shoreline offers clockwise and anticlockwise approaches to the same targets, while the lake removes direct shortcuts across the middle. Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellweather holds three separately.</desc>
+<title id="title">2. Lake city — experimental Bellwether map</title>
+<desc id="desc">A continuous shoreline offers clockwise and anticlockwise approaches to the same targets, while the lake removes direct shortcuts across the middle. Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellwether holds three separately.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:12px;font-weight:700}.detail{font-size:10px}.terrain{font-size:15px;font-style:italic;fill:#355564}</style>
 <rect width="1200" height="1020" fill="white"/>
 <text x="40" y="44" font-size="27" font-weight="700">2. Lake city</text>
-<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellweather 3 separate</text>
+<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellwether 3 separate</text>
 <rect x="40" y="110" width="1120" height="790" rx="12" fill="#eff1e9"/>
 <ellipse cx="600" cy="490" rx="300" ry="205" fill="#a9d9ec" stroke="#719cac" stroke-width="2"/>
-<text class="terrain" x="600.0" y="490.0" text-anchor="middle">Bellweather Lake</text>
+<text class="terrain" x="600.0" y="490.0" text-anchor="middle">Bellwether Lake</text>
 <g data-route="D-H"><title>Northgate–Meadow: road</title><path d="M 1038.8,365.6 L 1075.0,490.0" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 1038.8,365.6 L 1075.0,490.0" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="H-I"><title>Meadow–Westfield: road</title><path d="M 1075.0,490.0 L 1038.8,614.4" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 1075.0,490.0 L 1038.8,614.4" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-route="X-A"><title>Bellweather–Harbormouth: road</title><path d="M 125.0,490.0 L 161.2,365.6" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 125.0,490.0 L 161.2,365.6" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-route="X-O"><title>Bellweather–Coast: road</title><path d="M 125.0,490.0 L 161.2,614.4" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 125.0,490.0 L 161.2,614.4" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="X-A"><title>Bellwether–Harbormouth: road</title><path d="M 125.0,490.0 L 161.2,365.6" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 125.0,490.0 L 161.2,365.6" fill="none" stroke="#ffffff" stroke-width="6"/></g>
+<g data-route="X-O"><title>Bellwether–Coast: road</title><path d="M 125.0,490.0 L 161.2,614.4" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 125.0,490.0 L 161.2,614.4" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="I-J"><title>Westfield–Eastfield: road</title><path d="M 1038.8,614.4 L 935.9,719.8" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 1038.8,614.4 L 935.9,719.8" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="G-D"><title>Orchard–Northgate: road</title><path d="M 935.9,260.2 L 1038.8,365.6" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 935.9,260.2 L 1038.8,365.6" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="N-O"><title>Vale–Coast: road</title><path d="M 264.1,719.8 L 161.2,614.4" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 264.1,719.8 L 161.2,614.4" fill="none" stroke="#ffffff" stroke-width="6"/></g>
@@ -26,7 +26,7 @@
 <g data-route="L-M"><title>Heath–Downs: road</title><path d="M 600.0,815.0 L 418.2,790.3" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 600.0,815.0 L 418.2,790.3" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="B-N"><title>Grand Market–Vale: road</title><path d="M 264.1,260.2 L 264.1,719.8" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 264.1,260.2 L 264.1,719.8" fill="none" stroke="#ffffff" stroke-width="6"/></g>
 <g data-route="G-J"><title>Orchard–Eastfield: road</title><path d="M 935.9,260.2 L 935.9,719.8" fill="none" stroke="#536975" stroke-width="10" stroke-linecap="round"/><path d="M 935.9,260.2 L 935.9,719.8" fill="none" stroke="#ffffff" stroke-width="6"/></g>
-<g data-district="X"><polygon points="71.9,447.0 166.6,447.0 189.0,470.6 185.2,521.0 147.4,533.0 80.2,530.4 61.0,505.1 61.0,468.5" fill="#e4dfea" stroke="#19354b" stroke-width="2"/><text class="name" x="125.0" y="472.0" text-anchor="middle">Bellweather</text><text class="detail" x="125.0" y="487.0" text-anchor="middle">Centre · separate</text>
+<g data-district="X"><polygon points="71.9,447.0 166.6,447.0 189.0,470.6 185.2,521.0 147.4,533.0 80.2,530.4 61.0,505.1 61.0,468.5" fill="#e4dfea" stroke="#19354b" stroke-width="2"/><text class="name" x="125.0" y="472.0" text-anchor="middle">Bellwether</text><text class="detail" x="125.0" y="487.0" text-anchor="middle">Centre · separate</text>
 <circle cx="112.0" cy="501.0" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="125.0" cy="501.0" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>
 <circle cx="138.0" cy="501.0" r="4.5" fill="white" stroke="#19354b" stroke-width="1.1"/>

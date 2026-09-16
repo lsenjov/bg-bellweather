@@ -16,7 +16,7 @@
       "region": "Urban"
     },
     "X": {
-      "name": "Bellweather",
+      "name": "Bellwether",
       "capacity": 3,
       "region": "Centre"
     },
@@ -232,9 +232,9 @@
           "kind": "bridge"
         }
       ],
-      "purpose": "Three banks form separate campaign areas. Two crossings approach Bellweather; a downstream crossing links the outer banks without using the centre.",
-      "departures": "Bellweather can directly connect to mixed and outlying districts. Regions occupy separate banks, and bridges restore specific district connections.",
-      "watch": "The downstream crossing could matter more than either central crossing if players can satisfy regional objectives without approaching Bellweather.",
+      "purpose": "Three banks form separate campaign areas. Two crossings approach Bellwether; a downstream crossing links the outer banks without using the centre.",
+      "departures": "Bellwether can directly connect to mixed and outlying districts. Regions occupy separate banks, and bridges restore specific district connections.",
+      "watch": "The downstream crossing could matter more than either central crossing if players can satisfy regional objectives without approaching Bellwether.",
       "target_edges": 25
     },
     {
@@ -331,12 +331,12 @@
           "rx": 300,
           "ry": 205,
           "material": "water",
-          "label": "Bellweather Lake"
+          "label": "Bellwether Lake"
         }
       ],
       "required": [],
       "purpose": "A continuous shoreline offers clockwise and anticlockwise approaches to the same targets, while the lake removes direct shortcuts across the middle.",
-      "departures": "Bellweather sits on a shore rather than at the geographic centre. Regional boundaries follow stretches of shoreline rather than concentric bands.",
+      "departures": "Bellwether sits on a shore rather than at the geographic centre. Regional boundaries follow stretches of shoreline rather than concentric bands.",
       "watch": "The two directions may feel equivalent unless starting Support creates different costs along them.",
       "target_edges": 24
     },
@@ -538,8 +538,8 @@
         }
       ],
       "purpose": "Two inhabited passes connect the valleys; a longer southern foothill route provides a third approach around the mountains.",
-      "departures": "Dense districts are split across the valleys and passes. Regions need not be geographically contiguous, and Bellweather itself occupies a pass.",
-      "watch": "Passing through Bellweather may become incidental to valley-to-valley travel rather than an elective investment in Capital scoring.",
+      "departures": "Dense districts are split across the valleys and passes. Regions need not be geographically contiguous, and Bellwether itself occupies a pass.",
+      "watch": "Passing through Bellwether may become incidental to valley-to-valley travel rather than an elective investment in Capital scoring.",
       "target_edges": 24
     },
     {
@@ -779,7 +779,7 @@
         }
       ],
       "purpose": "Four gates connect a compact old city to an outer circuit. Different gates give access to different inner districts.",
-      "departures": "The urban region and Bellweather lie inside a wall. Gate connections replace ordinary proximity across that wall.",
+      "departures": "The urban region and Bellwether lie inside a wall. Gate connections replace ordinary proximity across that wall.",
       "watch": "Four gates may make the wall easy to bypass; compare which gates actually attract Support rather than assuming all are valuable.",
       "target_edges": 24
     },
@@ -1042,7 +1042,7 @@
         }
       ],
       "required": [],
-      "purpose": "The urban port occupies a peninsula behind two approaches from the mainland. Bellweather sits near its tip, while the broader scoring landscape remains inland.",
+      "purpose": "The urban port occupies a peninsula behind two approaches from the mainland. Bellwether sits near its tip, while the broader scoring landscape remains inland.",
       "departures": "The city follows an elongated peninsula rather than a fan. Open water surrounds the peninsula, and access to its tip follows land routes.",
       "watch": "If Capital scoring remains small compared with regional scoring, travelling down the peninsula may rarely be worth the actions.",
       "target_edges": 24,
@@ -1708,9 +1708,9 @@
           ]
         }
       ],
-      "purpose": "The Island chain network becomes an inland lake district, with rivers separating continuous countryside and Bellweather on a central lake island.",
-      "departures": "Outer territories reach the map edge. Lakes occupy the central basins and rivers divide the surrounding land, with the same nine bridges and 23 adjacencies as the ocean version. Shared borders and bridges define adjacency for every effect; water blocks all other connections. Urban stays contiguous, and Bellweather remains on its own central island. The landscape A4 sheet retains its six-year tracker.",
-      "watch": "The travel network is unchanged: compare the direct bridges through Bellweather with the outer river crossings. Watch whether the inland geography makes the available routes easier to read, and whether the outer rural bridges remain attractive.",
+      "purpose": "The Island chain network becomes an inland lake district, with rivers separating continuous countryside and Bellwether on a central lake island.",
+      "departures": "Outer territories reach the map edge. Lakes occupy the central basins and rivers divide the surrounding land, with the same nine bridges and 23 adjacencies as the ocean version. Shared borders and bridges define adjacency for every effect; water blocks all other connections. Urban stays contiguous, and Bellwether remains on its own central island. The landscape A4 sheet retains its six-year tracker.",
+      "watch": "The travel network is unchanged: compare the direct bridges through Bellwether with the outer river crossings. Watch whether the inland geography makes the available routes easier to read, and whether the outer rural bridges remain attractive.",
       "target_edges": 24,
       "background": "inland",
       "border_map": true,
@@ -1856,7 +1856,7 @@
       ],
       "required": [],
       "purpose": "An inner coastal route and an outer inland route follow the same broad bay. Connections between them allow players to change approach without crossing water.",
-      "departures": "The shoreline remains open and unbridged. Districts occupy two curved bands, with Bellweather one stop on the coastal band.",
+      "departures": "The shoreline remains open and unbridged. Districts occupy two curved bands, with Bellwether one stop on the coastal band.",
       "watch": "The outer band may become a faster bypass if its connections let players skip too many coastal districts.",
       "target_edges": 26
     },
@@ -2001,7 +2001,7 @@
         }
       ],
       "purpose": "Intersecting rail corridors divide the city into four sectors. Road viaducts connect the sectors in a circuit away from the rail junction.",
-      "departures": "Rail infrastructure blocks adjacency just like water. Bellweather is near the junction but has no special connection through the tracks.",
+      "departures": "Rail infrastructure blocks adjacency just like water. Bellwether is near the junction but has no special connection through the tracks.",
       "watch": "The four sectors may function like separate boards unless players have objectives on both sides of a viaduct.",
       "target_edges": 24
     },
@@ -2408,7 +2408,7 @@
           "kind": "pass"
         }
       ],
-      "purpose": "Bellweather sits on the crater floor. Four breaks in the rim connect the inner neighborhoods to an outer circuit.",
+      "purpose": "Bellwether sits on the crater floor. Four breaks in the rim connect the inner neighborhoods to an outer circuit.",
       "departures": "The mixed region shares the crater floor with the urban districts. The rim separates travel areas rather than perfectly matching scoring regions.",
       "watch": "The central floor may offer such short routes that the outer circuit becomes a collection of destinations rather than a useful route.",
       "target_edges": 27
@@ -2708,7 +2708,7 @@
         }
       ],
       "purpose": "An urban core is separated from satellite settlements by a greenbelt. Four access corridors connect different parts of the core to the outer circuit.",
-      "departures": "Protected land is a true adjacency barrier for this study. Outer scoring regions need not each have their own direct connection to Bellweather.",
+      "departures": "Protected land is a true adjacency barrier for this study. Outer scoring regions need not each have their own direct connection to Bellwether.",
       "watch": "If the access corridors are too interchangeable, the greenbelt may add travel without producing meaningful decisions.",
       "target_edges": 24
     },
@@ -2981,9 +2981,9 @@
           "kind": "market road"
         }
       ],
-      "purpose": "Four market approaches meet at Bellweather, with outer settlement routes that can bypass the central crossroads.",
-      "departures": "Bellweather directly connects to a mixed city as well as urban districts. The centre is a transport junction, not a protected urban-only destination.",
-      "watch": "Direct traffic through Bellweather may make Capital scoring too easy or turn the centre into the strongest Smear position.",
+      "purpose": "Four market approaches meet at Bellwether, with outer settlement routes that can bypass the central crossroads.",
+      "departures": "Bellwether directly connects to a mixed city as well as urban districts. The centre is a transport junction, not a protected urban-only destination.",
+      "watch": "Direct traffic through Bellwether may make Capital scoring too easy or turn the centre into the strongest Smear position.",
       "target_edges": 27
     }
   ]

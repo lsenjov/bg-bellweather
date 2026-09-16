@@ -1,7 +1,7 @@
 import {
   MAX_PLAYER_COUNT,
   MIN_PLAYER_COUNT
-} from "@bellweather/protocol";
+} from "@bellwether/protocol";
 
 export function parsePlayerTarget(value: string | undefined): number {
   const playerTarget = Number(value ?? MIN_PLAYER_COUNT);
@@ -11,7 +11,7 @@ export function parsePlayerTarget(value: string | undefined): number {
     playerTarget > MAX_PLAYER_COUNT
   ) {
     throw new Error(
-      `BELLWEATHER_PLAYERS must be an integer from ${MIN_PLAYER_COUNT} to ${MAX_PLAYER_COUNT}`
+      `BELLWETHER_PLAYERS must be an integer from ${MIN_PLAYER_COUNT} to ${MAX_PLAYER_COUNT}`
     );
   }
   return playerTarget;

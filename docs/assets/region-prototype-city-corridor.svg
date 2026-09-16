@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1110 940" role="img" aria-labelledby="title desc">
 <title id="title">City corridor: three regions of eighteen Support</title>
-<desc id="desc">A small southwestern city cluster anchors a southern mixed corridor. Northgate lies at the opposite end, while scattered suburbs punctuate a much larger northern rural region. Shared border segments define adjacency; corners do not. Bellweather Centre borders all three regions.</desc>
+<desc id="desc">A small southwestern city cluster anchors a southern mixed corridor. Northgate lies at the opposite end, while scattered suburbs punctuate a much larger northern rural region. Shared border segments define adjacency; corners do not. Bellwether Centre borders all three regions.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:11px}</style>
 <rect width="1110" height="940" fill="white"/>
 <text x="35" y="34" font-size="24" font-weight="700">City corridor</text>
@@ -379,7 +379,7 @@
 <circle cx="932.5" cy="361.0" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 <circle cx="951.5" cy="361.0" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 </g>
-<g text-anchor="middle"><text class="name" x="361.7" y="649.8">Bellweather</text>
+<g text-anchor="middle"><text class="name" x="361.7" y="649.8">Bellwether</text>
 <text class="detail" x="361.7" y="665.8">Centre · separate</text>
 <circle cx="342.7" cy="680.8" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>
 <circle cx="361.7" cy="680.8" r="7" fill="white" stroke="#19354b" stroke-width="1.3"/>

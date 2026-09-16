@@ -13,7 +13,7 @@ describe("playtest agent settings", () => {
     "rejects unsupported target %s",
     (target) => {
       expect(() => parsePlayerTarget(target)).toThrow(
-        "BELLWEATHER_PLAYERS must be an integer from 2 to 6"
+        "BELLWETHER_PLAYERS must be an integer from 2 to 6"
       );
     }
   );

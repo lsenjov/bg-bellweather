@@ -1,4 +1,4 @@
-import { PARTIES, POLICIES_BY_ID, LAW_EFFECTS, votesFor, type PolicyId } from "@bellweather/content";
+import { PARTIES, POLICIES_BY_ID, LAW_EFFECTS, votesFor, type PolicyId } from "@bellwether/content";
 import type { CSSProperties } from "react";
 import { PartyEmblem } from "./PartyEmblem.js";
 

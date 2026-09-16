@@ -127,7 +127,7 @@ describe("commands", () => {
         choice: {
           operation: "rally",
           districtId: "harbormouth",
-          bonusDistrictId: "bellweather-centre"
+          bonusDistrictId: "bellwether-centre"
         }
       }
     }).success).toBe(true);

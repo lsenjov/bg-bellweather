@@ -3,13 +3,13 @@ import {
   ViewerStateEnvelopeSchema,
   type ProjectedEventEnvelope,
   type ViewerStateEnvelope
-} from "@bellweather/protocol";
+} from "@bellwether/protocol";
 import {
   projectGameState,
   type GameAction,
   type GameEvent,
   type GameState
-} from "@bellweather/game";
+} from "@bellwether/game";
 import type { EventStore } from "./store.js";
 import type { GameRecord, StoredEvent } from "./types.js";
 

@@ -197,10 +197,10 @@ def graph_facts(study,edges,graph):
 def render(study,edges,facts):
     title=html.escape(f'{study["id"]}. {study["title"]}')
     background='#d9edf5' if study.get('background')=='water' else '#e6eee3' if study.get('background')=='wetland' else '#eff1e9'
-    svg=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1020" role="img" aria-labelledby="title desc">',f'<title id="title">{title} — experimental Bellweather map</title>',f'<desc id="desc">{html.escape(study["purpose"])} Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellweather holds three separately.</desc>',
+    svg=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1020" role="img" aria-labelledby="title desc">',f'<title id="title">{title} — experimental Bellwether map</title>',f'<desc id="desc">{html.escape(study["purpose"])} Only printed routes define adjacency for every effect. District footprints and route intersections create no additional links. Three regions hold eighteen Support each; Bellwether holds three separately.</desc>',
     '<style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:12px;font-weight:700}.detail{font-size:10px}.terrain{font-size:15px;font-style:italic;fill:#355564}</style>',
     '<rect width="1200" height="1020" fill="white"/>',f'<text x="40" y="44" font-size="27" font-weight="700">{title}</text>',
-    '<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellweather 3 separate</text>',
+    '<text x="40" y="74" font-size="14">Urban 18 Support / 9 votes     Mixed 18 / 9     Outlying 18 / 9     Bellwether 3 separate</text>',
     f'<rect x="40" y="110" width="1120" height="790" rx="12" fill="{background}"/>']
     if study.get('islands'):
         groups=defaultdict(list)
@@ -289,22 +289,22 @@ def filename(study):
 
 def head(title,description):
     return f'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="{esc(description)}"><title>{esc(title)} — Bellweather map concept</title><style>{PAGE_CSS}</style></head><body><main>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="{esc(description)}"><title>{esc(title)} — Bellwether map concept</title><style>{PAGE_CSS}</style></head><body><main>
 '''
 
 
 def legend():
-    return '<div class="legend" aria-label="Shared scoring-region key"><span class="urban">Urban · 18 Support</span><span class="mixed">Mixed · 18 Support</span><span class="outlying">Outlying · 18 Support</span><span class="centre">Bellweather · 3 separate</span></div>'
+    return '<div class="legend" aria-label="Shared scoring-region key"><span class="urban">Urban · 18 Support</span><span class="mixed">Mixed · 18 Support</span><span class="outlying">Outlying · 18 Support</span><span class="centre">Bellwether · 3 separate</span></div>'
 
 
 def study_page(study,report):
     image=f'../../assets/map-concepts/{filename(study)}.svg'
-    page=[head(study['title'],study['purpose']),'<nav class="top-nav" aria-label="Breadcrumb"><a href="../../index.html">Bellweather design archive</a><a href="../region-map-prototypes.html">Earlier map studies</a></nav>',
+    page=[head(study['title'],study['purpose']),'<nav class="top-nav" aria-label="Breadcrumb"><a href="../../index.html">Bellwether design archive</a><a href="../region-map-prototypes.html">Earlier map studies</a></nav>',
         f'<header><p class="concept-number">Concept {study["id"]}</p><h1>{esc(study["title"])}</h1><p class="lede">{esc(study["purpose"])}</p>{legend()}</header>',
         f'<figure class="large-map"><a href="{image}" aria-label="Open full-size {esc(study["title"])} SVG"><img src="{image}" width="1200" height="1020" alt="{esc(study["purpose"])} Colored named districts contain Support spaces; explicit routes show every adjacency."></a><figcaption><a href="{image}">Open or save the full-size SVG</a>. Districts need not have equal land area. These are experimental route maps, not adopted game rules.</figcaption></figure>',
-        '<section class="reading-rule"><h2>How to read this map</h2><p><strong>Only printed routes create adjacency, for every effect.</strong> A route joins its two endpoint districts. Nearby footprints, touching terrain, and visual proximity across water create no additional connection. White roads with dark edges show ordinary routes; double-railed spans mark the special crossings and corridors listed below. There are no unmarked route intersections.</p><p>This explicit-route convention deliberately differs from the earlier shared-border maps. Each map retains the same 15 regional districts, three regions of 18 Support (up to 9 votes each), and Bellweather with 3 separate Support. Elections still happen district by district. No travel costs, changing water levels, gate ownership, or other special mechanics are assumed.</p></section>',
+        '<section class="reading-rule"><h2>How to read this map</h2><p><strong>Only printed routes create adjacency, for every effect.</strong> A route joins its two endpoint districts. Nearby footprints, touching terrain, and visual proximity across water create no additional connection. White roads with dark edges show ordinary routes; double-railed spans mark the special crossings and corridors listed below. There are no unmarked route intersections.</p><p>This explicit-route convention deliberately differs from the earlier shared-border maps. Each map retains the same 15 regional districts, three regions of 18 Support (up to 9 votes each), and Bellwether with 3 separate Support. Elections still happen district by district. No travel costs, changing water levels, gate ownership, or other special mechanics are assumed.</p></section>',
         f'<div class="study-notes"><section><h2>Deliberate departures</h2><p>{esc(study["departures"])}</p></section><section><h2>What to watch in play</h2><p>{esc(study["watch"])}</p></section></div>',
-        f'<section><h2>What the connections imply</h2><p>This map has <strong>{report["connections"]} connections</strong>. Bellweather connects to {esc(names(report["centre_neighbors"]))}.</p>']
+        f'<section><h2>What the connections imply</h2><p>This map has <strong>{report["connections"]} connections</strong>. Bellwether connects to {esc(names(report["centre_neighbors"]))}.</p>']
     if report['dead_ends']:
         page.append(f'<p><strong>One-route destinations:</strong> {esc(names(report["dead_ends"]))}. These intentionally remain available for testing protected destinations; they depart from the earlier no-dead-ends preference.</p>')
     else:
@@ -337,7 +337,7 @@ def study_page(study,report):
     page.append('</tbody></table></div></details><footer><p>Experimental concept; no production map is adopted. Generate this file and its SVG with <code>python scripts/generate-map-concepts.py</code>.</p></footer></main></body></html>')
     if study.get('border_map'):
         page[3]=page[3].replace('width="1200" height="1020"','width="1188" height="840"').replace('explicit routes show every adjacency.','shared borders and bridges show adjacency.').replace('These are experimental route maps, not adopted game rules.','Landscape A4, 297 × 210 mm, with a six-year tracker whose 23 mm-high spaces fit the existing 22 mm Year marker. Print the SVG at 100%; Support circles are 4.5 mm across. Token size remains an open print-fit question. This layout is adopted as the Ruleset 24 default map.')
-        page[4]='<section class="reading-rule"><h2>How to read this map</h2><p><strong>Shared borders and marked bridges create adjacency for every effect.</strong> Districts touching only at a point are not adjacent. Water severs every other connection, including Smear. Lakes and rivers separate the land areas, which reach the map edge. No route lines are needed within contiguous land. Elections still happen in each district; each region holds 18 Support and up to 9 votes. Bellweather holds 3 separate Support.</p><p><a href="../../../archive/components/island-chain-ocean-2026-09-07.svg">Previous ocean layout</a> · <a href="../../../archive/components/island-chain-ocean-2026-09-07.json">Archived ocean geometry</a> · <a href="../../../archive/components/island-chain-route-study-2026-09-07.svg">Original route-based Island chain</a> · <a href="../../../archive/components/island-chain-route-study-2026-09-07.json">Archived concept data</a>.</p></section>'
+        page[4]='<section class="reading-rule"><h2>How to read this map</h2><p><strong>Shared borders and marked bridges create adjacency for every effect.</strong> Districts touching only at a point are not adjacent. Water severs every other connection, including Smear. Lakes and rivers separate the land areas, which reach the map edge. No route lines are needed within contiguous land. Elections still happen in each district; each region holds 18 Support and up to 9 votes. Bellwether holds 3 separate Support.</p><p><a href="../../../archive/components/island-chain-ocean-2026-09-07.svg">Previous ocean layout</a> · <a href="../../../archive/components/island-chain-ocean-2026-09-07.json">Archived ocean geometry</a> · <a href="../../../archive/components/island-chain-route-study-2026-09-07.svg">Original route-based Island chain</a> · <a href="../../../archive/components/island-chain-route-study-2026-09-07.json">Archived concept data</a>.</p></section>'
     if study['id'] == 8:
         page[-1] = page[-1].replace('Experimental concept; no production map is adopted.', 'Adopted as the Ruleset 24 default map; see the current board specification.')
     return '\n'.join(page)+'\n'
@@ -385,12 +385,12 @@ def border_edges(study, allow_bottlenecks=False):
 def render_border_map(study,edges,facts):
     svg=['<svg xmlns="http://www.w3.org/2000/svg" width="297mm" height="210mm" viewBox="0 0 1188 840" role="img" aria-labelledby="title desc">',
          '<title id="title">Island chain — landscape A4 prototype</title>',
-         '<desc id="desc">Urban districts share continuous land. Bellweather occupies an island among inland lakes and rivers. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency. Three regions of eighteen Support; district elections. Six-year tracker beneath the map.</desc>',
+         '<desc id="desc">Urban districts share continuous land. Bellwether occupies an island among inland lakes and rivers. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency. Three regions of eighteen Support; district elections. Six-year tracker beneath the map.</desc>',
          '<style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:12px}</style>',
          '<rect width="1188" height="840" fill="white"/>',
          '<text x="32" y="38" font-size="25" font-weight="700">ISLAND CHAIN</text>',
          '<text x="1156" y="36" text-anchor="end" font-size="13">08 / Inland waterways · A4 landscape</text>']
-    for x,region,label in [(32,'Urban','Urban 18 / 9 votes'),(310,'Mixed','Mixed 18 / 9 votes'),(580,'Outlying','Outlying 18 / 9 votes'),(875,'Centre','Bellweather 3 / separate')]:
+    for x,region,label in [(32,'Urban','Urban 18 / 9 votes'),(310,'Mixed','Mixed 18 / 9 votes'),(580,'Outlying','Outlying 18 / 9 votes'),(875,'Centre','Bellwether 3 / separate')]:
         svg.append(f'<rect x="{x}" y="56" width="16" height="16" fill="{COLORS[region]}" stroke="#19354b"/><text x="{x+24}" y="69" font-size="13">{label}</text>')
     svg.append('<rect x="40" y="105" width="1108" height="583" fill="#d9edf5"/>')
     for edge in edges:

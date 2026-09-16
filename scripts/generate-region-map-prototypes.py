@@ -6,7 +6,7 @@ import json
 root = Path(__file__).resolve().parents[1]
 assets = root / 'docs/assets'
 capacities = dict(zip('ABCDEFGHIJKLMNOX', [6,6,6,6,4,4,2,2,4,4,2,2,2,2,2,3]))
-names = dict(zip('ABCDEFGHIJKLMNOX', ['Harbormouth','Grand Market','Ironwood','Northgate','Canal Ward','Crown Road','Orchard','Meadow','Westfield','Eastfield','Marsh','Heath','Downs','Vale','Coast','Bellweather']))
+names = dict(zip('ABCDEFGHIJKLMNOX', ['Harbormouth','Grand Market','Ironwood','Northgate','Canal Ward','Crown Road','Orchard','Meadow','Westfield','Eastfield','Marsh','Heath','Downs','Vale','Coast','Bellwether']))
 def region(k):
     return 'Urban' if k in 'ABC' else 'Mixed' if k in 'DEFGH' else 'Outlying' if k in 'IJKLMNO' else 'Centre'
 colors = dict(Urban='#d5e7f5', Mixed='#dbeaca', Outlying='#f5e7ac', Centre='#e4dfea')
@@ -57,7 +57,7 @@ studies = [
         ('K',0,0,6,2),('K',0,2,2,4),('I',6,0,8,2),('L',8,0,12,2),('J',12,0,14,2),
         ('M',14,0,16,2),('N',0,4,2,10),('N',0,10,6,12),('O',6,10,16,12)
     ]),
-    'Outlying districts wrap around the northern, western, and southern edges. Compact cities sit inland; Bellweather Centre borders only the urban and mixed regions.',
+    'Outlying districts wrap around the northern, western, and southern edges. Compact cities sit inland; Bellwether Centre borders only the urban and mixed regions.',
     'The outlying region occupies about 86% of the map perimeter without touching the Centre. Reaching the Centre from the countryside requires passing through an urban or mixed district.',
     'The western rural district, Vale, connects the northern and southern stretches. Test whether this long district creates useful interaction or makes the countryside too easy to traverse.'),
 ]
@@ -144,7 +144,7 @@ for slug,title,rows,description,play,watch in studies:
         return (left+x*scale+ox,top+y*scale+oy)
     def coords(p): return f'{p[0]:.1f},{p[1]:.1f}'
     sw=w*scale+70; sh=h*scale+(195 if slug == 'outer-country' else 160)
-    centre_description = 'Bellweather Centre borders only the urban and mixed regions.' if slug == 'outer-country' else 'Bellweather Centre borders all three regions.'
+    centre_description = 'Bellwether Centre borders only the urban and mixed regions.' if slug == 'outer-country' else 'Bellwether Centre borders all three regions.'
     adjacency_description = 'Water blocks movement except at the three marked crossings; the river removes Canal Ward–Orchard and Orchard–Coast adjacency and the lake removes Eastfield–Meadow adjacency. Every district lies on a loop.' if slug == 'outer-country' else 'Shared border segments define adjacency; corners do not.'
     svg=[f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {sw} {sh}" role="img" aria-labelledby="title desc">',
          f'<title id="title">{title}: three regions of eighteen Support</title>',

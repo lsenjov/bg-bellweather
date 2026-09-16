@@ -6,7 +6,7 @@ import type {
   OperationId,
   PartyId,
   ScoringCardId, PolicyId, RegionId
-} from "@bellweather/content";
+} from "@bellwether/content";
 
 export type SeatId = string;
 export type OperationInventory = Record<OperationId, number>;

@@ -1,6 +1,6 @@
 # Island chain A4 revision
 
-Use landscape A4, six-round tracker below the map, one contiguous urban island and a separate central Bellweather island. Enlarge districts into territories; shared edges and bridges define adjacency for every effect. Retain 18 Support per region and district elections.
+Use landscape A4, six-round tracker below the map, one contiguous urban island and a separate central Bellwether island. Enlarge districts into territories; shared edges and bridges define adjacency for every effect. Retain 18 Support per region and district elections.
 
 1. [x] Archive the preceding Island chain, implement polygon territories and A4 output through the existing generator, update the notes and decision history, inspect the printed-size render and validate geometry/topology. Obtain independent code review, resolve findings and commit.
 

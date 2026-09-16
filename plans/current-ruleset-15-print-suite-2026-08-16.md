@@ -9,7 +9,7 @@ by the project documentation rules.
 
 ## Design direction
 
-Use the existing Bellweather visual language as a government field dossier:
+Use the existing Bellwether visual language as a government field dossier:
 strong party colours for public state, low-saturation Firm stationery for
 player ownership, large physical wells for cards and markers, and compact
 monospaced procedural labels. These are the current print components and do not

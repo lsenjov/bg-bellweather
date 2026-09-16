@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="297mm" viewBox="0 0 1188 840" role="img" aria-labelledby="title desc">
-<title id="title">Bellweather — physical district map</title>
-<desc id="desc">Urban districts share continuous land. Bellweather occupies an island among inland lakes and rivers. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency. Urban 18 Support, Industrial Belt 14, Outlying 16, Centre 3. One policy per region. Six-year tracker beneath the map.</desc>
+<title id="title">Bellwether — physical district map</title>
+<desc id="desc">Urban districts share continuous land. Bellwether occupies an island among inland lakes and rivers. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency. Urban 18 Support, Industrial Belt 14, Outlying 16, Centre 3. One policy per region. Six-year tracker beneath the map.</desc>
 <style>text{font-family:Arial,sans-serif;fill:#19354b}.name{font-size:15px;font-weight:700}.detail{font-size:12px}</style>
 <rect width="1188" height="840" fill="white"/>
-<text x="32" y="38" font-size="25" font-weight="700">BELLWEATHER</text>
+<text x="32" y="38" font-size="25" font-weight="700">BELLWETHER</text>
 <text x="1156" y="36" text-anchor="end" font-size="13">Physical prototype / September 2026 · A3 landscape</text>
 <rect x="32" y="56" width="16" height="16" fill="#e6b6a6" stroke="#19354b"/><text x="56" y="69" font-size="13">Urban 18 / 9 votes</text>
 <rect x="310" y="56" width="16" height="16" fill="#dbeaca" stroke="#19354b"/><text x="334" y="69" font-size="13">Industrial Belt 14 / 7 votes</text>
@@ -14,10 +14,10 @@
 <g data-bridge="H-J"><title>Meadow, Eastfield: bridge</title><path d="M 950,465 L 835,555" stroke="#19354b" stroke-width="14"/><path d="M 950,465 L 835,555" stroke="#fff5d8" stroke-width="9"/></g>
 <g data-bridge="I-N"><title>Westfield, Vale: bridge</title><path d="M 580,520 L 405,520" stroke="#19354b" stroke-width="14"/><path d="M 580,520 L 405,520" stroke="#fff5d8" stroke-width="9"/></g>
 <g data-bridge="L-C"><title>Heath, Ironwood: bridge</title><path d="M 150,400 L 155,285" stroke="#19354b" stroke-width="14"/><path d="M 150,400 L 155,285" stroke="#fff5d8" stroke-width="9"/></g>
-<g data-bridge="C-X"><title>Ironwood, Bellweather: bridge</title><path d="M 400,280 L 545,350" stroke="#19354b" stroke-width="14"/><path d="M 400,280 L 545,350" stroke="#fff5d8" stroke-width="9"/></g>
-<g data-bridge="E-X"><title>Canal Ward, Bellweather: bridge</title><path d="M 830,340 L 625,340" stroke="#19354b" stroke-width="14"/><path d="M 830,340 L 625,340" stroke="#fff5d8" stroke-width="9"/></g>
-<g data-bridge="I-X"><title>Westfield, Bellweather: bridge</title><path d="M 600,525 L 590,445" stroke="#19354b" stroke-width="14"/><path d="M 600,525 L 590,445" stroke="#fff5d8" stroke-width="9"/></g>
-<g data-bridge="M-X"><title>Downs, Bellweather: bridge</title><path d="M 400,450 L 530,405" stroke="#19354b" stroke-width="14"/><path d="M 400,450 L 530,405" stroke="#fff5d8" stroke-width="9"/></g>
+<g data-bridge="C-X"><title>Ironwood, Bellwether: bridge</title><path d="M 400,280 L 545,350" stroke="#19354b" stroke-width="14"/><path d="M 400,280 L 545,350" stroke="#fff5d8" stroke-width="9"/></g>
+<g data-bridge="E-X"><title>Canal Ward, Bellwether: bridge</title><path d="M 830,340 L 625,340" stroke="#19354b" stroke-width="14"/><path d="M 830,340 L 625,340" stroke="#fff5d8" stroke-width="9"/></g>
+<g data-bridge="I-X"><title>Westfield, Bellwether: bridge</title><path d="M 600,525 L 590,445" stroke="#19354b" stroke-width="14"/><path d="M 600,525 L 590,445" stroke="#fff5d8" stroke-width="9"/></g>
+<g data-bridge="M-X"><title>Downs, Bellwether: bridge</title><path d="M 400,450 L 530,405" stroke="#19354b" stroke-width="14"/><path d="M 400,450 L 530,405" stroke="#fff5d8" stroke-width="9"/></g>
 <g data-district="A"><polygon points="260.0,215.0 65.0,230.0 40.0,230.0 40.0,105.0 280.0,105.0 280.0,130.0" fill="#e6b6a6" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="165" y="148" text-anchor="middle">Harbormouth</text><text class="detail" x="165" y="165" text-anchor="middle">Urban · 3 votes</text>
 <circle cx="141.0" cy="185" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="165.0" cy="185" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
@@ -94,7 +94,7 @@
 <circle cx="132.0" cy="591" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="156.0" cy="591" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 </g>
-<g data-district="X"><polygon points="535.0,340.0 605.0,320.0 650.0,365.0 645.0,425.0 565.0,455.0 520.0,400.0" fill="#e4dfea" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="590" y="373" text-anchor="middle">Bellweather</text><text class="detail" x="590" y="390" text-anchor="middle">Centre · no thinning</text>
+<g data-district="X"><polygon points="535.0,340.0 605.0,320.0 650.0,365.0 645.0,425.0 565.0,455.0 520.0,400.0" fill="#e4dfea" stroke="#19354b" stroke-width="2" stroke-linejoin="round"/><text class="name" x="590" y="373" text-anchor="middle">Bellwether</text><text class="detail" x="590" y="390" text-anchor="middle">Centre · no thinning</text>
 <circle cx="566.0" cy="410" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="590.0" cy="410" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>
 <circle cx="614.0" cy="410" r="9" fill="white" stroke="#19354b" stroke-width="1.2"/>

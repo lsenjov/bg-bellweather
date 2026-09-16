@@ -1,4 +1,4 @@
-import { DISTRICTS, activeLawEffects, type PolicyId, type PartyId } from "@bellweather/content";
+import { DISTRICTS, activeLawEffects, type PolicyId, type PartyId } from "@bellwether/content";
 
 export function chooseLobbyAction(
   game: Record<string, unknown>,
