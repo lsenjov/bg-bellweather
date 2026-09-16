@@ -1,30 +1,106 @@
-"""Render the physical prototype independently of the app map."""
+"""Render and validate the physical board at its printed millimetre dimensions."""
 import argparse
+import html
 import importlib.util
 import json
-import re
+import math
 from pathlib import Path
 import sys
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location('default_map', ROOT / 'scripts/generate-default-map.py')
-default_map = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(default_map)
-concepts = default_map.concepts
+spec = importlib.util.spec_from_file_location('concepts', ROOT / 'scripts/generate-map-concepts.py')
+concepts = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(concepts)
+
+MAP_X, MAP_Y, MAP_WIDTH, MAP_HEIGHT = 78, 34, 264, 210
+SLOT_RADIUS, SLOT_PITCH = 6.5, 15
+GREEN, INK = '#287a43', '#19354b'
+COLORS = {'Urban': '#e6b6a6', 'Industrial Belt': '#dbeaca', 'Outlying': '#f5e7ac', 'Centre': '#e4dfea'}
 
 
-def retained_slots(match):
-    key, group = match.group(1), match.group(0)
-    circles = list(re.finditer(r'<circle cx="([^"]+)" cy="([^"]+)"[^>]*/>', group))
-    retained = len(circles) if key == 'X' else len(circles) // 2
-    for circle in reversed(circles[:retained]):
-        x, y = map(float, circle.groups())
-        slot = circle.group(0).replace('stroke="#19354b" stroke-width="1.2"', 'stroke="#287a43" stroke-width="3" data-retained="true"')
-        tick = f'<path d="M{x-4:g},{y:g} l3,3 l5,-6" fill="none" stroke="#287a43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>'
-        group = group[:circle.start()] + slot + tick + group[circle.end():]
-    group = re.sub(r' · \d+ votes?', '', group)
-    return re.sub(r'<text class="detail"[^>]*>\d+ votes?</text>', '', group)
+def print_point(point):
+    x, y = point
+    return MAP_X + (x - 40) * MAP_WIDTH / 1108, MAP_Y + (y - 105) * MAP_HEIGHT / 583
+
+
+def border_distance(point, polygon):
+    x, y = point
+    distances = []
+    for (ax, ay), (bx, by) in zip(polygon, polygon[1:] + polygon[:1]):
+        dx, dy = bx - ax, by - ay
+        t = max(0, min(1, ((x-ax)*dx + (y-ay)*dy) / (dx*dx + dy*dy)))
+        distances.append(math.hypot(x-ax-t*dx, y-ay-t*dy))
+    return min(distances)
+
+
+def slot_centres(capacity, label):
+    x, y = label
+    columns = 3 if capacity in (3, 6) else 2
+    return [(x + (i % columns - (columns-1)/2) * SLOT_PITCH, y + 10 + (i // columns) * SLOT_PITCH) for i in range(capacity)]
+
+
+def text(x, y, value, size=3.5, anchor='middle', weight='normal'):
+    return f'<text x="{x:g}" y="{y:g}" font-size="{size:g}" text-anchor="{anchor}" font-weight="{weight}">{html.escape(value)}</text>'
+
+
+def support_slot(x, y, retained):
+    color = GREEN if retained else INK
+    stroke = 1 if retained else .35
+    svg = f'<circle class="support-slot" cx="{x:g}" cy="{y:g}" r="{SLOT_RADIUS}" fill="white" stroke="{color}" stroke-width="{stroke}" data-retained="{str(retained).lower()}"/>'
+    if retained:
+        svg += f'<path d="M{x-2.6:g},{y:g} l1.8,2 l3.5,-4" fill="none" stroke="{GREEN}" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round"/>'
+    return svg
+
+
+def render(study):
+    svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="297mm" viewBox="0 0 420 297" role="img" aria-labelledby="title desc">',
+           '<title id="title">Bellweather — cube-fit physical board</title>',
+           '<desc id="desc">Continuous land with 51 support slots sized for 8 mm cubes, four 63 by 88 mm policy wells and a six-year tracker. Shared borders define adjacency; point contacts do not. Green checks show the retained count; survivors are chosen randomly.</desc>',
+           f'<style>text{{font-family:Arial,sans-serif;fill:{INK}}}</style>',
+           '<rect width="420" height="297" fill="white"/>',
+           text(8, 13, 'BELLWEATHER', 7, 'start', 'bold'),
+           text(412, 12, 'A3 · Print at 100%', 3.5, 'end'),
+           f'<circle cx="10" cy="24" r="2" fill="white" stroke="{GREEN}" stroke-width=".8"/>',
+           f'<path d="M9,24 l.7,.8 l1.4,-1.6" fill="none" stroke="{GREEN}" stroke-width=".5"/>',
+           text(15, 25.3, 'Green checks show how many survive; choose survivors randomly.', 3.5, 'start')]
+    all_slots = []
+    for key, node in study['nodes'].items():
+        district = study['districts'][key]
+        polygon = [print_point(p) for p in node['polygon']]
+        label = node['print_label']
+        centres = slot_centres(district['capacity'], label)
+        retained = district['capacity'] if key == 'X' else district['capacity'] // 2
+        points = ' '.join(f'{x:.6f},{y:.6f}' for x, y in polygon)
+        svg.append(f'<g data-district="{key}"><polygon points="{points}" fill="{COLORS[district["region"]]}" stroke="{INK}" stroke-width=".45" stroke-linejoin="round"/>')
+        name = 'Bellweather Centre' if key == 'X' else district['name']
+        svg.append(text(*label, name, weight='bold'))
+        for index, centre in enumerate(centres):
+            assert concepts.inside(centre, polygon) and border_distance(centre, polygon) >= 7.5, (key, 'slot/border clearance')
+            assert all(math.dist(centre, other) >= SLOT_PITCH for other in all_slots), (key, 'slot spacing')
+            all_slots.append(centre)
+            svg.append(support_slot(*centre, index < retained))
+        svg.append('</g>')
+    assert len(all_slots) == 51
+    for x, y, region, capacity, votes in [(8, 44, 'Urban', 18, 9), (8, 154, 'Outlying', 16, 8), (349, 44, 'Industrial Belt', 14, 7), (349, 154, 'Centre', 3, 3)]:
+        svg.append(f'<g data-policy-region="{region}"><rect x="{x}" y="{y-10}" width="63" height="8" rx="1" fill="{COLORS[region]}"/>')
+        svg.append(text(x+31.5, y-4.5, region, 4, weight='bold'))
+        svg.append(f'<rect class="policy-well" x="{x}" y="{y}" width="63" height="88" rx="3" fill="#fffefa" stroke="{INK}" stroke-width=".35" stroke-dasharray="2 1.5"/>')
+        svg.append(text(x+31.5, y+41, 'Pending policy', 3.5))
+        svg.append(text(x+31.5, y+47, f'{capacity} Support / {votes} votes', 3))
+        svg.append('</g>')
+    svg.append(text(78, 255, 'ROUND / YEAR', 3.5, 'start', 'bold'))
+    for year in range(1, 7):
+        x = 78 + (year-1)*26
+        fill = '#e4dfea' if year % 2 == 0 else '#f2f5f6'
+        svg.append(f'<rect class="year-well" x="{x}" y="260" width="24" height="24" rx="1.5" fill="{fill}" stroke="{INK}" stroke-width=".35"/>')
+        svg.append(text(x+12, 271, str(year), 6, weight='bold'))
+        if year % 2 == 0:
+            svg.append(text(x+12, 280, f'Election {year//2}', 2.8))
+    svg.extend([text(241, 266, 'ONE POLICY PER REGION', 3.5, 'start', 'bold'),
+                text(241, 274, 'Each Support votes', 3.2, 'start'),
+                text(241, 281, 'For > Against passes · Ties fail', 3.2, 'start'), '</svg>\n'])
+    return '\n'.join(svg)
 
 
 def main():
@@ -33,7 +109,6 @@ def main():
     args = parser.parse_args()
     study = json.loads((ROOT / 'docs/components/physical-map.json').read_text())
     concepts.DISTRICTS = study['districts']
-    concepts.COLORS['Industrial Belt'] = concepts.COLORS['Mixed']
     edges, graph = concepts.border_edges(study, allow_bottlenecks=True)
     expected = {'Urban': [6, 6, 6], 'Industrial Belt': [2, 2, 4, 6], 'Outlying': [2, 2, 2, 2, 2, 2, 4], 'Centre': [3]}
     for region, capacities in expected.items():
@@ -43,36 +118,14 @@ def main():
     assert not study['required'] and not study['water_labels']
     area = sum(abs(sum(x1*y2-x2*y1 for (x1,y1),(x2,y2) in zip(node['polygon'], node['polygon'][1:] + node['polygon'][:1]))) / 2 for node in study['nodes'].values())
     assert area == 1108 * 583, 'Districts must cover the whole land rectangle'
-    svg = concepts.render_border_map(study, edges, concepts.graph_facts(study, edges, graph))
-    for before, after in {
-        'Island chain — landscape A4 prototype': 'Bellweather — physical district map',
-        'ISLAND CHAIN': 'BELLWEATHER',
-        '08 / Inland waterways · A4 landscape': 'Physical prototype / September 2026 · A3 landscape',
-        'width="297mm" height="210mm"': 'width="420mm" height="297mm"',
-        'Urban districts share continuous land. Bellweather occupies an island among inland lakes and rivers. Shared borders and marked bridges define adjacency for all effects; water otherwise severs adjacency.': 'Continuous land: shared borders define adjacency for every effect. Point contacts do not count.',
-        'fill="#d9edf5"': 'fill="#f4f1e8"',
-        'Three regions of eighteen Support; district elections.': 'Urban 18 Support, Industrial Belt 14, Outlying 16, Centre 3. One policy per region.',
-        'Mixed 18 / 9 votes': 'Industrial Belt 14 / 7 votes',
-        'Outlying 18 / 9 votes': 'Outlying 16 / 8 votes',
-        'Bellweather 3 / separate': 'Centre 3 / 3 votes',
-        'Centre · separate': 'Centre',
-        'Industrial Belt · ': '',
-        concepts.COLORS['Urban']: '#e6b6a6',
-    }.items():
-        svg = svg.replace(before, after)
-    svg = re.sub(r'<g data-district="([^"]+)">.*?</g>', retained_slots, svg, flags=re.S)
-    legend = '<g aria-label="Retained Support reminder"><circle cx="46" cy="89" r="6" fill="white" stroke="#287a43" stroke-width="3"/><path d="M43,89 l2,2 l4,-5" fill="none" stroke="#287a43" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="60" y="93" font-size="12">Green check slots show how many survive; choose survivors randomly.</text></g>'
-    svg = svg.replace('<rect x="40" y="105"', legend + '\n<rect x="40" y="105"')
-    old = default_map.map_trackers()
-    old = re.sub(r'<text x="766".*?</text><text x="1024".*?</text>', '', old)
-    old = old.split('<path d="M690,736')[0]
-    svg = svg.split('<text x="36" y="758"')[0] + old + '<text x="885" y="746" font-size="15" font-weight="700">ONE POLICY PER REGION</text><text x="885" y="774" font-size="13">Thin outside Centre · Each Support votes</text><text x="885" y="800" font-size="13">For &gt; Against passes · Ties fail</text></g>\n</svg>\n'
+    assert 2 * SLOT_RADIUS - 1 >= 12, 'Retained ring must accommodate a 12 mm diagonal'
+    svg = render(study)
     path = ROOT / 'docs/assets/policy-district-map.svg'
     if args.check:
         assert path.read_text() == svg, f'{path} is stale'
     else:
         path.write_text(svg)
-    print(f'Physical map: 15 districts, 51 spaces, {len(edges)} adjacencies, 24 maximum outer votes/removals.')
+    print(f'Physical map: 264 × 210 mm, 13 mm slots, four 63 × 88 mm policy wells; {len(edges)} adjacencies.')
 
 
 if __name__ == '__main__':
