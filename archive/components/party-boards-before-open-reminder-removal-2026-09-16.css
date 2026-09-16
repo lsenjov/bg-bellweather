@@ -298,3 +298,4 @@ main {
 .promise-ranking > strong { font: bold 7pt var(--body); }
 .promise-ranking ol { list-style: none; padding: 0; margin: 1mm 0 0; }
 .promise-ranking li { font: 8pt/1.3 var(--body); padding: .5mm 0; }
+.open-reminder { margin: 2mm 0 0; text-align: center; font: 7pt/1.2 var(--body); }
