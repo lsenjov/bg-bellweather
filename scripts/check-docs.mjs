@@ -18,7 +18,6 @@ const generatedPrintOutputs = new Set([
   "inland-district-map-a3.pdf",
   "scoring-cards-a4.pdf",
   "policy-cards-a4.pdf",
-  "policy-region-labels-a4.pdf",
   "policy-district-map-a3.pdf",
   "bonus-cards-a4.pdf",
   "bonus-card-candidates-a4.pdf",

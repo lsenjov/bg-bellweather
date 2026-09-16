@@ -59,11 +59,7 @@ def render(study):
            '<desc id="desc">Continuous land with 51 support slots sized for 8 mm cubes, four 63 by 88 mm policy wells and a six-year tracker. Shared borders define adjacency; point contacts do not. Green checks show the retained count; survivors are chosen randomly.</desc>',
            f'<style>text{{font-family:Arial,sans-serif;fill:{INK}}}</style>',
            '<rect width="420" height="297" fill="white"/>',
-           text(8, 13, 'BELLWEATHER', 7, 'start', 'bold'),
-           text(412, 12, 'A3 · Print at 100%', 3.5, 'end'),
-           f'<circle cx="10" cy="24" r="2" fill="white" stroke="{GREEN}" stroke-width=".8"/>',
-           f'<path d="M9,24 l.7,.8 l1.4,-1.6" fill="none" stroke="{GREEN}" stroke-width=".5"/>',
-           text(15, 25.3, 'Green checks show how many survive; choose survivors randomly.', 3.5, 'start')]
+           text(8, 13, 'BELLWEATHER', 7, 'start', 'bold')]
     all_slots = []
     for key, node in study['nodes'].items():
         district = study['districts'][key]
@@ -97,9 +93,7 @@ def render(study):
         svg.append(text(x+12, 271, str(year), 6, weight='bold'))
         if year % 2 == 0:
             svg.append(text(x+12, 280, f'Election {year//2}', 2.8))
-    svg.extend([text(241, 266, 'ONE POLICY PER REGION', 3.5, 'start', 'bold'),
-                text(241, 274, 'Each Support votes', 3.2, 'start'),
-                text(241, 281, 'For > Against passes · Ties fail', 3.2, 'start'), '</svg>\n'])
+    svg.append('</svg>\n')
     return '\n'.join(svg)
 
 

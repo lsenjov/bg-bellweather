@@ -112,7 +112,6 @@ html_exports=(
   "bonus-cards|docs/components/bonus-cards.html|assets/print/bonus-cards-a4.pdf|2|594.96|841.92"
   "bonus-card-candidates|docs/design/printable-bonus-card-candidates.html|assets/print/bonus-card-candidates-a4.pdf|9|594.96|841.92"
   "policy-cards|docs/components/printable-policy-cards.html|assets/print/policy-cards-a4.pdf|4|594.96|841.92"
-  "policy-region-labels|docs/components/policy-region-labels.html|assets/print/policy-region-labels-a4.pdf|1|594.96|841.92"
   "scoring-cards|docs/components/printable-scoring-cards.html|assets/print/scoring-cards-a4.pdf|1|594.96|841.92"
   "shared-state-tokens|docs/components/shared-state-tokens.html|assets/print/shared-state-tokens-a4.pdf|1|841.92|594.96"
   "public-score-tracker|docs/components/campaign-score-trackers.html|assets/print/public-score-tracker-a4.pdf|1|841.92|594.96"

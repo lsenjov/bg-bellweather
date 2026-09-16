@@ -89,7 +89,7 @@ function printPage(title, description, kind, cards, count) {
   for (let i = 0; i < cards.length; i += count) sheets.push(`<section class="print-sheet ${kind}" aria-label="Sheet ${sheets.length + 1}">${cards.slice(i, i + count).join('\n')}</section>`);
   return `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${title} — Bellweather</title><link rel="stylesheet" href="../policy-cards-print.css"></head><body><header class="screen-header"><a href="cards.html">Component specification</a><h1>${title}</h1><p>${description} Print at 100% on A4 portrait paper.</p></header><main>${sheets.join('\n')}</main></body></html>\n`;
 }
-output('docs/components/printable-scoring-cards.html', printPage('Issue scoring cards', 'Twelve 40 × 61 mm cards on one sheet. Deal one secret card per firm. Use identical opaque sleeves.', 'scoring-sheet', scoringCards.map((c) => `<article class="scoring-card"><header><b>Private priorities</b><span>${c.id}</span></header><ol>${c.order.map((issue, i) => `<li><b>${6 - i}</b><span>${issue}</span></li>`).join('')}</ol><footer>Every enacted policy<br>+ value − value · game end</footer></article>`), 12));
+output('docs/components/printable-scoring-cards.html', printPage('Issue scoring cards', 'Twelve 40 × 61 mm cards on one sheet. Deal one secret card per firm. Use identical opaque sleeves.', 'scoring-sheet', scoringCards.map((c) => `<article class="scoring-card"><header><b>Private priorities</b><span>${c.id}</span></header><ol>${c.order.map((issue, i) => `<li><b>${6 - i}</b><span>${issue}</span></li>`).join('')}</ol><footer>Rev 27</footer></article>`), 12));
 const partyEmblems = {
   "honeycomb": "M32 7l21 12v26L32 57 11 45V19z",
   "old-shell": "M9 48c0-20 10-34 27-34 13 0 21 9 21 21 0 13-9 21-21 21-10 0-17-6-17-15 0-8 6-14 14-14 7 0 12 4 12 10 0 5-4 9-9 9-4 0-7-2-7-6",
@@ -114,7 +114,7 @@ let board = readFileSync(root + boardPath, 'utf8');
 for (const p of parties) {
   const pattern = new RegExp(`<section class="promise-ranking" data-party="${p.name}">[\\s\\S]*?</section>`);
   assert(pattern.test(board), `Missing ranking panel for ${p.name}`);
-  board = board.replace(pattern, `<section class="promise-ranking" data-party="${p.name}"><strong>Public priorities · + above − votes For</strong><ol>${p.order.map((c, i) => `<li><b>${i + 1}</b> ${c}</li>`).join('')}</ol></section>`);
+  board = board.replace(pattern, `<section class="promise-ranking" data-party="${p.name}"><strong>Public priorities</strong><ol>${p.order.map((c) => `<li>${c}</li>`).join('')}</ol></section>`);
 }
 output(boardPath, board);
 execFileSync('python', [root + 'scripts/generate-physical-map.py', ...(check ? ['--check'] : [])], { stdio: 'inherit' });

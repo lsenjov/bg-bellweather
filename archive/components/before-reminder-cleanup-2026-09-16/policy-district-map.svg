@@ -4,6 +4,10 @@
 <style>text{font-family:Arial,sans-serif;fill:#19354b}</style>
 <rect width="420" height="297" fill="white"/>
 <text x="8" y="13" font-size="7" text-anchor="start" font-weight="bold">BELLWEATHER</text>
+<text x="412" y="12" font-size="3.5" text-anchor="end" font-weight="normal">A3 · Print at 100%</text>
+<circle cx="10" cy="24" r="2" fill="white" stroke="#287a43" stroke-width=".8"/>
+<path d="M9,24 l.7,.8 l1.4,-1.6" fill="none" stroke="#287a43" stroke-width=".5"/>
+<text x="15" y="25.3" font-size="3.5" text-anchor="start" font-weight="normal">Green checks show how many survive; choose survivors randomly.</text>
 <g data-district="A"><polygon points="130.418773,73.622642 83.956679,79.025729 78.000000,79.025729 78.000000,34.000000 135.184116,34.000000 135.184116,43.005146" fill="#e6b6a6" stroke="#19354b" stroke-width=".45" stroke-linejoin="round"/>
 <text x="107" y="42" font-size="3.5" text-anchor="middle" font-weight="bold">Harbormouth</text>
 <circle class="support-slot" cx="92" cy="52" r="6.5" fill="white" stroke="#287a43" stroke-width="1" data-retained="true"/><path d="M89.4,52 l1.8,2 l3.5,-4" fill="none" stroke="#287a43" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -140,4 +144,7 @@
 <rect class="year-well" x="208" y="260" width="24" height="24" rx="1.5" fill="#e4dfea" stroke="#19354b" stroke-width=".35"/>
 <text x="220" y="271" font-size="6" text-anchor="middle" font-weight="bold">6</text>
 <text x="220" y="280" font-size="2.8" text-anchor="middle" font-weight="normal">Election 3</text>
+<text x="241" y="266" font-size="3.5" text-anchor="start" font-weight="bold">ONE POLICY PER REGION</text>
+<text x="241" y="274" font-size="3.2" text-anchor="start" font-weight="normal">Each Support votes</text>
+<text x="241" y="281" font-size="3.2" text-anchor="start" font-weight="normal">For &gt; Against passes · Ties fail</text>
 </svg>
