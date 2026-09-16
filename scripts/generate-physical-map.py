@@ -14,6 +14,19 @@ spec.loader.exec_module(default_map)
 concepts = default_map.concepts
 
 
+def retained_slots(match):
+    key, group = match.group(1), match.group(0)
+    circles = list(re.finditer(r'<circle cx="([^"]+)" cy="([^"]+)"[^>]*/>', group))
+    retained = len(circles) if key == 'X' else len(circles) // 2
+    for circle in reversed(circles[:retained]):
+        x, y = map(float, circle.groups())
+        slot = circle.group(0).replace('stroke="#19354b" stroke-width="1.2"', 'stroke="#287a43" stroke-width="3" data-retained="true"')
+        tick = f'<path d="M{x-4:g},{y:g} l3,3 l5,-6" fill="none" stroke="#287a43" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>'
+        group = group[:circle.start()] + slot + tick + group[circle.end():]
+    group = re.sub(r' · \d+ votes?', '', group)
+    return re.sub(r'<text class="detail"[^>]*>\d+ votes?</text>', '', group)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
@@ -47,6 +60,9 @@ def main():
         concepts.COLORS['Urban']: '#e6b6a6',
     }.items():
         svg = svg.replace(before, after)
+    svg = re.sub(r'<g data-district="([^"]+)">.*?</g>', retained_slots, svg, flags=re.S)
+    legend = '<g aria-label="Retained Support reminder"><circle cx="46" cy="89" r="6" fill="white" stroke="#287a43" stroke-width="3"/><path d="M43,89 l2,2 l4,-5" fill="none" stroke="#287a43" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="60" y="93" font-size="12">Green check slots show how many survive; choose survivors randomly. Centre keeps all.</text></g>'
+    svg = svg.replace('<rect x="40" y="105"', legend + '\n<rect x="40" y="105"')
     old = default_map.map_trackers()
     old = re.sub(r'<text x="766".*?</text><text x="1024".*?</text>', '', old)
     old = old.split('<path d="M690,736')[0]
