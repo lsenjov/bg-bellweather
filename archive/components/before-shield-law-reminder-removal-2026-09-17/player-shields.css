@@ -52,6 +52,7 @@
 .year-sequence strong { display: block; margin-bottom: 0.7mm; }
 .helper-panel .shared-result { padding: 1.2mm; border: 0.25mm solid #aaa393; background: var(--tint); }
 .helper-panel .callout { padding: 1.5mm; margin-top: 1mm; background: var(--ink); color: var(--paper-bright); }
+.helper-panel .law-reference { margin-top: 2mm; padding-top: 1.5mm; border-top: 0.25mm solid #aaa393; }
 .helper-panel .victory { padding: 1.5mm; margin-top: 2mm; background: var(--accent); font-weight: bold; }
 .helper-main dl > div, .helper-main li { margin-bottom: 1.2mm; }
 .helper-operations h3:nth-of-type(2) { margin-top: 3mm; }

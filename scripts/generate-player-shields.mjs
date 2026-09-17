@@ -53,7 +53,6 @@ const helper = `<div class="helper-panel helper-year">
       <p class="victory">Negative totals allowed. Highest final total wins; ties share.</p>
     </section>
   </div>
-      <p class="law-reference">Party: recipient’s Operations only, once per effect/card; no loops. Global: everyone’s scoring.</p>
 </div>
 <div class="helper-panel helper-operations">
   <h3>Operations</h3>

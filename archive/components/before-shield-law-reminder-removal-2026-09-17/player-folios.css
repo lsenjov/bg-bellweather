@@ -1,0 +1,62 @@
+* { box-sizing: border-box; }
+:root {
+  color-scheme: light;
+  --paper: #eee6d7;
+  --paper-bright: #fffaf0;
+  --ink: #272923;
+  --display: "Liberation Serif", serif;
+  --body: "Liberation Sans", sans-serif;
+  --mono: "Noto Sans Mono", monospace;
+}
+html { background: #20241f; }
+body { margin: 0; color: var(--ink); font-family: var(--body); }
+.screen-header { max-width: 210mm; margin: 0 auto; padding: 28px 20px; color: var(--paper-bright); }
+.screen-header a { color: #edc585; }
+.screen-header h1 { margin: 20px 0 12px; font: bold clamp(2rem, 5vw, 3.8rem)/1 var(--display); }
+.screen-header p { max-width: 75ch; line-height: 1.5; }
+.symbol-library { position: absolute; width: 0; height: 0; overflow: hidden; }
+main { display: flex; align-items: center; flex-direction: column; gap: 28px; padding: 0 0 36px; overflow-x: auto; }
+.print-sheet { flex: none; display: grid; width: 210mm; height: 297mm; grid-template-rows: repeat(3, 90mm); padding: 6mm 5mm; align-content: space-between; background: white; box-shadow: 0 10px 35px #0005; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.folio-pair { display: flex; width: 200mm; height: 90mm; }
+.swoop { --accent: #efcfca; --tint: #f7e9e6; }
+.pairliament { --accent: #d4e1eb; --tint: #eaf1f5; }
+.triumvirat { --accent: #eeddb8; --tint: #f7efdc; }
+.ivy-league { --accent: #d8e4d1; --tint: #edf3e9; }
+.vested { --accent: #e5d4e1; --tint: #f3eaf1; }
+.vip-access { --accent: #cfe4df; --tint: #e8f2ef; }
+.player-folio { width: 100mm; height: 90mm; flex: none; padding: 3.5mm; border: 0.4mm solid var(--ink); background: var(--paper-bright); }
+.identity { display: flex; height: 14mm; align-items: center; gap: 2mm; border-bottom: 0.4mm solid var(--ink); background: var(--accent); padding: 1mm 2mm; }
+.emblem { flex: none; width: 10mm; height: 10mm; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.8; }
+.identity h2 { flex: 1; margin: 0; font: bold 11pt/1.05 var(--display); }
+.identity small { display: block; margin-top: 0.7mm; font: 6pt/1 var(--body); text-transform: uppercase; letter-spacing: 0.08em; }
+.identity small:empty { display: none; }
+.public-folio .identity { transform: rotate(180deg); }
+.folio-body { display: flex; height: 61mm; margin-top: 4mm; align-items: center; justify-content: space-between; padding: 0 1mm; }
+.card-well { display: grid; flex: none; width: 40mm; height: 61mm; border: 0.45mm solid var(--ink); outline: 0.25mm dashed #6a6a5f; outline-offset: -2mm; background: var(--tint); place-items: center; text-align: center; }
+.card-well strong { font: bold 15pt/1.05 var(--display); }
+.counter-bank { width: 40mm; text-align: center; }
+.counter-bank > strong { display: block; margin-bottom: 5mm; font: bold 8pt/1 var(--body); }
+.counter-wells { display: grid; grid-template-columns: repeat(2, 14mm); gap: 3mm; justify-content: center; }
+.counter-wells i { display: grid; width: 14mm; height: 14mm; border: 0.35mm dashed #555a50; border-radius: 50%; place-items: center; background: var(--tint); font: bold 6pt/1 var(--body); }
+.counter-wells .low-player { background: repeating-linear-gradient(135deg, var(--tint) 0 1.5mm, var(--paper) 1.5mm 3mm); }
+.reminder-grid { display: grid; width: 40mm; grid-template-columns: repeat(2, 18mm); gap: 4mm; }
+.reminder-grid i { width: 18mm; height: 18mm; border: 0.35mm solid var(--ink); background: #fff; }
+.marker-sheet { grid-template-rows: repeat(6, 40mm); padding: 12mm 10mm; }
+.marker-row { display: flex; align-items: center; justify-content: space-between; border-bottom: 0.25mm solid #d0c9ba; }
+.marker-row header { width: 75mm; display: flex; align-items: center; gap: 3mm; }
+.marker-row .emblem { width: 14mm; height: 14mm; background: var(--accent); padding: 1mm; }
+.marker-row h2 { font: bold 12pt/1.1 var(--display); }
+.marker-set { display: flex; gap: 5mm; }
+.yes-marker { display: grid; width: 16mm; height: 16mm; border: 0.35mm solid var(--ink); background: var(--paper-bright); place-items: center; }
+.yes-marker svg { width: 12mm; height: 12mm; fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+@page { size: A4 portrait; margin: 0; }
+@media screen and (max-width: 800px) {
+  main { align-items: flex-start; }
+}
+@media print {
+  html, body { background: white; }
+  .screen-header { display: none; }
+  main { display: block; padding: 0; overflow: visible; }
+  .print-sheet { margin: 0; break-after: page; box-shadow: none; }
+  .print-sheet:last-child { break-after: auto; }
+}
