@@ -1,0 +1,30 @@
+@import url("player-folios.css");
+.screen-header { max-width: 297mm; }
+.screen-header details { max-width: 90ch; margin-top: 24px; border-top: 1px solid #ffffff40; padding-top: 16px; }
+.screen-header summary { cursor: pointer; font-weight: bold; }
+.screen-header li { line-height: 1.5; padding-left: 4px; margin: 12px 0; }
+.shield-page { position: relative; flex: none; width: 297mm; height: 210mm; background: #fff; print-color-adjust: exact; -webkit-print-color-adjust: exact; box-shadow: 0 10px 35px #0005; }
+.page-label { position: absolute; inset: 12mm 8.5mm auto; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 0.25mm solid #b8b4a8; padding-bottom: 3mm; }
+.page-label h2 { margin: 0; font: bold 17pt/1 var(--display); }
+.page-label p { margin: 0; font: 9pt/1 var(--body); }
+.shield-template { position: absolute; left: 8.5mm; top: 50mm; width: 280mm; height: 110mm; outline: 0.2mm solid #272923; }
+.shield-template img { display: block; width: 280mm; height: 110mm; }
+.panel-label { position: absolute; top: -11mm; width: 80mm; text-align: center; font: 8pt/1 var(--body); color: #54594f; }
+.panel-label.left { left: 0; }
+.panel-label.centre { left: 80mm; width: 120mm; }
+.panel-label.right { left: 200mm; }
+.fold-guide { position: absolute; width: 0; height: 5mm; border-left: 0.25mm dashed #272923; }
+.fold-guide.first { left: 80mm; }
+.fold-guide.second { left: 200mm; }
+.fold-guide.top { top: -5mm; }
+.fold-guide.bottom { bottom: -5mm; }
+.assembly-caption { position: absolute; left: 8.5mm; right: 8.5mm; bottom: 13mm; }
+.assembly-caption p { margin: 2mm 0 0; font: 8pt/1.4 var(--body); }
+@page { size: A4 landscape; margin: 0; }
+@media screen and (max-width: 1140px) {
+  main { align-items: flex-start; }
+}
+@media print {
+  .shield-page { margin: 0; break-after: page; box-shadow: none; }
+  .shield-page:last-child { break-after: auto; }
+}

@@ -96,12 +96,14 @@ physical-size checks pass.
 | `assets/print/policy-district-map-a3.pdf` | One A3 landscape district map |
 | `assets/print/public-score-tracker-a4.pdf` | One A4 landscape final score ledger; the Year register is on the A3 map |
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
-| `assets/print/player-folios-a4.pdf` | Two A4 portrait player-folio sheets |
+| `assets/print/player-folios-a4.pdf` | Two A4 portrait pages: six pairs of separate 100 × 90 mm public/private sheets |
+| `assets/print/player-shields-a4.pdf` | Twelve A4 landscape pages: six shields with alternating exterior/interior; duplex, short-edge binding |
+| `assets/print/voting-reminders-a4.pdf` | One A4 portrait page: 24 yes reminder markers, four per human |
 | `assets/print/operation-cards-a4.pdf` | Four A4 portrait sheets containing the current 54-card Operation supply |
 | `assets/print/policy-cards-a4.pdf` | Four A4 portrait sheets with thirty policies |
 | `assets/print/bonus-cards-a4.pdf` | Two A4 portrait sheets with eighteen Bonuses |
 | `assets/print/scoring-cards-a4.pdf` | One A4 portrait sheet with twelve scoring cards |
-| `assets/print/shared-state-tokens-a4.pdf` | One A4 landscape sheet containing all shared state, Firm opening, Collection, and score pieces |
+| `assets/print/shared-state-tokens-a4.pdf` | One A4 landscape sheet containing eighteen generic Firm cards, Early Bird and the Year marker; supply Collection cubes separately |
 
 The map export uses a 420 × 297 mm landscape A3 page. The A4 exports preserve the millimetre dimensions in
 their print CSS. Print every PDF at “Actual size” or 100%, with any “Fit to
