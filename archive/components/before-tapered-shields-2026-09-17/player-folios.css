@@ -30,7 +30,7 @@ main { display: flex; align-items: center; flex-direction: column; gap: 28px; pa
 .identity h2 { flex: 1; margin: 0; font: bold 11pt/1.05 var(--display); }
 .identity small { display: block; margin-top: 0.7mm; font: 6pt/1 var(--body); text-transform: uppercase; letter-spacing: 0.08em; }
 .identity small:empty { display: none; }
-.public-folio .identity { transform: rotate(180deg); }
+.identity > span { font: bold 6pt/1 var(--body); text-transform: uppercase; letter-spacing: 0.06em; }
 .folio-body { display: flex; height: 61mm; margin-top: 4mm; align-items: center; justify-content: space-between; padding: 0 1mm; }
 .card-well { display: grid; flex: none; width: 40mm; height: 61mm; border: 0.45mm solid var(--ink); outline: 0.25mm dashed #6a6a5f; outline-offset: -2mm; background: var(--tint); place-items: center; text-align: center; }
 .card-well strong { font: bold 15pt/1.05 var(--display); }

@@ -96,8 +96,8 @@ physical-size checks pass.
 | `assets/print/policy-district-map-a3.pdf` | One A3 landscape district map |
 | `assets/print/public-score-tracker-a4.pdf` | One A4 landscape final score ledger; the Year register is on the A3 map |
 | `assets/print/party-boards-a4.pdf` | Three A4 landscape party-board sheets |
-| `assets/print/player-folios-a4.pdf` | Two A4 portrait pages: six pairs of separate 100 × 90 mm public/private sheets |
-| `assets/print/player-shields-a4.pdf` | Twelve A4 landscape pages: six shields with alternating exterior/interior; duplex, short-edge binding |
+| `assets/print/player-folios-a4.pdf` | Two A4 portrait pages: six pairs of 100 × 90 mm public/private sheets; public firm headers face other players |
+| `assets/print/player-shields-a4.pdf` | Twelve A4 landscape pages: six tapered shields with firm branding outside and the complete player helper inside; duplex, short-edge binding |
 | `assets/print/voting-reminders-a4.pdf` | One A4 portrait page: 24 yes reminder markers, four per human |
 | `assets/print/operation-cards-a4.pdf` | Four A4 portrait sheets containing the current 54-card Operation supply |
 | `assets/print/policy-cards-a4.pdf` | Four A4 portrait sheets with thirty policies |

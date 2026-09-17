@@ -39,6 +39,7 @@ python "$repository_root/scripts/generate-default-map.py"
 python "$repository_root/scripts/generate-physical-map.py"
 node --conditions=development --import tsx "$repository_root/scripts/generate-scoring-cards.ts"
 node "$repository_root/scripts/generate-candidate-bonus-cards.mjs"
+node "$repository_root/scripts/generate-player-shields.mjs"
 
 pdf_page_size_matches() {
   local pdf_file="$1"
@@ -109,7 +110,6 @@ html_exports=(
   "player-folios|docs/components/player-folios.html|assets/print/player-folios-a4.pdf|2|594.96|841.92"
   "player-shields|docs/components/player-shields.html|assets/print/player-shields-a4.pdf|12|841.92|594.96"
   "voting-reminders|docs/components/voting-reminders.html|assets/print/voting-reminders-a4.pdf|1|594.96|841.92"
-  "player-helper|docs/components/player-helper.html|assets/print/player-helper-a4.pdf|1|594.96|841.92"
   "operation-cards|docs/components/operation-cards.html|assets/print/operation-cards-a4.pdf|4|594.96|841.92"
   "bonus-cards|docs/components/bonus-cards.html|assets/print/bonus-cards-a4.pdf|2|594.96|841.92"
   "bonus-card-candidates|docs/design/printable-bonus-card-candidates.html|assets/print/bonus-card-candidates-a4.pdf|9|594.96|841.92"
