@@ -41,6 +41,14 @@ main { display: flex; align-items: center; flex-direction: column; gap: 28px; pa
 .counter-wells .low-player { background: repeating-linear-gradient(135deg, var(--tint) 0 1.5mm, var(--paper) 1.5mm 3mm); }
 .reminder-grid { display: grid; width: 40mm; grid-template-columns: repeat(2, 18mm); gap: 4mm; }
 .reminder-grid i { width: 18mm; height: 18mm; border: 0.35mm solid var(--ink); background: #fff; }
+.marker-sheet { grid-template-rows: repeat(6, 40mm); padding: 12mm 10mm; }
+.marker-row { display: flex; align-items: center; justify-content: space-between; border-bottom: 0.25mm solid #d0c9ba; }
+.marker-row header { width: 75mm; display: flex; align-items: center; gap: 3mm; }
+.marker-row .emblem { width: 14mm; height: 14mm; background: var(--accent); padding: 1mm; }
+.marker-row h2 { font: bold 12pt/1.1 var(--display); }
+.marker-set { display: flex; gap: 5mm; }
+.yes-marker { display: grid; width: 16mm; height: 16mm; border: 0.35mm solid var(--ink); background: var(--paper-bright); place-items: center; }
+.yes-marker svg { width: 12mm; height: 12mm; fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 @page { size: A4 portrait; margin: 0; }
 @media screen and (max-width: 800px) {
   main { align-items: flex-start; }

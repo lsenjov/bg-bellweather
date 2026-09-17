@@ -109,7 +109,6 @@ html_exports=(
   "party-boards|docs/components/party-boards.html|assets/print/party-boards-a4.pdf|3|841.92|594.96"
   "player-folios|docs/components/player-folios.html|assets/print/player-folios-a4.pdf|2|594.96|841.92"
   "player-shields|docs/components/player-shields.html|assets/print/player-shields-a4.pdf|12|841.92|594.96"
-  "voting-reminders|docs/components/voting-reminders.html|assets/print/voting-reminders-a4.pdf|1|594.96|841.92"
   "operation-cards|docs/components/operation-cards.html|assets/print/operation-cards-a4.pdf|4|594.96|841.92"
   "bonus-cards|docs/components/bonus-cards.html|assets/print/bonus-cards-a4.pdf|2|594.96|841.92"
   "bonus-card-candidates|docs/design/printable-bonus-card-candidates.html|assets/print/bonus-card-candidates-a4.pdf|9|594.96|841.92"

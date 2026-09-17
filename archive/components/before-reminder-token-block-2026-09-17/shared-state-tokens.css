@@ -19,8 +19,8 @@ body { min-width: 297mm; margin: 0; background: repeating-linear-gradient(135deg
 .screen-header h1 { margin: 18px 0 4px; font: 800 clamp(2.4rem, 6vw, 5rem) / 0.9 var(--display); letter-spacing: -0.045em; }
 .screen-header p { max-width: 80ch; margin: 12px 0 0; color: #d7d0c4; line-height: 1.5; }
 .symbol-library { position: absolute; width: 0; height: 0; overflow: hidden; }
-main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: column; gap: 28px; }
-.print-sheet { width: 297mm; height: 210mm; flex: 0 0 auto; padding: 4mm; display: grid; grid-template-columns: 240mm 48mm; gap: 1mm; align-items: start; background: #fff; box-shadow: 0 10px 35px rgb(0 0 0 / 35%); }
+main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: column; }
+.print-sheet { width: 297mm; height: 210mm; flex: 0 0 auto; padding: 5mm; display: grid; grid-template-columns: 240mm 1fr; gap: 5mm; align-items: start; background: #fff; box-shadow: 0 10px 35px rgb(0 0 0 / 35%); }
 
 .firm-marker {
   --accent: #efcfca;
@@ -57,7 +57,7 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
 .firm-marker.vested { --accent: #e5d4e1; --tint: #f3eaf1; }
 .firm-marker.vip-access { --accent: #cfe4df; --tint: #e8f2ef; }
 .firm-grid { display: grid; grid-template-columns: repeat(6, 40mm); grid-template-rows: repeat(3, 61mm); print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-.public-piece-grid { display: flex; flex-direction: column; align-items: center; gap: 3mm; padding-top: 0; }
+.public-piece-grid { display: flex; flex-direction: column; align-items: center; gap: 8mm; padding-top: 4mm; }
 .early-bird, .year-marker { display: flex; border: .55mm solid var(--ink); border-radius: 50%; background: var(--paper); align-items: center; flex-direction: column; justify-content: center; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 .early-bird { width: 24mm; height: 24mm; }
 .early-bird svg { width: 11mm; height: 11mm; }
@@ -65,11 +65,6 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
 .year-marker { width: 22mm; height: 22mm; background: var(--navy); color: var(--paper-bright); }
 .year-marker svg { width: 14mm; height: 14mm; }
 .early-bird svg, .year-marker svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.8; }
-.reminder-block { display: grid; grid-template-columns: repeat(3, 16mm); grid-template-rows: repeat(8, 16mm); gap: 0; width: 48mm; height: 128mm; outline: 0.25mm solid var(--ink); background: var(--paper-bright); print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-.yes-marker { display: grid; width: 16mm; height: 16mm; place-items: center; border-right: 0.25mm solid var(--ink); border-bottom: 0.25mm solid var(--ink); }
-.yes-marker:nth-child(3n) { border-right: 0; }
-.yes-marker:nth-last-child(-n+3) { border-bottom: 0; }
-.yes-marker svg { width: 12mm; height: 12mm; fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 @page { size: A4 landscape; margin: 0; }
 
 @media print {
@@ -77,6 +72,5 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
   body { min-width: 0; }
   .screen-header { display: none; }
   main { display: block; padding: 0; }
-  .print-sheet { margin: 0; box-shadow: none; break-after: page; }
-  .print-sheet:last-child { break-after: auto; }
+  .print-sheet { margin: 0; box-shadow: none; }
 }
