@@ -102,7 +102,8 @@ physical-size checks pass.
 | `assets/print/policy-cards-a4.pdf` | Four A4 portrait sheets with thirty policies |
 | `assets/print/bonus-cards-a4.pdf` | Two A4 portrait sheets with eighteen Bonuses |
 | `assets/print/scoring-cards-a4.pdf` | One A4 portrait sheet with twelve scoring cards |
-| `assets/print/shared-state-tokens-a4.pdf` | Four A4 landscape PDF pages for two duplex sheets: Firm pieces with a blank reverse, then 24 ✓/✕ and 24 1–2/3+ reminder markers with aligned backs. Short-edge binding; supply Collection cubes separately |
+| `assets/print/shared-state-tokens-a4.pdf` | One single-sided A4 landscape page: Firm cards and public markers; supply Collection cubes separately |
+| `assets/print/shared-state-tokens-duplex-a4.pdf` | Two A4 landscape pages for one duplex sheet: 24 ✓/✕ and 24 1–2/3+ reminder markers with aligned backs; short-edge binding |
 
 The map export uses a 420 × 297 mm landscape A3 page. The A4 exports preserve the millimetre dimensions in
 their print CSS. Print every PDF at “Actual size” or 100%, with any “Fit to

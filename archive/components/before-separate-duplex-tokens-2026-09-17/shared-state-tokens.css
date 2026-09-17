@@ -65,7 +65,8 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
 .year-marker { width: 22mm; height: 22mm; background: var(--navy); color: var(--paper-bright); }
 .year-marker svg { width: 14mm; height: 14mm; }
 .early-bird svg, .year-marker svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.8; }
-.reminder-sheet { position: relative; display: block; padding: 0; }
+.blank-reverse, .reminder-sheet { position: relative; display: block; padding: 0; }
+.blank-reverse .screen-only { margin: 0; padding: 20mm; font: 12pt/1.5 var(--body); color: #68665f; }
 .reminder-blocks { position: absolute; left: 49.5mm; top: 73mm; display: flex; gap: 6mm; }
 .reminder-block { display: grid; grid-template-columns: repeat(6, 16mm); grid-template-rows: repeat(4, 16mm); gap: 0; width: 96mm; height: 64mm; outline: 0.25mm solid var(--ink); background: var(--paper-bright); print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 .reminder-marker { display: grid; width: 16mm; height: 16mm; place-items: center; border-right: 0.25mm solid var(--ink); border-bottom: 0.25mm solid var(--ink); }
