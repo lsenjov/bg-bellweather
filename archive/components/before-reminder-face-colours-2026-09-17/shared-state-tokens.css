@@ -72,11 +72,8 @@ main { display: flex; padding: 0 0 36px; align-items: center; flex-direction: co
 .reminder-marker { display: grid; width: 16mm; height: 16mm; place-items: center; border-right: 0.25mm solid var(--ink); border-bottom: 0.25mm solid var(--ink); }
 .reminder-marker:nth-child(6n) { border-right: 0; }
 .reminder-marker:nth-last-child(-n+6) { border-bottom: 0; }
-.reminder-marker svg { width: 12mm; height: 12mm; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.reminder-marker svg { width: 12mm; height: 12mm; fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .range-marker { background: #e8e7e2; font: 800 13pt/1 var(--mono); }
-.vote-marker[data-face="yes"] { color: #285b34; background: #d9ead8; }
-.vote-marker[data-face="no"] { color: #8b3531; background: #f0d8d4; }
-.range-marker[data-face="low"] { color: #6d6c66; background: #f5f4ef; }
 @page { size: A4 landscape; margin: 0; }
 
 @media print {
