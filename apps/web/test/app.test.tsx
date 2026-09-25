@@ -20,6 +20,7 @@ import {
 } from "@bellwether/game";
 import type { ViewerStateEnvelope } from "@bellwether/protocol";
 import React from "react";
+import { PolicyCard } from "../src/PolicyCard.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ActionDesk,
@@ -56,6 +57,40 @@ afterEach(() => {
 });
 
 describe("yearly browser play surface", () => {
+  it("matches the printed policy order used for recipient ties", () => {
+    const { container } = render(<PolicyCard policyId="P03" projectedScore={null} recipientPartyId="night-parliament" />);
+    expect([...container.querySelectorAll(".policy-vote-row:first-of-type .policy-party-tile")].map(tile => tile.textContent)).toEqual(["Night Parliament", "Honeycomb", "Riverworks"]);
+    expect(screen.getByText("Party policy")).toBeTruthy();
+    expect(screen.getByText("Awarded to Night Parliament")).toBeTruthy();
+  });
+
+  it("keeps Party laws visible on closed parties and separates them from Global laws", () => {
+    const state = sixPartyState();
+    state.enactedPolicyIds = ["P03", "P04"];
+    state.policyRecipients = { P03: "night-parliament" };
+    state.parties["night-parliament"]!.status = "closed";
+    const view = privateView(state, "seat-1");
+    render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />);
+    expect(within(screen.getByLabelText("Night Parliament Party laws")).getByText("Crowded Airwaves")).toBeTruthy();
+    expect(within(screen.getByLabelText("Night Parliament laws")).getByText("Hospital Accountability")).toBeTruthy();
+    expect(within(screen.getByLabelText("Global laws")).getByText("Common Curriculum")).toBeTruthy();
+    expect(within(screen.getByLabelText("Global laws")).queryByText("Hospital Accountability")).toBeNull();
+  });
+
+  it("offers law controls only to their recipient when the acting party changes", () => {
+    const state = sixPartyState();
+    state.enactedPolicyIds = ["P26"];
+    state.policyRecipients = { P26: "honeycomb" };
+    const view = privateView(state, "seat-1");
+    render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async () => true} />);
+    expect(screen.getByLabelText("Support to move")).toBeTruthy();
+    const board = screen.getByLabelText("Party access and Operation piles");
+    fireEvent.click(within(board).getByRole("button", { name: /Old Shell/ }));
+    expect(screen.queryByLabelText("Support to move")).toBeNull();
+    fireEvent.click(within(board).getByRole("button", { name: /Honeycomb/ }));
+    expect(screen.getByLabelText("Support to move")).toBeTruthy();
+  });
+
   it("creates a table without auction or timer settings", async () => {
     const lobby = lobbyEnvelope();
     const fetchSpy = vi.spyOn(globalThis, "fetch").mockImplementation(
@@ -803,7 +838,8 @@ describe("yearly browser play surface", () => {
     const props = {view, ownSeat:view.seats[0], ownSeatId:"seat-1", spectator:false, busy:false, onCommand:async()=>true};
     const {container, rerender} = render(<GameDesk {...props}/>);
     const header = container.querySelector(".policy-card > header")!;
-    expect(header.textContent).toContain(`Policy proposal${expected}`);
+    expect(header.textContent).toContain(expected);
+    expect(header.textContent).toMatch(/(?:Party|Global) policy/);
     rerender(<GameDesk {...props} ownSeat={undefined} spectator/>);
     expect(container.querySelectorAll(".policy-projected-score")).toHaveLength(0);
   });
@@ -811,10 +847,11 @@ describe("yearly browser play surface", () => {
   it("reports policy votes, final scoring card and hand rank", () => {
     const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
     const policyId = view.pendingPolicies["industrial-belt"]!;
-    view.electionHistory.push({electionNumber:3,afterYear:6,scoringCards:[{seatId:"seat-1",scoringCardId:"S01"}],draws:{},policyVotes:[{regionId:"industrial-belt",policyId,forVotes:4,againstVotes:3,passed:true}],scores:[{playerId:"seat-1",policyScore:3,policyScores:[{policyId,gain:5,loss:2,net:3}],finalCardCount:14,finalCardRankBonus:1,pointsChange:4,resultingPoints:4}],winnerSeatIds:["seat-1"]});
+    view.electionHistory.push({electionNumber:3,afterYear:6,scoringCards:[{seatId:"seat-1",scoringCardId:"S01"}],draws:{},policyVotes:[{regionId:"industrial-belt",policyId,forVotes:4,againstVotes:3,passed:true,recipientPartyId:"honeycomb",partyVotes:{honeycomb:4,foxglove:3,"old-shell":0,riverworks:0,"many-wings":0,"night-parliament":0}}],scores:[{playerId:"seat-1",policyScore:3,policyScores:[{policyId,gain:5,loss:2,net:3}],finalCardCount:14,finalCardRankBonus:1,pointsChange:4,resultingPoints:4}],winnerSeatIds:["seat-1"]});
     render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async()=>true}/>);
     expect(screen.getByText("4 For · 3 Against")).toBeTruthy();
     expect(screen.getByText("Passed")).toBeTruthy();
+    expect(screen.getByText("Law awarded to Honeycomb")).toBeTruthy();
     expect(screen.getByText(/14 held cards · Hand rank \+1/)).toBeTruthy();
     expect(screen.getByText("Scoring card S01")).toBeTruthy();
     expect(screen.getByText("4 points")).toBeTruthy();

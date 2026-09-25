@@ -3,7 +3,7 @@ import {
   BONUS_CARDS_BY_ID,
   DISTRICTS,
   DISTRICTS_BY_ID,
-  REGION_NAMES, REGION_IDS, PARTY_PRIORITIES, POLICIES_BY_ID, LAW_EFFECTS, partyLawEffects, votesFor,
+  REGION_NAMES, REGION_IDS, PARTY_PRIORITIES, POLICIES_BY_ID, LAW_EFFECTS, partyLawEffects, policyScope, votesFor,
   type PolicyId,
   type RegionId,
   ELECTION_YEARS,
@@ -547,12 +547,20 @@ function PlayerScoring({ cardId }: { cardId: ScoringCardId | null }) {
 function PolicyDisplay({ view, scoringCardId }: { view: GameView; scoringCardId: ScoringCardId | null }) {
   const projectedScore = (policyId: PolicyId) => scoringCardId === null ? null
     : scorePolicies(SCORING_CARDS_BY_ID[scoringCardId], [policyId], view.enactedPolicyIds)[0]!.net;
-  return <section className="policy-display"><h3>Regional policies</h3><p>Each surviving Support votes. For must exceed Against; ties fail. Centre keeps all Support.</p>
+  return <section className="policy-display"><h3>Regional policies</h3><p>Each surviving Support votes. For must exceed Against; ties fail. Centre keeps all Support. Party laws go to the largest surviving For contributor; ties go to the leftmost party in the For row.</p>
     <div className="regional-policies">{REGION_IDS.map(regionId => {
       const policyId = view.pendingPolicies[regionId];
       return <section key={regionId}><h4>{REGION_NAMES[regionId]}</h4>{policyId ? <PolicyCard policyId={policyId} projectedScore={projectedScore(policyId)}/> : <p>Final vote complete</p>}</section>;
     })}</div>
-    <details className="enacted-laws" open={view.enactedPolicyIds.length > 0}><summary>Enacted laws ({view.enactedPolicyIds.length})</summary><p>Global effects. Identical effects apply once per card; no loops.</p><div className="regional-policies">{view.enactedPolicyIds.map(id => <PolicyCard key={id} policyId={id} projectedScore={projectedScore(id)}/>)}</div></details>
+    <details className="enacted-laws" open={view.enactedPolicyIds.length > 0}><summary>Enacted laws ({view.enactedPolicyIds.length})</summary><p>Party laws stay with their recipient. Global laws affect everyone. Every player scores every enacted policy.</p>
+      {[null, ...PARTIES.map(party => party.id)].map(partyId => {
+        const policies = view.enactedPolicyIds.filter(id => partyId === null ? policyScope(POLICIES_BY_ID[id]) === "Global" : view.policyRecipients[id] === partyId);
+        if (policies.length === 0) return null;
+        return <section className="law-group" key={partyId ?? "global"} aria-label={partyId === null ? "Global laws" : `${PARTIES_BY_ID[partyId].shortName} laws`}>
+          <h4>{partyId === null ? "Global laws" : `${PARTIES_BY_ID[partyId].shortName} laws`}</h4>
+          <div className="regional-policies">{policies.map(id => <PolicyCard key={id} policyId={id} projectedScore={projectedScore(id)} {...(partyId === null ? {} : {recipientPartyId: partyId})}/>)}</div>
+        </section>;
+      })}</details>
     <details><summary>Failed policies ({view.discardedPolicyIds.length}) · {view.policyDeckCount} undealt</summary><ul>{view.discardedPolicyIds.map(id => <li key={id}>{POLICIES_BY_ID[id].name}</li>)}</ul></details>
   </section>;
 }
@@ -576,6 +584,7 @@ export function PartyBoard({
         const owner = view.seats.find((seat) => seat.id === state?.ownerSeatId);
         const pile = state === undefined ? 0 : operationCount(state.operations);
         const open = state?.status === "open";
+        const laws = partyLawEffects(view.enactedPolicyIds, view.policyRecipients, party.id);
         const stateLabel = open ? `Open · ${owner?.displayName ?? "Unknown"}` : "Closed";
         const selectable = interaction?.partyIds?.includes(party.id) === true;
         const selected = interaction?.selectedPartyIds?.includes(party.id) === true;
@@ -602,7 +611,11 @@ export function PartyBoard({
             <div className="pile-cards" aria-label={`${pile} Operation cards`}>
               {state !== undefined && OPERATION_IDS.map((operation) => state.operations[operation] > 0 && <span key={operation}>{operation.slice(0, 3)} {state.operations[operation]}</span>)}
             </div>
-            <ol className="party-priorities" aria-label={`${party.shortName} public priorities`}>{PARTY_PRIORITIES[party.id].map((category, index) => <li key={category}>{index+1}. {category}</li>)}</ol>
+            <ol className="party-priorities" aria-label={`${party.shortName} public priorities`}>{PARTY_PRIORITIES[party.id].map((category, index) => <li key={category}>{index + 1}. {category}</li>)}</ol>
+            {laws.length > 0 && <div className="party-laws" aria-label={`${party.shortName} Party laws`}><strong>Party laws</strong><ul>{laws.map(id => {
+              const law = LAW_EFFECTS.find(effect => effect.id === id)!;
+              return <li key={id}><b>{law.name}</b> — {law.text}</li>;
+            })}</ul></div>}
             <div className="bonus-flags">
               {party.bonusCards.map((card) => (
                 <span
@@ -1342,7 +1355,8 @@ export function OperationComposer(props: {
     props.busy,
     openPartyIds,
     props.view.support,
-    props.view.enactedPolicyIds
+    props.view.enactedPolicyIds,
+    props.view.policyRecipients
   ]);
   useEffect(() => {
     if (props.onInteraction === undefined) return;
@@ -1564,7 +1578,7 @@ function ElectionBulletin({ view }: { view: GameView }) {
   const election = view.electionHistory.at(-1);
   if (!election) return null;
   return <section className="election-desk paper-panel"><SectionHeading label="Election results" title={`Election ${election.electionNumber}`} slug={`After Year ${election.afterYear}`}/>
-    <div className="election-scores">{election.policyVotes.map(vote => <article key={vote.regionId}><strong>{REGION_NAMES[vote.regionId]}</strong><span>{POLICIES_BY_ID[vote.policyId].name}</span><b>{vote.passed ? "Passed" : "Failed"}</b><small>{vote.forVotes} For · {vote.againstVotes} Against</small></article>)}</div>
+    <div className="election-scores">{election.policyVotes.map(vote => <article key={vote.regionId}><strong>{REGION_NAMES[vote.regionId]}</strong><span>{POLICIES_BY_ID[vote.policyId].name}</span><b>{vote.passed ? "Passed" : "Failed"}</b><small>{vote.forVotes} For · {vote.againstVotes} Against</small>{vote.recipientPartyId !== null && <span>Law awarded to {PARTIES_BY_ID[vote.recipientPartyId].shortName}</span>}{vote.passed && vote.recipientPartyId === null && <span>Global law</span>}</article>)}</div>
     {election.afterYear === 6 && <div className="election-scores">{election.scores.map(score => <article key={score.playerId}><strong>{seatName(view, score.playerId)}</strong><b>{score.resultingPoints} points</b><small>Policies {signed(score.policyScore)} · {score.finalCardCount} held cards · Hand rank +{score.finalCardRankBonus}</small><details><summary>Score breakdown</summary><p>Scoring card {election.scoringCards.find(card => card.seatId === score.playerId)?.scoringCardId}</p><ol>{SCORING_CARDS_BY_ID[election.scoringCards.find(card => card.seatId === score.playerId)!.scoringCardId].order.map((category, index) => <li key={category}>{category} · {6-index}</li>)}</ol><ul>{score.policyScores.map(policy => <li key={policy.policyId}>{POLICIES_BY_ID[policy.policyId].name}: +{policy.gain} −{policy.loss} = {signed(policy.net)}</li>)}</ul></details></article>)}</div>}
   </section>;
 }

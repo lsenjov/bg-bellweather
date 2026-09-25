@@ -108,7 +108,7 @@ select[multiple] { min-height: 116px; border: 1px solid var(--ink); }
 .table-selectable { position: relative; z-index: 1; cursor: pointer; box-shadow: inset 0 0 0 2px var(--blue); }
 .table-selectable:hover { z-index: 2; box-shadow: inset 0 0 0 3px var(--blue), 3px 4px 0 rgb(23 25 22 / 22%); transform: translate(-1px, -1px); }
 .table-selected, .table-selected:hover { z-index: 3; box-shadow: inset 0 0 0 3px var(--red), 3px 4px 0 rgb(23 25 22 / 22%); }
-.party-file-closed { filter: grayscale(.85); opacity: .62; background: repeating-linear-gradient(-45deg, transparent 0 7px, rgb(23 25 22 / 6%) 7px 9px); }
+.party-file-closed { background: repeating-linear-gradient(-45deg, transparent 0 7px, rgb(23 25 22 / 6%) 7px 9px); }
 .party-file-emblem { width: 36px; height: 36px; color: var(--party); fill: none; stroke: currentColor; stroke-width: 3; }
 .party-file-title { min-width: 0; }
 .party-file-title strong, .party-file-title small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -134,7 +134,6 @@ select[multiple] { min-height: 116px; border: 1px solid var(--ink); }
 .district-terrain { position: absolute; inset: 0; width: 100%; height: 100%; }
 .terrain-selectable { cursor: pointer; }
 .terrain-selectable:hover { filter: brightness(1.07); }
-.lake-labels { text-anchor: middle; font: italic 15px Georgia, serif; fill: #355564; }
 .district { position: absolute; z-index: 1; width: 12%; translate: -50% 0; padding: 0; color: #19354b; text-align: center; }
 .map-change-layer { position: absolute; z-index: 2; top: 0; left: 0; pointer-events: none; overflow: visible; }
 .map-change-layer line { stroke-width: 5; stroke-linecap: round; opacity: .88; }
@@ -281,3 +280,10 @@ footer { display: flex; justify-content: space-between; padding: 18px 4px; font:
 .follow-up-order { padding: 0; list-style: none; }
 .follow-up-order li { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 0; }
 @media (max-width: 600px) { .regional-policies { grid-template-columns: 1fr; } }
+
+.party-laws { grid-column: 1 / -1; padding-top: 8px; border-top: 1px solid var(--rule); font-size: 12px; line-height: 1.4; }
+.party-laws > strong { font: .55rem var(--mono); text-transform: uppercase; }
+.party-laws ul { margin: 4px 0 0; padding: 0; list-style: none; }
+.party-laws li + li { margin-top: 6px; }
+.policy-recipient { margin: 0 0 12px; font-weight: bold; }
+.law-group > h4 { margin-bottom: 8px; }
