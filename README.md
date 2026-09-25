@@ -7,6 +7,8 @@ political parties in the fictional Republic of Bellwether. Across six
 years, players open parties, Operate, Collect public card piles, and Close
 access. Elections after Years 2, 4, and 6 vote on four regional policies;
 enacted policies score against one secret issue-priority card at game end.
+The app and physical game share revision 27: the continuous-land map,
+Industrial Belt, and permanent Party laws alongside Global scoring laws.
 The repository contains the printable design archive and a local,
 server-authoritative web application for two to six human or API-controlled
 players, including private hands and priorities, persistence, and completed-game
