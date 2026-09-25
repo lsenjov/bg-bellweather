@@ -44,6 +44,7 @@ export interface GameView {
   support: GameState["support"];
   pendingPolicies: GameState["pendingPolicies"];
   enactedPolicyIds: GameState["enactedPolicyIds"];
+  policyRecipients: GameState["policyRecipients"];
   discardedPolicyIds: GameState["discardedPolicyIds"];
   policyDeckCount: number;
   bonusCardsAtParties: Record<PartyId, BonusCardId[]>;
@@ -115,6 +116,7 @@ export function projectGameState(
     support: structuredClone(state.support),
     pendingPolicies: { ...state.pendingPolicies },
     enactedPolicyIds: [...state.enactedPolicyIds],
+    policyRecipients: { ...state.policyRecipients },
     discardedPolicyIds: [...state.discardedPolicyIds],
     policyDeckCount: state.policyDeck.length,
     bonusCardsAtParties: Object.fromEntries(

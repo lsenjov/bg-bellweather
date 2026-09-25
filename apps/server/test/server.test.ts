@@ -221,7 +221,7 @@ describe("game server", () => {
         choice: {
           operation: "organise",
           sourceDistrictId: "grand-market",
-          destinationDistrictId: "northgate"
+          destinationDistrictId: "bellwether-centre"
         }
       }
     });

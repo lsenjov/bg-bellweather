@@ -1,4 +1,4 @@
-import { DISTRICTS, REGION_IDS, POLICIES_BY_ID, activeLawEffects, votesFor, type RegionId, type PolicyId, type ScoringCard } from "@bellwether/content";
+import { DISTRICTS, PARTY_IDS, policyScope, REGION_IDS, POLICIES_BY_ID, activeLawEffects, votesFor, type RegionId, type PolicyId, type ScoringCard } from "@bellwether/content";
 import type { DistrictState, Party } from "./operations.js";
 import type { ElectionRecord } from "./model.js";
 
@@ -76,13 +76,19 @@ export function scoreElectionDay(input: {
     if (policyId === undefined) throw new Error(`Missing policy for ${regionId}`);
     const policy = POLICIES_BY_ID[policyId];
     let forVotes = 0, againstVotes = 0;
+    const partyVotes = Object.fromEntries(PARTY_IDS.map(id => [id, 0])) as Record<Party, number>;
     for (const district of DISTRICTS.filter(d => d.regionId === regionId)) {
       for (const [party, count] of Object.entries(support[district.id]!)) {
+        partyVotes[party as Party] += count ?? 0;
         if (votesFor(party as Party, policy)) forVotes += count ?? 0;
         else againstVotes += count ?? 0;
       }
     }
-    return { regionId, policyId, forVotes, againstVotes, passed: forVotes > againstVotes };
+    const passed = forVotes > againstVotes;
+    const recipientPartyId = passed && policyScope(policy) === "Party"
+      ? policy.forPartyIds.reduce((leader, party) => partyVotes[party] > partyVotes[leader] ? party : leader)
+      : null;
+    return { regionId, policyId, forVotes, againstVotes, passed, partyVotes, recipientPartyId };
   });
   const enacted = [...input.enactedPolicyIds, ...policyVotes.filter(v => v.passed).map(v => v.policyId)];
   const bonuses = finalCardRankBonuses(input.players);

@@ -3,8 +3,7 @@ import {
   BONUS_CARDS_BY_ID,
   DISTRICTS,
   DISTRICTS_BY_ID,
-  MAP_BRIDGES,
-  REGION_NAMES, REGION_IDS, PARTY_PRIORITIES, POLICIES_BY_ID, LAW_EFFECTS, activeLawEffects, votesFor,
+  REGION_NAMES, REGION_IDS, PARTY_PRIORITIES, POLICIES_BY_ID, LAW_EFFECTS, partyLawEffects, votesFor,
   type PolicyId,
   type RegionId,
   ELECTION_YEARS,
@@ -707,20 +706,16 @@ export function DistrictMap({
   return (
     <div className="district-map-scroll"><div className="district-map" aria-label="Bellwether district map">
       <svg className="district-terrain" viewBox="40 105 1108 583" aria-hidden="true">
-        <rect x="40" y="105" width="1108" height="583" fill="#d9edf5" />
-        {MAP_BRIDGES.map((bridge) => <g key={bridge.districtIds.join("-")} data-bridge={bridge.districtIds.join(":")}>
-          <path d={`M ${bridge.points[0].join(",")} L ${bridge.points[1].join(",")}`} stroke="#19354b" strokeWidth="14" />
-          <path d={`M ${bridge.points[0].join(",")} L ${bridge.points[1].join(",")}`} stroke="#fff5d8" strokeWidth="9" />
-        </g>)}
+        <rect x="40" y="105" width="1108" height="583" fill="#f5e7ac" />
         {DISTRICTS.map((district) => <polygon key={district.id}
           points={district.polygon.map((p) => p.join(",")).join(" ")}
-          fill={district.regionId === "urban" ? "#e6b6a6" : district.regionId === "mixed" ? "#dbeaca" : district.regionId === "outlying" ? "#f5e7ac" : "#e4dfea"}
+          fill={district.regionId === "urban" ? "#e6b6a6" : district.regionId === "industrial-belt" ? "#dbeaca" : district.regionId === "outlying" ? "#f5e7ac" : "#e4dfea"}
           stroke={interaction?.selectedDistrictIds?.includes(district.id) ? "#bd542f" : "#19354b"}
           strokeWidth={interaction?.selectedDistrictIds?.includes(district.id) ? 5 : 2}
           className={interaction?.districtIds?.includes(district.id) ? "terrain-selectable" : ""}
           onClick={() => { if (interaction?.districtIds?.includes(district.id)) interaction.onDistrictClick?.(district.id); }}
         />)}
-        <g className="lake-labels"><text x="599" y="239">Upper Mere</text><text x="449" y="376">Willow Lake</text><text x="789" y="416">Longmere</text></g>
+
       </svg>
       {DISTRICTS.map((district) => {
         const support = view.support[district.id] ?? {};
@@ -1452,7 +1447,7 @@ function OperationDraftCard(props: {
       <legend>{props.index + 1}. {props.draft.operation}</legend>
       {props.draft.operation === "organise" && (
         <><div className="field-grid"><DistrictSelect label="Source" optional value={props.draft.sourceDistrictId} active={props.armedTarget === "sourceDistrictId"} onArm={() => props.onArm("sourceDistrictId")} onChange={(sourceDistrictId) => props.onUpdate({ sourceDistrictId })} /><DistrictSelect label="Destination" value={props.draft.destinationDistrictId} active={props.armedTarget === "destinationDistrictId"} onArm={() => props.onArm("destinationDistrictId")} onChange={(destinationDistrictId) => props.onUpdate({ destinationDistrictId })} /></div>
-        {(props.draft.bonusCardId === "riverworks-canal-network" || activeLawEffects(props.view.enactedPolicyIds).includes(7)) && <label>Support to move<input type="number" min={1} max={props.draft.bonusCardId === "riverworks-canal-network" ? 54 : 2} step={1} value={props.draft.count} onChange={(event) => props.onUpdate({ count: Number(event.target.value) })} /></label>}</>
+        {(props.draft.bonusCardId === "riverworks-canal-network" || partyLawEffects(props.view.enactedPolicyIds, props.view.policyRecipients, props.partyId).includes(7)) && <label>Support to move<input type="number" min={1} max={props.draft.bonusCardId === "riverworks-canal-network" ? 54 : 2} step={1} value={props.draft.count} onChange={(event) => props.onUpdate({ count: Number(event.target.value) })} /></label>}</>
       )}
       {props.draft.operation === "rally" && <DistrictSelect label="Rally district" value={props.draft.districtId} active={props.armedTarget === "districtId"} onArm={() => props.onArm("districtId")} onChange={(districtId) => props.onUpdate({ districtId })} />}
       {props.draft.operation === "smear" && <div className="field-grid"><DistrictSelect label="District" value={props.draft.districtId} active={props.armedTarget === "districtId"} onArm={() => props.onArm("districtId")} onChange={(districtId) => props.onUpdate({ districtId })} /><PartyField label="Rival party" value={props.draft.rivalParty} actingParty={props.partyId} active={props.armedTarget === "rivalParty"} onArm={() => props.onArm("rivalParty")} onChange={(rivalParty) => { if (rivalParty !== "") props.onUpdate({ rivalParty }); }} /></div>}
@@ -1485,7 +1480,7 @@ function UnboundDraftCard(props: {
 }
 
 function LawFields({draft,view,partyId,onUpdate}:{draft:OperationDraft;view:GameView;partyId:PartyId;onUpdate(patch:Partial<OperationDraft>):void}) {
-  const laws=activeLawEffects(view.enactedPolicyIds);
+  const laws=partyLawEffects(view.enactedPolicyIds, view.policyRecipients, partyId);
   const choice=draftChoice({...draft,followUpOrder:null});
   const extras=choice?operationFollowUps(toOperationState(view),{party:partyId,choice,...(draft.bonusCardId?{bonusCardId:draft.bonusCardId}:{})}):[];
   const order=draft.followUpOrder??extras;
@@ -1924,7 +1919,7 @@ function emptyOperationDraft(
 function toOperationState(view: GameView): OperationState {
   return {
     districts: Object.fromEntries(DISTRICTS.map((district) => [district.id, { id: district.id, capacity: district.capacity, neighbors: [...district.adjacentDistrictIds], support: { ...view.support[district.id] } }])),
-    laws: activeLawEffects(view.enactedPolicyIds)
+    laws: Object.fromEntries(PARTIES.map(party => [party.id, partyLawEffects(view.enactedPolicyIds, view.policyRecipients, party.id)]))
   };
 }
 

@@ -15,7 +15,7 @@ describe("policy elections",()=>{
   it("thins every non-Centre district and never draws Centre",()=>{
     const state=fresh();state.support['bellwether-centre']={honeycomb:3};
     const draws=recordElectionDraws(toOperationState(state).districts,()=>0);
-    expect(Object.keys(draws)).toHaveLength(15); expect(draws['bellwether-centre']).toBeUndefined();
+    expect(Object.keys(draws)).toHaveLength(14); expect(draws['bellwether-centre']).toBeUndefined();
     expect(draws.harbormouth!.parties).toHaveLength(3); expect(state.support['bellwether-centre']).toEqual({honeycomb:3});
     expect(()=>recordElectionDraws(toOperationState(state).districts,()=>1)).toThrow();
   });

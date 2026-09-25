@@ -13,7 +13,7 @@ import {
   PARTY_IDS,
   RULESET_VERSION,
   SCORING_CARD_IDS,
-  POLICY_IDS, REGION_IDS, activeLawEffects,
+  POLICY_IDS, REGION_IDS, partyLawEffects,
   SCORING_CARDS_BY_ID,
   STANDARD_PLAYER_SETUP,
   type BonusCardId,
@@ -100,6 +100,7 @@ export function initializeGame(
     policyDeck: shuffle([...POLICY_IDS], random),
     pendingPolicies: {},
     enactedPolicyIds: [],
+    policyRecipients: {},
     discardedPolicyIds: [],
     bonusCards: Object.fromEntries(
       BONUS_CARD_IDS.map((cardId) => [cardId, { zone: "home" }])
@@ -717,6 +718,7 @@ function completeElection(state: GameState, randomValues: number[]): void {
   state.electionNumber = phase.electionNumber;
   for (const vote of result.policyVotes) {
     (vote.passed ? state.enactedPolicyIds : state.discardedPolicyIds).push(vote.policyId);
+    if (vote.recipientPartyId !== null) state.policyRecipients[vote.policyId] = vote.recipientPartyId;
   }
   const scoringCards = phase.afterYear === FINAL_ELECTION_YEAR
     ? state.seats.map(seat => ({ seatId: seat.id, scoringCardId: seat.scoringCardId })) : [];
@@ -1007,7 +1009,7 @@ export function toOperationState(state: GameState): OperationState {
         }
       ])
     ),
-    laws: activeLawEffects(state.enactedPolicyIds)
+    laws: Object.fromEntries(PARTY_IDS.map(partyId => [partyId, partyLawEffects(state.enactedPolicyIds, state.policyRecipients, partyId)]))
   };
 }
 

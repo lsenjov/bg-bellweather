@@ -219,77 +219,92 @@ export const POLICY_DATA = {
     {
       "id": 1,
       "name": "Grassroots Expansion",
-      "text": "Rally may place its Support in a neighboring district instead of its source district."
+      "text": "Rally may place its Support in a neighboring district instead of its source district.",
+      "scope": "Party"
     },
     {
       "id": 6,
       "name": "Fresh Start",
-      "text": "When Organise or Rally restores a party absent from the map, place two Support instead of one, together or separately. Place both if possible; otherwise place one."
+      "text": "When Organise or Rally restores a party absent from the map, place two Support instead of one, together or separately. Place both if possible; otherwise place one.",
+      "scope": "Party"
     },
     {
       "id": 7,
       "name": "Carpooling",
-      "text": "Organise may move two Support together from the same source to the same destination."
+      "text": "Organise may move two Support together from the same source to the same destination.",
+      "scope": "Party"
     },
     {
       "id": 9,
       "name": "Established Networks",
-      "text": "Organise may move between any two districts already containing acting-party Support, regardless of distance."
+      "text": "Organise may move between any two districts already containing acting-party Support, regardless of distance.",
+      "scope": "Party"
     },
     {
       "id": 10,
       "name": "Political Exchange",
-      "text": "Organise may swap moving Support with rival Support at the destination. Each arrival needs a free spot or a rival to swap back to the source."
+      "text": "Organise may swap moving Support with rival Support at the destination. Each arrival needs a free spot or a rival to swap back to the source.",
+      "scope": "Party"
     },
     {
       "id": 11,
       "name": "Long-Reach Campaigns",
-      "text": "Smear may target a district up to two adjacency steps from acting-party Support."
+      "text": "Smear may target a district up to two adjacency steps from acting-party Support.",
+      "scope": "Party"
     },
     {
       "id": 14,
       "name": "Displacement",
-      "text": "Instead of removing its target, Smear may move that Support to a free spot in a neighboring district."
+      "text": "Instead of removing its target, Smear may move that Support to a free spot in a neighboring district.",
+      "scope": "Party"
     },
     {
       "id": 17,
       "name": "Cross-Region Campaigns",
-      "text": "After Organise moves Support across a region boundary, add one acting-party Support in the source district."
+      "text": "After Organise moves Support across a region boundary, add one acting-party Support in the source district.",
+      "scope": "Party"
     },
     {
       "id": 19,
       "name": "Muted Priorities",
-      "text": "At final scoring, each firm treats its printed 6-point issue as worth 4 for both gains and losses. Party votes do not change."
+      "text": "At final scoring, each firm treats its printed 6-point issue as worth 4 for both gains and losses. Party votes do not change.",
+      "scope": "Global"
     },
     {
       "id": 20,
       "name": "Broad Interests",
-      "text": "At final scoring, each firm treats its printed 1-point issue as worth 3 for both gains and losses. Party votes do not change."
+      "text": "At final scoring, each firm treats its printed 1-point issue as worth 3 for both gains and losses. Party votes do not change.",
+      "scope": "Global"
     },
     {
       "id": 22,
       "name": "New Constituencies",
-      "text": "Rally may place its Support anywhere in its source region, provided the destination has no acting-party Support."
+      "text": "Rally may place its Support anywhere in its source region, provided the destination has no acting-party Support.",
+      "scope": "Party"
     },
     {
       "id": 28,
       "name": "Chain Migration",
-      "text": "After Organise moves Support, move a different acting-party Support from a neighboring district into a spot vacated in the source district."
+      "text": "After Organise moves Support, move a different acting-party Support from a neighboring district into a spot vacated in the source district.",
+      "scope": "Party"
     },
     {
       "id": 29,
       "name": "Bridge Campaign",
-      "text": "After Organise moves directly across a marked bridge, add one acting-party Support at its destination."
+      "text": "After Organise moves Support across a region boundary, add one acting-party Support at its destination.",
+      "scope": "Party"
     },
     {
       "id": 30,
       "name": "Regional Express",
-      "text": "Organise may move to any district in its source region, regardless of distance."
+      "text": "Organise may move to any district in its source region, regardless of distance.",
+      "scope": "Party"
     },
     {
       "id": 35,
       "name": "Crowded Airwaves",
-      "text": "Smear may target any full district, regardless of acting-party presence or distance."
+      "text": "Smear may target any full district, regardless of acting-party presence or distance.",
+      "scope": "Party"
     }
   ],
   "policies": [
@@ -298,210 +313,510 @@ export const POLICY_DATA = {
       "plus": "Healthcare",
       "minus": "Transport",
       "effect": 6,
-      "name": "Mobile Clinics"
+      "name": "Mobile Clinics",
+      "forPartyIds": [
+        "honeycomb",
+        "night-parliament",
+        "old-shell"
+      ],
+      "againstPartyIds": [
+        "foxglove",
+        "riverworks",
+        "many-wings"
+      ]
     },
     {
       "id": "P02",
       "plus": "Transport",
       "minus": "Healthcare",
       "effect": 9,
-      "name": "Transport Hubs"
+      "name": "Transport Hubs",
+      "forPartyIds": [
+        "foxglove",
+        "riverworks",
+        "many-wings"
+      ],
+      "againstPartyIds": [
+        "honeycomb",
+        "night-parliament",
+        "old-shell"
+      ]
     },
     {
       "id": "P03",
       "plus": "Healthcare",
       "minus": "Education",
       "effect": 35,
-      "name": "Hospital Accountability"
+      "name": "Hospital Accountability",
+      "forPartyIds": [
+        "night-parliament",
+        "honeycomb",
+        "riverworks"
+      ],
+      "againstPartyIds": [
+        "many-wings",
+        "old-shell",
+        "foxglove"
+      ]
     },
     {
       "id": "P04",
       "plus": "Education",
       "minus": "Healthcare",
       "effect": 19,
-      "name": "Common Curriculum"
+      "name": "Common Curriculum",
+      "forPartyIds": [
+        "many-wings",
+        "old-shell",
+        "foxglove"
+      ],
+      "againstPartyIds": [
+        "night-parliament",
+        "honeycomb",
+        "riverworks"
+      ]
     },
     {
       "id": "P05",
       "plus": "Healthcare",
       "minus": "Housing",
       "effect": 28,
-      "name": "Community Care Routes"
+      "name": "Community Care Routes",
+      "forPartyIds": [
+        "honeycomb",
+        "riverworks",
+        "many-wings"
+      ],
+      "againstPartyIds": [
+        "night-parliament",
+        "old-shell",
+        "foxglove"
+      ]
     },
     {
       "id": "P06",
       "plus": "Housing",
       "minus": "Healthcare",
       "effect": 22,
-      "name": "New Estate Outreach"
+      "name": "New Estate Outreach",
+      "forPartyIds": [
+        "night-parliament",
+        "old-shell",
+        "foxglove"
+      ],
+      "againstPartyIds": [
+        "honeycomb",
+        "riverworks",
+        "many-wings"
+      ]
     },
     {
       "id": "P07",
       "plus": "Healthcare",
       "minus": "Environment",
       "effect": 20,
-      "name": "Universal Care Charter"
+      "name": "Universal Care Charter",
+      "forPartyIds": [
+        "honeycomb",
+        "night-parliament",
+        "riverworks"
+      ],
+      "againstPartyIds": [
+        "old-shell",
+        "many-wings",
+        "foxglove"
+      ]
     },
     {
       "id": "P08",
       "plus": "Environment",
       "minus": "Healthcare",
       "effect": 14,
-      "name": "Clean Air Relocation"
+      "name": "Clean Air Relocation",
+      "forPartyIds": [
+        "old-shell",
+        "many-wings",
+        "foxglove"
+      ],
+      "againstPartyIds": [
+        "honeycomb",
+        "night-parliament",
+        "riverworks"
+      ]
     },
     {
       "id": "P09",
       "plus": "Healthcare",
       "minus": "Fiscal",
       "effect": 6,
-      "name": "Emergency Recruitment"
+      "name": "Emergency Recruitment",
+      "forPartyIds": [
+        "honeycomb",
+        "night-parliament",
+        "old-shell"
+      ],
+      "againstPartyIds": [
+        "foxglove",
+        "riverworks",
+        "many-wings"
+      ]
     },
     {
       "id": "P10",
       "plus": "Fiscal",
       "minus": "Healthcare",
       "effect": 19,
-      "name": "Spending Restraint"
+      "name": "Spending Restraint",
+      "forPartyIds": [
+        "foxglove",
+        "riverworks",
+        "many-wings"
+      ],
+      "againstPartyIds": [
+        "honeycomb",
+        "night-parliament",
+        "old-shell"
+      ]
     },
     {
       "id": "P11",
       "plus": "Transport",
       "minus": "Education",
       "effect": 7,
-      "name": "Shared Commuting"
+      "name": "Shared Commuting",
+      "forPartyIds": [
+        "riverworks",
+        "foxglove",
+        "night-parliament"
+      ],
+      "againstPartyIds": [
+        "old-shell",
+        "many-wings",
+        "honeycomb"
+      ]
     },
     {
       "id": "P12",
       "plus": "Education",
       "minus": "Transport",
       "effect": 11,
-      "name": "Public Broadcasting"
+      "name": "Public Broadcasting",
+      "forPartyIds": [
+        "old-shell",
+        "many-wings",
+        "honeycomb"
+      ],
+      "againstPartyIds": [
+        "riverworks",
+        "foxglove",
+        "night-parliament"
+      ]
     },
     {
       "id": "P13",
       "plus": "Transport",
       "minus": "Housing",
       "effect": 29,
-      "name": "Bridge Construction"
+      "name": "Bridge Construction",
+      "forPartyIds": [
+        "riverworks",
+        "foxglove",
+        "many-wings"
+      ],
+      "againstPartyIds": [
+        "night-parliament",
+        "honeycomb",
+        "old-shell"
+      ]
     },
     {
       "id": "P14",
       "plus": "Housing",
       "minus": "Transport",
       "effect": 30,
-      "name": "Neighbourhood Connections"
+      "name": "Neighbourhood Connections",
+      "forPartyIds": [
+        "night-parliament",
+        "honeycomb",
+        "old-shell"
+      ],
+      "againstPartyIds": [
+        "riverworks",
+        "foxglove",
+        "many-wings"
+      ]
     },
     {
       "id": "P15",
       "plus": "Transport",
       "minus": "Environment",
       "effect": 17,
-      "name": "Regional Corridors"
+      "name": "Regional Corridors",
+      "forPartyIds": [
+        "riverworks",
+        "foxglove",
+        "night-parliament"
+      ],
+      "againstPartyIds": [
+        "old-shell",
+        "many-wings",
+        "honeycomb"
+      ]
     },
     {
       "id": "P16",
       "plus": "Environment",
       "minus": "Transport",
       "effect": 1,
-      "name": "Walkable Communities"
+      "name": "Walkable Communities",
+      "forPartyIds": [
+        "old-shell",
+        "many-wings",
+        "honeycomb"
+      ],
+      "againstPartyIds": [
+        "riverworks",
+        "foxglove",
+        "night-parliament"
+      ]
     },
     {
       "id": "P17",
       "plus": "Transport",
       "minus": "Fiscal",
       "effect": 29,
-      "name": "Public Bridge Fund"
+      "name": "Public Bridge Fund",
+      "forPartyIds": [
+        "riverworks",
+        "many-wings",
+        "honeycomb"
+      ],
+      "againstPartyIds": [
+        "foxglove",
+        "night-parliament",
+        "old-shell"
+      ]
     },
     {
       "id": "P18",
       "plus": "Fiscal",
       "minus": "Transport",
       "effect": 9,
-      "name": "Existing Infrastructure"
+      "name": "Existing Infrastructure",
+      "forPartyIds": [
+        "foxglove",
+        "night-parliament",
+        "old-shell"
+      ],
+      "againstPartyIds": [
+        "riverworks",
+        "many-wings",
+        "honeycomb"
+      ]
     },
     {
       "id": "P19",
       "plus": "Education",
       "minus": "Housing",
       "effect": 20,
-      "name": "Lifelong Learning"
+      "name": "Lifelong Learning",
+      "forPartyIds": [
+        "many-wings",
+        "old-shell",
+        "foxglove"
+      ],
+      "againstPartyIds": [
+        "night-parliament",
+        "honeycomb",
+        "riverworks"
+      ]
     },
     {
       "id": "P20",
       "plus": "Housing",
       "minus": "Education",
       "effect": 10,
-      "name": "Housing Exchange"
+      "name": "Housing Exchange",
+      "forPartyIds": [
+        "night-parliament",
+        "honeycomb",
+        "riverworks"
+      ],
+      "againstPartyIds": [
+        "many-wings",
+        "old-shell",
+        "foxglove"
+      ]
     },
     {
       "id": "P21",
       "plus": "Education",
       "minus": "Environment",
       "effect": 11,
-      "name": "Distance Learning"
+      "name": "Distance Learning",
+      "forPartyIds": [
+        "many-wings",
+        "honeycomb",
+        "riverworks"
+      ],
+      "againstPartyIds": [
+        "old-shell",
+        "foxglove",
+        "night-parliament"
+      ]
     },
     {
       "id": "P22",
       "plus": "Environment",
       "minus": "Education",
       "effect": 1,
-      "name": "Community Gardens"
+      "name": "Community Gardens",
+      "forPartyIds": [
+        "old-shell",
+        "foxglove",
+        "night-parliament"
+      ],
+      "againstPartyIds": [
+        "many-wings",
+        "honeycomb",
+        "riverworks"
+      ]
     },
     {
       "id": "P23",
       "plus": "Education",
       "minus": "Fiscal",
       "effect": 22,
-      "name": "New Campus Outreach"
+      "name": "New Campus Outreach",
+      "forPartyIds": [
+        "many-wings",
+        "old-shell",
+        "honeycomb"
+      ],
+      "againstPartyIds": [
+        "foxglove",
+        "riverworks",
+        "night-parliament"
+      ]
     },
     {
       "id": "P24",
       "plus": "Fiscal",
       "minus": "Education",
       "effect": 35,
-      "name": "Public Spending Scrutiny"
+      "name": "Public Spending Scrutiny",
+      "forPartyIds": [
+        "foxglove",
+        "riverworks",
+        "night-parliament"
+      ],
+      "againstPartyIds": [
+        "many-wings",
+        "old-shell",
+        "honeycomb"
+      ]
     },
     {
       "id": "P25",
       "plus": "Housing",
       "minus": "Environment",
       "effect": 28,
-      "name": "Moving Chains"
+      "name": "Moving Chains",
+      "forPartyIds": [
+        "night-parliament",
+        "honeycomb",
+        "riverworks"
+      ],
+      "againstPartyIds": [
+        "many-wings",
+        "old-shell",
+        "foxglove"
+      ]
     },
     {
       "id": "P26",
       "plus": "Environment",
       "minus": "Housing",
       "effect": 7,
-      "name": "Shared Travel Scheme"
+      "name": "Shared Travel Scheme",
+      "forPartyIds": [
+        "many-wings",
+        "old-shell",
+        "foxglove"
+      ],
+      "againstPartyIds": [
+        "night-parliament",
+        "honeycomb",
+        "riverworks"
+      ]
     },
     {
       "id": "P27",
       "plus": "Housing",
       "minus": "Fiscal",
       "effect": 30,
-      "name": "Connected Neighbourhoods"
+      "name": "Connected Neighbourhoods",
+      "forPartyIds": [
+        "honeycomb",
+        "night-parliament",
+        "old-shell"
+      ],
+      "againstPartyIds": [
+        "foxglove",
+        "riverworks",
+        "many-wings"
+      ]
     },
     {
       "id": "P28",
       "plus": "Fiscal",
       "minus": "Housing",
       "effect": 10,
-      "name": "Property Exchange"
+      "name": "Property Exchange",
+      "forPartyIds": [
+        "foxglove",
+        "riverworks",
+        "many-wings"
+      ],
+      "againstPartyIds": [
+        "honeycomb",
+        "night-parliament",
+        "old-shell"
+      ]
     },
     {
       "id": "P29",
       "plus": "Environment",
       "minus": "Fiscal",
       "effect": 17,
-      "name": "Green Corridors"
+      "name": "Green Corridors",
+      "forPartyIds": [
+        "old-shell",
+        "many-wings",
+        "honeycomb"
+      ],
+      "againstPartyIds": [
+        "riverworks",
+        "foxglove",
+        "night-parliament"
+      ]
     },
     {
       "id": "P30",
       "plus": "Fiscal",
       "minus": "Environment",
       "effect": 14,
-      "name": "Managed Relocation"
+      "name": "Managed Relocation",
+      "forPartyIds": [
+        "riverworks",
+        "foxglove",
+        "night-parliament"
+      ],
+      "againstPartyIds": [
+        "old-shell",
+        "many-wings",
+        "honeycomb"
+      ]
     }
   ]
 } as const;

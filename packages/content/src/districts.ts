@@ -1,8 +1,8 @@
 import { deepFreeze } from "./immutable.js";
 
-export const REGION_IDS = deepFreeze(["urban", "mixed", "outlying", "centre"] as const);
+export const REGION_IDS = deepFreeze(["urban", "industrial-belt", "outlying", "centre"] as const);
 export type RegionId = (typeof REGION_IDS)[number];
-export const REGION_NAMES = deepFreeze({ urban: "Urban", mixed: "Mixed", outlying: "Outlying", centre: "Bellwether Centre" });
+export const REGION_NAMES = deepFreeze({ urban: "Urban", "industrial-belt": "Industrial Belt", outlying: "Outlying", centre: "Bellwether Centre" });
 
 export const DISTRICT_IDS = deepFreeze([
   "harbormouth",
@@ -11,7 +11,6 @@ export const DISTRICT_IDS = deepFreeze([
   "northgate",
   "canal-ward",
   "crown-road",
-  "orchard",
   "meadow",
   "westfield",
   "eastfield",
@@ -83,7 +82,8 @@ export const DISTRICTS = deepFreeze([
     "adjacentDistrictIds": [
       "harbormouth",
       "ironwood",
-      "northgate"
+      "crown-road",
+      "bellwether-centre"
     ],
     "polygon": [
       [
@@ -99,20 +99,16 @@ export const DISTRICTS = deepFreeze([
         105
       ],
       [
-        545,
+        600,
         105
       ],
       [
-        540,
-        150
-      ],
-      [
-        550,
-        205
+        610,
+        230
       ],
       [
         500,
-        265
+        300
       ],
       [
         435,
@@ -133,6 +129,7 @@ export const DISTRICTS = deepFreeze([
       "harbormouth",
       "grand-market",
       "heath",
+      "downs",
       "bellwether-centre"
     ],
     "polygon": [
@@ -145,20 +142,24 @@ export const DISTRICTS = deepFreeze([
         260
       ],
       [
-        475,
+        500,
         300
       ],
       [
-        420,
-        345
+        500,
+        350
       ],
       [
-        210,
-        345
+        400,
+        380
+      ],
+      [
+        230,
+        365
       ],
       [
         40,
-        320
+        340
       ],
       [
         40,
@@ -178,26 +179,14 @@ export const DISTRICTS = deepFreeze([
     "id": "northgate",
     "name": "Northgate",
     "capacity": 6,
-    "regionId": "mixed",
+    "regionId": "industrial-belt",
     "adjacentDistrictIds": [
-      "grand-market",
-      "canal-ward"
+      "canal-ward",
+      "crown-road"
     ],
     "polygon": [
       [
-        760,
-        225
-      ],
-      [
-        650,
-        140
-      ],
-      [
-        620,
-        140
-      ],
-      [
-        620,
+        920,
         105
       ],
       [
@@ -206,183 +195,149 @@ export const DISTRICTS = deepFreeze([
       ],
       [
         1148,
-        210
-      ],
-      [
-        1025,
-        215
+        260
       ],
       [
         920,
-        225
+        260
       ]
     ],
     "label": [
-      790,
-      170
+      1034,
+      163
     ]
   },
   {
     "id": "canal-ward",
     "name": "Canal Ward",
     "capacity": 4,
-    "regionId": "mixed",
+    "regionId": "industrial-belt",
     "adjacentDistrictIds": [
       "northgate",
       "crown-road",
+      "meadow",
       "bellwether-centre"
     ],
     "polygon": [
       [
-        760,
-        225
-      ],
-      [
         920,
-        225
+        260
       ],
       [
-        1025,
-        215
+        1148,
+        260
       ],
       [
-        1005,
-        240
+        1148,
+        400
       ],
       [
-        880,
-        340
+        950,
+        400
       ],
       [
-        690,
-        310
+        750,
+        480
       ],
       [
-        650,
-        140
+        680,
+        300
+      ],
+      [
+        800,
+        300
       ]
     ],
     "label": [
-      790,
-      268
+      900,
+      340
     ]
   },
   {
     "id": "crown-road",
     "name": "Crown Road",
-    "capacity": 4,
-    "regionId": "mixed",
+    "capacity": 2,
+    "regionId": "industrial-belt",
     "adjacentDistrictIds": [
+      "grand-market",
+      "northgate",
       "canal-ward",
-      "orchard",
-      "meadow"
+      "bellwether-centre"
     ],
     "polygon": [
       [
-        997,
-        409
+        600,
+        105
       ],
       [
-        980,
-        295
+        920,
+        105
       ],
       [
-        1015,
+        920,
         260
       ],
       [
-        1148,
-        240
+        800,
+        300
       ],
       [
-        1148,
-        410
+        680,
+        300
       ],
       [
-        1140,
-        410
+        610,
+        230
       ]
     ],
     "label": [
-      1060,
-      353
-    ]
-  },
-  {
-    "id": "orchard",
-    "name": "Orchard",
-    "capacity": 2,
-    "regionId": "mixed",
-    "adjacentDistrictIds": [
-      "crown-road",
-      "meadow"
-    ],
-    "polygon": [
-      [
-        997,
-        409
-      ],
-      [
-        1140,
-        410
-      ],
-      [
-        1148,
-        410
-      ],
-      [
-        1148,
-        688
-      ],
-      [
-        995,
-        688
-      ],
-      [
-        995,
-        550
-      ]
-    ],
-    "label": [
-      1065,
-      479
+      760,
+      200
     ]
   },
   {
     "id": "meadow",
     "name": "Meadow",
     "capacity": 2,
-    "regionId": "mixed",
+    "regionId": "industrial-belt",
     "adjacentDistrictIds": [
-      "crown-road",
-      "orchard",
+      "canal-ward",
+      "westfield",
       "eastfield"
     ],
     "polygon": [
       [
-        997,
-        409
+        950,
+        400
+      ],
+      [
+        1148,
+        400
+      ],
+      [
+        1148,
+        688
       ],
       [
         995,
-        550
-      ],
-      [
-        905,
-        475
-      ],
-      [
-        915,
-        355
+        688
       ],
       [
         980,
-        295
+        570
+      ],
+      [
+        800,
+        520
+      ],
+      [
+        750,
+        480
       ]
     ],
     "label": [
-      954,
-      439
+      1060,
+      470
     ]
   },
   {
@@ -391,32 +346,50 @@ export const DISTRICTS = deepFreeze([
     "capacity": 2,
     "regionId": "outlying",
     "adjacentDistrictIds": [
+      "meadow",
       "eastfield",
       "marsh",
+      "downs",
       "vale",
       "bellwether-centre"
     ],
     "polygon": [
       [
-        690,
-        610
+        650,
+        490
       ],
       [
-        515,
-        530
+        750,
+        480
       ],
       [
-        670,
-        475
+        800,
+        520
       ],
       [
-        785,
-        495
+        700,
+        600
+      ],
+      [
+        520,
+        550
+      ],
+      [
+        480,
+        550
+      ],
+      [
+        500,
+        520
+      ],
+      [
+        500,
+        470
       ]
     ],
     "label": [
-      660,
-      539
+      640,
+      528
     ]
   },
   {
@@ -431,23 +404,15 @@ export const DISTRICTS = deepFreeze([
     ],
     "polygon": [
       [
-        690,
-        610
+        800,
+        520
       ],
       [
-        785,
-        495
+        980,
+        570
       ],
       [
-        865,
-        560
-      ],
-      [
-        930,
-        595
-      ],
-      [
-        955,
+        995,
         688
       ],
       [
@@ -455,13 +420,13 @@ export const DISTRICTS = deepFreeze([
         688
       ],
       [
-        710,
-        680
+        700,
+        600
       ]
     ],
     "label": [
-      785,
-      595
+      850,
+      603
     ]
   },
   {
@@ -471,41 +436,34 @@ export const DISTRICTS = deepFreeze([
     "regionId": "outlying",
     "adjacentDistrictIds": [
       "westfield",
-      "eastfield"
+      "eastfield",
+      "vale"
     ],
     "polygon": [
       [
-        690,
-        610
-      ],
-      [
-        710,
-        680
+        700,
+        600
       ],
       [
         710,
         688
       ],
       [
-        475,
+        460,
         688
       ],
       [
-        475,
-        625
+        500,
+        630
       ],
       [
-        505,
-        605
-      ],
-      [
-        515,
-        530
+        520,
+        550
       ]
     ],
     "label": [
-      615,
-      623
+      600,
+      620
     ]
   },
   {
@@ -520,6 +478,18 @@ export const DISTRICTS = deepFreeze([
     ],
     "polygon": [
       [
+        40,
+        340
+      ],
+      [
+        230,
+        365
+      ],
+      [
+        265,
+        390
+      ],
+      [
         235,
         515
       ],
@@ -530,18 +500,6 @@ export const DISTRICTS = deepFreeze([
       [
         40,
         440
-      ],
-      [
-        40,
-        360
-      ],
-      [
-        180,
-        375
-      ],
-      [
-        265,
-        390
       ]
     ],
     "label": [
@@ -555,11 +513,33 @@ export const DISTRICTS = deepFreeze([
     "capacity": 2,
     "regionId": "outlying",
     "adjacentDistrictIds": [
+      "ironwood",
+      "westfield",
       "heath",
       "vale",
       "bellwether-centre"
     ],
     "polygon": [
+      [
+        400,
+        380
+      ],
+      [
+        500,
+        470
+      ],
+      [
+        500,
+        520
+      ],
+      [
+        480,
+        550
+      ],
+      [
+        430,
+        570
+      ],
       [
         235,
         515
@@ -569,17 +549,13 @@ export const DISTRICTS = deepFreeze([
         390
       ],
       [
-        390,
-        410
-      ],
-      [
-        420,
-        505
+        230,
+        365
       ]
     ],
     "label": [
-      327,
-      456
+      365,
+      448
     ]
   },
   {
@@ -589,6 +565,7 @@ export const DISTRICTS = deepFreeze([
     "regionId": "outlying",
     "adjacentDistrictIds": [
       "westfield",
+      "marsh",
       "downs",
       "coast"
     ],
@@ -598,19 +575,23 @@ export const DISTRICTS = deepFreeze([
         515
       ],
       [
-        420,
-        505
-      ],
-      [
-        450,
-        540
-      ],
-      [
         430,
-        620
+        570
       ],
       [
-        445,
+        480,
+        550
+      ],
+      [
+        520,
+        550
+      ],
+      [
+        500,
+        630
+      ],
+      [
+        460,
         688
       ],
       [
@@ -630,7 +611,7 @@ export const DISTRICTS = deepFreeze([
   {
     "id": "coast",
     "name": "Coast",
-    "capacity": 4,
+    "capacity": 2,
     "regionId": "outlying",
     "adjacentDistrictIds": [
       "heath",
@@ -673,35 +654,45 @@ export const DISTRICTS = deepFreeze([
     "capacity": 3,
     "regionId": "centre",
     "adjacentDistrictIds": [
+      "grand-market",
       "ironwood",
       "canal-ward",
+      "crown-road",
       "westfield",
       "downs"
     ],
     "polygon": [
       [
-        535,
-        340
+        500,
+        300
       ],
       [
-        605,
-        320
+        610,
+        230
+      ],
+      [
+        680,
+        300
+      ],
+      [
+        750,
+        480
       ],
       [
         650,
-        365
+        490
       ],
       [
-        645,
-        425
+        500,
+        470
       ],
       [
-        565,
-        455
+        400,
+        380
       ],
       [
-        520,
-        400
+        500,
+        350
       ]
     ],
     "label": [
@@ -716,150 +707,3 @@ export const DISTRICTS_BY_ID = Object.freeze(
     readonly [Id in DistrictId]: Extract<(typeof DISTRICTS)[number], { readonly id: Id }>;
   }
 );
-
-export const MAP_BRIDGES = deepFreeze([
-  {
-    "districtIds": [
-      "grand-market",
-      "northgate"
-    ],
-    "points": [
-      [
-        410,
-        140
-      ],
-      [
-        780,
-        126
-      ]
-    ]
-  },
-  {
-    "districtIds": [
-      "canal-ward",
-      "crown-road"
-    ],
-    "points": [
-      [
-        870,
-        260
-      ],
-      [
-        1040,
-        300
-      ]
-    ]
-  },
-  {
-    "districtIds": [
-      "meadow",
-      "eastfield"
-    ],
-    "points": [
-      [
-        950,
-        500
-      ],
-      [
-        835,
-        555
-      ]
-    ]
-  },
-  {
-    "districtIds": [
-      "westfield",
-      "vale"
-    ],
-    "points": [
-      [
-        580,
-        520
-      ],
-      [
-        405,
-        520
-      ]
-    ]
-  },
-  {
-    "districtIds": [
-      "heath",
-      "ironwood"
-    ],
-    "points": [
-      [
-        150,
-        400
-      ],
-      [
-        155,
-        285
-      ]
-    ]
-  },
-  {
-    "districtIds": [
-      "ironwood",
-      "bellwether-centre"
-    ],
-    "points": [
-      [
-        400,
-        280
-      ],
-      [
-        545,
-        350
-      ]
-    ]
-  },
-  {
-    "districtIds": [
-      "canal-ward",
-      "bellwether-centre"
-    ],
-    "points": [
-      [
-        715,
-        270
-      ],
-      [
-        625,
-        340
-      ]
-    ]
-  },
-  {
-    "districtIds": [
-      "westfield",
-      "bellwether-centre"
-    ],
-    "points": [
-      [
-        600,
-        525
-      ],
-      [
-        590,
-        445
-      ]
-    ]
-  },
-  {
-    "districtIds": [
-      "downs",
-      "bellwether-centre"
-    ],
-    "points": [
-      [
-        400,
-        450
-      ],
-      [
-        530,
-        405
-      ]
-    ]
-  }
-] as const);

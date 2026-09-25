@@ -25,7 +25,7 @@ describe("playtest agent Lobby action selection", () => {
   };
 
   it("supplies Fresh Start's mandatory second placement for an absent party", () => {
-    const action = chooseLobbyAction({parties:{honeycomb:{status:"open"}}, support:{}, enactedPolicyIds:[POLICIES.find(policy => policy.effect === 6)!.id]}, ownSeat, {turnsTaken:{"seat-1":0}}, "seat-1");
+    const action = chooseLobbyAction({parties:{honeycomb:{status:"open"}}, support:{}, enactedPolicyIds:[POLICIES.find(policy => policy.effect === 6)!.id], policyRecipients:{[POLICIES.find(policy => policy.effect === 6)!.id]:"honeycomb"}}, ownSeat, {turnsTaken:{"seat-1":0}}, "seat-1");
     expect(action).toMatchObject({type:"operate",play:{choice:{operation:"rally",freshStartDistrictId:expect.any(String)}}});
   });
 

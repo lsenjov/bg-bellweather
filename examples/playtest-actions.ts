@@ -1,4 +1,4 @@
-import { DISTRICTS, activeLawEffects, type PolicyId, type PartyId } from "@bellwether/content";
+import { DISTRICTS, partyLawEffects, type PolicyRecipients, type PolicyId, type PartyId } from "@bellwether/content";
 
 export function chooseLobbyAction(
   game: Record<string, unknown>,
@@ -44,7 +44,7 @@ function chooseRally(
       );
     });
     if (district !== undefined) {
-      const freshStart = !hasSupport && activeLawEffects((game["enactedPolicyIds"] ?? []) as PolicyId[]).includes(6);
+      const freshStart = !hasSupport && partyLawEffects((game["enactedPolicyIds"] ?? []) as PolicyId[], objectValue(game["policyRecipients"]) as PolicyRecipients, partyId).includes(6);
       const extra = freshStart ? DISTRICTS.find(candidate => {
         const occupied = Object.values(objectValue(support[candidate.id])).reduce<number>((sum, count) => sum + Number(count ?? 0), 0);
         return occupied + (candidate.id === district.id ? 1 : 0) < candidate.capacity;

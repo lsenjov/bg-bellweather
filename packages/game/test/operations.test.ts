@@ -3,7 +3,7 @@ import { DISTRICTS, type DistrictId, type PartyId, type LawEffectId, type BonusC
 import { resolveOperation, type OperationState, type OperationChoice } from "../src/operations.js";
 const HC='honeycomb', FG='foxglove';
 function state(laws: LawEffectId[]=[]): OperationState {
-  return {laws,districts:Object.fromEntries(DISTRICTS.map(d=>[d.id,{id:d.id,capacity:d.capacity,neighbors:d.adjacentDistrictIds,support:{}}]))};
+  return {laws:{[HC]:laws},districts:Object.fromEntries(DISTRICTS.map(d=>[d.id,{id:d.id,capacity:d.capacity,neighbors:d.adjacentDistrictIds,support:{}}]))};
 }
 function put(s:OperationState,id:DistrictId,party:PartyId,n=1){s.districts[id]!.support[party]=n;}
 function play(s:OperationState,choice:OperationChoice,bonusCardId?:BonusCardId){return resolveOperation(s,{party:HC,choice,...(bonusCardId?{bonusCardId}:{})});}
@@ -19,7 +19,7 @@ describe('Operation baselines',()=>{
   it('restores absent parties and rejects impossible ranges or full destinations',()=>{
     const s=state();expect(play(s,{operation:'organise',destinationDistrictId:'coast'}).baselineApplied).toBe(true);
     expect(play(s,{operation:'rally',districtId:'coast'}).baselineApplied).toBe(true);
-    put(s,'harbormouth',HC);put(s,'coast',FG,4);
+    put(s,'harbormouth',HC);put(s,'coast',FG,2);
     expect(play(s,move('harbormouth','coast')).baselineApplied).toBe(false);
     expect(play(s,{operation:'smear',districtId:'coast',rivalParty:FG}).baselineApplied).toBe(false);
     expect(play(s,{operation:'rally',districtId:'coast'}).baselineApplied).toBe(false);
@@ -30,7 +30,7 @@ describe('Operation baselines',()=>{
     expect(play(s,{...move('harbormouth','grand-market'),count:2} as OperationChoice).baselineApplied).toBe(false);
   });
 });
-describe('global law permissions',()=>{
+describe('Party law permissions',()=>{
   it('extends Rally with Grassroots Expansion and New Constituencies',()=>{
     const s=state([1,22]);put(s,'ironwood',HC);
     expect(play(s,{operation:'rally',sourceDistrictId:'ironwood',districtId:'heath'}).baselineApplied).toBe(true);
@@ -52,15 +52,15 @@ describe('global law permissions',()=>{
     expect(play(s,move('harbormouth','meadow')).baselineApplied).toBe(false);
   });
   it('extends Smear by two adjacency steps or to a full district',()=>{
-    const s=state([11,35]);put(s,'harbormouth',HC);put(s,'northgate',FG);put(s,'coast',FG,4);put(s,'meadow',FG);
-    expect(play(s,{operation:'smear',districtId:'northgate',rivalParty:FG}).baselineApplied).toBe(true);
+    const s=state([11,35]);put(s,'harbormouth',HC);put(s,'bellwether-centre',FG);put(s,'coast',FG,2);put(s,'meadow',FG);
+    expect(play(s,{operation:'smear',districtId:'bellwether-centre',rivalParty:FG}).baselineApplied).toBe(true);
     expect(play(s,{operation:'smear',districtId:'coast',rivalParty:FG}).baselineApplied).toBe(true);
     expect(play(s,{operation:'smear',districtId:'meadow',rivalParty:FG}).baselineApplied).toBe(false);
   });
   it('displaces only into a free neighboring district',()=>{
     const s=state([14]);put(s,'harbormouth',HC);put(s,'grand-market',FG);
-    const r=play(s,{operation:'smear',districtId:'grand-market',rivalParty:FG,displacementDistrictId:'northgate'});
-    expect(r.baselineApplied).toBe(true);expect(r.state.districts.northgate!.support[FG]).toBe(1);
+    const r=play(s,{operation:'smear',districtId:'grand-market',rivalParty:FG,displacementDistrictId:'bellwether-centre'});
+    expect(r.baselineApplied).toBe(true);expect(r.state.districts['bellwether-centre']!.support[FG]).toBe(1);
     expect(play(s,{operation:'smear',districtId:'grand-market',rivalParty:FG,displacementDistrictId:'coast'}).baselineApplied).toBe(false);
   });
 });
@@ -74,22 +74,22 @@ describe('mandatory extras and ordering',()=>{
     s.districts.harbormouth!.support[FG]=5;
     expect(play(s,{operation:'rally',districtId:'harbormouth'}).baselineApplied).toBe(true);
   });
-  it('adds one per bridge and region law, not one per moving Support',()=>{
+  it('adds one per cross-region law, not one per moving Support',()=>{
     const s=state([7,17,29]);put(s,'grand-market',HC,2);
-    const r=play(s,{operation:'organise',sourceDistrictId:'grand-market',destinationDistrictId:'northgate',count:2});
-    expect(r.baselineApplied).toBe(true);expect(r.state.districts['grand-market']!.support[HC]).toBe(1);expect(r.state.districts.northgate!.support[HC]).toBe(3);
+    const r=play(s,{operation:'organise',sourceDistrictId:'grand-market',destinationDistrictId:'bellwether-centre',count:2});
+    expect(r.baselineApplied).toBe(true);expect(r.state.districts['grand-market']!.support[HC]).toBe(1);expect(r.state.districts['bellwether-centre']!.support[HC]).toBe(3);
   });
-  it('does not count hypothetical bridges on long-distance moves',()=>{
-    const s=state([9,29]);put(s,'harbormouth',HC);put(s,'coast',HC);
-    expect(play(s,move('harbormouth','coast')).state.districts.coast!.support[HC]).toBe(2);
+  it('triggers Bridge Campaign for a long-distance region crossing',()=>{
+    const s=state([9,29]);put(s,'harbormouth',HC);put(s,'eastfield',HC);
+    expect(play(s,move('harbormouth','eastfield')).state.districts.eastfield!.support[HC]).toBe(3);
   });
   it('requires a different Support for Chain Migration without triggering loops',()=>{
     const s=state([28,17,29]);put(s,'grand-market',HC);put(s,'harbormouth',HC);
-    expect(play(s,move('grand-market','northgate')).baselineApplied).toBe(false);
-    const r=play(s,{operation:'organise',sourceDistrictId:'grand-market',destinationDistrictId:'northgate',chainSourceDistrictId:'harbormouth'});
-    expect(r.baselineApplied).toBe(true);expect(r.state.districts['grand-market']!.support[HC]).toBe(2);expect(r.state.districts.northgate!.support[HC]).toBe(2);
+    expect(play(s,move('grand-market','bellwether-centre')).baselineApplied).toBe(false);
+    const r=play(s,{operation:'organise',sourceDistrictId:'grand-market',destinationDistrictId:'bellwether-centre',chainSourceDistrictId:'harbormouth'});
+    expect(r.baselineApplied).toBe(true);expect(r.state.districts['grand-market']!.support[HC]).toBe(2);expect(r.state.districts['bellwether-centre']!.support[HC]).toBe(2);
     const alone=state([28]);put(alone,'grand-market',HC);
-    expect(play(alone,move('grand-market','northgate')).supportChanges).toHaveLength(1);
+    expect(play(alone,move('grand-market','bellwether-centre')).supportChanges).toHaveLength(1);
   });
   it('orders Bonus and law extras freely, skips impossible extras and rejects omission',()=>{
     const s=state([28]);put(s,'harbormouth',HC);put(s,'harbormouth',FG,5);put(s,'ironwood',HC);
@@ -116,8 +116,8 @@ describe('retained Operation Bonuses',()=>{
   });
   it.each(['foxglove-spin','old-shell-stonewall','night-parliament-midnight-leak'] as const)('resolves %s normally after displacement',bonus=>{
     const s=state([14]);put(s,'harbormouth',HC);put(s,'grand-market',FG,2);put(s,'ironwood',FG);
-    const r=play(s,{operation:'smear',districtId:'grand-market',rivalParty:FG,displacementDistrictId:'northgate',bonusDistrictId:'ironwood'},bonus);
-    expect(r.baselineApplied).toBe(true);expect(r.bonusApplied).toBe(true);expect(r.state.districts.northgate!.support[FG]).toBe(1);
+    const r=play(s,{operation:'smear',districtId:'grand-market',rivalParty:FG,displacementDistrictId:'bellwether-centre',bonusDistrictId:'ironwood'},bonus);
+    expect(r.baselineApplied).toBe(true);expect(r.bonusApplied).toBe(true);expect(r.state.districts['bellwether-centre']!.support[FG]).toBe(1);
   });
   it('skips Midnight Leak when no neighboring rival remains',()=>{
     const s=state();put(s,'harbormouth',HC);put(s,'grand-market',FG);
@@ -125,7 +125,7 @@ describe('retained Operation Bonuses',()=>{
   });
   it('keeps Canal Network standalone, including its route and group size',()=>{
     const s=state([17,29,28]);put(s,'harbormouth',HC,3);put(s,'grand-market',HC);
-    const r=play(s,{operation:'organise',sourceDistrictId:'harbormouth',destinationDistrictId:'northgate',count:3},'riverworks-canal-network');
+    const r=play(s,{operation:'organise',sourceDistrictId:'harbormouth',destinationDistrictId:'bellwether-centre',count:3},'riverworks-canal-network');
     expect(r.baselineApplied).toBe(true);expect(r.supportChanges).toHaveLength(3);
   });
   it('resolves Public Works, Quiet Hours and Scatter the Flock',()=>{

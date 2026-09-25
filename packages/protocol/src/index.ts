@@ -296,7 +296,7 @@ export const BonusCardIdSchema = z.enum([
   "night-parliament-midnight-session"
 ]);
 const DistrictChoiceSchema = z.string().trim().min(1).max(100);
-export const RegionIdSchema = z.enum(["urban", "mixed", "outlying", "centre"]);
+export const RegionIdSchema = z.enum(["urban", "industrial-belt", "outlying", "centre"]);
 export const FollowUpIdSchema = z.union([z.literal(6), z.literal(17), z.literal(28), z.literal(29), z.literal("bonus")]);
 const LawChoices = {
   followUpOrder: z.array(FollowUpIdSchema).max(5).optional(),

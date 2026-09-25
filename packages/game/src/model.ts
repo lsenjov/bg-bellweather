@@ -150,7 +150,7 @@ export interface ElectionRecord {
   electionNumber: 1 | 2 | 3;
   afterYear: ElectionYear;
   scoringCards: Array<{ seatId: SeatId; scoringCardId: ScoringCardId }>;
-  policyVotes: Array<{ regionId: RegionId; policyId: PolicyId; forVotes: number; againstVotes: number; passed: boolean }>;
+  policyVotes: Array<{ regionId: RegionId; policyId: PolicyId; forVotes: number; againstVotes: number; passed: boolean; partyVotes: Record<PartyId, number>; recipientPartyId: PartyId | null }>;
   draws: Record<
     string,
     {
@@ -197,6 +197,7 @@ export interface GameState {
   policyDeck: PolicyId[];
   pendingPolicies: Partial<Record<RegionId, PolicyId>>;
   enactedPolicyIds: PolicyId[];
+  policyRecipients: Partial<Record<PolicyId, PartyId>>;
   discardedPolicyIds: PolicyId[];
   bonusCards: Record<BonusCardId, BonusCardLocation>;
   chat: ChatMessage[];

@@ -6,13 +6,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const check = process.argv.includes('--check');
 const data = JSON.parse(readFileSync(root + 'docs/components/policy-deck.json', 'utf8'));
-const { categories, parties, scoringCards, policies } = data;
-// The physical prototype advances independently of the app's shared policy data.
-const effects = data.effects.map((effect) => ({
-  ...effect,
-  scope: [19, 20].includes(effect.id) ? 'Global' : 'Party',
-  ...(effect.id === 29 ? { text: 'After Organise moves Support across a region boundary, add one acting-party Support at its destination.' } : {}),
-}));
+const { categories, parties, scoringCards, policies, effects } = data;
 const key = (order) => order.join('|');
 const unique = (values) => new Set(values).size === values.length;
 const validOrder = (order) => order.length === 6 && key([...order].sort()) === key([...categories].sort());
@@ -66,7 +60,10 @@ function page(title, body) {
 function table(headings, rows) {
   return `<div class="table-wrap"><table><thead><tr>${headings.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('\n')}</tbody></table></div>`;
 }
-output('packages/content/src/policy-data.ts', `export const POLICY_DATA = ${JSON.stringify(data, null, 2)} as const;\n`);
+output('packages/content/src/policy-data.ts', `export const POLICY_DATA = ${JSON.stringify({ ...data, policies: policies.map(card => ({ ...card,
+  forPartyIds: votes(card, true).map(party => party.name.toLowerCase().replaceAll(' ', '-')),
+  againstPartyIds: votes(card, false).map(party => party.name.toLowerCase().replaceAll(' ', '-')),
+})) }, null, 2)} as const;\n`);
 const priorityTable = table(['Party', '1st', '2nd', '3rd', '4th', '5th', '6th'], parties.map((p) => [p.name, ...p.order]));
 const policyRows = policies.map((p) => [p.id, escape(p.name), '+' + p.plus, '−' + p.minus, votes(p, true).map((p) => p.name).join(', '), votes(p, false).map((p) => p.name).join(', '), `<a href="#effect-${p.effect}">${effectFor(p).name}</a>`, effectFor(p).scope]);
 output('docs/components/policy-cards.html', page('Policy cards', `

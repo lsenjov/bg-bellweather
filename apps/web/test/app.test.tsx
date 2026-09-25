@@ -143,7 +143,7 @@ describe("yearly browser play surface", () => {
   it("gives every district an accessible Support and capacity summary", () => {
     const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
     render(<DistrictMap view={view} />);
-    expect(screen.getAllByRole("article")).toHaveLength(16);
+    expect(screen.getAllByRole("article")).toHaveLength(15);
     expect(screen.getByLabelText("Bellwether Centre: 0 of 3 Support spaces occupied")).toBeTruthy();
     expect(screen.getByLabelText("Grand Market: 6 of 6 Support spaces occupied")).toBeTruthy();
   });
@@ -158,10 +158,10 @@ describe("yearly browser play surface", () => {
             type: "move",
             partyId: "honeycomb",
             sourceDistrictId: "grand-market",
-            destinationDistrictId: "northgate"
+            destinationDistrictId: "bellwether-centre"
           },
-          { type: "add", partyId: "honeycomb", destinationDistrictId: "northgate" },
-          { type: "add", partyId: "honeycomb", destinationDistrictId: "northgate" }
+          { type: "add", partyId: "honeycomb", destinationDistrictId: "bellwether-centre" },
+          { type: "add", partyId: "honeycomb", destinationDistrictId: "bellwether-centre" }
         ]}
       />
     );
@@ -169,7 +169,7 @@ describe("yearly browser play surface", () => {
       expect(document.querySelectorAll('[data-map-change="move"]')).toHaveLength(1);
       expect(document.querySelectorAll('[data-map-change="add"]')).toHaveLength(2);
     });
-    expect(within(screen.getByLabelText("Latest map changes")).getAllByText("Honeycomb added to Northgate")).toHaveLength(2);
+    expect(within(screen.getByLabelText("Latest map changes")).getAllByText("Honeycomb added to Bellwether Centre")).toHaveLength(2);
   });
 
   it("separates Support change glyphs from different parties at one district", async () => {
@@ -367,7 +367,7 @@ describe("yearly browser play surface", () => {
     }
     expect(screen.getByText("Select the Organise destination district on the map.")).toBeTruthy();
     expect(screen.getByLabelText("Destination").closest(".target-field")?.classList.contains("target-field-active")).toBe(true);
-    fireEvent.click(screen.getByLabelText("Northgate: 0 of 6 Support spaces occupied"));
+    fireEvent.click(screen.getByLabelText("Bellwether Centre: 0 of 3 Support spaces occupied"));
     expect(screen.getByText("Ready to resolve this card.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Resolve organise" }));
     await waitFor(() => expect(onCommand).toHaveBeenCalledWith({
@@ -381,7 +381,7 @@ describe("yearly browser play surface", () => {
           choice: {
             operation: "organise",
             sourceDistrictId: "grand-market",
-            destinationDistrictId: "northgate"
+            destinationDistrictId: "bellwether-centre"
           }
         }
       }
@@ -442,6 +442,7 @@ describe("yearly browser play surface", () => {
     const state = sixPartyState();
     for (const support of Object.values(state.support)) delete support.honeycomb;
     state.enactedPolicyIds = [POLICIES.find(policy => policy.effect === 6)!.id];
+    state.policyRecipients = Object.fromEntries(state.enactedPolicyIds.map(id => [id, "honeycomb"]));
     state.bonusCards["honeycomb-waggle-route"] = {zone:"hand",seatId:"seat-1"};
     const view = privateView(state,"seat-1");
     const onCommand = vi.fn(async()=>true);
@@ -460,11 +461,12 @@ describe("yearly browser play surface", () => {
   it("limits Political Exchange arrivals and submits two chosen swaps", () => {
     const state = sixPartyState();
     state.enactedPolicyIds = [7,10].map(effect => POLICIES.find(policy=>policy.effect===effect)!.id);
+    state.policyRecipients = Object.fromEntries(state.enactedPolicyIds.map(id => [id, "honeycomb"]));
     state.support["grand-market"] = {honeycomb:2};
-    state.support.northgate = {foxglove:6};
+    state.support["bellwether-centre"] = {foxglove:3};
     const {onSubmit} = renderUnboundComposer(state,"honeycomb","honeycomb-waggle-route");
     fireEvent.change(screen.getByLabelText("Source"),{target:{value:"grand-market"}});
-    fireEvent.change(screen.getByLabelText("Destination"),{target:{value:"northgate"}});
+    fireEvent.change(screen.getByLabelText("Destination"),{target:{value:"bellwether-centre"}});
     fireEvent.change(screen.getByLabelText("Support to move"),{target:{value:"10000000"}});
     expect(screen.getAllByLabelText(/swap rival/)).toHaveLength(2);
     expect(screen.getByRole("button",{name:"Resolve organise"}).hasAttribute("disabled")).toBe(true);
@@ -534,14 +536,14 @@ describe("yearly browser play surface", () => {
     state.support.northgate = {};
     const { onSubmit } = renderUnboundComposer(state, "old-shell", "old-shell-institutional-memory");
     fireEvent.click(screen.getByRole("button", { name: /Institutional Memory Bonus/ }));
-    fireEvent.change(screen.getByLabelText("Policy region"), {target:{value:"mixed"}});
+    fireEvent.change(screen.getByLabelText("Policy region"), {target:{value:"industrial-belt"}});
     const destinations = screen.getAllByLabelText(/ destination$/);
     expect(destinations).toHaveLength(3);
     fireEvent.change(destinations[0]!, {target:{value:"northgate"}});
     expect(screen.getByRole("button", {name:"Resolve Institutional Memory"}).hasAttribute("disabled")).toBe(true);
     for (const select of destinations.slice(1)) fireEvent.change(select, {target:{value:"northgate"}});
     fireEvent.click(screen.getByRole("button", {name:"Resolve Institutional Memory"}));
-    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({choice: expect.objectContaining({effect:"institutional_memory",regionId:"mixed",forPolicy:true,placements:expect.any(Array)})}));
+    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({choice: expect.objectContaining({effect:"institutional_memory",regionId:"industrial-belt",forPolicy:true,placements:expect.any(Array)})}));
   });
 
   it("offers closed parties to Shell Firm", () => {
@@ -808,8 +810,8 @@ describe("yearly browser play surface", () => {
 
   it("reports policy votes, final scoring card and hand rank", () => {
     const view = privateView(initializeGame(configuration(2), random).state, "seat-1");
-    const policyId = view.pendingPolicies.mixed!;
-    view.electionHistory.push({electionNumber:3,afterYear:6,scoringCards:[{seatId:"seat-1",scoringCardId:"S01"}],draws:{},policyVotes:[{regionId:"mixed",policyId,forVotes:4,againstVotes:3,passed:true}],scores:[{playerId:"seat-1",policyScore:3,policyScores:[{policyId,gain:5,loss:2,net:3}],finalCardCount:14,finalCardRankBonus:1,pointsChange:4,resultingPoints:4}],winnerSeatIds:["seat-1"]});
+    const policyId = view.pendingPolicies["industrial-belt"]!;
+    view.electionHistory.push({electionNumber:3,afterYear:6,scoringCards:[{seatId:"seat-1",scoringCardId:"S01"}],draws:{},policyVotes:[{regionId:"industrial-belt",policyId,forVotes:4,againstVotes:3,passed:true}],scores:[{playerId:"seat-1",policyScore:3,policyScores:[{policyId,gain:5,loss:2,net:3}],finalCardCount:14,finalCardRankBonus:1,pointsChange:4,resultingPoints:4}],winnerSeatIds:["seat-1"]});
     render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={async()=>true}/>);
     expect(screen.getByText("4 For · 3 Against")).toBeTruthy();
     expect(screen.getByText("Passed")).toBeTruthy();
@@ -890,7 +892,7 @@ function organiseAction(seatId: string): GameAction {
       choice: {
         operation: "organise",
         sourceDistrictId: "grand-market",
-        destinationDistrictId: "northgate"
+        destinationDistrictId: "bellwether-centre"
       }
     }
   };

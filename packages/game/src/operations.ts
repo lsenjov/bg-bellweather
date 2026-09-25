@@ -1,6 +1,6 @@
 import {
   BONUS_CARDS_BY_ID,
-  PARTY_IDS, DISTRICTS_BY_ID, MAP_BRIDGES,
+  PARTY_IDS, DISTRICTS_BY_ID,
   type LawEffectId,
   type BonusCardId,
   type DistrictId,
@@ -21,7 +21,7 @@ export interface DistrictState {
 
 export interface OperationState {
   districts: Record<string, DistrictState>;
-  laws: readonly LawEffectId[];
+  laws: Partial<Record<Party, readonly LawEffectId[]>>;
 }
 
 export type { OperationChoice } from "@bellwether/protocol";
@@ -103,13 +103,14 @@ export function operationFollowUps(state: OperationState, request: OperationRequ
 
 function triggeredFollowUps(state: OperationState, request: OperationRequest, baseline: BaselineResult): FollowUpId[] {
   const ids: FollowUpId[] = [];
+  const laws = state.laws[request.party] ?? [];
   if (request.bonusCardId !== "riverworks-canal-network") {
-    if (baseline.wasAbsent && request.choice.operation !== "smear" && state.laws.includes(6)) ids.push(6);
+    if (baseline.wasAbsent && request.choice.operation !== "smear" && laws.includes(6)) ids.push(6);
     if (request.choice.operation === "organise" && !baseline.wasAbsent) {
       const source = baseline.sourceDistrictId!, destination = baseline.destinationDistrictId!;
-      if (state.laws.includes(17) && DISTRICTS_BY_ID[source as DistrictId]?.regionId !== DISTRICTS_BY_ID[destination as DistrictId]?.regionId) ids.push(17);
-      if (state.laws.includes(28)) ids.push(28);
-      if (state.laws.includes(29) && MAP_BRIDGES.some(bridge => (bridge.districtIds as readonly string[]).includes(source) && (bridge.districtIds as readonly string[]).includes(destination))) ids.push(29);
+      if (laws.includes(17) && DISTRICTS_BY_ID[source as DistrictId]?.regionId !== DISTRICTS_BY_ID[destination as DistrictId]?.regionId) ids.push(17);
+      if (laws.includes(28)) ids.push(28);
+      if (laws.includes(29) && DISTRICTS_BY_ID[source as DistrictId]?.regionId !== DISTRICTS_BY_ID[destination as DistrictId]?.regionId) ids.push(29);
     }
   }
   if (request.bonusCardId !== undefined) ids.push("bonus");
@@ -199,7 +200,8 @@ function applyBaseline(
   allowCanalNetwork: boolean, supportChanges: SupportChange[]
 ): BaselineResult {
   const wasAbsent = supportCount(state, party) === 0;
-  const law = (id: LawEffectId) => !allowCanalNetwork && state.laws.includes(id);
+  const laws = state.laws[party] ?? [];
+  const law = (id: LawEffectId) => !allowCanalNetwork && laws.includes(id);
   const region = (id: string) => DISTRICTS_BY_ID[id as DistrictId]?.regionId;
   if (choice.operation === "organise") {
     const count = choice.count ?? 1;
@@ -468,7 +470,7 @@ function cloneState(state: OperationState): OperationState {
         }
       ])
     ),
-    laws: [...state.laws]
+    laws: Object.fromEntries(Object.entries(state.laws).map(([party, effects]) => [party, [...effects]]))
   };
 }
 

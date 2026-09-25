@@ -219,77 +219,92 @@
     {
       "id": 1,
       "name": "Grassroots Expansion",
-      "text": "Rally may place its Support in a neighboring district instead of its source district."
+      "text": "Rally may place its Support in a neighboring district instead of its source district.",
+      "scope": "Party"
     },
     {
       "id": 6,
       "name": "Fresh Start",
-      "text": "When Organise or Rally restores a party absent from the map, place two Support instead of one, together or separately. Place both if possible; otherwise place one."
+      "text": "When Organise or Rally restores a party absent from the map, place two Support instead of one, together or separately. Place both if possible; otherwise place one.",
+      "scope": "Party"
     },
     {
       "id": 7,
       "name": "Carpooling",
-      "text": "Organise may move two Support together from the same source to the same destination."
+      "text": "Organise may move two Support together from the same source to the same destination.",
+      "scope": "Party"
     },
     {
       "id": 9,
       "name": "Established Networks",
-      "text": "Organise may move between any two districts already containing acting-party Support, regardless of distance."
+      "text": "Organise may move between any two districts already containing acting-party Support, regardless of distance.",
+      "scope": "Party"
     },
     {
       "id": 10,
       "name": "Political Exchange",
-      "text": "Organise may swap moving Support with rival Support at the destination. Each arrival needs a free spot or a rival to swap back to the source."
+      "text": "Organise may swap moving Support with rival Support at the destination. Each arrival needs a free spot or a rival to swap back to the source.",
+      "scope": "Party"
     },
     {
       "id": 11,
       "name": "Long-Reach Campaigns",
-      "text": "Smear may target a district up to two adjacency steps from acting-party Support."
+      "text": "Smear may target a district up to two adjacency steps from acting-party Support.",
+      "scope": "Party"
     },
     {
       "id": 14,
       "name": "Displacement",
-      "text": "Instead of removing its target, Smear may move that Support to a free spot in a neighboring district."
+      "text": "Instead of removing its target, Smear may move that Support to a free spot in a neighboring district.",
+      "scope": "Party"
     },
     {
       "id": 17,
       "name": "Cross-Region Campaigns",
-      "text": "After Organise moves Support across a region boundary, add one acting-party Support in the source district."
+      "text": "After Organise moves Support across a region boundary, add one acting-party Support in the source district.",
+      "scope": "Party"
     },
     {
       "id": 19,
       "name": "Muted Priorities",
-      "text": "At final scoring, each firm treats its printed 6-point issue as worth 4 for both gains and losses. Party votes do not change."
+      "text": "At final scoring, each firm treats its printed 6-point issue as worth 4 for both gains and losses. Party votes do not change.",
+      "scope": "Global"
     },
     {
       "id": 20,
       "name": "Broad Interests",
-      "text": "At final scoring, each firm treats its printed 1-point issue as worth 3 for both gains and losses. Party votes do not change."
+      "text": "At final scoring, each firm treats its printed 1-point issue as worth 3 for both gains and losses. Party votes do not change.",
+      "scope": "Global"
     },
     {
       "id": 22,
       "name": "New Constituencies",
-      "text": "Rally may place its Support anywhere in its source region, provided the destination has no acting-party Support."
+      "text": "Rally may place its Support anywhere in its source region, provided the destination has no acting-party Support.",
+      "scope": "Party"
     },
     {
       "id": 28,
       "name": "Chain Migration",
-      "text": "After Organise moves Support, move a different acting-party Support from a neighboring district into a spot vacated in the source district."
+      "text": "After Organise moves Support, move a different acting-party Support from a neighboring district into a spot vacated in the source district.",
+      "scope": "Party"
     },
     {
       "id": 29,
       "name": "Bridge Campaign",
-      "text": "After Organise moves directly across a marked bridge, add one acting-party Support at its destination."
+      "text": "After Organise moves Support across a region boundary, add one acting-party Support at its destination.",
+      "scope": "Party"
     },
     {
       "id": 30,
       "name": "Regional Express",
-      "text": "Organise may move to any district in its source region, regardless of distance."
+      "text": "Organise may move to any district in its source region, regardless of distance.",
+      "scope": "Party"
     },
     {
       "id": 35,
       "name": "Crowded Airwaves",
-      "text": "Smear may target any full district, regardless of acting-party presence or distance."
+      "text": "Smear may target any full district, regardless of acting-party presence or distance.",
+      "scope": "Party"
     }
   ],
   "policies": [

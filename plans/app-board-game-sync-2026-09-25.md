@@ -10,4 +10,4 @@ Validation focuses on shared-border adjacency, post-thinning recipient ties, per
 
 ## Progress
 
-- Plan recorded; implementation pending.
+- Step 1 complete: shared map and policy generation, recipient awards, scoped laws, protocol and projection updates. All 160 tests and the production build pass. Independent review found no high/medium issues; fixed both low findings (test assertion and example-agent scoping).

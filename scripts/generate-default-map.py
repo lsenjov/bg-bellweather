@@ -1,4 +1,4 @@
-"""Generate the default map content from the approved inland study."""
+"""Generate the default map content from the current physical board."""
 import argparse
 import importlib.util
 import json
@@ -12,41 +12,23 @@ concepts = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(concepts)
 
 
-def map_trackers():
-    svg = ['<g font-family="Arial,sans-serif" fill="#19354b" text-anchor="middle"><text x="326" y="710" font-size="14" font-weight="700">ROUND / YEAR</text><text x="766" y="704" font-size="12" font-weight="700">COALITIONS</text><text x="1024" y="704" font-size="12" font-weight="700">NO COALITION</text>']
-    for year in range(1, 7):
-        x = 40 + (year - 1) * 96
-        fill = '#e4dfea' if year % 2 == 0 else '#f2f5f6'
-        svg.append(f'<rect x="{x}" y="724" width="92" height="92" rx="8" fill="{fill}" stroke="#19354b"/><text x="{x+46}" y="763" font-size="25" font-weight="700">{year}</text>')
-        if year % 2 == 0:
-            svg.append(f'<text x="{x+46}" y="792" font-size="12">Election {year//2}</text>')
-    for x in (690, 766, 842):
-        svg.append(f'<path d="M{x},736 V796" stroke="#19354b" stroke-width="8"/>')
-        for y in (736, 796):
-            svg.append(f'<circle cx="{x}" cy="{y}" r="28" fill="#f4f4ef" stroke="#19354b"/>')
-    for x in (960, 1024, 1088):
-        for y in (736, 796):
-            svg.append(f'<circle cx="{x}" cy="{y}" r="28" fill="#f4f4ef" stroke="#19354b"/>')
-    return '\n'.join(svg) + '</g>\n</svg>\n'
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
     args = parser.parse_args()
-    study = next(s for s in concepts.DATA['studies'] if s['id'] == 8)
-    edges, graph = concepts.border_edges(study)
+    study = json.loads((ROOT / 'docs/components/physical-map.json').read_text())
+    concepts.DISTRICTS = study['districts']
+    edges, graph = concepts.border_edges(study, allow_bottlenecks=True)
     ids = {k: 'bellwether-centre' if k == 'X' else concepts.DISTRICTS[k]['name'].lower().replace(' ', '-') for k in study['nodes']}
     districts = []
     for key, node in study['nodes'].items():
-        d = concepts.district(study, key)
-        districts.append(dict(id=ids[key], name='Bellwether Centre' if key == 'X' else d['name'], capacity=d['capacity'], regionId='centre' if key == 'X' else d['region'].lower(), adjacentDistrictIds=[ids[k] for k in sorted(graph[key])], polygon=node['polygon'], label=[node['x'], node['y']]))
-    bridges = [dict(districtIds=[ids[e['a']],ids[e['b']]], points=e['points']) for e in edges if e['kind']=='bridge']
+        d = study['districts'][key]
+        districts.append(dict(id=ids[key], name='Bellwether Centre' if key == 'X' else d['name'], capacity=d['capacity'], regionId='centre' if key == 'X' else d['region'].lower().replace(' ', '-'), adjacentDistrictIds=[ids[k] for k in sorted(graph[key])], polygon=node['polygon'], label=[node['x'], node['y']]))
     content = '''import { deepFreeze } from "./immutable.js";
 
-export const REGION_IDS = deepFreeze(["urban", "mixed", "outlying", "centre"] as const);
+export const REGION_IDS = deepFreeze(["urban", "industrial-belt", "outlying", "centre"] as const);
 export type RegionId = (typeof REGION_IDS)[number];
-export const REGION_NAMES = deepFreeze({ urban: "Urban", mixed: "Mixed", outlying: "Outlying", centre: "Bellwether Centre" });
+export const REGION_NAMES = deepFreeze({ urban: "Urban", "industrial-belt": "Industrial Belt", outlying: "Outlying", centre: "Bellwether Centre" });
 
 export const DISTRICT_IDS = deepFreeze('''+json.dumps(list(ids.values()), indent=2)+''' as const);
 export type DistrictId = (typeof DISTRICT_IDS)[number];
@@ -69,13 +51,8 @@ export const DISTRICTS_BY_ID = Object.freeze(
   }
 );
 
-export const MAP_BRIDGES = deepFreeze('''+json.dumps(bridges,indent=2)+''' as const);
 '''
-    svg = concepts.render_border_map(study, edges, concepts.graph_facts(study,edges,graph)).replace('Island chain — landscape A4 prototype','Bellwether — inland district map').replace('ISLAND CHAIN','BELLWETHER').replace('08 / Inland waterways · A4 landscape','R24 / Inland regions · A3 landscape')
-    svg = svg.replace('width="297mm" height="210mm"', 'width="420mm" height="297mm"')
-    svg = svg.replace(concepts.COLORS['Urban'], '#e6b6a6')
-    svg = svg.split('<text x="36" y="758"')[0] + map_trackers()
-    for path, value in [(ROOT/'packages/content/src/districts.ts',content),(ROOT/'docs/assets/inland-district-map.svg',svg)]:
+    for path, value in [(ROOT/'packages/content/src/districts.ts',content.rstrip() + '\n')]:
         if args.check:
             assert path.read_text()==value, f'{path} is stale'
         else:

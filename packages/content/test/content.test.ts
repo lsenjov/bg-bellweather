@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PARTIES, PARTY_IDS, PARTY_PRIORITIES, POLICIES, PROMISE_CATEGORIES, SCORING_CARDS, LAW_EFFECTS, votesFor, DISTRICTS, DISTRICTS_BY_ID, REGION_IDS, MAP_BRIDGES, BONUS_CARDS, OPERATION_IDS, STANDARD_PLAYER_SETUP, DOUBLED_PLAYER_SETUP } from "../src/index.js";
+import { PARTIES, PARTY_IDS, PARTY_PRIORITIES, POLICIES, PROMISE_CATEGORIES, SCORING_CARDS, LAW_EFFECTS, policyScope, votesFor, DISTRICTS, DISTRICTS_BY_ID, REGION_IDS, BONUS_CARDS, OPERATION_IDS, STANDARD_PLAYER_SETUP, DOUBLED_PLAYER_SETUP } from "../src/index.js";
 
 describe("policy content", () => {
   it("contains every directed promise pair with opposite effects and balanced votes", () => {
@@ -12,6 +12,16 @@ describe("policy content", () => {
     }
     expect(LAW_EFFECTS).toHaveLength(15);
     for (const effect of LAW_EFFECTS) expect(POLICIES.filter(p => p.effect === effect.id)).toHaveLength(2);
+    expect(POLICIES.filter(policy => policyScope(policy) === "Party")).toHaveLength(26);
+    expect(POLICIES.filter(policy => policyScope(policy) === "Global")).toHaveLength(4);
+    for (const policy of POLICIES) {
+      expect(policy.forPartyIds).toHaveLength(3);
+      expect(policy.againstPartyIds).toHaveLength(3);
+      expect(new Set([...policy.forPartyIds, ...policy.againstPartyIds]).size).toBe(6);
+      expect(policy.forPartyIds.every(id => votesFor(id, policy))).toBe(true);
+      expect(policy.againstPartyIds.every(id => !votesFor(id, policy))).toBe(true);
+    }
+    for (const party of PARTY_IDS) expect(POLICIES.filter(policy => policy.forPartyIds[0] === party)).toHaveLength(5);
   });
   it("balances party rankings and unique secret cards without party matches", () => {
     expect(SCORING_CARDS).toHaveLength(12);
@@ -33,12 +43,16 @@ describe("policy content", () => {
     for (const party of PARTIES) expect(party.bonusCards).toHaveLength(3);
     expect(BONUS_CARDS.some(c => c.effect.includes("Court"))).toBe(false);
   });
-  it("preserves topology with Centre as a fourth capacity-three region", () => {
-    expect(REGION_IDS).toEqual(["urban", "mixed", "outlying", "centre"]);
+  it("uses continuous-land topology with Centre as a fourth capacity-three region", () => {
+    expect(REGION_IDS).toEqual(["urban", "industrial-belt", "outlying", "centre"]);
     expect(DISTRICTS_BY_ID["bellwether-centre"]).toMatchObject({regionId:"centre",capacity:3});
-    expect(DISTRICTS.reduce((n,d)=>n+d.capacity,0)).toBe(57);
-    expect(DISTRICTS.reduce((n,d)=>n+d.adjacentDistrictIds.length,0)).toBe(46);
-    expect(MAP_BRIDGES).toHaveLength(9);
+    expect(DISTRICTS.reduce((n,d)=>n+d.capacity,0)).toBe(51);
+    expect(DISTRICTS.reduce((n,d)=>n+d.adjacentDistrictIds.length,0)).toBe(56);
+    expect(DISTRICTS).toHaveLength(15);
+    expect(REGION_IDS.map(id => DISTRICTS.filter(d => d.regionId === id).reduce((sum, d) => sum + d.capacity, 0))).toEqual([18, 14, 16, 3]);
+    expect(DISTRICTS_BY_ID["grand-market"].adjacentDistrictIds).toContain("crown-road");
+    expect(DISTRICTS_BY_ID["grand-market"].adjacentDistrictIds).not.toContain("northgate");
+    expect(DISTRICTS_BY_ID["crown-road"].adjacentDistrictIds).not.toContain("meadow");
     for (const d of DISTRICTS) for (const neighbor of d.adjacentDistrictIds) expect(DISTRICTS_BY_ID[neighbor].adjacentDistrictIds).toContain(d.id);
   });
 });
