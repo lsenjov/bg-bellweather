@@ -28,7 +28,7 @@ import { projectGameState } from "../src/projection.js";
 
 const zeroRandom = { integer: () => 0 };
 
-describe("ruleset 27 setup", () => {
+describe("ruleset 28 setup", () => {
   for (const playerCount of [2, 3, 4, 5, 6]) {
     it(`creates the yearly Operation economy for ${playerCount} players`, () => {
       const state = initializeGame(configuration(playerCount), zeroRandom).state;
@@ -46,10 +46,41 @@ describe("ruleset 27 setup", () => {
     });
   }
 
+  it("starts every party in each outer region and leaves all other districts empty", () => {
+    for (const playerCount of [2, 3, 4, 5, 6]) {
+      const { state } = initializeGame(configuration(playerCount), zeroRandom);
+      for (const party of PARTY_IDS) {
+        expect(state.support.harbormouth[party]).toBe(1);
+        expect(state.support.northgate[party]).toBe(1);
+        expect(["coast", "vale", "marsh"].reduce(
+          (total, district) => total + (state.support[district][party] ?? 0), 0
+        )).toBe(1);
+      }
+      for (const district of ["coast", "vale", "marsh"]) {
+        expect(Object.values(state.support[district]).reduce((a, b) => a + b, 0)).toBe(2);
+      }
+      for (const district of DISTRICT_IDS) {
+        if (!["harbormouth", "northgate", "coast", "vale", "marsh"].includes(district)) {
+          expect(state.support[district]).toEqual({});
+        }
+      }
+    }
+  });
+
+  it("randomizes rural placements and preserves the initialized board through replay", () => {
+    const first = initializeGame(configuration(4), zeroRandom);
+    const second = initializeGame(configuration(4), { integer: (max) => max - 1 });
+    expect(first.state.support).not.toEqual(second.state.support);
+    for (const event of [first, second]) {
+      expect(replay([event]).support).toEqual(event.state.support);
+      expect(projectGameState(event.state, null).support).toEqual(event.state.support);
+    }
+  });
+
   it("rejects old saved rulesets", () => {
     const initialized = initializeGame(configuration(4), zeroRandom);
-    initialized.state.rulesetVersion = "18";
-    expect(() => replay([initialized])).toThrow("Only ruleset 27 is supported");
+    initialized.state.rulesetVersion = "27";
+    expect(() => replay([initialized])).toThrow("Only ruleset 28 is supported");
   });
 });
 
@@ -126,12 +157,12 @@ describe("Lobby actions", () => {
         bonusCardId: "honeycomb-waggle-route",
         choice: {
           operation: "organise",
-          sourceDistrictId: "grand-market",
-          destinationDistrictId: "bellwether-centre"
+          sourceDistrictId: "northgate",
+          destinationDistrictId: "canal-ward"
         }
       }
     });
-    expect(state.support["bellwether-centre"].honeycomb).toBe(2);
+    expect(state.support["canal-ward"].honeycomb).toBe(2);
     expect(lobbyPhase(state)).toMatchObject({
       activeSeatId: seatId,
       inProgressOperate: {
@@ -148,7 +179,7 @@ describe("Lobby actions", () => {
       play: {
         cardType: "operation",
         operation: "rally",
-        choice: { operation: "rally", districtId: "grand-market" }
+        choice: { operation: "rally", districtId: "northgate" }
       }
     })).toThrow("same party");
 
@@ -159,7 +190,7 @@ describe("Lobby actions", () => {
       play: {
         cardType: "operation",
         operation: "rally",
-        choice: { operation: "rally", districtId: "bellwether-centre" }
+        choice: { operation: "rally", districtId: "canal-ward" }
       }
     });
     expect(lobbyPhase(state).inProgressOperate).toMatchObject({
@@ -173,7 +204,7 @@ describe("Lobby actions", () => {
       play: {
         cardType: "operation",
         operation: "smear",
-        choice: { operation: "smear", districtId: "grand-market", rivalParty: "old-shell" }
+        choice: { operation: "smear", districtId: "northgate", rivalParty: "old-shell" }
       }
     });
     expect(state.parties.honeycomb?.operations).toMatchObject({
@@ -181,9 +212,9 @@ describe("Lobby actions", () => {
       rally: 1,
       smear: 1
     });
-    expect(state.support["bellwether-centre"].honeycomb).toBe(3);
+    expect(state.support["canal-ward"].honeycomb).toBe(3);
     expect(state.resolvedOperations).toHaveLength(3);
-    expect(before.support["bellwether-centre"].honeycomb).toBeUndefined();
+    expect(before.support["canal-ward"].honeycomb).toBeUndefined();
     expect(lobbyPhase(state).activeSeatId).not.toBe(seatId);
     expect(state.lobbyActions).toEqual([expect.objectContaining({
       type: "operate",
@@ -193,20 +224,20 @@ describe("Lobby actions", () => {
         {
           type: "move",
           partyId: "honeycomb",
-          sourceDistrictId: "grand-market",
-          destinationDistrictId: "bellwether-centre"
+          sourceDistrictId: "northgate",
+          destinationDistrictId: "canal-ward"
         },
         {
           type: "add",
           partyId: "honeycomb",
-          destinationDistrictId: "bellwether-centre"
+          destinationDistrictId: "canal-ward"
         },
         {
           type: "add",
           partyId: "honeycomb",
-          destinationDistrictId: "bellwether-centre"
+          destinationDistrictId: "canal-ward"
         },
-        { type: "remove", partyId: "old-shell", sourceDistrictId: "grand-market" }
+        { type: "remove", partyId: "old-shell", sourceDistrictId: "northgate" }
       ]
     })]);
     expect(projectGameState(state, null).lobbyActions.at(-1)?.supportChanges)
@@ -220,7 +251,7 @@ describe("Lobby actions", () => {
       type: "operate",
       seatId,
       partyId: "honeycomb",
-      play: organise("grand-market", "bellwether-centre")
+      play: organise("northgate", "canal-ward")
     });
     expect(() => act(state, {
       type: "operate",
@@ -231,12 +262,12 @@ describe("Lobby actions", () => {
         operation: "smear",
         choice: {
           operation: "smear",
-          districtId: "bellwether-centre",
+          districtId: "canal-ward",
           rivalParty: "honeycomb"
         }
       }
     })).toThrow("Smear requires rival Support");
-    expect(state.support["bellwether-centre"].honeycomb).toBe(1);
+    expect(state.support["canal-ward"].honeycomb).toBe(1);
     expect(state.seats[0]!.operations.organise).toBe(2);
     expect(state.parties.honeycomb?.operations.organise).toBe(1);
     expect(() => act(state, { type: "pass", seatId })).toThrow("Finish the current Operate");
@@ -430,7 +461,7 @@ describe("Lobby actions", () => {
       type: "operate",
       seatId: operator,
       partyId: "honeycomb",
-      play: organise("grand-market", "bellwether-centre")
+      play: organise("northgate", "canal-ward")
     });
     state = act(state, { type: "finish_operate", seatId: operator });
     const collector = lobbyPhase(state).activeSeatId;
@@ -480,7 +511,7 @@ describe("Lobby actions", () => {
       type: "operate",
       seatId: "seat-4",
       partyId: partyOpenedBy(state, "seat-4"),
-      play: organise("grand-market", "bellwether-centre")
+      play: organise("northgate", "canal-ward")
     });
     state = act(state, { type: "finish_operate", seatId: "seat-4" });
     state = act(state, {

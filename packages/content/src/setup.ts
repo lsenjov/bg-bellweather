@@ -33,12 +33,17 @@ export const DOUBLED_PLAYER_SETUP = deepFreeze({
 
 export const INITIAL_SUPPORT_DISTRICTS = deepFreeze([
   "harbormouth",
-  "grand-market",
-  "ironwood"
+  "northgate"
+] as const satisfies readonly DistrictId[]);
+
+export const INITIAL_OUTLYING_SUPPORT_DISTRICTS = deepFreeze([
+  "coast",
+  "vale",
+  "marsh"
 ] as const satisfies readonly DistrictId[]);
 
 export const SUPPORT_SUPPLY = "unlimited" as const;
 export const ELECTION_YEARS = deepFreeze([2, 4, 6] as const);
 export type ElectionYear = (typeof ELECTION_YEARS)[number];
 export const FINAL_ELECTION_YEAR = ELECTION_YEARS[2];
-export const RULESET_VERSION = "27" as const;
+export const RULESET_VERSION = "28" as const;

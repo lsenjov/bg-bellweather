@@ -9,6 +9,7 @@ import {
   FINAL_ELECTION_YEAR,
   FIRM_IDS,
   INITIAL_SUPPORT_DISTRICTS,
+  INITIAL_OUTLYING_SUPPORT_DISTRICTS,
   OPERATION_IDS,
   PARTY_IDS,
   RULESET_VERSION,
@@ -85,6 +86,12 @@ export function initializeGame(
   ) as GameState["support"];
   for (const districtId of INITIAL_SUPPORT_DISTRICTS) {
     for (const partyId of PARTY_IDS) {
+      support[districtId][partyId] = 1;
+    }
+  }
+  const outlyingParties = shuffle([...PARTY_IDS], random);
+  for (const [index, districtId] of INITIAL_OUTLYING_SUPPORT_DISTRICTS.entries()) {
+    for (const partyId of outlyingParties.slice(index * 2, index * 2 + 2)) {
       support[districtId][partyId] = 1;
     }
   }

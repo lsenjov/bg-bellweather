@@ -180,7 +180,7 @@ describe("yearly browser play surface", () => {
     render(<DistrictMap view={view} />);
     expect(screen.getAllByRole("article")).toHaveLength(15);
     expect(screen.getByLabelText("Bellwether Centre: 0 of 3 Support spaces occupied")).toBeTruthy();
-    expect(screen.getByLabelText("Grand Market: 6 of 6 Support spaces occupied")).toBeTruthy();
+    expect(screen.getByLabelText("Harbormouth: 6 of 6 Support spaces occupied")).toBeTruthy();
   });
 
   it("renders every latest Support change as its own accessible map glyph", async () => {
@@ -396,13 +396,13 @@ describe("yearly browser play surface", () => {
       <GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={onCommand} />
     );
     if (sourceInput === "map") {
-      fireEvent.click(screen.getByLabelText("Grand Market: 6 of 6 Support spaces occupied"));
+      fireEvent.click(screen.getByLabelText("Northgate: 6 of 6 Support spaces occupied"));
     } else {
-      fireEvent.change(screen.getByLabelText("Source"), { target: { value: "grand-market" } });
+      fireEvent.change(screen.getByLabelText("Source"), { target: { value: "northgate" } });
     }
     expect(screen.getByText("Select the Organise destination district on the map.")).toBeTruthy();
     expect(screen.getByLabelText("Destination").closest(".target-field")?.classList.contains("target-field-active")).toBe(true);
-    fireEvent.click(screen.getByLabelText("Bellwether Centre: 0 of 3 Support spaces occupied"));
+    fireEvent.click(screen.getByLabelText("Canal Ward: 0 of 4 Support spaces occupied"));
     expect(screen.getByText("Ready to resolve this card.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Resolve organise" }));
     await waitFor(() => expect(onCommand).toHaveBeenCalledWith({
@@ -415,8 +415,8 @@ describe("yearly browser play surface", () => {
           operation: "organise",
           choice: {
             operation: "organise",
-            sourceDistrictId: "grand-market",
-            destinationDistrictId: "bellwether-centre"
+            sourceDistrictId: "northgate",
+            destinationDistrictId: "canal-ward"
           }
         }
       }
@@ -428,7 +428,7 @@ describe("yearly browser play surface", () => {
       initializeGame(configuration(2), random).state,
       ["night-parliament", "old-shell", "foxglove", "riverworks"]
     );
-    state.support["northgate"]["night-parliament"] = 1;
+    state.support["northgate"] = { "night-parliament": 1 };
     state.bonusCards["night-parliament-quiet-hours"] = {
       zone: "hand",
       seatId: "seat-1"
@@ -449,7 +449,7 @@ describe("yearly browser play surface", () => {
     const quietHoursField = screen.getByLabelText("Quiet Hours district").parentElement!;
     fireEvent.click(within(quietHoursField).getByRole("button", { name: "Select on map" }));
     expect(
-      screen.getByLabelText("Grand Market: 6 of 6 Support spaces occupied").getAttribute("aria-disabled")
+      screen.getByLabelText("Harbormouth: 6 of 6 Support spaces occupied").getAttribute("aria-disabled")
     ).toBe("true");
     fireEvent.click(screen.getByLabelText("Bellwether Centre: 0 of 3 Support spaces occupied"));
 
@@ -484,13 +484,13 @@ describe("yearly browser play surface", () => {
     render(<GameDesk view={view} ownSeat={view.seats[0]} ownSeatId="seat-1" spectator={false} busy={false} onCommand={onCommand}/>);
     fireEvent.click(screen.getByRole("button",{name:/Waggle Route Bonus/}));
     fireEvent.focus(screen.getByLabelText("Destination"));
-    const district = screen.getByLabelText("Northgate: 0 of 6 Support spaces occupied");
+    const district = screen.getByLabelText("Grand Market: 0 of 6 Support spaces occupied");
     expect(district.getAttribute("aria-disabled")).not.toBe("true");
     fireEvent.click(district);
-    fireEvent.change(screen.getByLabelText("Fresh Start: second placement"),{target:{value:"northgate"}});
+    fireEvent.change(screen.getByLabelText("Fresh Start: second placement"),{target:{value:"grand-market"}});
     fireEvent.click(screen.getByRole("button",{name:"Move Bonus extra earlier"}));
     fireEvent.click(screen.getByRole("button",{name:"Resolve Waggle Route"}));
-    expect(onCommand).toHaveBeenCalledWith(expect.objectContaining({action:expect.objectContaining({play:expect.objectContaining({choice:expect.objectContaining({destinationDistrictId:"northgate",freshStartDistrictId:"northgate",followUpOrder:["bonus",6]})})})}));
+    expect(onCommand).toHaveBeenCalledWith(expect.objectContaining({action:expect.objectContaining({play:expect.objectContaining({choice:expect.objectContaining({destinationDistrictId:"grand-market",freshStartDistrictId:"grand-market",followUpOrder:["bonus",6]})})})}));
   });
 
   it("limits Political Exchange arrivals and submits two chosen swaps", () => {
@@ -716,8 +716,8 @@ describe("yearly browser play surface", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: /^smear/ }));
-    fireEvent.click(screen.getByRole("button", { name: "Old Shell Support in Grand Market: 1" }));
-    expect((screen.getByLabelText("District") as HTMLSelectElement).value).toBe("grand-market");
+    fireEvent.click(screen.getByRole("button", { name: "Old Shell Support in Northgate: 1" }));
+    expect((screen.getByLabelText("District") as HTMLSelectElement).value).toBe("northgate");
     expect((screen.getByLabelText("Rival party") as HTMLSelectElement).value).toBe("old-shell");
   });
 
@@ -928,8 +928,8 @@ function organiseAction(seatId: string): GameAction {
       operation: "organise",
       choice: {
         operation: "organise",
-        sourceDistrictId: "grand-market",
-        destinationDistrictId: "bellwether-centre"
+        sourceDistrictId: "northgate",
+        destinationDistrictId: "canal-ward"
       }
     }
   };

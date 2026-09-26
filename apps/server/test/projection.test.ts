@@ -55,8 +55,8 @@ describe("yearly game projections", () => {
         operation: "organise",
         choice: {
           operation: "organise",
-          sourceDistrictId: "grand-market",
-          destinationDistrictId: "bellwether-centre"
+          sourceDistrictId: "northgate",
+          destinationDistrictId: "canal-ward"
         }
       }
     });
