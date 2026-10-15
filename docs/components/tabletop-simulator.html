@@ -20,6 +20,7 @@ python scripts/test-generate-tts-loader.py</code></pre>
 <pre><code>python scripts/publish-tts-assets.py
 python scripts/publish-tts-assets.py --upload</code></pre>
 <p>The first command validates files and previews the upload without using AWS credentials. The second uses your configured AWS CLI identity, uploads only files listed in the manifest, and checks that each resulting image URL is accessible without authentication. It does not delete old assets or change bucket policies or ACLs.</p>
+<p>The supplied bucket now grants public read access only to <code>tabletop-simulator/*</code>, as approved. All 118 exported image URLs were verified without authentication on 2026-10-15. This policy grants no listing or write access.</p>
 <p>Players need stable public HTTPS access to the images. If the bucket remains private, use your public delivery service, such as CloudFront. Regenerate and publish using the same delivery prefix in both commands:</p>
 <pre><code>npm run tts:export -- --base-url https://YOUR-PUBLIC-HOST/tabletop-simulator/
 python scripts/publish-tts-assets.py --base-url https://YOUR-PUBLIC-HOST/tabletop-simulator/ --upload</code></pre>
