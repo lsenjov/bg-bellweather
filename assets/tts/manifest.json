@@ -1,0 +1,2437 @@
+{
+  "schemaVersion": 1,
+  "baseUrl": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/",
+  "bucket": "lsenjov-boardgame-bellwether",
+  "prefix": "tabletop-simulator/",
+  "files": [
+    {
+      "path": "images/common-faces-a84e899be8a2ab33.png",
+      "sha256": "a84e899be8a2ab3391bfec7fa55f83e77e5ff6b6d91741ca8449c7ecb6083a4d",
+      "bytes": 2800940,
+      "contentType": "image/png",
+      "width": 3200,
+      "height": 2928
+    },
+    {
+      "path": "images/common-back-1add4688f0450b21.png",
+      "sha256": "1add4688f0450b21592361a8db71deda05b47473f6e8473e21ee145d1f06d412",
+      "bytes": 5865,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/party-honeycomb-faces-c32fe546c6b7356c.png",
+      "sha256": "c32fe546c6b7356c46a07e4643789bf21919e62a2905452e60c7b5b3be6efe83",
+      "bytes": 190055,
+      "contentType": "image/png",
+      "width": 960,
+      "height": 976
+    },
+    {
+      "path": "images/party-honeycomb-back-07a8dfca8fbf27bd.png",
+      "sha256": "07a8dfca8fbf27bda4947973aefab72e323f493658cd59ae3ac6c9875e5b428f",
+      "bytes": 10264,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/party-old-shell-faces-8a50e512989139d4.png",
+      "sha256": "8a50e512989139d4949449bb2889990b0f4011d0343de39f7e64e4bf133d5325",
+      "bytes": 202887,
+      "contentType": "image/png",
+      "width": 960,
+      "height": 976
+    },
+    {
+      "path": "images/party-old-shell-back-c1e7c04855fa7744.png",
+      "sha256": "c1e7c04855fa7744c2ea276ad775b46512415938243fb2053164b37c2ea70749",
+      "bytes": 13515,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/party-foxglove-faces-8c7f4ca2fc96fc0c.png",
+      "sha256": "8c7f4ca2fc96fc0cf2815de072989aa1e7fbb071886bc3ece438850521a93d04",
+      "bytes": 186897,
+      "contentType": "image/png",
+      "width": 960,
+      "height": 976
+    },
+    {
+      "path": "images/party-foxglove-back-810f1622ad321719.png",
+      "sha256": "810f1622ad321719bd9ccd948e944a03c8be3acef476a7020e6008358152801f",
+      "bytes": 15041,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/party-riverworks-faces-85430d97e4d337fd.png",
+      "sha256": "85430d97e4d337fd255c611f3562867cd93c25f2c889ba01af6fafe03260a357",
+      "bytes": 195295,
+      "contentType": "image/png",
+      "width": 960,
+      "height": 976
+    },
+    {
+      "path": "images/party-riverworks-back-ed9065826187b0c0.png",
+      "sha256": "ed9065826187b0c0a66f46a594a94b3f4dc897910ff8e03b000d4391aab06c59",
+      "bytes": 10817,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/party-many-wings-faces-f30ac0d1f4835c02.png",
+      "sha256": "f30ac0d1f4835c026a475299f5bcaf2fdc07f67b4138cfa37a5ca06a307743f8",
+      "bytes": 225650,
+      "contentType": "image/png",
+      "width": 960,
+      "height": 976
+    },
+    {
+      "path": "images/party-many-wings-back-12bf2290816a82ac.png",
+      "sha256": "12bf2290816a82ac41568f63b716e151937e3bc05a3e90d25b8b931caa39d9df",
+      "bytes": 10188,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/party-night-parliament-faces-61c1755aba997bc5.png",
+      "sha256": "61c1755aba997bc5c4345a5234091d3f1cec93eecd3bfbfc32421358a977a15e",
+      "bytes": 195753,
+      "contentType": "image/png",
+      "width": 960,
+      "height": 976
+    },
+    {
+      "path": "images/party-night-parliament-back-eac57bad6bd2d85d.png",
+      "sha256": "eac57bad6bd2d85d7f6d66c7ddf1e0de54fb4cd672216d8e69340ebff0853042",
+      "bytes": 16289,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/firm-1-faces-73c2a92a4addf03a.png",
+      "sha256": "73c2a92a4addf03a07a4a5b0e3fccf7ab94bdc0a2e9f74ff6a8d7c3614415e55",
+      "bytes": 199061,
+      "contentType": "image/png",
+      "width": 960,
+      "height": 976
+    },
+    {
+      "path": "images/firm-1-back-0c428a88f2a4b36c.png",
+      "sha256": "0c428a88f2a4b36cfa029b9f7dd20f9c3439b8d95d202196ba39f9064346c291",
+      "bytes": 16983,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/firm-2-faces-a73e891f2e84166b.png",
+      "sha256": "a73e891f2e84166bd297d1683c811eeb6329fdd309d57ff7bdf55ba917df58b1",
+      "bytes": 300229,
+      "contentType": "image/png",
+      "width": 960,
+      "height": 976
+    },
+    {
+      "path": "images/firm-2-back-2b31143ccb28e941.png",
+      "sha256": "2b31143ccb28e94104ec42370a03550d4eefd58e133211e1b2a41122aeb3fd95",
+      "bytes": 10679,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/firm-3-faces-fdb6867c79e31ec0.png",
+      "sha256": "fdb6867c79e31ec03ab1b01a852585634c7fcff84ac27c86886fe53a22b420d9",
+      "bytes": 1184917,
+      "contentType": "image/png",
+      "width": 1600,
+      "height": 1952
+    },
+    {
+      "path": "images/firm-3-back-0c9d90f1767e3774.png",
+      "sha256": "0c9d90f1767e3774f510b9c4cd960d590a54442d4fd579c9741e839546936efa",
+      "bytes": 22867,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/firm-4-faces-0427c8f954b1f16f.png",
+      "sha256": "0427c8f954b1f16f204ff4ef4fcaf2f1dd2ec268ea41a5d74b1c29b64bd71564",
+      "bytes": 154040,
+      "contentType": "image/png",
+      "width": 960,
+      "height": 976
+    },
+    {
+      "path": "images/firm-4-back-641b6944fa4e6b41.png",
+      "sha256": "641b6944fa4e6b41be3b658d4010de03789447a64dc60f564e3e93ce1218df3e",
+      "bytes": 19962,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/firm-5-faces-715fac0f742407e2.png",
+      "sha256": "715fac0f742407e2f314fdd5bffafb8f5b78c467fe84293d2c4bc1a421a6ec2a",
+      "bytes": 238008,
+      "contentType": "image/png",
+      "width": 960,
+      "height": 976
+    },
+    {
+      "path": "images/firm-5-back-c6c13ba6eaed0d6b.png",
+      "sha256": "c6c13ba6eaed0d6b8bdd6967fe78050d2452c0da6c7406e542bfd914b07b4ec1",
+      "bytes": 17681,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/firm-6-faces-ba1c758ed2380d9f.png",
+      "sha256": "ba1c758ed2380d9ff7500b2762634c61319b946fbd869fd96f641d1573886fa9",
+      "bytes": 125737,
+      "contentType": "image/png",
+      "width": 960,
+      "height": 488
+    },
+    {
+      "path": "images/firm-6-back-1e16afd9a33a9c88.png",
+      "sha256": "1e16afd9a33a9c886203e2c212d738763ef72061ce417c21377b3cc19984dc17",
+      "bytes": 16348,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/hecate-reward-faces-59c0b3e9efe9c026.png",
+      "sha256": "59c0b3e9efe9c026769c576a4ef72f7671916e08d752cc0668d1c5011526c211",
+      "bytes": 414469,
+      "contentType": "image/png",
+      "width": 1280,
+      "height": 976
+    },
+    {
+      "path": "images/hecate-reward-back-9d450b71b2a950d1.png",
+      "sha256": "9d450b71b2a950d1d854bbd357d1c03365c3814bfafdfeaea9c41f2773d897fa",
+      "bytes": 23075,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/policies-faces-8df242fedda7b0e6.png",
+      "sha256": "8df242fedda7b0e67e3f714cd4710c7abbfb443f3b15a431821983f1c5a8351c",
+      "bytes": 2455921,
+      "contentType": "image/png",
+      "width": 2646,
+      "height": 2640
+    },
+    {
+      "path": "images/policies-back-1ad7e7aabf2673bb.png",
+      "sha256": "1ad7e7aabf2673bb5bc89bc8881c5108f901c591545c01f7f43758437bc25ce8",
+      "bytes": 11337,
+      "contentType": "image/png",
+      "width": 378,
+      "height": 528
+    },
+    {
+      "path": "images/priorities-faces-f0f4f737400667b8.png",
+      "sha256": "f0f4f737400667b8e3dacf6e2af10d6d53f5c4ed03ff8b5fd680510bc6067c0e",
+      "bytes": 637577,
+      "contentType": "image/png",
+      "width": 1890,
+      "height": 1728
+    },
+    {
+      "path": "images/priorities-back-d1ba497b36582234.png",
+      "sha256": "d1ba497b36582234efa020ebef29e4c247ce0cc65585b9e04377dc630ddd1024",
+      "bytes": 15118,
+      "contentType": "image/png",
+      "width": 378,
+      "height": 576
+    },
+    {
+      "path": "images/party-board-1-8192e695e75d8d1d.png",
+      "sha256": "8192e695e75d8d1d930a3c529955d66c9a1ac65bc4161e167acdbc79f0ccccf9",
+      "bytes": 192917,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 627
+    },
+    {
+      "path": "images/party-board-2-4bc3fd267a82292f.png",
+      "sha256": "4bc3fd267a82292f90a988f2f33b4c9e5b60baa5e329fcfe15781ca45a69a666",
+      "bytes": 208135,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 627
+    },
+    {
+      "path": "images/party-board-3-84815e4226e11be9.png",
+      "sha256": "84815e4226e11be93bc88e3b50543317d0da403cb51cc10ccc88cc54445dfb44",
+      "bytes": 197110,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 627
+    },
+    {
+      "path": "images/party-board-4-45b9674e45aa4c26.png",
+      "sha256": "45b9674e45aa4c266ae982112fc934806a5e7941005609330599f4a2d520116a",
+      "bytes": 197521,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 627
+    },
+    {
+      "path": "images/party-board-5-a9c6365ebd24f8af.png",
+      "sha256": "a9c6365ebd24f8af3438b44b812e5f076bc41d7b7cae5e18bc01348116a3b426",
+      "bytes": 195697,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 627
+    },
+    {
+      "path": "images/party-board-6-56e11e4d8a3fc9c3.png",
+      "sha256": "56e11e4d8a3fc9c373b7585179a5b2b0fbed136407108a0cf2bcd823fc7e1553",
+      "bytes": 189865,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 627
+    },
+    {
+      "path": "images/firm-reference-1-c45083d1a4324be9.png",
+      "sha256": "c45083d1a4324be92cbe299f5515f806fd29e09224eff2ea9e4b5b8855b1d2e6",
+      "bytes": 539946,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 1269
+    },
+    {
+      "path": "images/firm-reference-2-8f3e64f7a4206cb0.png",
+      "sha256": "8f3e64f7a4206cb01d85a4a663a030cabf1a6662b2bc12334b6c1a695c4aeeef",
+      "bytes": 545438,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 1269
+    },
+    {
+      "path": "images/firm-reference-3-4715e26ca5b86a1b.png",
+      "sha256": "4715e26ca5b86a1b276a786425b8a4eb4c7c016aff4bb3bcfba410eb9eba3b1c",
+      "bytes": 648670,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 1269
+    },
+    {
+      "path": "images/firm-reference-4-49b4615775666f8f.png",
+      "sha256": "49b4615775666f8ffaa26f328ea0567161f2aace5d52bc4e432d84fd50fd22c2",
+      "bytes": 465376,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 1269
+    },
+    {
+      "path": "images/firm-reference-5-0eaa03acf6dfbf3b.png",
+      "sha256": "0eaa03acf6dfbf3b26598bf3148f5a3d1c8beb94cddc472adddd284c644e1da5",
+      "bytes": 493974,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 1269
+    },
+    {
+      "path": "images/firm-reference-6-e285e7966ace038f.png",
+      "sha256": "e285e7966ace038ff0ce6147b1413c7029e63439ffb912cebc5f266ed7c135ff",
+      "bytes": 559221,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 1269
+    },
+    {
+      "path": "images/shared-reference-1-f3ae6d89a6984886.png",
+      "sha256": "f3ae6d89a698488633153f59ae909134accdef0fa1081dd48858ded0095436b7",
+      "bytes": 700192,
+      "contentType": "image/png",
+      "width": 1200,
+      "height": 1703
+    },
+    {
+      "path": "images/shared-reference-2-6f73cfbce9c21854.png",
+      "sha256": "6f73cfbce9c21854bb748564ea9022a38bfa5f8154fbec6528ba445e94e17e79",
+      "bytes": 848497,
+      "contentType": "image/png",
+      "width": 1200,
+      "height": 1703
+    },
+    {
+      "path": "images/opening-marker-1-b851df1fdb1c3c80.png",
+      "sha256": "b851df1fdb1c3c8005e711a37ff87f239e9848b45e93223e9cd5faa635e496e1",
+      "bytes": 37042,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/opening-marker-3-7152425a34117b97.png",
+      "sha256": "7152425a34117b97f80b1f5e7eceeed942be8fe26b2734d16bb35353d2a3f5c4",
+      "bytes": 36469,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/opening-marker-5-27663786367bd241.png",
+      "sha256": "27663786367bd241bfcd207e8e94909116dffedd5b2a18289efa566f7a5d03d6",
+      "bytes": 42746,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/opening-marker-7-9f0275c7ccfdc3a7.png",
+      "sha256": "9f0275c7ccfdc3a70c72f4c6f80fc7f58851d5155519137e0acd717147e50144",
+      "bytes": 37089,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/opening-marker-9-516bfc8d6bc50d6f.png",
+      "sha256": "516bfc8d6bc50d6fb8cf701a89181350dfa21ce3b65c0beb580e79f03eeca336",
+      "bytes": 40097,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/opening-marker-11-f6bdacf124e506dd.png",
+      "sha256": "f6bdacf124e506dd3163bae98efdedb30fd111d44b3d66a45e331a5f391fa1a0",
+      "bytes": 40045,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 488
+    },
+    {
+      "path": "images/small-token-1-d7ee873cbfffb613.png",
+      "sha256": "d7ee873cbfffb613136aff18deb246c84bb3124596c0b17f28580dfad7bcc1b8",
+      "bytes": 24660,
+      "contentType": "image/png",
+      "width": 256,
+      "height": 256
+    },
+    {
+      "path": "images/small-token-7-bfc4c4c8cc196b3e.png",
+      "sha256": "bfc4c4c8cc196b3e2dffa231662a05db12189a411f2c7eb5905d1d9c2f55a3f9",
+      "bytes": 10598,
+      "contentType": "image/png",
+      "width": 256,
+      "height": 256
+    },
+    {
+      "path": "images/small-token-13-b5b0a93ac9d99a6e.png",
+      "sha256": "b5b0a93ac9d99a6ec451c577f8b1e591512a07fdd8236e7b438e064dbfb9435d",
+      "bytes": 20370,
+      "contentType": "image/png",
+      "width": 256,
+      "height": 256
+    },
+    {
+      "path": "images/player-folio-1-329a95408f42cbe1.png",
+      "sha256": "329a95408f42cbe1cc20182179925bc156e8d550854174de1ead054d2e30a536",
+      "bytes": 216725,
+      "contentType": "image/png",
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "path": "images/player-folio-2-883f349ddcbdfaa6.png",
+      "sha256": "883f349ddcbdfaa6a1b9c0db958642477ba4df4882cd08883f41e0362b6645b0",
+      "bytes": 135657,
+      "contentType": "image/png",
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "path": "images/player-folio-3-f710303a8b5ab3aa.png",
+      "sha256": "f710303a8b5ab3aa38275087e64b8fbbd0aa8cbe40b1e09d5abb67ea1a25df66",
+      "bytes": 239384,
+      "contentType": "image/png",
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "path": "images/player-folio-4-c88a8be718c5fed2.png",
+      "sha256": "c88a8be718c5fed247d3ead051dca10bf827a320e360a348d59d05fcfe58db0e",
+      "bytes": 138870,
+      "contentType": "image/png",
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "path": "images/player-folio-5-7deffd59e9bf12ea.png",
+      "sha256": "7deffd59e9bf12ead405e36793544ab817aa130394fc3bf89914484caef86571",
+      "bytes": 240496,
+      "contentType": "image/png",
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "path": "images/player-folio-6-8d3c5e18835e522f.png",
+      "sha256": "8d3c5e18835e522f2cc7f6f54ecaa9dcf6a830c03a7e0fc824a027e64b76852f",
+      "bytes": 142575,
+      "contentType": "image/png",
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "path": "images/player-folio-7-e10d94d4c561460a.png",
+      "sha256": "e10d94d4c561460a7d4f4b03d609a6c29040938e551ce55cd2ac8c13018d3f21",
+      "bytes": 223961,
+      "contentType": "image/png",
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "path": "images/player-folio-8-31dd12008f55fa90.png",
+      "sha256": "31dd12008f55fa903ea4eced9c19b289797560d41af654c3624d8dc0b4c73fa6",
+      "bytes": 130773,
+      "contentType": "image/png",
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "path": "images/player-folio-9-a402d14d131abd97.png",
+      "sha256": "a402d14d131abd978b9bdd6890a33f0eb9af876610d4f7d87cb5b92082c5ae74",
+      "bytes": 233203,
+      "contentType": "image/png",
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "path": "images/player-folio-10-fe6a2f8e76573d2b.png",
+      "sha256": "fe6a2f8e76573d2bbc3767557e76cd5ec436f75328e6831f6433ef1f9b36d23b",
+      "bytes": 139014,
+      "contentType": "image/png",
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "path": "images/player-folio-11-5321e3aa77309a60.png",
+      "sha256": "5321e3aa77309a60f0baf6544ccff4f1e0f0571932c819fafcbd0472a8e7b3e1",
+      "bytes": 217180,
+      "contentType": "image/png",
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "path": "images/player-folio-12-7b289baee7958b46.png",
+      "sha256": "7b289baee7958b4657c97bb07e908568d202baa9fb2a95860f983c425a206cb7",
+      "bytes": 135932,
+      "contentType": "image/png",
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "path": "images/score-ledger-1-4e5c9bc7e8650d5c.png",
+      "sha256": "4e5c9bc7e8650d5caea4a2d15c13101d661eb68f18ec7f002d84965ec7e5346d",
+      "bytes": 22522,
+      "contentType": "image/png",
+      "width": 1800,
+      "height": 423
+    },
+    {
+      "path": "images/reminder-vote-front-2ad52b7b3e98d1cc.png",
+      "sha256": "2ad52b7b3e98d1cc17ab03e5dbd809da1fa0dfbc8ffa348d06599b3bddbf1185",
+      "bytes": 11027,
+      "contentType": "image/png",
+      "width": 256,
+      "height": 256
+    },
+    {
+      "path": "images/reminder-vote-back-8ea2bfedd973a470.png",
+      "sha256": "8ea2bfedd973a470cf7b20b64d7a302120f4075dae3b340a88822ff19cf95566",
+      "bytes": 13510,
+      "contentType": "image/png",
+      "width": 256,
+      "height": 256
+    },
+    {
+      "path": "images/reminder-range-front-89a41940238b489e.png",
+      "sha256": "89a41940238b489e65c1cebe09023de3b90218c58314d43aa2684f11e90ad941",
+      "bytes": 7587,
+      "contentType": "image/png",
+      "width": 256,
+      "height": 256
+    },
+    {
+      "path": "images/reminder-range-back-6050b7ea28409c57.png",
+      "sha256": "6050b7ea28409c57a6d97efa8886faed45a8ce27e33083275e5bf24ce0452593",
+      "bytes": 7229,
+      "contentType": "image/png",
+      "width": 256,
+      "height": 256
+    },
+    {
+      "path": "images/early-bird-0de99c4e4b383203.png",
+      "sha256": "0de99c4e4b383203b6d466da7491f41b903342948ed1d02d77ec7eb4364bfa24",
+      "bytes": 9596,
+      "contentType": "image/png",
+      "width": 256,
+      "height": 256
+    },
+    {
+      "path": "images/year-2fa708ba31973de9.png",
+      "sha256": "2fa708ba31973de9f2c8967a1da6bbbdfdebb13cad4697dc69da50980e08516d",
+      "bytes": 6671,
+      "contentType": "image/png",
+      "width": 256,
+      "height": 256
+    },
+    {
+      "path": "images/agent-1-0ec8e5f5f072690e.png",
+      "sha256": "0ec8e5f5f072690e924365b13fe5e851087b89cf99c3ecf42f071ffc4e8d1626",
+      "bytes": 16101,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 320
+    },
+    {
+      "path": "images/agent-2-c97f60d90d06854a.png",
+      "sha256": "c97f60d90d06854a390d7c2a6858430846db5ca903622d011404328aafdcb3ba",
+      "bytes": 26172,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 320
+    },
+    {
+      "path": "images/agent-4-a9b6c285fc76cf21.png",
+      "sha256": "a9b6c285fc76cf21d60c9e56917e70218ba81650eb01d44ed8fbf1ce09437eda",
+      "bytes": 23477,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 320
+    },
+    {
+      "path": "images/agent-7-e9fcb4884eb61ea9.png",
+      "sha256": "e9fcb4884eb61ea9ecdc459afd1ff2a2cf5fb3dcaa06a32d2b5e56cc3a146bb8",
+      "bytes": 18305,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 320
+    },
+    {
+      "path": "images/agent-8-da0698fbaf0c3fae.png",
+      "sha256": "da0698fbaf0c3fae1d68a26b8fcdc5538a48d59887fe9bf52830c8f5c715db4f",
+      "bytes": 19597,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 320
+    },
+    {
+      "path": "images/agent-9-4b6aefb6cf4b61fe.png",
+      "sha256": "4b6aefb6cf4b61fed10b04a3bc45846ec365a7c9e576bbfcabc58c8ef82904e5",
+      "bytes": 21513,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 320
+    },
+    {
+      "path": "images/agent-10-cac2976bf511a866.png",
+      "sha256": "cac2976bf511a866deb410f24a2be3083f0d08697d3539ba487bbd5662671ba6",
+      "bytes": 20631,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 320
+    },
+    {
+      "path": "images/agent-11-13dc0674c0bf1555.png",
+      "sha256": "13dc0674c0bf155592059a360aaeae5b0a4e55d044089617cbb1bd6b7c7d7f03",
+      "bytes": 20064,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 320
+    },
+    {
+      "path": "images/agent-12-059b7aeafc5348fa.png",
+      "sha256": "059b7aeafc5348fa15a2b37b527a479b73e28b9e658e4164ef6b951a8294e5a8",
+      "bytes": 23508,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 320
+    },
+    {
+      "path": "images/agent-16-99cc9507b469ce00.png",
+      "sha256": "99cc9507b469ce0070df6725e61dac2aaca3085c2c115bdf623ba3bae01a3ba3",
+      "bytes": 21341,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 320
+    },
+    {
+      "path": "images/agent-16-asleep-cb0d4cbb9420abe8.png",
+      "sha256": "cb0d4cbb9420abe822e5f5868579088f93a5a2a263924cf9b561f8527aec2554",
+      "bytes": 21157,
+      "contentType": "image/png",
+      "width": 320,
+      "height": 320
+    },
+    {
+      "path": "images/district-map-9735a3d1c37bd84c.png",
+      "sha256": "9735a3d1c37bd84cdad7428880709bb330038d28c9af3a60bb234316193c5a72",
+      "bytes": 654722,
+      "contentType": "image/png",
+      "width": 4096,
+      "height": 2897
+    }
+  ],
+  "decks": [
+    {
+      "id": "common",
+      "name": "common",
+      "category": "operation-cards",
+      "count": 54,
+      "face": {
+        "path": "images/common-faces-a84e899be8a2ab33.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/common-faces-a84e899be8a2ab33.png"
+      },
+      "back": {
+        "path": "images/common-back-1add4688f0450b21.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/common-back-1add4688f0450b21.png"
+      },
+      "width": 10,
+      "height": 6,
+      "number": 54,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "operation-cards-1",
+          "name": "Organise"
+        },
+        {
+          "index": 1,
+          "id": "operation-cards-2",
+          "name": "Organise"
+        },
+        {
+          "index": 2,
+          "id": "operation-cards-3",
+          "name": "Organise"
+        },
+        {
+          "index": 3,
+          "id": "operation-cards-4",
+          "name": "Organise"
+        },
+        {
+          "index": 4,
+          "id": "operation-cards-5",
+          "name": "Organise"
+        },
+        {
+          "index": 5,
+          "id": "operation-cards-6",
+          "name": "Organise"
+        },
+        {
+          "index": 6,
+          "id": "operation-cards-7",
+          "name": "Organise"
+        },
+        {
+          "index": 7,
+          "id": "operation-cards-8",
+          "name": "Organise"
+        },
+        {
+          "index": 8,
+          "id": "operation-cards-9",
+          "name": "Organise"
+        },
+        {
+          "index": 9,
+          "id": "operation-cards-10",
+          "name": "Organise"
+        },
+        {
+          "index": 10,
+          "id": "operation-cards-11",
+          "name": "Organise"
+        },
+        {
+          "index": 11,
+          "id": "operation-cards-12",
+          "name": "Organise"
+        },
+        {
+          "index": 12,
+          "id": "operation-cards-13",
+          "name": "Organise"
+        },
+        {
+          "index": 13,
+          "id": "operation-cards-14",
+          "name": "Organise"
+        },
+        {
+          "index": 14,
+          "id": "operation-cards-15",
+          "name": "Organise"
+        },
+        {
+          "index": 15,
+          "id": "operation-cards-16",
+          "name": "Organise"
+        },
+        {
+          "index": 16,
+          "id": "operation-cards-17",
+          "name": "Organise"
+        },
+        {
+          "index": 17,
+          "id": "operation-cards-18",
+          "name": "Organise"
+        },
+        {
+          "index": 18,
+          "id": "operation-cards-19",
+          "name": "Rally"
+        },
+        {
+          "index": 19,
+          "id": "operation-cards-20",
+          "name": "Rally"
+        },
+        {
+          "index": 20,
+          "id": "operation-cards-21",
+          "name": "Rally"
+        },
+        {
+          "index": 21,
+          "id": "operation-cards-22",
+          "name": "Rally"
+        },
+        {
+          "index": 22,
+          "id": "operation-cards-23",
+          "name": "Rally"
+        },
+        {
+          "index": 23,
+          "id": "operation-cards-24",
+          "name": "Rally"
+        },
+        {
+          "index": 24,
+          "id": "operation-cards-25",
+          "name": "Rally"
+        },
+        {
+          "index": 25,
+          "id": "operation-cards-26",
+          "name": "Rally"
+        },
+        {
+          "index": 26,
+          "id": "operation-cards-27",
+          "name": "Rally"
+        },
+        {
+          "index": 27,
+          "id": "operation-cards-28",
+          "name": "Rally"
+        },
+        {
+          "index": 28,
+          "id": "operation-cards-29",
+          "name": "Rally"
+        },
+        {
+          "index": 29,
+          "id": "operation-cards-30",
+          "name": "Rally"
+        },
+        {
+          "index": 30,
+          "id": "operation-cards-31",
+          "name": "Rally"
+        },
+        {
+          "index": 31,
+          "id": "operation-cards-32",
+          "name": "Rally"
+        },
+        {
+          "index": 32,
+          "id": "operation-cards-33",
+          "name": "Rally"
+        },
+        {
+          "index": 33,
+          "id": "operation-cards-34",
+          "name": "Rally"
+        },
+        {
+          "index": 34,
+          "id": "operation-cards-35",
+          "name": "Rally"
+        },
+        {
+          "index": 35,
+          "id": "operation-cards-36",
+          "name": "Rally"
+        },
+        {
+          "index": 36,
+          "id": "operation-cards-37",
+          "name": "Rally"
+        },
+        {
+          "index": 37,
+          "id": "operation-cards-38",
+          "name": "Rally"
+        },
+        {
+          "index": 38,
+          "id": "operation-cards-39",
+          "name": "Rally"
+        },
+        {
+          "index": 39,
+          "id": "operation-cards-40",
+          "name": "Rally"
+        },
+        {
+          "index": 40,
+          "id": "operation-cards-41",
+          "name": "Rally"
+        },
+        {
+          "index": 41,
+          "id": "operation-cards-42",
+          "name": "Rally"
+        },
+        {
+          "index": 42,
+          "id": "operation-cards-43",
+          "name": "Smear"
+        },
+        {
+          "index": 43,
+          "id": "operation-cards-44",
+          "name": "Smear"
+        },
+        {
+          "index": 44,
+          "id": "operation-cards-45",
+          "name": "Smear"
+        },
+        {
+          "index": 45,
+          "id": "operation-cards-46",
+          "name": "Smear"
+        },
+        {
+          "index": 46,
+          "id": "operation-cards-47",
+          "name": "Smear"
+        },
+        {
+          "index": 47,
+          "id": "operation-cards-48",
+          "name": "Smear"
+        },
+        {
+          "index": 48,
+          "id": "operation-cards-49",
+          "name": "Smear"
+        },
+        {
+          "index": 49,
+          "id": "operation-cards-50",
+          "name": "Smear"
+        },
+        {
+          "index": 50,
+          "id": "operation-cards-51",
+          "name": "Smear"
+        },
+        {
+          "index": 51,
+          "id": "operation-cards-52",
+          "name": "Smear"
+        },
+        {
+          "index": 52,
+          "id": "operation-cards-53",
+          "name": "Smear"
+        },
+        {
+          "index": 53,
+          "id": "operation-cards-54",
+          "name": "Smear"
+        }
+      ]
+    },
+    {
+      "id": "party-honeycomb",
+      "name": "party-honeycomb",
+      "category": "bonus-cards",
+      "count": 3,
+      "face": {
+        "path": "images/party-honeycomb-faces-c32fe546c6b7356c.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-honeycomb-faces-c32fe546c6b7356c.png"
+      },
+      "back": {
+        "path": "images/party-honeycomb-back-07a8dfca8fbf27bd.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-honeycomb-back-07a8dfca8fbf27bd.png"
+      },
+      "width": 3,
+      "height": 2,
+      "number": 3,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "bonus-cards-1",
+          "name": "Waggle Route"
+        },
+        {
+          "index": 1,
+          "id": "bonus-cards-2",
+          "name": "Common Cause"
+        },
+        {
+          "index": 2,
+          "id": "bonus-cards-3",
+          "name": "Every Bee Counts"
+        }
+      ]
+    },
+    {
+      "id": "party-old-shell",
+      "name": "party-old-shell",
+      "category": "bonus-cards",
+      "count": 3,
+      "face": {
+        "path": "images/party-old-shell-faces-8a50e512989139d4.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-old-shell-faces-8a50e512989139d4.png"
+      },
+      "back": {
+        "path": "images/party-old-shell-back-c1e7c04855fa7744.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-old-shell-back-c1e7c04855fa7744.png"
+      },
+      "width": 3,
+      "height": 2,
+      "number": 3,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "bonus-cards-4",
+          "name": "Dig In"
+        },
+        {
+          "index": 1,
+          "id": "bonus-cards-5",
+          "name": "Stonewall"
+        },
+        {
+          "index": 2,
+          "id": "bonus-cards-6",
+          "name": "Institutional Memory"
+        }
+      ]
+    },
+    {
+      "id": "party-foxglove",
+      "name": "party-foxglove",
+      "category": "bonus-cards",
+      "count": 3,
+      "face": {
+        "path": "images/party-foxglove-faces-8c7f4ca2fc96fc0c.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-foxglove-faces-8c7f4ca2fc96fc0c.png"
+      },
+      "back": {
+        "path": "images/party-foxglove-back-810f1622ad321719.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-foxglove-back-810f1622ad321719.png"
+      },
+      "width": 3,
+      "height": 2,
+      "number": 3,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "bonus-cards-7",
+          "name": "Spin"
+        },
+        {
+          "index": 1,
+          "id": "bonus-cards-8",
+          "name": "Whisper Network"
+        },
+        {
+          "index": 2,
+          "id": "bonus-cards-9",
+          "name": "Shell Firm"
+        }
+      ]
+    },
+    {
+      "id": "party-riverworks",
+      "name": "party-riverworks",
+      "category": "bonus-cards",
+      "count": 3,
+      "face": {
+        "path": "images/party-riverworks-faces-85430d97e4d337fd.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-riverworks-faces-85430d97e4d337fd.png"
+      },
+      "back": {
+        "path": "images/party-riverworks-back-ed9065826187b0c0.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-riverworks-back-ed9065826187b0c0.png"
+      },
+      "width": 3,
+      "height": 2,
+      "number": 3,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "bonus-cards-10",
+          "name": "Canal Network"
+        },
+        {
+          "index": 1,
+          "id": "bonus-cards-11",
+          "name": "Public Works"
+        },
+        {
+          "index": 2,
+          "id": "bonus-cards-12",
+          "name": "Mass Transit"
+        }
+      ]
+    },
+    {
+      "id": "party-many-wings",
+      "name": "party-many-wings",
+      "category": "bonus-cards",
+      "count": 3,
+      "face": {
+        "path": "images/party-many-wings-faces-f30ac0d1f4835c02.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-many-wings-faces-f30ac0d1f4835c02.png"
+      },
+      "back": {
+        "path": "images/party-many-wings-back-12bf2290816a82ac.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-many-wings-back-12bf2290816a82ac.png"
+      },
+      "width": 3,
+      "height": 2,
+      "number": 3,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "bonus-cards-13",
+          "name": "Scatter the Flock"
+        },
+        {
+          "index": 1,
+          "id": "bonus-cards-14",
+          "name": "Joint Campaign"
+        },
+        {
+          "index": 2,
+          "id": "bonus-cards-15",
+          "name": "Empty Every Nest"
+        }
+      ]
+    },
+    {
+      "id": "party-night-parliament",
+      "name": "party-night-parliament",
+      "category": "bonus-cards",
+      "count": 3,
+      "face": {
+        "path": "images/party-night-parliament-faces-61c1755aba997bc5.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-night-parliament-faces-61c1755aba997bc5.png"
+      },
+      "back": {
+        "path": "images/party-night-parliament-back-eac57bad6bd2d85d.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-night-parliament-back-eac57bad6bd2d85d.png"
+      },
+      "width": 3,
+      "height": 2,
+      "number": 3,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "bonus-cards-16",
+          "name": "Quiet Hours"
+        },
+        {
+          "index": 1,
+          "id": "bonus-cards-17",
+          "name": "Midnight Leak"
+        },
+        {
+          "index": 2,
+          "id": "bonus-cards-18",
+          "name": "Midnight Session"
+        }
+      ]
+    },
+    {
+      "id": "firm-1",
+      "name": "firm-1",
+      "category": "firm-cards",
+      "count": 4,
+      "face": {
+        "path": "images/firm-1-faces-73c2a92a4addf03a.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-1-faces-73c2a92a4addf03a.png"
+      },
+      "back": {
+        "path": "images/firm-1-back-0c428a88f2a4b36c.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-1-back-0c428a88f2a4b36c.png"
+      },
+      "width": 3,
+      "height": 2,
+      "number": 4,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "firm-cards-1",
+          "name": "Just Passing Through"
+        },
+        {
+          "index": 1,
+          "id": "firm-cards-2",
+          "name": "Just Passing Through"
+        },
+        {
+          "index": 2,
+          "id": "firm-cards-3",
+          "name": "I Can Wait"
+        },
+        {
+          "index": 3,
+          "id": "firm-cards-4",
+          "name": "I Can Wait"
+        }
+      ]
+    },
+    {
+      "id": "firm-2",
+      "name": "firm-2",
+      "category": "firm-cards",
+      "count": 4,
+      "face": {
+        "path": "images/firm-2-faces-a73e891f2e84166b.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-2-faces-a73e891f2e84166b.png"
+      },
+      "back": {
+        "path": "images/firm-2-back-2b31143ccb28e941.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-2-back-2b31143ccb28e941.png"
+      },
+      "width": 3,
+      "height": 2,
+      "number": 4,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "firm-cards-5",
+          "name": "Parallel Paths"
+        },
+        {
+          "index": 1,
+          "id": "firm-cards-6",
+          "name": "Parallel Paths"
+        },
+        {
+          "index": 2,
+          "id": "firm-cards-7",
+          "name": "Parallel Paths"
+        },
+        {
+          "index": 3,
+          "id": "firm-cards-8",
+          "name": "Parallel Paths"
+        }
+      ]
+    },
+    {
+      "id": "firm-3",
+      "name": "firm-3",
+      "category": "firm-cards",
+      "count": 15,
+      "face": {
+        "path": "images/firm-3-faces-fdb6867c79e31ec0.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-3-faces-fdb6867c79e31ec0.png"
+      },
+      "back": {
+        "path": "images/firm-3-back-0c9d90f1767e3774.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-3-back-0c9d90f1767e3774.png"
+      },
+      "width": 5,
+      "height": 4,
+      "number": 15,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "firm-cards-9",
+          "name": "A Step Foreseen"
+        },
+        {
+          "index": 1,
+          "id": "firm-cards-10",
+          "name": "A Step Foreseen"
+        },
+        {
+          "index": 2,
+          "id": "firm-cards-11",
+          "name": "A Step Foreseen"
+        },
+        {
+          "index": 3,
+          "id": "firm-cards-12",
+          "name": "Election Prophecy"
+        },
+        {
+          "index": 4,
+          "id": "firm-cards-13",
+          "name": "Election Prophecy"
+        },
+        {
+          "index": 5,
+          "id": "firm-cards-14",
+          "name": "Election Prophecy"
+        },
+        {
+          "index": 6,
+          "id": "firm-cards-15",
+          "name": "Election Prophecy"
+        },
+        {
+          "index": 7,
+          "id": "firm-cards-16",
+          "name": "Election Prophecy"
+        },
+        {
+          "index": 8,
+          "id": "firm-cards-17",
+          "name": "Harvest: 0–2"
+        },
+        {
+          "index": 9,
+          "id": "firm-cards-18",
+          "name": "Harvest: 3–4"
+        },
+        {
+          "index": 10,
+          "id": "firm-cards-19",
+          "name": "Harvest: 5–6"
+        },
+        {
+          "index": 11,
+          "id": "firm-cards-20",
+          "name": "Foretell Organise"
+        },
+        {
+          "index": 12,
+          "id": "firm-cards-21",
+          "name": "Foretell Rally"
+        },
+        {
+          "index": 13,
+          "id": "firm-cards-22",
+          "name": "Foretell Smear"
+        },
+        {
+          "index": 14,
+          "id": "firm-cards-23",
+          "name": "An Unwelcome Step"
+        }
+      ]
+    },
+    {
+      "id": "firm-4",
+      "name": "firm-4",
+      "category": "firm-cards",
+      "count": 3,
+      "face": {
+        "path": "images/firm-4-faces-0427c8f954b1f16f.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-4-faces-0427c8f954b1f16f.png"
+      },
+      "back": {
+        "path": "images/firm-4-back-641b6944fa4e6b41.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-4-back-641b6944fa4e6b41.png"
+      },
+      "width": 3,
+      "height": 2,
+      "number": 3,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "firm-cards-24",
+          "name": "Crow"
+        },
+        {
+          "index": 1,
+          "id": "firm-cards-25",
+          "name": "Cat"
+        },
+        {
+          "index": 2,
+          "id": "firm-cards-26",
+          "name": "Toad"
+        }
+      ]
+    },
+    {
+      "id": "firm-5",
+      "name": "firm-5",
+      "category": "firm-cards",
+      "count": 3,
+      "face": {
+        "path": "images/firm-5-faces-715fac0f742407e2.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-5-faces-715fac0f742407e2.png"
+      },
+      "back": {
+        "path": "images/firm-5-back-c6c13ba6eaed0d6b.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-5-back-c6c13ba6eaed0d6b.png"
+      },
+      "width": 3,
+      "height": 2,
+      "number": 3,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "firm-cards-27",
+          "name": "Set the Stage"
+        },
+        {
+          "index": 1,
+          "id": "firm-cards-28",
+          "name": "Set the Stage"
+        },
+        {
+          "index": 2,
+          "id": "firm-cards-29",
+          "name": "Set the Stage"
+        }
+      ]
+    },
+    {
+      "id": "firm-6",
+      "name": "firm-6",
+      "category": "firm-cards",
+      "count": 2,
+      "face": {
+        "path": "images/firm-6-faces-ba1c758ed2380d9f.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-6-faces-ba1c758ed2380d9f.png"
+      },
+      "back": {
+        "path": "images/firm-6-back-1e16afd9a33a9c88.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-6-back-1e16afd9a33a9c88.png"
+      },
+      "width": 3,
+      "height": 1,
+      "number": 2,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "firm-cards-30",
+          "name": "Overnight Shipping"
+        },
+        {
+          "index": 1,
+          "id": "firm-cards-31",
+          "name": "Overnight Shipping"
+        }
+      ]
+    },
+    {
+      "id": "hecate-reward",
+      "name": "hecate-reward",
+      "category": "reward-cards",
+      "count": 6,
+      "face": {
+        "path": "images/hecate-reward-faces-59c0b3e9efe9c026.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/hecate-reward-faces-59c0b3e9efe9c026.png"
+      },
+      "back": {
+        "path": "images/hecate-reward-back-9d450b71b2a950d1.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/hecate-reward-back-9d450b71b2a950d1.png"
+      },
+      "width": 4,
+      "height": 2,
+      "number": 6,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "reward-cards-1",
+          "name": "Organise"
+        },
+        {
+          "index": 1,
+          "id": "reward-cards-2",
+          "name": "Organise"
+        },
+        {
+          "index": 2,
+          "id": "reward-cards-3",
+          "name": "Rally"
+        },
+        {
+          "index": 3,
+          "id": "reward-cards-4",
+          "name": "Rally"
+        },
+        {
+          "index": 4,
+          "id": "reward-cards-5",
+          "name": "Smear"
+        },
+        {
+          "index": 5,
+          "id": "reward-cards-6",
+          "name": "Smear"
+        }
+      ]
+    },
+    {
+      "id": "policies",
+      "name": "policies",
+      "category": "policies",
+      "count": 30,
+      "face": {
+        "path": "images/policies-faces-8df242fedda7b0e6.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/policies-faces-8df242fedda7b0e6.png"
+      },
+      "back": {
+        "path": "images/policies-back-1ad7e7aabf2673bb.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/policies-back-1ad7e7aabf2673bb.png"
+      },
+      "width": 7,
+      "height": 5,
+      "number": 30,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "policies-1",
+          "name": "Party policy\nP01 · Rev 27"
+        },
+        {
+          "index": 1,
+          "id": "policies-2",
+          "name": "Party policy\nP02 · Rev 27"
+        },
+        {
+          "index": 2,
+          "id": "policies-3",
+          "name": "Party policy\nP03 · Rev 27"
+        },
+        {
+          "index": 3,
+          "id": "policies-4",
+          "name": "Global policy\nP04 · Rev 27"
+        },
+        {
+          "index": 4,
+          "id": "policies-5",
+          "name": "Party policy\nP05 · Rev 27"
+        },
+        {
+          "index": 5,
+          "id": "policies-6",
+          "name": "Party policy\nP06 · Rev 27"
+        },
+        {
+          "index": 6,
+          "id": "policies-7",
+          "name": "Global policy\nP07 · Rev 27"
+        },
+        {
+          "index": 7,
+          "id": "policies-8",
+          "name": "Party policy\nP08 · Rev 27"
+        },
+        {
+          "index": 8,
+          "id": "policies-9",
+          "name": "Party policy\nP09 · Rev 27"
+        },
+        {
+          "index": 9,
+          "id": "policies-10",
+          "name": "Global policy\nP10 · Rev 27"
+        },
+        {
+          "index": 10,
+          "id": "policies-11",
+          "name": "Party policy\nP11 · Rev 27"
+        },
+        {
+          "index": 11,
+          "id": "policies-12",
+          "name": "Party policy\nP12 · Rev 27"
+        },
+        {
+          "index": 12,
+          "id": "policies-13",
+          "name": "Party policy\nP13 · Rev 27"
+        },
+        {
+          "index": 13,
+          "id": "policies-14",
+          "name": "Party policy\nP14 · Rev 27"
+        },
+        {
+          "index": 14,
+          "id": "policies-15",
+          "name": "Party policy\nP15 · Rev 27"
+        },
+        {
+          "index": 15,
+          "id": "policies-16",
+          "name": "Party policy\nP16 · Rev 27"
+        },
+        {
+          "index": 16,
+          "id": "policies-17",
+          "name": "Party policy\nP17 · Rev 27"
+        },
+        {
+          "index": 17,
+          "id": "policies-18",
+          "name": "Party policy\nP18 · Rev 27"
+        },
+        {
+          "index": 18,
+          "id": "policies-19",
+          "name": "Global policy\nP19 · Rev 27"
+        },
+        {
+          "index": 19,
+          "id": "policies-20",
+          "name": "Party policy\nP20 · Rev 27"
+        },
+        {
+          "index": 20,
+          "id": "policies-21",
+          "name": "Party policy\nP21 · Rev 27"
+        },
+        {
+          "index": 21,
+          "id": "policies-22",
+          "name": "Party policy\nP22 · Rev 27"
+        },
+        {
+          "index": 22,
+          "id": "policies-23",
+          "name": "Party policy\nP23 · Rev 27"
+        },
+        {
+          "index": 23,
+          "id": "policies-24",
+          "name": "Party policy\nP24 · Rev 27"
+        },
+        {
+          "index": 24,
+          "id": "policies-25",
+          "name": "Party policy\nP25 · Rev 27"
+        },
+        {
+          "index": 25,
+          "id": "policies-26",
+          "name": "Party policy\nP26 · Rev 27"
+        },
+        {
+          "index": 26,
+          "id": "policies-27",
+          "name": "Party policy\nP27 · Rev 27"
+        },
+        {
+          "index": 27,
+          "id": "policies-28",
+          "name": "Party policy\nP28 · Rev 27"
+        },
+        {
+          "index": 28,
+          "id": "policies-29",
+          "name": "Party policy\nP29 · Rev 27"
+        },
+        {
+          "index": 29,
+          "id": "policies-30",
+          "name": "Party policy\nP30 · Rev 27"
+        }
+      ]
+    },
+    {
+      "id": "priorities",
+      "name": "priorities",
+      "category": "priorities",
+      "count": 12,
+      "face": {
+        "path": "images/priorities-faces-f0f4f737400667b8.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/priorities-faces-f0f4f737400667b8.png"
+      },
+      "back": {
+        "path": "images/priorities-back-d1ba497b36582234.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/priorities-back-d1ba497b36582234.png"
+      },
+      "width": 5,
+      "height": 3,
+      "number": 12,
+      "backIsHidden": true,
+      "uniqueBack": false,
+      "cards": [
+        {
+          "index": 0,
+          "id": "priorities-1",
+          "name": "PRIVATE PRIORITIES\nS01"
+        },
+        {
+          "index": 1,
+          "id": "priorities-2",
+          "name": "PRIVATE PRIORITIES\nS02"
+        },
+        {
+          "index": 2,
+          "id": "priorities-3",
+          "name": "PRIVATE PRIORITIES\nS03"
+        },
+        {
+          "index": 3,
+          "id": "priorities-4",
+          "name": "PRIVATE PRIORITIES\nS04"
+        },
+        {
+          "index": 4,
+          "id": "priorities-5",
+          "name": "PRIVATE PRIORITIES\nS05"
+        },
+        {
+          "index": 5,
+          "id": "priorities-6",
+          "name": "PRIVATE PRIORITIES\nS06"
+        },
+        {
+          "index": 6,
+          "id": "priorities-7",
+          "name": "PRIVATE PRIORITIES\nS07"
+        },
+        {
+          "index": 7,
+          "id": "priorities-8",
+          "name": "PRIVATE PRIORITIES\nS08"
+        },
+        {
+          "index": 8,
+          "id": "priorities-9",
+          "name": "PRIVATE PRIORITIES\nS09"
+        },
+        {
+          "index": 9,
+          "id": "priorities-10",
+          "name": "PRIVATE PRIORITIES\nS10"
+        },
+        {
+          "index": 10,
+          "id": "priorities-11",
+          "name": "PRIVATE PRIORITIES\nS11"
+        },
+        {
+          "index": 11,
+          "id": "priorities-12",
+          "name": "PRIVATE PRIORITIES\nS12"
+        }
+      ]
+    }
+  ],
+  "objects": [
+    {
+      "id": "district-map",
+      "name": "Bellwether district map",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/district-map-9735a3d1c37bd84c.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/district-map-9735a3d1c37bd84c.png"
+      }
+    },
+    {
+      "id": "party-board-1",
+      "name": "HoneycombCooperative",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/party-board-1-8192e695e75d8d1d.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-board-1-8192e695e75d8d1d.png"
+      },
+      "width": 1800,
+      "height": 627
+    },
+    {
+      "id": "party-board-2",
+      "name": "Old ShellUnion",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/party-board-2-4bc3fd267a82292f.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-board-2-4bc3fd267a82292f.png"
+      },
+      "width": 1800,
+      "height": 627
+    },
+    {
+      "id": "party-board-3",
+      "name": "FoxgloveLeague",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/party-board-3-84815e4226e11be9.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-board-3-84815e4226e11be9.png"
+      },
+      "width": 1800,
+      "height": 627
+    },
+    {
+      "id": "party-board-4",
+      "name": "RiverworksParty",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/party-board-4-45b9674e45aa4c26.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-board-4-45b9674e45aa4c26.png"
+      },
+      "width": 1800,
+      "height": 627
+    },
+    {
+      "id": "party-board-5",
+      "name": "Many WingsCoalition",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/party-board-5-a9c6365ebd24f8af.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-board-5-a9c6365ebd24f8af.png"
+      },
+      "width": 1800,
+      "height": 627
+    },
+    {
+      "id": "party-board-6",
+      "name": "NightParliament",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/party-board-6-56e11e4d8a3fc9c3.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-board-6-56e11e4d8a3fc9c3.png"
+      },
+      "width": 1800,
+      "height": 627
+    },
+    {
+      "id": "firm-reference-1",
+      "name": "First Chair Consulting",
+      "kind": "reference",
+      "count": 1,
+      "image": {
+        "path": "images/firm-reference-1-c45083d1a4324be9.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-1-c45083d1a4324be9.png"
+      },
+      "width": 1800,
+      "height": 1269
+    },
+    {
+      "id": "firm-reference-2",
+      "name": "Second Opinion Advisory",
+      "kind": "reference",
+      "count": 1,
+      "image": {
+        "path": "images/firm-reference-2-8f3e64f7a4206cb0.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-2-8f3e64f7a4206cb0.png"
+      },
+      "width": 1800,
+      "height": 1269
+    },
+    {
+      "id": "firm-reference-3",
+      "name": "Third Party Interests",
+      "kind": "reference",
+      "count": 1,
+      "image": {
+        "path": "images/firm-reference-3-4715e26ca5b86a1b.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-3-4715e26ca5b86a1b.png"
+      },
+      "width": 1800,
+      "height": 1269
+    },
+    {
+      "id": "firm-reference-4",
+      "name": "Four Familiar Faces",
+      "kind": "reference",
+      "count": 1,
+      "image": {
+        "path": "images/firm-reference-4-49b4615775666f8f.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-4-49b4615775666f8f.png"
+      },
+      "width": 1800,
+      "height": 1269
+    },
+    {
+      "id": "firm-reference-5",
+      "name": "Five Strings Attached",
+      "kind": "reference",
+      "count": 1,
+      "image": {
+        "path": "images/firm-reference-5-0eaa03acf6dfbf3b.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-5-0eaa03acf6dfbf3b.png"
+      },
+      "width": 1800,
+      "height": 1269
+    },
+    {
+      "id": "firm-reference-6",
+      "name": "Six Figure Consulting",
+      "kind": "reference",
+      "count": 1,
+      "image": {
+        "path": "images/firm-reference-6-e285e7966ace038f.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-6-e285e7966ace038f.png"
+      },
+      "width": 1800,
+      "height": 1269
+    },
+    {
+      "id": "shared-reference-1",
+      "name": "Shared player reference",
+      "kind": "reference",
+      "count": 1,
+      "image": {
+        "path": "images/shared-reference-1-f3ae6d89a6984886.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/shared-reference-1-f3ae6d89a6984886.png"
+      },
+      "width": 1200,
+      "height": 1703,
+      "imageSecondary": {
+        "path": "images/shared-reference-2-6f73cfbce9c21854.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/shared-reference-2-6f73cfbce9c21854.png"
+      }
+    },
+    {
+      "id": "opening-marker-1",
+      "name": "First Chair Consulting",
+      "kind": "opening-marker",
+      "count": 2,
+      "image": {
+        "path": "images/opening-marker-1-b851df1fdb1c3c80.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/opening-marker-1-b851df1fdb1c3c80.png"
+      },
+      "width": 320,
+      "height": 488
+    },
+    {
+      "id": "opening-marker-3",
+      "name": "Second Opinion Advisory",
+      "kind": "opening-marker",
+      "count": 2,
+      "image": {
+        "path": "images/opening-marker-3-7152425a34117b97.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/opening-marker-3-7152425a34117b97.png"
+      },
+      "width": 320,
+      "height": 488
+    },
+    {
+      "id": "opening-marker-5",
+      "name": "Third Party Interests",
+      "kind": "opening-marker",
+      "count": 2,
+      "image": {
+        "path": "images/opening-marker-5-27663786367bd241.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/opening-marker-5-27663786367bd241.png"
+      },
+      "width": 320,
+      "height": 488
+    },
+    {
+      "id": "opening-marker-7",
+      "name": "Four Familiar Faces",
+      "kind": "opening-marker",
+      "count": 2,
+      "image": {
+        "path": "images/opening-marker-7-9f0275c7ccfdc3a7.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/opening-marker-7-9f0275c7ccfdc3a7.png"
+      },
+      "width": 320,
+      "height": 488
+    },
+    {
+      "id": "opening-marker-9",
+      "name": "Five Strings Attached",
+      "kind": "opening-marker",
+      "count": 2,
+      "image": {
+        "path": "images/opening-marker-9-516bfc8d6bc50d6f.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/opening-marker-9-516bfc8d6bc50d6f.png"
+      },
+      "width": 320,
+      "height": 488
+    },
+    {
+      "id": "opening-marker-11",
+      "name": "Six Figure Consulting",
+      "kind": "opening-marker",
+      "count": 2,
+      "image": {
+        "path": "images/opening-marker-11-f6bdacf124e506dd.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/opening-marker-11-f6bdacf124e506dd.png"
+      },
+      "width": 320,
+      "height": 488
+    },
+    {
+      "id": "small-token-1",
+      "name": "Favour owed",
+      "kind": "token",
+      "count": 6,
+      "image": {
+        "path": "images/small-token-1-d7ee873cbfffb613.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/small-token-1-d7ee873cbfffb613.png"
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "id": "small-token-7",
+      "name": "Primary opening history",
+      "kind": "token",
+      "count": 6,
+      "image": {
+        "path": "images/small-token-7-bfc4c4c8cc196b3e.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/small-token-7-bfc4c4c8cc196b3e.png"
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "id": "small-token-13",
+      "name": "Hecate district trap",
+      "kind": "token",
+      "count": 1,
+      "image": {
+        "path": "images/small-token-13-b5b0a93ac9d99a6e.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/small-token-13-b5b0a93ac9d99a6e.png"
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "id": "player-folio-1",
+      "name": "First Chair Consulting",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/player-folio-1-329a95408f42cbe1.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-1-329a95408f42cbe1.png"
+      },
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "id": "player-folio-2",
+      "name": "First Chair Consulting",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/player-folio-2-883f349ddcbdfaa6.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-2-883f349ddcbdfaa6.png"
+      },
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "id": "player-folio-3",
+      "name": "Second Opinion Advisory",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/player-folio-3-f710303a8b5ab3aa.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-3-f710303a8b5ab3aa.png"
+      },
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "id": "player-folio-4",
+      "name": "Second Opinion Advisory",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/player-folio-4-c88a8be718c5fed2.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-4-c88a8be718c5fed2.png"
+      },
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "id": "player-folio-5",
+      "name": "Third Party Interests",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/player-folio-5-7deffd59e9bf12ea.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-5-7deffd59e9bf12ea.png"
+      },
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "id": "player-folio-6",
+      "name": "Third Party Interests",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/player-folio-6-8d3c5e18835e522f.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-6-8d3c5e18835e522f.png"
+      },
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "id": "player-folio-7",
+      "name": "Four Familiar Faces",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/player-folio-7-e10d94d4c561460a.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-7-e10d94d4c561460a.png"
+      },
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "id": "player-folio-8",
+      "name": "Four Familiar Faces",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/player-folio-8-31dd12008f55fa90.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-8-31dd12008f55fa90.png"
+      },
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "id": "player-folio-9",
+      "name": "Five Strings Attached",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/player-folio-9-a402d14d131abd97.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-9-a402d14d131abd97.png"
+      },
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "id": "player-folio-10",
+      "name": "Five Strings Attached",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/player-folio-10-fe6a2f8e76573d2b.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-10-fe6a2f8e76573d2b.png"
+      },
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "id": "player-folio-11",
+      "name": "Six Figure Consulting",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/player-folio-11-5321e3aa77309a60.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-11-5321e3aa77309a60.png"
+      },
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "id": "player-folio-12",
+      "name": "Six Figure Consulting",
+      "kind": "board",
+      "count": 1,
+      "image": {
+        "path": "images/player-folio-12-7b289baee7958b46.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-12-7b289baee7958b46.png"
+      },
+      "width": 1400,
+      "height": 1260
+    },
+    {
+      "id": "score-ledger-1",
+      "name": "score-ledger 1",
+      "kind": "reference",
+      "count": 1,
+      "image": {
+        "path": "images/score-ledger-1-4e5c9bc7e8650d5c.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/score-ledger-1-4e5c9bc7e8650d5c.png"
+      },
+      "width": 1800,
+      "height": 423
+    },
+    {
+      "id": "reminder-vote",
+      "name": "Private vote reminder",
+      "kind": "tile",
+      "count": 24,
+      "image": {
+        "path": "images/reminder-vote-front-2ad52b7b3e98d1cc.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/reminder-vote-front-2ad52b7b3e98d1cc.png"
+      },
+      "imageSecondary": {
+        "path": "images/reminder-vote-back-8ea2bfedd973a470.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/reminder-vote-back-8ea2bfedd973a470.png"
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "id": "reminder-range",
+      "name": "Private range reminder",
+      "kind": "tile",
+      "count": 24,
+      "image": {
+        "path": "images/reminder-range-front-89a41940238b489e.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/reminder-range-front-89a41940238b489e.png"
+      },
+      "imageSecondary": {
+        "path": "images/reminder-range-back-6050b7ea28409c57.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/reminder-range-back-6050b7ea28409c57.png"
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "id": "early-bird",
+      "name": "Early Bird",
+      "kind": "token",
+      "count": 1,
+      "image": {
+        "path": "images/early-bird-0de99c4e4b383203.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/early-bird-0de99c4e4b383203.png"
+      }
+    },
+    {
+      "id": "year",
+      "name": "Year",
+      "kind": "token",
+      "count": 1,
+      "image": {
+        "path": "images/year-2fa708ba31973de9.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/year-2fa708ba31973de9.png"
+      }
+    },
+    {
+      "id": "agent-1",
+      "name": "Firm 1 Fiddler",
+      "kind": "figurine",
+      "count": 1,
+      "image": {
+        "path": "images/agent-1-0ec8e5f5f072690e.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-1-0ec8e5f5f072690e.png"
+      },
+      "imageSecondary": {
+        "path": "images/agent-1-0ec8e5f5f072690e.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-1-0ec8e5f5f072690e.png"
+      },
+      "width": 320,
+      "height": 320
+    },
+    {
+      "id": "agent-2",
+      "name": "Firm 2 Doppelgänger",
+      "kind": "figurine",
+      "count": 2,
+      "image": {
+        "path": "images/agent-2-c97f60d90d06854a.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-2-c97f60d90d06854a.png"
+      },
+      "imageSecondary": {
+        "path": "images/agent-2-c97f60d90d06854a.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-2-c97f60d90d06854a.png"
+      },
+      "width": 320,
+      "height": 320
+    },
+    {
+      "id": "agent-4",
+      "name": "Firm 3 Sister",
+      "kind": "figurine",
+      "count": 3,
+      "image": {
+        "path": "images/agent-4-a9b6c285fc76cf21.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-4-a9b6c285fc76cf21.png"
+      },
+      "imageSecondary": {
+        "path": "images/agent-4-a9b6c285fc76cf21.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-4-a9b6c285fc76cf21.png"
+      },
+      "width": 320,
+      "height": 320
+    },
+    {
+      "id": "agent-7",
+      "name": "Firm 4 Witch",
+      "kind": "figurine",
+      "count": 1,
+      "image": {
+        "path": "images/agent-7-e9fcb4884eb61ea9.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-7-e9fcb4884eb61ea9.png"
+      },
+      "imageSecondary": {
+        "path": "images/agent-7-e9fcb4884eb61ea9.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-7-e9fcb4884eb61ea9.png"
+      },
+      "width": 320,
+      "height": 320
+    },
+    {
+      "id": "agent-8",
+      "name": "Firm 4 Crow",
+      "kind": "figurine",
+      "count": 1,
+      "image": {
+        "path": "images/agent-8-da0698fbaf0c3fae.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-8-da0698fbaf0c3fae.png"
+      },
+      "imageSecondary": {
+        "path": "images/agent-8-da0698fbaf0c3fae.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-8-da0698fbaf0c3fae.png"
+      },
+      "width": 320,
+      "height": 320
+    },
+    {
+      "id": "agent-9",
+      "name": "Firm 4 Cat",
+      "kind": "figurine",
+      "count": 1,
+      "image": {
+        "path": "images/agent-9-4b6aefb6cf4b61fe.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-9-4b6aefb6cf4b61fe.png"
+      },
+      "imageSecondary": {
+        "path": "images/agent-9-4b6aefb6cf4b61fe.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-9-4b6aefb6cf4b61fe.png"
+      },
+      "width": 320,
+      "height": 320
+    },
+    {
+      "id": "agent-10",
+      "name": "Firm 4 Toad",
+      "kind": "figurine",
+      "count": 1,
+      "image": {
+        "path": "images/agent-10-cac2976bf511a866.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-10-cac2976bf511a866.png"
+      },
+      "imageSecondary": {
+        "path": "images/agent-10-cac2976bf511a866.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-10-cac2976bf511a866.png"
+      },
+      "width": 320,
+      "height": 320
+    },
+    {
+      "id": "agent-11",
+      "name": "Firm 5 Puppeteer",
+      "kind": "figurine",
+      "count": 1,
+      "image": {
+        "path": "images/agent-11-13dc0674c0bf1555.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-11-13dc0674c0bf1555.png"
+      },
+      "imageSecondary": {
+        "path": "images/agent-11-13dc0674c0bf1555.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-11-13dc0674c0bf1555.png"
+      },
+      "width": 320,
+      "height": 320
+    },
+    {
+      "id": "agent-12",
+      "name": "Firm 5 Marionette",
+      "kind": "figurine",
+      "count": 4,
+      "image": {
+        "path": "images/agent-12-059b7aeafc5348fa.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-12-059b7aeafc5348fa.png"
+      },
+      "imageSecondary": {
+        "path": "images/agent-12-059b7aeafc5348fa.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-12-059b7aeafc5348fa.png"
+      },
+      "width": 320,
+      "height": 320
+    },
+    {
+      "id": "agent-16",
+      "name": "Firm 6 Portrait",
+      "kind": "tile",
+      "count": 6,
+      "image": {
+        "path": "images/agent-16-99cc9507b469ce00.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-16-99cc9507b469ce00.png"
+      },
+      "imageSecondary": {
+        "path": "images/agent-16-asleep-cb0d4cbb9420abe8.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-16-asleep-cb0d4cbb9420abe8.png"
+      },
+      "width": 320,
+      "height": 320
+    }
+  ]
+}

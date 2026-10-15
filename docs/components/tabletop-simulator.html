@@ -12,7 +12,7 @@
 npm run tts:check
 python scripts/test-publish-tts-assets.py
 python scripts/test-generate-tts-loader.py</code></pre>
-<p>Generated files are in <code>assets/tts/</code> and are not committed. <code>manifest.json</code> records image URLs, hashes, deck settings, card order and piece quantities. Repeated pieces reuse a single image per design; the manifest records how many copies to create. Images have content hashes in their filenames so future artwork exports can coexist with saved games.</p>
+<p>Generated files are in <code>assets/tts/</code>. The current <code>manifest.json</code> and <code>import-bellwether.lua</code> are committed so another machine can import the published assets without running the exporter. PNG files remain untracked and are hosted in S3. <code>manifest.json</code> records image URLs, hashes, deck settings, card order and piece quantities. Repeated pieces reuse a single image per design; the manifest records how many copies to create. Images have content hashes in their filenames so future artwork exports can coexist with saved games.</p>
 <p>The export contains all 151 cards in sixteen decks: common cards; six party suits; six firm suits; Hecate rewards; policies; and private priorities. It also includes the twelve opening markers, agent faces, reversible Gallery portraits, firm tokens, public markers, boards, twelve player folios, forty-eight private reminders, the score ledger and reference images. The printable suite remains available separately.</p>
 </section>
 <section><h2>Publish to S3</h2>
