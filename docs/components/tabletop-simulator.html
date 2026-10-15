@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Tabletop Simulator assets — Bellwether</title><link rel="stylesheet" href="../styles.css"></head>
+<body>
+<header class="page-header"><div class="header-inner"><h1>Tabletop Simulator assets</h1><p>Ruleset 29 · Digital components from the printable source</p></div></header>
+<main>
+<nav><a href="../index.html">Index</a> · <a href="cards.html">Component inventory</a> · <a href="../rules/current-rules.html">Rules</a></nav>
+<p>The digital export uses the current component artwork and rules. Cards are cropped individually and grouped by their shared back; physical print-sheet margins, mirrored duplex placement and agent clip strips are omitted.</p>
+<section><h2>Build and validate</h2>
+<p>Run from the repository root. The exporter needs Node, Playwright with Chromium, and Python with Pillow. It uses the same browser installation as the print checks.</p>
+<pre><code>npm run tts:export
+npm run tts:check
+python scripts/test-publish-tts-assets.py
+python scripts/test-generate-tts-loader.py</code></pre>
+<p>Generated files are in <code>assets/tts/</code> and are not committed. <code>manifest.json</code> records image URLs, hashes, deck settings, card order and piece quantities. Images have content hashes in their filenames so future artwork exports can coexist with saved games.</p>
+<p>The export contains all 151 cards in sixteen decks: common cards; six party suits; six firm suits; Hecate rewards; policies; and private priorities. It also includes the twelve opening markers, agent faces, reversible Gallery portraits, firm tokens, public markers, boards, twelve player folios, forty-eight private reminders, the score ledger and reference images. The printable suite remains available separately.</p>
+</section>
+<section><h2>Publish to S3</h2>
+<p>Destination: <code>s3://lsenjov-boardgame-bellwether/tabletop-simulator/</code>, region <code>ap-southeast-2</code>. The default public image URL begins <code>https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/</code>. The AWS console bucket page is an administration page, not an image URL.</p>
+<pre><code>python scripts/publish-tts-assets.py
+python scripts/publish-tts-assets.py --upload</code></pre>
+<p>The first command validates files and previews the upload without using AWS credentials. The second uses your configured AWS CLI identity, uploads only files listed in the manifest, and checks that each resulting image URL is accessible without authentication. It does not delete old assets or change bucket policies or ACLs.</p>
+<p>Players need stable public HTTPS access to the images. If the bucket remains private, use your public delivery service, such as CloudFront. Regenerate and publish using the same delivery prefix in both commands:</p>
+<pre><code>npm run tts:export -- --base-url https://YOUR-PUBLIC-HOST/tabletop-simulator/
+python scripts/publish-tts-assets.py --base-url https://YOUR-PUBLIC-HOST/tabletop-simulator/ --upload</code></pre>
+<p>Configuring that delivery service is separate from this export. An upload can succeed while public verification fails; in that case the images are stored but are not ready for other players. Do not use expiring signed URLs in saved games.</p>
+</section>
+<section><h2>Import the component set</h2>
+<pre><code>python scripts/generate-tts-loader.py</code></pre>
+<p>This writes <code>assets/tts/import-bellwether.lua</code>. After publishing the images, start an empty Tabletop Simulator table, paste the script into the Global scripting editor, and save it. Open the console and run <code>lua Global.call("spawnBellwether")</code>. The script imports the manifest's decks and pieces into a staging layout. Allow roughly 50 × 80 Tabletop Simulator units of clear staging space, plus margin for the pieces. Arrange and scale the components, then save the game. It does not run automatically on load. Run it only once on an empty table; saving/reloading the script resets its duplicate-import guard.</p>
+<p>The importer has local generation and Lua syntax checks; its appearance and physics still need an in-game check. Manual import is also available below.</p>
+</section>
+<section><h2>Import components manually</h2>
+<p>For each manifest deck, create a Custom Deck using <code>face.url</code> and <code>back.url</code>. Set Width and Height to the manifest grid dimensions and Number to its card count. Enable Back is Hidden and leave Unique Backs disabled. Each atlas reserves its final cell for the safe shared back. These images use normal row order, not physical duplex order. See the <a href="https://kb.tabletopsimulator.com/custom-content/custom-deck/">official Custom Deck guide</a>.</p>
+<p>Use Custom Board for the map and party boards, Custom Figurine for standees, and Custom Tile for flat pieces and references. Gallery portraits have an awake <code>image.url</code> and asleep <code>imageSecondary.url</code>; set both tile faces so flipping changes their state. Respect each object's manifest count. The <a href="https://api.tabletopsimulator.com/custom-game-objects/">custom-object API reference</a> lists the corresponding image fields.</p>
+<p>Use native coloured pieces for each party's unlimited Support supply. Give each player two Collection cubes, or four at two or three players. Use player hand zones for held cards and private zones for priorities and private reminders. Keep New Year cards concealed while their total count remains visible. Follow the rulebook for setup; importing artwork does not deal cards, place Support or automate firm powers.</p>
+<p>Local checks verify asset inventories, image sizes, hashes, atlas geometry and hidden backs. A Tabletop Simulator session is still needed to check physical scale, readability, flipping and privacy before the first playtest.</p>
+</section>
+</main></body></html>

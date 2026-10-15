@@ -24,7 +24,9 @@
     "typecheck": "npm run typecheck --workspaces --if-present && tsc -p examples/tsconfig.json --noEmit",
     "generate:scoring-cards": "node --conditions=development --import tsx scripts/generate-scoring-cards.ts",
     "print:check": "node scripts/check-print-layout.cjs",
-    "print:export": "bash scripts/export-print-assets.sh"
+    "print:export": "bash scripts/export-print-assets.sh",
+    "tts:export": "node scripts/export-tts-assets.cjs",
+    "tts:check": "node scripts/check-tts-assets.cjs"
   },
   "devDependencies": {
     "@types/node": "^24.1.0",
