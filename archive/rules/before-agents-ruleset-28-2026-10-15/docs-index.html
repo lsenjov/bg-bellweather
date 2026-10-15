@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Design archive for a board game about lobbying animal political parties in the Republic of Bellwether.">
+    <title>Ladder Bidding — Design Archive</title>
+    <link rel="stylesheet" href="../../../docs/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="../../../docs/index.html" aria-label="Ladder Bidding documentation home">
+          <span class="brand-mark" aria-hidden="true">LB</span>
+          Design archive / draft 00
+        </a>
+        <div class="hero">
+          <p class="eyebrow">Republic of Bellwether / ruleset 24</p>
+          <h1><span>Ladder</span><span>Bidding</span></h1>
+          <div class="hero-copy">
+            <p>Rival lobbying firms open access to six animal political parties, play Operations into public piles, and time when to collect or close them.</p>
+            <div class="working-note">Working title. Six years, annual Party Openings, eighteen collectible Bonus cards, uniform Cleanup, three Elections, 0/0/1/3 Capital scoring, and the final card ranking are implemented; Unbound-card and timing balance remain open.</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <p class="intro">Start with the current yearly rules, then follow the open questions for the first playtest of the replacement loop.</p>
+
+      <section class="document-group" aria-labelledby="core-docs">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Rung 01 / Start here</p>
+            <h2 id="core-docs">The live game</h2>
+          </div>
+          <p>The smallest set of documents needed to explain what the game is and what it needs next.</p>
+        </div>
+        <ol class="document-list">
+          <li class="document-card">
+            <a href="../../../docs/design/vision.html">
+              <span class="document-number">01.1</span>
+              <span class="document-title">Game vision</span>
+              <span class="document-summary">Pitch, players, desired tension, and boundaries.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/rules/current-rules.html">
+              <span class="document-number">01.2</span>
+              <span class="document-title">Current rules</span>
+              <span class="document-summary">The rules that exist today, with gaps left visible.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/design/open-questions.html">
+              <span class="document-number">01.3</span>
+              <span class="document-title">Open questions</span>
+              <span class="document-summary">Unknowns ranked by how much they block the next useful playtest.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/playtest-guide.html">
+              <span class="document-number">01.4</span>
+              <span class="document-title">Playtest guide</span>
+              <span class="document-summary">A disciplined path from paper sketch to useful evidence.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/agent-api.html">
+              <span class="document-number">01.5</span>
+              <span class="document-title">Playtest agent API</span>
+              <span class="document-summary">Authenticated HTTP, WebSocket, state visibility, and replay contract.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+        </ol>
+      </section>
+
+      <section class="document-group" aria-labelledby="design-docs">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Rung 02 / Design desk</p>
+            <h2 id="design-docs">Reasoning</h2>
+          </div>
+          <p>Keep the “why” beside the “what,” especially while the idea is still easy to reshape.</p>
+        </div>
+        <ol class="document-list">
+          <li class="document-card">
+            <a href="../../../docs/design/principles.html">
+              <span class="document-number">02.1</span>
+              <span class="document-title">Principles</span>
+              <span class="document-summary">Tests for choosing between competing designs.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/design/decisions.html">
+              <span class="document-number">02.2</span>
+              <span class="document-title">Decision log</span>
+              <span class="document-summary">Committed choices, reasons, and revisit triggers.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/rules/glossary.html">
+              <span class="document-number">02.3</span>
+              <span class="document-title">Glossary</span>
+              <span class="document-summary">Stable names for mechanics and components.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/rules/examples.html">
+              <span class="document-number">02.4</span>
+              <span class="document-title">Rules examples</span>
+              <span class="document-summary">Worked situations that pressure-test rule wording.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/design/region-map-prototypes.html">
+              <span class="document-number">Study</span>
+              <span class="document-title">Three-region map prototypes</span>
+              <span class="document-summary">Five territorial concepts with 18 Support per region, including a curved city around an open harbour.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/design/map-topology-options.html">
+              <span class="document-number">02.5</span>
+              <span class="document-title">District topology options</span>
+              <span class="document-summary">Five exploratory connection maps using the existing districts and Support capacities.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/design/bonus-card-candidates.html">
+              <span class="document-number">02.6</span>
+              <span class="document-title">Bonus card candidates</span>
+              <span class="document-summary">Current bonuses, a curated Operation-family pool, and sixty unbound party-themed experiments.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+        </ol>
+      </section>
+
+      <section class="document-group" aria-labelledby="component-docs">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Rung 03 / Parts drawer</p>
+            <h2 id="component-docs">Components</h2>
+          </div>
+          <p>Inventory only what the current ruleset needs; postpone polish until the loop earns it.</p>
+        </div>
+        <ol class="document-list">
+          <li class="document-card">
+            <a href="../../../docs/components/board.html">
+              <span class="document-number">03.1</span>
+              <span class="document-title">Board</span>
+              <span class="document-summary">District map, coalition summary, party areas, Support spaces, and yearly state.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/components/cards.html">
+              <span class="document-number">03.2</span>
+              <span class="document-title">Cards</span>
+              <span class="document-summary">Reusable Operation cards, collectible Bonus cards, and hidden scoring-card specifications.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/components/tokens.html">
+              <span class="document-number">03.3</span>
+              <span class="document-title">Tokens</span>
+              <span class="document-summary">Party Support, generic Firm cards, Collection cubes, Early Bird and calendar Year markers.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/components/player-aids.html">
+              <span class="document-number">03.4</span>
+              <span class="document-title">Player aids</span>
+              <span class="document-summary">References that keep decisions moving at the table.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/components/scoring-cards.html">
+              <span class="document-number">03.5</span>
+              <span class="document-title">Scoring cards</span>
+              <span class="document-summary">The exact twenty-four hidden region–party agendas used on Election Day.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/components/player-kits.html">
+              <span class="document-number">03.6</span>
+              <span class="document-title">Lobbying firm kits</span>
+              <span class="document-summary">Six Firm identities, split public/private sheets, branded shields with the player helper inside and private voting reminders.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/components/campaign-score-trackers.html">
+              <span class="document-number">03.7</span>
+              <span class="document-title">Map Year &amp; score trackers</span>
+              <span class="document-summary">An A3 map-integrated six-year clock and A4 landscape 0–40 public score snake.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+        </ol>
+      </section>
+
+      <section class="document-group" aria-labelledby="test-docs">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">Rung 04 / Evidence</p>
+            <h2 id="test-docs">Playtesting &amp; history</h2>
+          </div>
+          <p>Capture observations separately from reactions, then connect changes back to evidence.</p>
+        </div>
+        <ol class="document-list">
+          <li class="document-card">
+            <a href="../../../docs/playtesting/feedback-summary.html">
+              <span class="document-number">04.1</span>
+              <span class="document-title">Feedback summary</span>
+              <span class="document-summary">Patterns across sessions, not a dump of opinions.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/sessions/template.html">
+              <span class="document-number">04.2</span>
+              <span class="document-title">Session template</span>
+              <span class="document-summary">A reusable record for each table test.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/sessions/2026-08-10-agent-api-aborted.html">
+              <span class="document-number">04.3</span>
+              <span class="document-title">Aborted agent API playtest</span>
+              <span class="document-summary">The credential-persistence failure discovered during the first four-agent attempt.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/sessions/2026-08-10-four-agent-game.html">
+              <span class="document-number">04.4</span>
+              <span class="document-title">Four-agent API playtest</span>
+              <span class="document-summary">A complete timerless game with Election records and end-of-game findings.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/sessions/2026-08-11-all-district-election-playtest.html">
+              <span class="document-number">04.5</span>
+              <span class="document-title">Whole-map Election API playtest</span>
+              <span class="document-summary">Ruleset-12 verification of all-district thinning, the Centre exception, and agent-session resilience.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/sessions/2026-08-12-ruleset-14-constrained-playtest.html">
+              <span class="document-number">04.6</span>
+              <span class="document-title">Constrained ruleset-14 API playtest</span>
+              <span class="document-summary">A completed game invalidated by facilitator pacing constraints, with the learning retained.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/sessions/2026-08-12-ruleset-14-unrestricted-playtest.html">
+              <span class="document-number">04.7</span>
+              <span class="document-title">Unrestricted ruleset-14 API playtest</span>
+              <span class="document-summary">Four strategic players completed twelve uncapped rounds, testing coalitions, Centre routes, and resource circulation.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/sessions/2026-08-13-ruleset-15-five-player-playtest.html">
+              <span class="document-number">04.8</span>
+              <span class="document-title">Five-player ruleset-15 API playtest</span>
+              <span class="document-summary">Five strategic profiles completed the yearly Lobby loop, exposing modifier, Centre, access, and late-game activity patterns.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/sessions/2026-08-15-ruleset-15-four-player-playtest.html">
+              <span class="document-number">04.9</span>
+              <span class="document-title">Four-player ruleset-15 API playtest</span>
+              <span class="document-summary">Dynamic Operate lengths and a collector strategy exposed severe card concentration and late-game inactivity.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/sessions/2026-08-15-ruleset-15-twenty-game-learning-league.html">
+              <span class="document-number">04.10</span>
+              <span class="document-title">Twenty-game learning league</span>
+              <span class="document-summary">Four persistent agents completed twenty API games, sharing eighty postmortems and cumulative policy learning.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/sessions/2026-08-15-ruleset-15-five-player-learning-extension.html">
+              <span class="document-number">04.11</span>
+              <span class="document-title">Five-player learning extension</span>
+              <span class="document-summary">Five persistent agents completed five continuation games, examining five-seat reference and interleaving effects.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/playtesting/llm-learning-leagues.html">
+              <span class="document-number">04.12</span>
+              <span class="document-title">LLM learning leagues</span>
+              <span class="document-summary">Persistent language-model players, direct API play, cumulative postmortems, and evidence standards.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li class="document-card">
+            <a href="../../../docs/versions/changelog.html">
+              <span class="document-number">04.13</span>
+              <span class="document-title">Changelog</span>
+              <span class="document-summary">Rules, component, and balance changes by version.</span>
+              <span class="document-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <div class="page-footer-inner">
+        <span>Ladder Bidding / working title</span>
+        <span class="stamp">Bellwether / Ruleset 28 (physical)</span>
+      </div>
+    </footer>
+  </body>
+</html>
