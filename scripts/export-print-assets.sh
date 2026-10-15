@@ -39,7 +39,9 @@ python "$repository_root/scripts/generate-default-map.py"
 python "$repository_root/scripts/generate-physical-map.py"
 node --conditions=development --import tsx "$repository_root/scripts/generate-scoring-cards.ts"
 node "$repository_root/scripts/generate-candidate-bonus-cards.mjs"
-node "$repository_root/scripts/generate-player-shields.mjs"
+node "$repository_root/scripts/generate-firm-pieces.mjs"
+node "$repository_root/scripts/generate-firm-cards.mjs"
+node "$repository_root/scripts/check-print-layout.cjs"
 
 pdf_page_size_matches() {
   local pdf_file="$1"
@@ -106,11 +108,16 @@ validate_pdf() {
 }
 
 html_exports=(
+  "reward-cards|docs/components/reward-cards.html|assets/print/reward-cards-a4.pdf|2|594.96|841.92"
+  "agents|docs/components/agents.html|assets/print/agents-a4.pdf|2|594.96|841.92"
+  "firm-cards|docs/components/firm-cards.html|assets/print/firm-cards-a4.pdf|4|594.96|841.92"
+  "firm-references|docs/components/firm-references.html|assets/print/firm-references-a5.pdf|6|594.96|420"
+  "player-aids|docs/components/player-aids.html|assets/print/player-helper-a5.pdf|2|420|594.96"
   "party-boards|docs/components/party-boards.html|assets/print/party-boards-a4.pdf|3|841.92|594.96"
   "player-folios|docs/components/player-folios.html|assets/print/player-folios-a4.pdf|2|594.96|841.92"
-  "player-shields|docs/components/player-shields.html|assets/print/player-shields-a4.pdf|12|841.92|594.96"
-  "operation-cards|docs/components/operation-cards.html|assets/print/operation-cards-a4.pdf|4|594.96|841.92"
-  "bonus-cards|docs/components/bonus-cards.html|assets/print/bonus-cards-a4.pdf|2|594.96|841.92"
+  "player-shields|docs/components/player-shields.html|assets/print/player-shields-a4.pdf|6|841.92|594.96"
+  "operation-cards|docs/components/operation-cards.html|assets/print/operation-cards-a4.pdf|8|594.96|841.92"
+  "bonus-cards|docs/components/bonus-cards.html|assets/print/bonus-cards-a4.pdf|4|594.96|841.92"
   "bonus-card-candidates|docs/design/printable-bonus-card-candidates.html|assets/print/bonus-card-candidates-a4.pdf|9|594.96|841.92"
   "policy-cards|docs/components/printable-policy-cards.html|assets/print/policy-cards-a4.pdf|4|594.96|841.92"
   "scoring-cards|docs/components/printable-scoring-cards.html|assets/print/scoring-cards-a4.pdf|1|594.96|841.92"

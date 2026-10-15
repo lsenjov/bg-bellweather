@@ -18,12 +18,12 @@ body { margin: 0; color: var(--ink); font-family: var(--body); }
 main { display: flex; align-items: center; flex-direction: column; gap: 28px; padding: 0 0 36px; overflow-x: auto; }
 .print-sheet { flex: none; display: grid; width: 210mm; height: 297mm; grid-template-rows: repeat(3, 90mm); padding: 6mm 5mm; align-content: space-between; background: white; box-shadow: 0 10px 35px #0005; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 .folio-pair { display: flex; width: 200mm; height: 90mm; }
-.swoop { --accent: #efcfca; --tint: #f7e9e6; }
-.pairliament { --accent: #d4e1eb; --tint: #eaf1f5; }
-.triumvirat { --accent: #eeddb8; --tint: #f7efdc; }
-.ivy-league { --accent: #d8e4d1; --tint: #edf3e9; }
-.vested { --accent: #e5d4e1; --tint: #f3eaf1; }
-.vip-access { --accent: #cfe4df; --tint: #e8f2ef; }
+.swoop { --accent: #eee4db; --tint: #eee4db; }
+.pairliament { --accent: #e2e9ec; --tint: #e2e9ec; }
+.triumvirat { --accent: #eae3ef; --tint: #eae3ef; }
+.ivy-league { --accent: #e3ece1; --tint: #e3ece1; }
+.vested { --accent: #eee2e8; --tint: #eee2e8; }
+.vip-access { --accent: #eceada; --tint: #eceada; }
 .player-folio { width: 100mm; height: 90mm; flex: none; padding: 3.5mm; border: 0.4mm solid var(--ink); background: var(--paper-bright); }
 .identity { display: flex; height: 14mm; align-items: center; gap: 2mm; border-bottom: 0.4mm solid var(--ink); background: var(--accent); padding: 1mm 2mm; }
 .emblem { flex: none; width: 10mm; height: 10mm; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.8; }

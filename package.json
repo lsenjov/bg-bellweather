@@ -17,12 +17,14 @@
     "generate:candidate-bonus-cards": "node scripts/generate-candidate-bonus-cards.mjs",
     "dev": "npm run dev --workspace @bellwether/server",
     "dev:web": "npm run dev --workspace @bellwether/web",
-    "docs:check": "python scripts/generate-default-map.py --check && python scripts/generate-physical-map.py --check && node --conditions=development --import tsx scripts/generate-scoring-cards.ts --check && node scripts/generate-candidate-bonus-cards.mjs --check && node scripts/generate-player-shields.mjs --check && node scripts/check-docs.mjs",
+    "docs:check": "python scripts/generate-default-map.py --check && python scripts/generate-physical-map.py --check && node --conditions=development --import tsx scripts/generate-scoring-cards.ts --check && node scripts/generate-candidate-bonus-cards.mjs --check && node scripts/generate-firm-pieces.mjs --check && node scripts/generate-firm-cards.mjs --check && node scripts/check-docs.mjs",
     "start": "npm run start --workspace @bellwether/server",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "npm run typecheck --workspaces --if-present && tsc -p examples/tsconfig.json --noEmit",
-    "generate:scoring-cards": "node --conditions=development --import tsx scripts/generate-scoring-cards.ts"
+    "generate:scoring-cards": "node --conditions=development --import tsx scripts/generate-scoring-cards.ts",
+    "print:check": "node scripts/check-print-layout.cjs",
+    "print:export": "bash scripts/export-print-assets.sh"
   },
   "devDependencies": {
     "@types/node": "^24.1.0",

@@ -8,6 +8,11 @@ const archiveRoot = join(repositoryRoot, "archive");
 const indexPath = join(docsRoot, "index.html");
 const errors = [];
 const generatedPrintOutputs = new Set([
+  "agents-a4.pdf",
+  "firm-cards-a4.pdf",
+  "reward-cards-a4.pdf",
+  "firm-references-a5.pdf",
+  "player-helper-a5.pdf",
   "player-folios-a4.pdf",
   "player-shields-a4.pdf",
   "operation-cards-a4.pdf",
@@ -37,7 +42,7 @@ function displayPath(file) {
 
 function extractAttributeValues(source, attribute) {
   const pattern = new RegExp(
-    `\\b${attribute}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s"'=<>\\x60]+))`,
+    `(?:^|[\\s<])${attribute}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s"'=<>\\x60]+))`,
     "gi",
   );
   return [...source.matchAll(pattern)].map((match) => match[1] ?? match[2] ?? match[3]);
