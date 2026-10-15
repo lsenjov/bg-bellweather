@@ -70,10 +70,31 @@ async function main() {
         }
         const backDesigns = new Map();
         for (const card of document.querySelectorAll('.print-card.back')) {
-          const key=card.querySelector('h2').textContent;
+          const key=card.dataset.suit;
+          if(card.textContent.trim() || card.querySelectorAll('.corner').length!==2 || card.querySelector('.corner-rank')) issues.push(`back leaks identity or lacks suits: ${card.dataset.cardId}`);
           const design=card.innerHTML;
           if (backDesigns.has(key) && backDesigns.get(key)!==design) issues.push(`non-identical back for ${key}`);
           backDesigns.set(key,design);
+        }
+        const fixedRanks={'Just Passing Through':'M','I Can Wait':'…','Parallel Paths':'M','A Step Foreseen':'M','Set the Stage':'M','Overnight Shipping':'M','Crow':'Crow','Cat':'Cat','Toad':'Toad','An Unwelcome Step':'D','Foretell Organise':'F O','Foretell Rally':'F R','Foretell Smear':'F S','Harvest: 0–2':'P 0–2','Harvest: 3–4':'P 3–4','Harvest: 5–6':'P 5–6'};
+        for(const card of document.querySelectorAll('.print-card.front')) {
+          const title=card.querySelector('h2').textContent;
+          const expected=card.dataset.suit.startsWith('party-')?'':card.dataset.suit==='common'||card.dataset.suit==='hecate-reward'?title[0]:title==='Election Prophecy'?`E ${card.querySelector('.prediction').textContent}`:fixedRanks[title];
+          if(expected===undefined || card.dataset.rank!==expected) issues.push(`incorrect index ${title}: ${card.dataset.rank}, expected ${expected}`);
+          const corners=[...card.querySelectorAll('.corner')];
+          if(corners.length!==2 || corners[0].innerHTML!==corners[1].innerHTML) issues.push(`missing or unequal corners: ${title}`);
+          for(const corner of corners) {
+            const a=corner.getBoundingClientRect(), b=card.querySelector('.card-body').getBoundingClientRect();
+            const first=card.querySelector('.card-kicker').getBoundingClientRect();
+            if(a.bottom>first.top+.5) issues.push(`corner overlaps body: ${title}`);
+            const rank=corner.querySelector('.corner-rank');
+            if(expected && !rank) issues.push(`missing rank: ${title}`);
+            if(expected && !['Crow','Cat','Toad'].includes(expected) && rank?.textContent!==expected) issues.push(`wrong rendered rank: ${title}`);
+            if(['Crow','Cat','Toad'].includes(expected) && !rank?.querySelector('.rank-animal')) issues.push(`missing familiar symbol: ${title}`);
+            if(!expected && rank) issues.push(`party card unexpectedly has rank: ${title}`);
+          }
+          const back=document.querySelector(`.back[data-card-id="${card.dataset.cardId}"]`);
+          if(back.dataset.suit!==card.dataset.suit || back.querySelector('.corner-suit').innerHTML!==card.querySelector('.corner-suit').innerHTML) issues.push(`incorrect back suit: ${title}`);
         }
         for (const card of document.querySelectorAll('.print-card:not(.blank)')) {
           const parent=card.getBoundingClientRect();
