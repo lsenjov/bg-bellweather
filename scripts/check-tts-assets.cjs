@@ -10,6 +10,25 @@ function assert(ok, message) {
 }
 assert(m.schemaVersion === 1, "Unsupported manifest version");
 const files = new Map(m.files.map((f) => [f.path, f]));
+assert(files.size === m.files.length, "Duplicate asset paths");
+assert(
+  new Set(m.files.map((f) => f.sha256)).size === m.files.length,
+  "Identical asset bytes should share one image",
+);
+const referencedImages = new Set();
+for (const deck of m.decks) {
+  referencedImages.add(deck.face.path);
+  referencedImages.add(deck.back.path);
+}
+for (const object of m.objects) {
+  referencedImages.add(object.image.path);
+  if (object.imageSecondary) referencedImages.add(object.imageSecondary.path);
+}
+assert(
+  referencedImages.size === files.size &&
+    [...files.keys()].every((file) => referencedImages.has(file)),
+  "Manifest contains unreferenced images",
+);
 for (const f of m.files) {
   assert(
     !path.isAbsolute(f.path) && !f.path.split("/").includes(".."),
@@ -65,6 +84,23 @@ for (const d of m.decks) {
 const count = (kind) =>
   m.objects.filter((o) => o.kind === kind).reduce((n, o) => n + o.count, 0);
 assert(count("opening-marker") === 12, "Expected 12 opening markers");
+assert(
+  m.objects.filter((o) => o.kind === "opening-marker").length === 6,
+  "Expected one opening-marker design per firm",
+);
+assert(
+  m.objects.filter((o) => o.id.startsWith("small-token-")).length === 3,
+  "Expected favour, history, and trap token designs",
+);
+assert(
+  m.objects.filter((o) => o.kind === "figurine").length === 9,
+  "Expected nine distinct standee designs",
+);
+assert(
+  m.objects.filter((o) => o.id.startsWith("agent-") && o.kind === "tile")
+    .length === 1,
+  "Expected one portrait design with six copies",
+);
 assert(count("figurine") === 15, "Expected 15 standees");
 assert(
   m.objects

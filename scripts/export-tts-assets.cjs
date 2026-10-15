@@ -51,20 +51,18 @@ const slug = (s) =>
     .replace(/^-|-$/g, "");
 function asset(name, buffer) {
   const sha256 = crypto.createHash("sha256").update(buffer).digest("hex");
+  const existing = manifest.files.find((file) => file.sha256 === sha256);
+  if (existing) return { path: existing.path, url: baseUrl + existing.path };
   const relative = `images/${slug(name)}-${sha256.slice(0, 16)}.png`;
   fs.writeFileSync(path.join(out, relative), buffer);
-  let meta = manifest.files.find((f) => f.path === relative);
-  if (!meta) {
-    meta = {
-      path: relative,
-      sha256,
-      bytes: buffer.length,
-      contentType: "image/png",
-      width: buffer.readUInt32BE(16),
-      height: buffer.readUInt32BE(20),
-    };
-    manifest.files.push(meta);
-  }
+  manifest.files.push({
+    path: relative,
+    sha256,
+    bytes: buffer.length,
+    contentType: "image/png",
+    width: buffer.readUInt32BE(16),
+    height: buffer.readUInt32BE(20),
+  });
   return { path: relative, url: baseUrl + relative };
 }
 async function load(page, file) {
@@ -233,8 +231,15 @@ async function main() {
     async function objects(source, selector, kind, prefix, width) {
       await load(page, source);
       const n = await page.locator(selector).count();
+      const designs = new Map();
       for (let i = 0; i < n; i++) {
         const e = page.locator(selector).nth(i);
+        const design = await e.evaluate((node) => node.outerHTML);
+        const existing = designs.get(design);
+        if (existing) {
+          existing.count++;
+          continue;
+        }
         const name = await e.evaluate(
           (node, fallback) =>
             node.getAttribute("aria-label") ||
@@ -247,7 +252,7 @@ async function main() {
           await capture(page, selector, i, width),
         );
         const f = manifest.files.find((f) => f.path === image.path);
-        manifest.objects.push({
+        const object = {
           id: `${prefix}-${i + 1}`,
           name: name.trim(),
           kind,
@@ -255,7 +260,9 @@ async function main() {
           image,
           width: f.width,
           height: f.height,
-        });
+        };
+        designs.set(design, object);
+        manifest.objects.push(object);
       }
     }
     await objects("party-boards", ".party-board", "board", "party-board", 1800);
@@ -351,10 +358,17 @@ async function main() {
     }
     await load(page, "agents");
     const pairs = page.locator(".agent-pair");
+    const agentDesigns = new Map();
     for (let i = 0; i < (await pairs.count()); i++) {
       const e = pairs.nth(i),
         name = await e.getAttribute("aria-label");
       const portrait = (await e.locator(".portrait").count()) > 0;
+      const design = await e.evaluate((node) => node.outerHTML);
+      const existing = agentDesigns.get(design);
+      if (existing) {
+        existing.count++;
+        continue;
+      }
       const image = asset(
         `agent-${i + 1}`,
         resize(await e.locator(".agent-face").first().screenshot(), 320, 320),
@@ -369,21 +383,18 @@ async function main() {
             ),
           )
         : image;
-      const existing =
-        !portrait &&
-        manifest.objects.find((o) => o.kind === "figurine" && o.name === name);
-      if (existing) existing.count++;
-      else
-        manifest.objects.push({
-          id: `agent-${i + 1}`,
-          name,
-          kind: portrait ? "tile" : "figurine",
-          count: 1,
-          image,
-          imageSecondary,
-          width: 320,
-          height: 320,
-        });
+      const object = {
+        id: `agent-${i + 1}`,
+        name,
+        kind: portrait ? "tile" : "figurine",
+        count: 1,
+        image,
+        imageSecondary,
+        width: 320,
+        height: 320,
+      };
+      agentDesigns.set(design, object);
+      manifest.objects.push(object);
     }
     await page.goto(
       pathToFileURL(path.join(root, "docs/assets/policy-district-map.svg"))

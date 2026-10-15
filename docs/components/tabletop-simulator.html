@@ -12,7 +12,7 @@
 npm run tts:check
 python scripts/test-publish-tts-assets.py
 python scripts/test-generate-tts-loader.py</code></pre>
-<p>Generated files are in <code>assets/tts/</code> and are not committed. <code>manifest.json</code> records image URLs, hashes, deck settings, card order and piece quantities. Images have content hashes in their filenames so future artwork exports can coexist with saved games.</p>
+<p>Generated files are in <code>assets/tts/</code> and are not committed. <code>manifest.json</code> records image URLs, hashes, deck settings, card order and piece quantities. Repeated pieces reuse a single image per design; the manifest records how many copies to create. Images have content hashes in their filenames so future artwork exports can coexist with saved games.</p>
 <p>The export contains all 151 cards in sixteen decks: common cards; six party suits; six firm suits; Hecate rewards; policies; and private priorities. It also includes the twelve opening markers, agent faces, reversible Gallery portraits, firm tokens, public markers, boards, twelve player folios, forty-eight private reminders, the score ledger and reference images. The printable suite remains available separately.</p>
 </section>
 <section><h2>Publish to S3</h2>
@@ -20,7 +20,7 @@ python scripts/test-generate-tts-loader.py</code></pre>
 <pre><code>python scripts/publish-tts-assets.py
 python scripts/publish-tts-assets.py --upload</code></pre>
 <p>The first command validates files and previews the upload without using AWS credentials. The second uses your configured AWS CLI identity, uploads only files listed in the manifest, and checks that each resulting image URL is accessible without authentication. It does not delete old assets or change bucket policies or ACLs.</p>
-<p>The supplied bucket now grants public read access only to <code>tabletop-simulator/*</code>, as approved. All 118 exported image URLs were verified without authentication on 2026-10-15. This policy grants no listing or write access.</p>
+<p>The supplied bucket now grants public read access only to <code>tabletop-simulator/*</code>, as approved. The current export uses 86 unique images, all drawn from the URLs verified without authentication on 2026-10-15. This policy grants no listing or write access.</p>
 <p>Players need stable public HTTPS access to the images. If the bucket remains private, use your public delivery service, such as CloudFront. Regenerate and publish using the same delivery prefix in both commands:</p>
 <pre><code>npm run tts:export -- --base-url https://YOUR-PUBLIC-HOST/tabletop-simulator/
 python scripts/publish-tts-assets.py --base-url https://YOUR-PUBLIC-HOST/tabletop-simulator/ --upload</code></pre>
