@@ -11,4 +11,4 @@ Remove Support circles/checks. Show Election retention limit / Support capacity 
 
 ## Status
 
-Step 1 complete. Previous SVG, generator and geometry archived. New rendered map inspected; four focused tests and docs checks pass. Independent review found no issues and verified unchanged district geometry, adjacency and fixture dimensions. Step 2 exports underway.
+Step 1 complete. Previous SVG, generator and geometry archived. New rendered map inspected; four focused tests and docs checks pass. Independent review found no issues and verified unchanged district geometry, adjacency and fixture dimensions. Step 2 complete. Regenerated the single-page A3 PDF and TTS suite; only the map image changed. TTS inventory checks and Lua syntax pass. Uploaded district-map-338aa1abae344c7a.png and verified its public download against the manifest SHA256. Manifest/importer reference the new URL. Existing table instances can replace the board image directly.

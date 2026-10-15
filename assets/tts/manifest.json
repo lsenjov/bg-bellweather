@@ -677,9 +677,9 @@
       "height": 320
     },
     {
-      "path": "images/district-map-9735a3d1c37bd84c.png",
-      "sha256": "9735a3d1c37bd84cdad7428880709bb330038d28c9af3a60bb234316193c5a72",
-      "bytes": 654722,
+      "path": "images/district-map-338aa1abae344c7a.png",
+      "sha256": "338aa1abae344c7ab0d2a49c30581a956228a680993409686d01f145924f22eb",
+      "bytes": 376578,
       "contentType": "image/png",
       "width": 4096,
       "height": 2897
@@ -1785,8 +1785,8 @@
       "kind": "board",
       "count": 1,
       "image": {
-        "path": "images/district-map-9735a3d1c37bd84c.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/district-map-9735a3d1c37bd84c.png"
+        "path": "images/district-map-338aa1abae344c7a.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/district-map-338aa1abae344c7a.png"
       }
     },
     {
