@@ -541,14 +541,6 @@
       "height": 1260
     },
     {
-      "path": "images/score-ledger-1-4e5c9bc7e8650d5c.png",
-      "sha256": "4e5c9bc7e8650d5caea4a2d15c13101d661eb68f18ec7f002d84965ec7e5346d",
-      "bytes": 22522,
-      "contentType": "image/png",
-      "width": 1800,
-      "height": 423
-    },
-    {
       "path": "images/reminder-vote-front-2ad52b7b3e98d1cc.png",
       "sha256": "2ad52b7b3e98d1cc17ab03e5dbd809da1fa0dfbc8ffa348d06599b3bddbf1185",
       "bytes": 11027,
@@ -2208,18 +2200,6 @@
       },
       "width": 1400,
       "height": 1260
-    },
-    {
-      "id": "score-ledger-1",
-      "name": "score-ledger 1",
-      "kind": "reference",
-      "count": 1,
-      "image": {
-        "path": "images/score-ledger-1-4e5c9bc7e8650d5c.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/score-ledger-1-4e5c9bc7e8650d5c.png"
-      },
-      "width": 1800,
-      "height": 423
     },
     {
       "id": "reminder-vote",

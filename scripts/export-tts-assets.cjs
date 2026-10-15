@@ -301,13 +301,6 @@ async function main() {
       "player-folio",
       1400,
     );
-    await objects(
-      "campaign-score-trackers",
-      "table",
-      "reference",
-      "score-ledger",
-      1800,
-    );
     await load(page, "shared-state-tokens-duplex");
     for (const [kind, front, back] of [
       ["vote", "yes", "no"],

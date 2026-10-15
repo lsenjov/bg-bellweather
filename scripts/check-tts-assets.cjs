@@ -126,8 +126,12 @@ const sharedReference = m.objects.find((o) => o.id === "shared-reference-1");
 assert(sharedReference?.imageSecondary, "Shared reference must have two faces");
 assert(count("token") === 15, "Expected 13 firm tokens and two public markers");
 assert(
-  count("reference") === 8,
-  "Expected six firm references, double-sided shared aid, score ledger",
+  count("reference") === 7,
+  "Expected six firm references and double-sided shared aid",
+);
+assert(
+  !m.objects.some((o) => o.id.startsWith("score-ledger")),
+  "Score ledger is excluded from TTS",
 );
 for (const o of m.objects)
   for (const ref of [o.image, o.imageSecondary].filter(Boolean))
