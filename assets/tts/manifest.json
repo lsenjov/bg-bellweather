@@ -975,7 +975,11 @@
           "id": "operation-cards-54",
           "name": "Smear"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "party-honeycomb",
@@ -1011,7 +1015,11 @@
           "id": "bonus-cards-3",
           "name": "Every Bee Counts"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "party-old-shell",
@@ -1047,7 +1055,11 @@
           "id": "bonus-cards-6",
           "name": "Institutional Memory"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "party-foxglove",
@@ -1083,7 +1095,11 @@
           "id": "bonus-cards-9",
           "name": "Shell Firm"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "party-riverworks",
@@ -1119,7 +1135,11 @@
           "id": "bonus-cards-12",
           "name": "Mass Transit"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "party-many-wings",
@@ -1155,7 +1175,11 @@
           "id": "bonus-cards-15",
           "name": "Empty Every Nest"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "party-night-parliament",
@@ -1191,7 +1215,11 @@
           "id": "bonus-cards-18",
           "name": "Midnight Session"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "firm-1",
@@ -1232,7 +1260,11 @@
           "id": "firm-cards-4",
           "name": "I Can Wait"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "firm-2",
@@ -1273,7 +1305,11 @@
           "id": "firm-cards-8",
           "name": "Parallel Paths"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "firm-3",
@@ -1369,7 +1405,11 @@
           "id": "firm-cards-23",
           "name": "An Unwelcome Step"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "firm-4",
@@ -1405,7 +1445,11 @@
           "id": "firm-cards-26",
           "name": "Toad"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "firm-5",
@@ -1441,7 +1485,11 @@
           "id": "firm-cards-29",
           "name": "Set the Stage"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "firm-6",
@@ -1472,7 +1520,11 @@
           "id": "firm-cards-31",
           "name": "Overnight Shipping"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "hecate-reward",
@@ -1523,7 +1575,11 @@
           "id": "reward-cards-6",
           "name": "Smear"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "policies",
@@ -1694,7 +1750,11 @@
           "id": "policies-30",
           "name": "Party policy\nP30 · Rev 27"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 63,
+        "height": 88
+      }
     },
     {
       "id": "priorities",
@@ -1775,7 +1835,11 @@
           "id": "priorities-12",
           "name": "PRIVATE PRIORITIES\nS12"
         }
-      ]
+      ],
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     }
   ],
   "objects": [
@@ -1787,6 +1851,10 @@
       "image": {
         "path": "images/district-map-338aa1abae344c7a.png",
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/district-map-338aa1abae344c7a.png"
+      },
+      "physicalSizeMm": {
+        "width": 420,
+        "height": 297
       }
     },
     {
@@ -1799,7 +1867,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-board-1-8192e695e75d8d1d.png"
       },
       "width": 1800,
-      "height": 627
+      "height": 627,
+      "physicalSizeMm": {
+        "width": 287,
+        "height": 100
+      }
     },
     {
       "id": "party-board-2",
@@ -1811,7 +1883,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-board-2-4bc3fd267a82292f.png"
       },
       "width": 1800,
-      "height": 627
+      "height": 627,
+      "physicalSizeMm": {
+        "width": 287,
+        "height": 100
+      }
     },
     {
       "id": "party-board-3",
@@ -1823,7 +1899,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-board-3-84815e4226e11be9.png"
       },
       "width": 1800,
-      "height": 627
+      "height": 627,
+      "physicalSizeMm": {
+        "width": 287,
+        "height": 100
+      }
     },
     {
       "id": "party-board-4",
@@ -1835,7 +1915,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-board-4-45b9674e45aa4c26.png"
       },
       "width": 1800,
-      "height": 627
+      "height": 627,
+      "physicalSizeMm": {
+        "width": 287,
+        "height": 100
+      }
     },
     {
       "id": "party-board-5",
@@ -1847,7 +1931,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-board-5-a9c6365ebd24f8af.png"
       },
       "width": 1800,
-      "height": 627
+      "height": 627,
+      "physicalSizeMm": {
+        "width": 287,
+        "height": 100
+      }
     },
     {
       "id": "party-board-6",
@@ -1859,7 +1947,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-board-6-56e11e4d8a3fc9c3.png"
       },
       "width": 1800,
-      "height": 627
+      "height": 627,
+      "physicalSizeMm": {
+        "width": 287,
+        "height": 100
+      }
     },
     {
       "id": "firm-reference-1",
@@ -1871,7 +1963,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-1-c45083d1a4324be9.png"
       },
       "width": 1800,
-      "height": 1269
+      "height": 1269,
+      "physicalSizeMm": {
+        "width": 210,
+        "height": 148
+      }
     },
     {
       "id": "firm-reference-2",
@@ -1883,7 +1979,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-2-8f3e64f7a4206cb0.png"
       },
       "width": 1800,
-      "height": 1269
+      "height": 1269,
+      "physicalSizeMm": {
+        "width": 210,
+        "height": 148
+      }
     },
     {
       "id": "firm-reference-3",
@@ -1895,7 +1995,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-3-4715e26ca5b86a1b.png"
       },
       "width": 1800,
-      "height": 1269
+      "height": 1269,
+      "physicalSizeMm": {
+        "width": 210,
+        "height": 148
+      }
     },
     {
       "id": "firm-reference-4",
@@ -1907,7 +2011,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-4-49b4615775666f8f.png"
       },
       "width": 1800,
-      "height": 1269
+      "height": 1269,
+      "physicalSizeMm": {
+        "width": 210,
+        "height": 148
+      }
     },
     {
       "id": "firm-reference-5",
@@ -1919,7 +2027,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-5-0eaa03acf6dfbf3b.png"
       },
       "width": 1800,
-      "height": 1269
+      "height": 1269,
+      "physicalSizeMm": {
+        "width": 210,
+        "height": 148
+      }
     },
     {
       "id": "firm-reference-6",
@@ -1931,7 +2043,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-6-e285e7966ace038f.png"
       },
       "width": 1800,
-      "height": 1269
+      "height": 1269,
+      "physicalSizeMm": {
+        "width": 210,
+        "height": 148
+      }
     },
     {
       "id": "shared-reference-1",
@@ -1947,6 +2063,10 @@
       "imageSecondary": {
         "path": "images/shared-reference-2-6f73cfbce9c21854.png",
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/shared-reference-2-6f73cfbce9c21854.png"
+      },
+      "physicalSizeMm": {
+        "width": 148,
+        "height": 210
       }
     },
     {
@@ -1959,7 +2079,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/opening-marker-1-b851df1fdb1c3c80.png"
       },
       "width": 320,
-      "height": 488
+      "height": 488,
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "opening-marker-3",
@@ -1971,7 +2095,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/opening-marker-3-7152425a34117b97.png"
       },
       "width": 320,
-      "height": 488
+      "height": 488,
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "opening-marker-5",
@@ -1983,7 +2111,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/opening-marker-5-27663786367bd241.png"
       },
       "width": 320,
-      "height": 488
+      "height": 488,
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "opening-marker-7",
@@ -1995,7 +2127,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/opening-marker-7-9f0275c7ccfdc3a7.png"
       },
       "width": 320,
-      "height": 488
+      "height": 488,
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "opening-marker-9",
@@ -2007,7 +2143,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/opening-marker-9-516bfc8d6bc50d6f.png"
       },
       "width": 320,
-      "height": 488
+      "height": 488,
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "opening-marker-11",
@@ -2019,7 +2159,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/opening-marker-11-f6bdacf124e506dd.png"
       },
       "width": 320,
-      "height": 488
+      "height": 488,
+      "physicalSizeMm": {
+        "width": 40,
+        "height": 61
+      }
     },
     {
       "id": "small-token-1",
@@ -2031,7 +2175,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/small-token-1-d7ee873cbfffb613.png"
       },
       "width": 256,
-      "height": 256
+      "height": 256,
+      "physicalSizeMm": {
+        "width": 16,
+        "height": 16
+      }
     },
     {
       "id": "small-token-7",
@@ -2043,7 +2191,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/small-token-7-bfc4c4c8cc196b3e.png"
       },
       "width": 256,
-      "height": 256
+      "height": 256,
+      "physicalSizeMm": {
+        "width": 16,
+        "height": 16
+      }
     },
     {
       "id": "small-token-13",
@@ -2055,7 +2207,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/small-token-13-b5b0a93ac9d99a6e.png"
       },
       "width": 256,
-      "height": 256
+      "height": 256,
+      "physicalSizeMm": {
+        "width": 16,
+        "height": 16
+      }
     },
     {
       "id": "player-folio-1",
@@ -2067,7 +2223,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-1-329a95408f42cbe1.png"
       },
       "width": 1400,
-      "height": 1260
+      "height": 1260,
+      "physicalSizeMm": {
+        "width": 100,
+        "height": 90
+      }
     },
     {
       "id": "player-folio-2",
@@ -2079,7 +2239,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-2-883f349ddcbdfaa6.png"
       },
       "width": 1400,
-      "height": 1260
+      "height": 1260,
+      "physicalSizeMm": {
+        "width": 100,
+        "height": 90
+      }
     },
     {
       "id": "player-folio-3",
@@ -2091,7 +2255,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-3-f710303a8b5ab3aa.png"
       },
       "width": 1400,
-      "height": 1260
+      "height": 1260,
+      "physicalSizeMm": {
+        "width": 100,
+        "height": 90
+      }
     },
     {
       "id": "player-folio-4",
@@ -2103,7 +2271,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-4-c88a8be718c5fed2.png"
       },
       "width": 1400,
-      "height": 1260
+      "height": 1260,
+      "physicalSizeMm": {
+        "width": 100,
+        "height": 90
+      }
     },
     {
       "id": "player-folio-5",
@@ -2115,7 +2287,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-5-7deffd59e9bf12ea.png"
       },
       "width": 1400,
-      "height": 1260
+      "height": 1260,
+      "physicalSizeMm": {
+        "width": 100,
+        "height": 90
+      }
     },
     {
       "id": "player-folio-6",
@@ -2127,7 +2303,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-6-8d3c5e18835e522f.png"
       },
       "width": 1400,
-      "height": 1260
+      "height": 1260,
+      "physicalSizeMm": {
+        "width": 100,
+        "height": 90
+      }
     },
     {
       "id": "player-folio-7",
@@ -2139,7 +2319,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-7-e10d94d4c561460a.png"
       },
       "width": 1400,
-      "height": 1260
+      "height": 1260,
+      "physicalSizeMm": {
+        "width": 100,
+        "height": 90
+      }
     },
     {
       "id": "player-folio-8",
@@ -2151,7 +2335,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-8-31dd12008f55fa90.png"
       },
       "width": 1400,
-      "height": 1260
+      "height": 1260,
+      "physicalSizeMm": {
+        "width": 100,
+        "height": 90
+      }
     },
     {
       "id": "player-folio-9",
@@ -2163,7 +2351,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-9-a402d14d131abd97.png"
       },
       "width": 1400,
-      "height": 1260
+      "height": 1260,
+      "physicalSizeMm": {
+        "width": 100,
+        "height": 90
+      }
     },
     {
       "id": "player-folio-10",
@@ -2175,7 +2367,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-10-fe6a2f8e76573d2b.png"
       },
       "width": 1400,
-      "height": 1260
+      "height": 1260,
+      "physicalSizeMm": {
+        "width": 100,
+        "height": 90
+      }
     },
     {
       "id": "player-folio-11",
@@ -2187,7 +2383,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-11-5321e3aa77309a60.png"
       },
       "width": 1400,
-      "height": 1260
+      "height": 1260,
+      "physicalSizeMm": {
+        "width": 100,
+        "height": 90
+      }
     },
     {
       "id": "player-folio-12",
@@ -2199,7 +2399,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/player-folio-12-7b289baee7958b46.png"
       },
       "width": 1400,
-      "height": 1260
+      "height": 1260,
+      "physicalSizeMm": {
+        "width": 100,
+        "height": 90
+      }
     },
     {
       "id": "reminder-vote",
@@ -2215,7 +2419,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/reminder-vote-back-8ea2bfedd973a470.png"
       },
       "width": 256,
-      "height": 256
+      "height": 256,
+      "physicalSizeMm": {
+        "width": 16,
+        "height": 16
+      }
     },
     {
       "id": "reminder-range",
@@ -2231,7 +2439,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/reminder-range-back-6050b7ea28409c57.png"
       },
       "width": 256,
-      "height": 256
+      "height": 256,
+      "physicalSizeMm": {
+        "width": 16,
+        "height": 16
+      }
     },
     {
       "id": "early-bird",
@@ -2241,6 +2453,10 @@
       "image": {
         "path": "images/early-bird-0de99c4e4b383203.png",
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/early-bird-0de99c4e4b383203.png"
+      },
+      "physicalSizeMm": {
+        "width": 24,
+        "height": 24
       }
     },
     {
@@ -2251,6 +2467,10 @@
       "image": {
         "path": "images/year-2fa708ba31973de9.png",
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/year-2fa708ba31973de9.png"
+      },
+      "physicalSizeMm": {
+        "width": 22,
+        "height": 22
       }
     },
     {
@@ -2267,7 +2487,10 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-1-0ec8e5f5f072690e.png"
       },
       "width": 320,
-      "height": 320
+      "height": 320,
+      "physicalSizeMm": {
+        "width": 25.4
+      }
     },
     {
       "id": "agent-2",
@@ -2283,7 +2506,10 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-2-c97f60d90d06854a.png"
       },
       "width": 320,
-      "height": 320
+      "height": 320,
+      "physicalSizeMm": {
+        "width": 25.4
+      }
     },
     {
       "id": "agent-4",
@@ -2299,7 +2525,10 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-4-a9b6c285fc76cf21.png"
       },
       "width": 320,
-      "height": 320
+      "height": 320,
+      "physicalSizeMm": {
+        "width": 25.4
+      }
     },
     {
       "id": "agent-7",
@@ -2315,7 +2544,10 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-7-e9fcb4884eb61ea9.png"
       },
       "width": 320,
-      "height": 320
+      "height": 320,
+      "physicalSizeMm": {
+        "width": 25.4
+      }
     },
     {
       "id": "agent-8",
@@ -2331,7 +2563,10 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-8-da0698fbaf0c3fae.png"
       },
       "width": 320,
-      "height": 320
+      "height": 320,
+      "physicalSizeMm": {
+        "width": 25.4
+      }
     },
     {
       "id": "agent-9",
@@ -2347,7 +2582,10 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-9-4b6aefb6cf4b61fe.png"
       },
       "width": 320,
-      "height": 320
+      "height": 320,
+      "physicalSizeMm": {
+        "width": 25.4
+      }
     },
     {
       "id": "agent-10",
@@ -2363,7 +2601,10 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-10-cac2976bf511a866.png"
       },
       "width": 320,
-      "height": 320
+      "height": 320,
+      "physicalSizeMm": {
+        "width": 25.4
+      }
     },
     {
       "id": "agent-11",
@@ -2379,7 +2620,10 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-11-13dc0674c0bf1555.png"
       },
       "width": 320,
-      "height": 320
+      "height": 320,
+      "physicalSizeMm": {
+        "width": 25.4
+      }
     },
     {
       "id": "agent-12",
@@ -2395,7 +2639,10 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-12-059b7aeafc5348fa.png"
       },
       "width": 320,
-      "height": 320
+      "height": 320,
+      "physicalSizeMm": {
+        "width": 25.4
+      }
     },
     {
       "id": "agent-16",
@@ -2411,7 +2658,11 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/agent-16-asleep-cb0d4cbb9420abe8.png"
       },
       "width": 320,
-      "height": 320
+      "height": 320,
+      "physicalSizeMm": {
+        "width": 25.4,
+        "height": 25.4
+      }
     }
   ]
 }

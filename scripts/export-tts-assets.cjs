@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const fs = require("node:fs");
+const { physicalSize } = require("./tts-physical-sizes.cjs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const { execFileSync } = require("node:child_process");
@@ -415,6 +416,8 @@ async function main() {
     sharedFront.name = "Shared player reference";
     sharedFront.imageSecondary = sharedBack.image;
     manifest.objects = manifest.objects.filter((o) => o !== sharedBack);
+    for (const item of [...manifest.decks, ...manifest.objects])
+      item.physicalSizeMm = physicalSize(item);
     fs.writeFileSync(
       path.join(out, "manifest.json"),
       JSON.stringify(manifest, null, 2) + "\n",

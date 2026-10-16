@@ -2,6 +2,7 @@
 """Generate a manually invoked TTS layout importer from the asset manifest."""
 import argparse
 import json
+import math
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -20,23 +21,32 @@ def positive_integer(value, label):
     return value
 
 
+def physical_size(item, figurine=False):
+    size = item['physicalSizeMm']
+    required = {'width'} if figurine else {'width', 'height'}
+    if not isinstance(size, dict) or set(size) != required:
+        raise ValueError('Physical dimensions must specify width and height, or width only for figurines')
+    for value in size.values():
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
+            raise ValueError('Physical dimensions must be positive finite millimetres')
+    return size
+
+
 def build_specs(manifest):
     if manifest.get('schemaVersion') != 1:
         raise ValueError('Expected manifest schemaVersion 1')
     specs = []
-    for index, deck in enumerate(manifest['decks']):
+    for deck in manifest['decks']:
         width = positive_integer(deck['width'], 'Deck width')
         height = positive_integer(deck['height'], 'Deck height')
         number = positive_integer(deck['number'], 'Deck number')
         if number > width * height:
             raise ValueError('Deck count exceeds sheet dimensions')
-        specs.append(dict(name=deck['name'], type='DeckCustom',
-                          position=[-18 + (index % 8) * 5, 2, -15 - (index // 8) * 5],
+        specs.append(dict(name=deck['name'], type='DeckCustom', physicalSizeMm=physical_size(deck),
                           custom=dict(face=public_url(deck['face']), back=public_url(deck['back']),
                                       width=width, height=height, number=number,
                                       unique_back=deck.get('uniqueBack', False),
                                       back_is_hidden=deck.get('backIsHidden', True))))
-    shelf_index = 0
     for item in manifest['objects']:
         kind = item['kind']
         image = public_url(item['image'])
@@ -52,17 +62,22 @@ def build_specs(manifest):
         else:
             raise ValueError(f'Unsupported object kind: {kind}')
         for copy in range(count):
+            spec = dict(name=item['name'], type=obj_type, custom=custom,
+                        physicalSizeMm=physical_size(item, kind == 'figurine'))
             if kind == 'board' and item.get('id') == 'district-map':
-                position = [0, 1, 0]
-            else:
-                position = [-22 + (shelf_index % 12) * 4, 2, 15 + (shelf_index // 12) * 4]
-                shelf_index += 1
-            spec = dict(name=item['name'], type=obj_type, custom=custom, position=position)
-            if kind == 'board' and item.get('id') == 'district-map':
-                spec.update(scale=[2, 1, 2], locked=True)
-            elif kind == 'board':
-                spec.update(scale=[0.25, 1, 0.25])
+                spec.update(position=[0, 1, 0], locked=True)
             specs.append(spec)
+    x, z, row_depth = -24, 16, 0
+    for spec in specs:
+        if spec.get('locked'):
+            continue
+        size = spec['physicalSizeMm']
+        width, depth = size['width'] / 25.4, size.get('height', size['width']) / 25.4
+        if x + width > 24:
+            x, z, row_depth = -24, z + row_depth + 1, 0
+        spec['position'] = [x + width / 2, 2, z + depth / 2]
+        x += width + 1
+        row_depth = max(row_depth, depth)
     return specs
 
 
@@ -77,9 +92,49 @@ def generate(manifest):
     payload = json.dumps(build_specs(manifest), ensure_ascii=False, separators=(',', ':'))
     return '''-- Paste into Global, save, then run: lua Global.call("spawnBellwether")
 -- Official API: https://api.tabletopsimulator.com/custom-game-objects/
--- Layout only. Choose a sufficiently large table and arrange/scale pieces before saving.
+-- Physical convention: one world unit = 25.4 mm. Choose a sufficiently large table.
 local bellwetherSpecs = JSON.decode(''' + lua_long_string(payload) + ''')
 local bellwetherImported = false
+
+local function sizeBellwetherObject(object, spec)
+    Wait.condition(function()
+        local bounds = object.getBoundsNormalized().size
+        local scale = object.getScale()
+        local factor = spec.physicalSizeMm.width / 25.4 / bounds.x
+        if spec.type == "Figurine_Custom" then
+            object.setScale({scale.x * factor, scale.y * factor, scale.z * factor})
+        else
+            object.setScale({scale.x * factor, scale.y,
+                scale.z * spec.physicalSizeMm.height / 25.4 / bounds.z})
+        end
+    end, function()
+        if object.spawning or object.loading_custom then return false end
+        local bounds = object.getBoundsNormalized().size
+        return bounds.x > 0 and bounds.z > 0
+    end, 30, function() print("Bellwether sizing timed out: " .. spec.name) end)
+end
+
+function resizeBellwether()
+    local byUrl = {}
+    for _, spec in ipairs(bellwetherSpecs) do
+        byUrl[spec.custom.face or spec.custom.image] = spec
+        if spec.locked then
+            local legacy = string.gsub(spec.custom.image, "district%-map%-[^/]+%.png$",
+                "district-map-9735a3d1c37bd84c.png")
+            byUrl[legacy] = spec
+        end
+    end
+    local count = 0
+    for _, object in ipairs(getAllObjects()) do
+        local custom = object.getCustomObject()
+        local spec = custom and byUrl[custom.face or custom.image]
+        if spec then
+            sizeBellwetherObject(object, spec)
+            count = count + 1
+        end
+    end
+    print("Bellwether sizing requested for " .. count .. " matching objects.")
+end
 
 function spawnBellwether()
     if bellwetherImported then
@@ -95,7 +150,7 @@ function spawnBellwether()
             rotation = {0, 180, 0},
             callback_function = function(object)
                 object.setName(spec.name)
-                if spec.scale then object.setScale(spec.scale) end
+                sizeBellwetherObject(object, spec)
                 if spec.locked then object.setLock(true) end
             end
         })

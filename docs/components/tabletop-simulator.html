@@ -28,8 +28,25 @@ python scripts/publish-tts-assets.py --base-url https://YOUR-PUBLIC-HOST/tableto
 </section>
 <section><h2>Import the component set</h2>
 <pre><code>python scripts/generate-tts-loader.py</code></pre>
-<p>This writes <code>assets/tts/import-bellwether.lua</code>. After publishing the images, start an empty Tabletop Simulator table, paste the script into the Global scripting editor, and save it. Open the console and run <code>lua Global.call("spawnBellwether")</code>. The script imports the manifest's decks and pieces into a staging layout. Allow roughly 50 × 80 Tabletop Simulator units of clear staging space, plus margin for the pieces. Arrange and scale the components, then save the game. It does not run automatically on load. Run it only once on an empty table; saving/reloading the script resets its duplicate-import guard.</p>
+<p>This writes <code>assets/tts/import-bellwether.lua</code>. After publishing the images, start an empty Tabletop Simulator table, paste the script into the Global scripting editor, and save it. Open the console and run <code>lua Global.call("spawnBellwether")</code>. The script imports the manifest's decks and pieces into a staging layout. Allow roughly 50 × 80 Tabletop Simulator units of clear staging space, plus margin for the pieces. Arrange the components, then save the game. Their sizes are set automatically after their assets finish loading. It does not run automatically on load. Run it only once on an empty table; saving/reloading the script resets its duplicate-import guard.</p>
 <p>The importer has local generation and Lua syntax checks; its appearance and physics still need an in-game check. Manual import is also available below.</p>
+</section>
+<section><h2>Physical scale and existing tables</h2>
+<p>The importer uses one world unit per 25.4 mm as a shared scale for all components. It measures each loaded object's rotation-normalized bounds before setting its size; image resolution and native model scale do not determine the finished dimensions. Flat components keep their thickness; standees scale uniformly to 25.4 mm across.</p>
+<table><thead><tr><th>Component</th><th>Dimensions</th></tr></thead><tbody>
+<tr><td>Board</td><td>420 × 297 mm (A3 landscape)</td></tr>
+<tr><td>Policies</td><td>63 × 88 mm; match the board's policy wells</td></tr>
+<tr><td>Other cards and opening markers</td><td>40 × 61 mm</td></tr>
+<tr><td>Agents / portraits</td><td>25.4 mm across / 25.4 × 25.4 mm</td></tr>
+<tr><td>Firm references / shared reference</td><td>210 × 148 mm / 148 × 210 mm</td></tr>
+<tr><td>Party boards / player folios</td><td>287 × 100 mm / 100 × 90 mm</td></tr>
+<tr><td>Small tokens and private reminders</td><td>16 × 16 mm</td></tr>
+<tr><td>Early Bird / Year marker</td><td>24 × 24 mm / 22 × 22 mm</td></tr>
+</tbody></table>
+<p>For an existing imported table, replace the Global script with the updated <code>import-bellwether.lua</code>, save it, then run:</p>
+<pre><code>lua Global.call("resizeBellwether")</code></pre>
+<p>This resizes matching objects already on the table, including the board using its original image URL. It does not spawn copies or change positions, rotations or lock states. Objects are matched by their known asset URLs; unrelated components are untouched. Objects stored inside bags are not exposed to this pass. Run it again after taking those out. Check the layout after resizing and save the table.</p>
+<p>For a new table, <code>spawnBellwether</code> applies sizing automatically. The measurement uses the <a href="https://api.tabletopsimulator.com/object/#getboundsnormalized">TTS normalized-bounds API</a>. Local tests cover the scaling calculation and asset-loading timing; actual in-game appearance still needs checking.</p>
 </section>
 <section><h2>Import components manually</h2>
 <p>For each manifest deck, create a Custom Deck using <code>face.url</code> and <code>back.url</code>. Set Width and Height to the manifest grid dimensions and Number to its card count. Enable Back is Hidden and leave Unique Backs disabled. Each atlas reserves its final cell for the safe shared back. These images use normal row order, not physical duplex order. See the <a href="https://kb.tabletopsimulator.com/custom-content/custom-deck/">official Custom Deck guide</a>.</p>

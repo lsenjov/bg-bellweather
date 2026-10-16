@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const fs = require("node:fs");
+const { physicalSize } = require("./tts-physical-sizes.cjs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const { execFileSync } = require("node:child_process");
@@ -9,6 +10,10 @@ function assert(ok, message) {
   if (!ok) throw Error(message);
 }
 assert(m.schemaVersion === 1, "Unsupported manifest version");
+for (const item of [...m.decks, ...m.objects]) {
+  assert(JSON.stringify(item.physicalSizeMm) === JSON.stringify(physicalSize(item)),
+    `Incorrect physical dimensions: ${item.id}`);
+}
 const files = new Map(m.files.map((f) => [f.path, f]));
 assert(files.size === m.files.length, "Duplicate asset paths");
 assert(
