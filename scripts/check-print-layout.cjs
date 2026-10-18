@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const assert = require('node:assert/strict');
+const { readFileSync } = require('node:fs');
 const { execFileSync } = require('node:child_process');
 const { join, resolve } = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -108,7 +109,57 @@ async function main() {
       assert.deepEqual(problems,[],`${file} duplex/content checks`);
       await page.close();
     }
-    console.log('Print layout checks pass: component counts, physical dimensions, content bounds, matching card backs, and mirrored duplex alignment.');
+    const policyPage = await inspect(browser, 'printable-policy-cards.html', [
+      ['.print-sheet', 8, 210, 297], ['.policy-card.front', 30, 63, 88], ['.policy-card.back', 30, 63, 88], ['.policy-blank', 12, 63, 88],
+    ]);
+    const policyData = JSON.parse(readFileSync(join(root, 'docs/components/policy-deck.json'), 'utf8'));
+    const policyProblems = await policyPage.evaluate(({ policies, effects, parties }) => {
+      const problems = [];
+      const votes = (card, forPolicy) => parties
+        .filter(p => (p.order.indexOf(card.plus) < p.order.indexOf(card.minus)) === forPolicy)
+        .sort((a, b) => {
+          const gap = p => Math.abs(p.order.indexOf(card.plus) - p.order.indexOf(card.minus));
+          return gap(b) - gap(a) || a.order.indexOf(card.plus) - b.order.indexOf(card.plus);
+        }).map(p => p.name);
+      for (const card of policies) {
+        const front = document.querySelector(`.policy-card.front[data-card-id="${card.id}"]`);
+        const back = document.querySelector(`.policy-card.back[data-card-id="${card.id}"]`);
+        const effect = effects.find(e => e.id === card.effect);
+        const text = (node, selector) => node.querySelector(selector)?.textContent.trim();
+        for (const face of [front, back]) {
+          if (text(face, 'h2') !== card.name || face.dataset.plus !== card.plus || face.dataset.minus !== card.minus) problems.push(`${card.id}: mismatched name/issues`);
+        }
+        if (front.querySelector('.law') || text(front, 'header b') !== 'Proposal') problems.push(`${card.id}: proposal exposes ability or lacks face label`);
+        if (text(back, 'header b') !== 'Enacted' || back.dataset.effect !== String(effect.id) || back.dataset.scope !== effect.scope || text(back, '.law-scope') !== `${effect.scope} ability` || text(back, '.law h3') !== effect.name || text(back, '.law-text') !== effect.text) problems.push(`${card.id}: enacted ability changed or missing`);
+        if (text(front, '.policy-flavour') !== card.frontFlavour || text(back, '.consequence') !== card.backFlavour) problems.push(`${card.id}: flavour changed or missing`);
+        for (const [i, forPolicy] of [true, false].entries()) {
+          const row = front.querySelectorAll('.vote-row')[i];
+          if (text(row, 'h3 span') !== `${forPolicy ? '+' : '−'} ${forPolicy ? card.plus : card.minus}` || text(row, 'h3 small') !== (forPolicy ? 'For' : 'Against')) problems.push(`${card.id}: issue/vote label changed`);
+          if (JSON.stringify([...row.querySelectorAll('.party-vote span')].map(n => n.textContent)) !== JSON.stringify(votes(card, forPolicy))) problems.push(`${card.id}: vote order changed`);
+        }
+        if (JSON.stringify([...back.querySelectorAll('.policy-issues b')].map(n => n.textContent)) !== JSON.stringify([`+ ${card.plus}`, `− ${card.minus}`])) problems.push(`${card.id}: enacted issues changed`);
+        const flavour = front.querySelector('.policy-flavour').getBoundingClientRect();
+        const voteBox = front.querySelector('.policy-votes').getBoundingClientRect();
+        if (flavour.bottom > voteBox.top) problems.push(`${card.id}: proposal flavour overlaps votes`);
+        const law = back.querySelector('.law').getBoundingClientRect();
+        const consequence = back.querySelector('.consequence').getBoundingClientRect();
+        if (law.bottom > consequence.top) problems.push(`${card.id}: ability overlaps consequence`);
+      }
+      for (const front of document.querySelectorAll('.front-sheet')) {
+        const back = document.querySelector(`.back-sheet[data-sheet="${front.dataset.sheet}"]`);
+        const fronts = [...front.children], backs = [...back.children];
+        fronts.forEach((card, index) => {
+          const match = backs[Math.floor(index / 3) * 3 + 2 - index % 3];
+          if (card.dataset.cardId !== match?.dataset.cardId || card.classList.contains('policy-blank') !== match?.classList.contains('policy-blank')) problems.push(`sheet ${front.dataset.sheet} slot ${index}: policy back mismatch`);
+          const a = card.getBoundingClientRect(), b = match.getBoundingClientRect(), f = front.getBoundingClientRect(), r = back.getBoundingClientRect();
+          if (Math.abs((a.left - f.left) + (b.right - r.left) - f.width) > .8 || Math.abs((a.top - f.top) - (b.top - r.top)) > .8) problems.push(`sheet ${front.dataset.sheet} slot ${index}: policy duplex cut misaligned`);
+        });
+      }
+      return problems;
+    }, policyData);
+    assert.deepEqual(policyProblems, [], 'Policy content and duplex alignment');
+    await policyPage.close();
+    console.log('Print layout checks pass: component counts, physical dimensions, content bounds, matching card backs, all 60 policy faces and unchanged mechanical content, and mirrored duplex alignment.');
   } finally { await browser.close(); }
 }
 main().catch(error => { console.error(error.stack); process.exitCode = 1; });

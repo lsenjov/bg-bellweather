@@ -229,25 +229,25 @@
       "height": 488
     },
     {
-      "path": "images/policies-faces-8df242fedda7b0e6.png",
-      "sha256": "8df242fedda7b0e67e3f714cd4710c7abbfb443f3b15a431821983f1c5a8351c",
-      "bytes": 2455921,
+      "path": "images/policies-faces-9242b5244ec8f636.png",
+      "sha256": "9242b5244ec8f636f3120b7445e65819bb0f9d4e3cece39f517018a14aadec36",
+      "bytes": 2910578,
       "contentType": "image/png",
       "width": 2646,
       "height": 2640
     },
     {
-      "path": "images/policies-back-1ad7e7aabf2673bb.png",
-      "sha256": "1ad7e7aabf2673bb5bc89bc8881c5108f901c591545c01f7f43758437bc25ce8",
-      "bytes": 11337,
+      "path": "images/policies-back-969a5f10e53aef11.png",
+      "sha256": "969a5f10e53aef1184cd35e9003c0d03c59404257109da4bcb8afc4d924fa53c",
+      "bytes": 2682314,
       "contentType": "image/png",
-      "width": 378,
-      "height": 528
+      "width": 2646,
+      "height": 2640
     },
     {
-      "path": "images/priorities-faces-f0f4f737400667b8.png",
-      "sha256": "f0f4f737400667b8e3dacf6e2af10d6d53f5c4ed03ff8b5fd680510bc6067c0e",
-      "bytes": 637577,
+      "path": "images/priorities-faces-ba49eb17eedd7fdb.png",
+      "sha256": "ba49eb17eedd7fdb16f1cbe605ed4078b70dcd783aff47e5152784816636963e",
+      "bytes": 698176,
       "contentType": "image/png",
       "width": 1890,
       "height": 1728
@@ -1587,168 +1587,168 @@
       "category": "policies",
       "count": 30,
       "face": {
-        "path": "images/policies-faces-8df242fedda7b0e6.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/policies-faces-8df242fedda7b0e6.png"
+        "path": "images/policies-faces-9242b5244ec8f636.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/policies-faces-9242b5244ec8f636.png"
       },
       "back": {
-        "path": "images/policies-back-1ad7e7aabf2673bb.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/policies-back-1ad7e7aabf2673bb.png"
+        "path": "images/policies-back-969a5f10e53aef11.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/policies-back-969a5f10e53aef11.png"
       },
       "width": 7,
       "height": 5,
       "number": 30,
-      "backIsHidden": true,
-      "uniqueBack": false,
+      "backIsHidden": false,
+      "uniqueBack": true,
       "cards": [
         {
           "index": 0,
-          "id": "policies-1",
-          "name": "Party policy\nP01 · Rev 27"
+          "id": "P01",
+          "name": "Mobile Clinics"
         },
         {
           "index": 1,
-          "id": "policies-2",
-          "name": "Party policy\nP02 · Rev 27"
+          "id": "P02",
+          "name": "Transport Hubs"
         },
         {
           "index": 2,
-          "id": "policies-3",
-          "name": "Party policy\nP03 · Rev 27"
+          "id": "P03",
+          "name": "Hospital Accountability"
         },
         {
           "index": 3,
-          "id": "policies-4",
-          "name": "Global policy\nP04 · Rev 27"
+          "id": "P04",
+          "name": "Common Curriculum"
         },
         {
           "index": 4,
-          "id": "policies-5",
-          "name": "Party policy\nP05 · Rev 27"
+          "id": "P05",
+          "name": "Community Care Routes"
         },
         {
           "index": 5,
-          "id": "policies-6",
-          "name": "Party policy\nP06 · Rev 27"
+          "id": "P06",
+          "name": "New Estate Outreach"
         },
         {
           "index": 6,
-          "id": "policies-7",
-          "name": "Global policy\nP07 · Rev 27"
+          "id": "P07",
+          "name": "Universal Care Charter"
         },
         {
           "index": 7,
-          "id": "policies-8",
-          "name": "Party policy\nP08 · Rev 27"
+          "id": "P08",
+          "name": "Clean Air Relocation"
         },
         {
           "index": 8,
-          "id": "policies-9",
-          "name": "Party policy\nP09 · Rev 27"
+          "id": "P09",
+          "name": "Emergency Recruitment"
         },
         {
           "index": 9,
-          "id": "policies-10",
-          "name": "Global policy\nP10 · Rev 27"
+          "id": "P10",
+          "name": "Spending Restraint"
         },
         {
           "index": 10,
-          "id": "policies-11",
-          "name": "Party policy\nP11 · Rev 27"
+          "id": "P11",
+          "name": "Shared Commuting"
         },
         {
           "index": 11,
-          "id": "policies-12",
-          "name": "Party policy\nP12 · Rev 27"
+          "id": "P12",
+          "name": "Public Broadcasting"
         },
         {
           "index": 12,
-          "id": "policies-13",
-          "name": "Party policy\nP13 · Rev 27"
+          "id": "P13",
+          "name": "Bridge Construction"
         },
         {
           "index": 13,
-          "id": "policies-14",
-          "name": "Party policy\nP14 · Rev 27"
+          "id": "P14",
+          "name": "Neighbourhood Connections"
         },
         {
           "index": 14,
-          "id": "policies-15",
-          "name": "Party policy\nP15 · Rev 27"
+          "id": "P15",
+          "name": "Regional Corridors"
         },
         {
           "index": 15,
-          "id": "policies-16",
-          "name": "Party policy\nP16 · Rev 27"
+          "id": "P16",
+          "name": "Walkable Communities"
         },
         {
           "index": 16,
-          "id": "policies-17",
-          "name": "Party policy\nP17 · Rev 27"
+          "id": "P17",
+          "name": "Public Bridge Fund"
         },
         {
           "index": 17,
-          "id": "policies-18",
-          "name": "Party policy\nP18 · Rev 27"
+          "id": "P18",
+          "name": "Existing Infrastructure"
         },
         {
           "index": 18,
-          "id": "policies-19",
-          "name": "Global policy\nP19 · Rev 27"
+          "id": "P19",
+          "name": "Lifelong Learning"
         },
         {
           "index": 19,
-          "id": "policies-20",
-          "name": "Party policy\nP20 · Rev 27"
+          "id": "P20",
+          "name": "Housing Exchange"
         },
         {
           "index": 20,
-          "id": "policies-21",
-          "name": "Party policy\nP21 · Rev 27"
+          "id": "P21",
+          "name": "Distance Learning"
         },
         {
           "index": 21,
-          "id": "policies-22",
-          "name": "Party policy\nP22 · Rev 27"
+          "id": "P22",
+          "name": "Community Gardens"
         },
         {
           "index": 22,
-          "id": "policies-23",
-          "name": "Party policy\nP23 · Rev 27"
+          "id": "P23",
+          "name": "New Campus Outreach"
         },
         {
           "index": 23,
-          "id": "policies-24",
-          "name": "Party policy\nP24 · Rev 27"
+          "id": "P24",
+          "name": "Public Spending Scrutiny"
         },
         {
           "index": 24,
-          "id": "policies-25",
-          "name": "Party policy\nP25 · Rev 27"
+          "id": "P25",
+          "name": "Moving Chains"
         },
         {
           "index": 25,
-          "id": "policies-26",
-          "name": "Party policy\nP26 · Rev 27"
+          "id": "P26",
+          "name": "Shared Travel Scheme"
         },
         {
           "index": 26,
-          "id": "policies-27",
-          "name": "Party policy\nP27 · Rev 27"
+          "id": "P27",
+          "name": "Connected Neighbourhoods"
         },
         {
           "index": 27,
-          "id": "policies-28",
-          "name": "Party policy\nP28 · Rev 27"
+          "id": "P28",
+          "name": "Property Exchange"
         },
         {
           "index": 28,
-          "id": "policies-29",
-          "name": "Party policy\nP29 · Rev 27"
+          "id": "P29",
+          "name": "Green Corridors"
         },
         {
           "index": 29,
-          "id": "policies-30",
-          "name": "Party policy\nP30 · Rev 27"
+          "id": "P30",
+          "name": "Managed Relocation"
         }
       ],
       "physicalSizeMm": {
@@ -1762,8 +1762,8 @@
       "category": "priorities",
       "count": 12,
       "face": {
-        "path": "images/priorities-faces-f0f4f737400667b8.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/priorities-faces-f0f4f737400667b8.png"
+        "path": "images/priorities-faces-ba49eb17eedd7fdb.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/priorities-faces-ba49eb17eedd7fdb.png"
       },
       "back": {
         "path": "images/priorities-back-d1ba497b36582234.png",

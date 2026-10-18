@@ -37,7 +37,7 @@ done
 
 python "$repository_root/scripts/generate-default-map.py"
 python "$repository_root/scripts/generate-physical-map.py"
-node --conditions=development --import tsx "$repository_root/scripts/generate-scoring-cards.ts"
+node "$repository_root/scripts/generate-policy-components.mjs"
 node "$repository_root/scripts/generate-candidate-bonus-cards.mjs"
 node "$repository_root/scripts/generate-firm-pieces.mjs"
 node "$repository_root/scripts/generate-firm-cards.mjs"
@@ -119,7 +119,7 @@ html_exports=(
   "operation-cards|docs/components/operation-cards.html|assets/print/operation-cards-a4.pdf|8|594.96|841.92"
   "bonus-cards|docs/components/bonus-cards.html|assets/print/bonus-cards-a4.pdf|4|594.96|841.92"
   "bonus-card-candidates|docs/design/printable-bonus-card-candidates.html|assets/print/bonus-card-candidates-a4.pdf|9|594.96|841.92"
-  "policy-cards|docs/components/printable-policy-cards.html|assets/print/policy-cards-a4.pdf|4|594.96|841.92"
+  "policy-cards|docs/components/printable-policy-cards.html|assets/print/policy-cards-a4.pdf|8|594.96|841.92"
   "scoring-cards|docs/components/printable-scoring-cards.html|assets/print/scoring-cards-a4.pdf|1|594.96|841.92"
   "shared-state-tokens-duplex|docs/components/shared-state-tokens-duplex.html|assets/print/shared-state-tokens-duplex-a4.pdf|2|841.92|594.96"
   "shared-state-tokens|docs/components/shared-state-tokens.html|assets/print/shared-state-tokens-a4.pdf|1|841.92|594.96"

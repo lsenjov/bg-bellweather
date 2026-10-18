@@ -28,6 +28,14 @@ class LoaderTests(unittest.TestCase):
             self.assertEqual(portrait['custom']['image_bottom'], 'https://example.com/asleep.png')
         self.assertEqual(len({tuple(s['position']) for s in specs}), len(specs))
 
+    def test_unique_policy_backs_use_the_generic_hidden_slot(self):
+        manifest = self.manifest()
+        manifest['decks'][0].update(uniqueBack=True, backIsHidden=False)
+        custom = loader.build_specs(manifest)[0]['custom']
+        self.assertTrue(custom['unique_back'])
+        self.assertFalse(custom['back_is_hidden'])
+        self.assertEqual(custom['back'], 'https://example.com/back.png')
+
     def test_staging_uses_physical_dimensions_without_overlap(self):
         manifest = self.manifest()
         manifest['objects'][1]['physicalSizeMm'] = dict(width=287, height=100)

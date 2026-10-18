@@ -1,0 +1,45 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: #252522; color: #171612; font-family: "Liberation Sans", sans-serif; }
+.screen-header { max-width: 760px; margin: 30px auto; color: #fffaf0; }
+.screen-header a { color: #f2bc3b; }
+.screen-header h1 { font: bold 40px "Liberation Serif", serif; margin-bottom: 8px; }
+main { display: grid; gap: 24px; justify-content: center; padding-bottom: 24px; }
+.print-sheet { width: 210mm; height: 297mm; padding: 10mm; background: white; display: grid; align-content: start; justify-content: center; break-after: page; }
+.print-sheet:last-child { break-after: auto; }
+.scoring-sheet { grid-template-columns: repeat(4, 40mm); grid-template-rows: repeat(3, 61mm); padding-top: 20mm; }
+.policy-sheet { grid-template-columns: repeat(3, 63mm); grid-template-rows: repeat(3, 88mm); }
+.scoring-card, .policy-card { border: .25mm solid #171612; background: #fffaf0; display: flex; flex-direction: column; padding: 3mm; overflow: hidden; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.scoring-card { width: 40mm; height: 61mm; }
+.policy-card { width: 63mm; height: 88mm; }
+article header { display: flex; justify-content: space-between; gap: 2mm; font-size: 6.5pt; text-transform: uppercase; border-bottom: .35mm solid; padding-bottom: 1.5mm; }
+article h2 { font: bold 13pt/1.05 "Liberation Serif", serif; margin: 2mm 0; min-height: 9mm; }
+.law { border-top: .25mm solid; padding-top: 1.5mm; }
+.law h3 { margin: 0 0 1mm; font-size: 8pt; }
+.law p { margin: 0; font-size: 8pt; line-height: 1.2; }
+article footer { margin-top: auto; padding-top: 1.5mm; font-size: 6pt; line-height: 1.2; }
+.scoring-card ol { list-style: none; margin: 2mm 0; padding: 0; }
+.scoring-card li { display: flex; align-items: center; gap: 2mm; padding: 1mm 0; font-size: 8pt; border-bottom: .2mm solid #bdb7ad; }
+.scoring-card li b { font-size: 11pt; width: 4mm; }
+@page { size: A4 portrait; margin: 0; }
+@media print { body { background: white; } .screen-header { display: none; } main { display: block; padding: 0; } }
+
+.policy-card { border-radius: 3mm; background: #fffefa; padding: 2.8mm; }
+.policy-card > header { border: 0; padding-bottom: 0; text-transform: none; font-size: 6.5pt; }
+.policy-card > h2 { font-size: 13pt; line-height: 1.06; min-height: 9.5mm; margin: 1.8mm 0 1.2mm; }
+.policy-votes { display: grid; gap: 1.8mm; }
+.vote-row h3 { display: flex; justify-content: space-between; align-items: baseline; gap: 1mm; margin: 0 0 .8mm; font-size: 11pt; line-height: 1.1; }
+.vote-row h3 small { font-size: 6pt; font-weight: normal; }
+.party-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8mm; }
+.party-vote { position: relative; height: 12.5mm; border: .25mm solid var(--party-ink); border-radius: 2mm; background: var(--party-tint); color: #171612; display: flex; align-items: end; justify-content: center; padding: 1mm .5mm; }
+.party-vote svg { position: absolute; width: 9mm; height: 9mm; top: .5mm; left: 50%; transform: translateX(-50%); fill: none; stroke: var(--party-ink); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; opacity: .25; }
+.party-vote span { position: relative; font-size: 6.8pt; line-height: 1.05; font-weight: bold; text-align: center; }
+.party-honeycomb { --party-tint: #f7e49a; --party-ink: #80610b; }
+.party-old-shell { --party-tint: #cfe3cc; --party-ink: #3f7447; }
+.party-foxglove { --party-tint: #f0cbd9; --party-ink: #a52f60; }
+.party-riverworks { --party-tint: #c7e0f0; --party-ink: #2d6fa3; }
+.party-many-wings { --party-tint: #f5d4b9; --party-ink: #a54d13; }
+.party-night-parliament { --party-tint: #d4d4d0; --party-ink: #252522; }
+.policy-card .law { border: 0; padding-top: 2mm; }
+.policy-card .law h3 { font-size: 8.5pt; margin-bottom: 1mm; }
+.policy-card .law p { font-size: 8pt; line-height: 1.16; }
+.policy-card footer { font-size: 5.5pt; padding-top: 1mm; }

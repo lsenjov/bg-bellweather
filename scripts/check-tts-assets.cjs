@@ -73,8 +73,8 @@ for (const d of m.decks) {
   assert(d.width <= 10 && d.height <= 7, "Deck grid exceeds TTS limit");
   assert(d.width * d.height > d.count, "Missing hidden slot");
   assert(
-    d.backIsHidden === true && d.uniqueBack === false,
-    "Expected shared hidden back",
+    d.id === "policies" ? d.backIsHidden === false && d.uniqueBack === true : d.backIsHidden === true && d.uniqueBack === false,
+    `Incorrect back settings: ${d.id}`,
   );
   assert(
     d.cards.length === d.count && d.cards.every((c, i) => c.index === i),
@@ -86,6 +86,9 @@ for (const d of m.decks) {
       "Missing image or inconsistent URL",
     );
 }
+const policies = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../docs/components/policy-deck.json'), 'utf8')).policies;
+const policyDeck = m.decks.find(d => d.id === 'policies');
+assert(JSON.stringify(policyDeck.cards.map(c => [c.id, c.name])) === JSON.stringify(policies.map(p => [p.id, p.name])), 'Policy atlas indices must follow source card order');
 const count = (kind) =>
   m.objects.filter((o) => o.kind === kind).reduce((n, o) => n + o.count, 0);
 assert(count("opening-marker") === 12, "Expected 12 opening markers");
@@ -146,9 +149,9 @@ for (const o of m.objects)
     );
 execFileSync("python", [
   "-c",
-  `import json,sys\nfrom pathlib import Path\nfrom PIL import Image,ImageChops\np=Path(sys.argv[1]);m=json.loads((p/'manifest.json').read_text())\nfor d in m['decks']:\n im=Image.open(p/d['face']['path']).convert('RGB');back=Image.open(p/d['back']['path']).convert('RGB');w,h=back.size\n assert im.size==(w*d['width'],h*d['height']),d['id']+' atlas cell dimensions'\n slot=im.crop((im.width-w,im.height-h,im.width,im.height))\n assert ImageChops.difference(slot,back).getbbox() is None,d['id']+' hidden slot differs from back'`,
+  `import json,sys\nfrom pathlib import Path\nfrom PIL import Image,ImageChops\np=Path(sys.argv[1]);m=json.loads((p/'manifest.json').read_text())\nfor d in m['decks']:\n im=Image.open(p/d['face']['path']).convert('RGB');back=Image.open(p/d['back']['path']).convert('RGB');w,h=im.width//d['width'],im.height//d['height']\n assert im.size==(w*d['width'],h*d['height']),d['id']+' atlas cell dimensions'\n hidden=im.crop((im.width-w,im.height-h,im.width,im.height))\n if d['uniqueBack']:\n  assert back.size==im.size,d['id']+' back atlas dimensions'\n  assert ImageChops.difference(hidden,back.crop((back.width-w,back.height-h,back.width,back.height))).getbbox() is None,d['id']+' hidden slots differ'\n  cells=[back.crop(((i%d['width'])*w,(i//d['width'])*h,(i%d['width']+1)*w,(i//d['width']+1)*h)).tobytes() for i in range(d['count'])]\n  assert len(set(cells))==d['count'],d['id']+' backs must be unique'\n  assert hidden.tobytes() not in cells,d['id']+' hidden slot must not identify a policy'\n else:\n  assert back.size==(w,h),d['id']+' shared back dimensions'\n  assert ImageChops.difference(hidden,back).getbbox() is None,d['id']+' hidden slot differs from back' `,
   output,
 ]);
 console.log(
-  "TTS inventory, hashes, dimensions, URLs, grids and hidden backs pass.",
+  "TTS inventory, hashes, dimensions, URLs, grids, unique policy backs and hidden slots pass.",
 );

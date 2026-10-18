@@ -125,7 +125,7 @@ async function genericBack(page, label, w, h) {
   );
   return resize(await page.locator("div").screenshot(), w, h);
 }
-async function deck(page, id, category, faces, back, cards, w, h) {
+async function deck(page, id, category, faces, back, cards, w, h, uniqueBacks = null) {
   const cols = Math.min(10, Math.ceil(Math.sqrt(((faces.length + 1) * h) / w)));
   const rows = Math.ceil((faces.length + 1) / cols);
   if (rows > 7 || cols * w > 4096 || rows * h > 4096)
@@ -136,16 +136,17 @@ async function deck(page, id, category, faces, back, cards, w, h) {
     category,
     count: faces.length,
     face: asset(id + "-faces", compose(faces, back, cols, rows, w, h)),
-    back: asset(id + "-back", back),
+    back: asset(id + "-back", uniqueBacks ? compose(uniqueBacks, back, cols, rows, w, h) : back),
     width: cols,
     height: rows,
     number: faces.length,
-    backIsHidden: true,
-    uniqueBack: false,
+    backIsHidden: !uniqueBacks,
+    uniqueBack: Boolean(uniqueBacks),
     cards,
   });
 }
 async function main() {
+  execFileSync(process.execPath, [path.join(root, "scripts/generate-policy-components.mjs")], { stdio: "inherit" });
   fs.rmSync(path.join(out, "images"), { recursive: true, force: true });
   fs.mkdirSync(path.join(out, "images"), { recursive: true });
   const browser = await chromium.launch({ headless: true });
@@ -198,7 +199,7 @@ async function main() {
       }
     }
     for (const [source, selector, id, label] of [
-      ["printable-policy-cards", ".policy-card", "policies", "Policies"],
+      ["printable-policy-cards", ".policy-card.front", "policies", "Policies"],
       [
         "printable-scoring-cards",
         ".scoring-card",
@@ -209,7 +210,8 @@ async function main() {
       await load(page, source);
       const n = await page.locator(selector).count(),
         faces = [],
-        cards = [];
+        cards = [],
+        uniqueBacks = id === "policies" ? [] : null;
       let h;
       for (let i = 0; i < n; i++) {
         const face = await capture(page, selector, i, 378);
@@ -217,17 +219,20 @@ async function main() {
         faces.push(face);
         cards.push({
           index: i,
-          id: `${id}-${i + 1}`,
+          id: id === "policies" ? await page.locator(selector).nth(i).getAttribute("data-card-id") : `${id}-${i + 1}`,
           name: await page
             .locator(selector)
             .nth(i)
-            .locator("h2,header")
+            .locator(id === "policies" ? "h2" : "header")
             .first()
             .innerText(),
         });
       }
+      if (uniqueBacks) {
+        for (const card of cards) uniqueBacks.push(await capture(page, `.policy-card.back[data-card-id="${card.id}"]`, 0, 378));
+      }
       const back = await genericBack(page, label, 378, h);
-      await deck(page, id, id, faces, back, cards, 378, h);
+      await deck(page, id, id, faces, back, cards, 378, h, uniqueBacks);
     }
     async function objects(source, selector, kind, prefix, width) {
       await load(page, source);
