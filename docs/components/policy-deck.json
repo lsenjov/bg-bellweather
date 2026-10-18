@@ -86,85 +86,85 @@
       "id": "S01",
       "order": [
         "Healthcare",
-        "Transport",
-        "Education",
-        "Housing",
-        "Environment",
-        "Fiscal"
-      ]
-    },
-    {
-      "id": "S02",
-      "order": [
-        "Transport",
-        "Education",
-        "Housing",
         "Environment",
         "Fiscal",
-        "Healthcare"
-      ]
-    },
-    {
-      "id": "S03",
-      "order": [
-        "Education",
-        "Housing",
-        "Environment",
-        "Fiscal",
-        "Healthcare",
-        "Transport"
-      ]
-    },
-    {
-      "id": "S04",
-      "order": [
-        "Housing",
-        "Environment",
-        "Fiscal",
-        "Healthcare",
-        "Transport",
-        "Education"
-      ]
-    },
-    {
-      "id": "S05",
-      "order": [
-        "Environment",
-        "Fiscal",
-        "Healthcare",
         "Transport",
         "Education",
         "Housing"
       ]
     },
     {
-      "id": "S06",
+      "id": "S02",
       "order": [
-        "Fiscal",
         "Healthcare",
+        "Fiscal",
+        "Environment",
+        "Education",
         "Transport",
+        "Housing"
+      ]
+    },
+    {
+      "id": "S03",
+      "order": [
+        "Transport",
+        "Housing",
+        "Environment",
+        "Education",
+        "Healthcare",
+        "Fiscal"
+      ]
+    },
+    {
+      "id": "S04",
+      "order": [
+        "Transport",
+        "Environment",
+        "Housing",
+        "Healthcare",
+        "Education",
+        "Fiscal"
+      ]
+    },
+    {
+      "id": "S05",
+      "order": [
         "Education",
         "Housing",
+        "Fiscal",
+        "Transport",
+        "Healthcare",
+        "Environment"
+      ]
+    },
+    {
+      "id": "S06",
+      "order": [
+        "Education",
+        "Fiscal",
+        "Housing",
+        "Healthcare",
+        "Transport",
         "Environment"
       ]
     },
     {
       "id": "S07",
       "order": [
-        "Healthcare",
+        "Housing",
         "Transport",
         "Education",
-        "Housing",
+        "Environment",
         "Fiscal",
-        "Environment"
+        "Healthcare"
       ]
     },
     {
       "id": "S08",
       "order": [
-        "Transport",
-        "Education",
         "Housing",
+        "Education",
+        "Transport",
         "Fiscal",
         "Environment",
         "Healthcare"
@@ -173,22 +173,22 @@
     {
       "id": "S09",
       "order": [
-        "Education",
-        "Housing",
-        "Fiscal",
         "Environment",
         "Healthcare",
-        "Transport"
+        "Transport",
+        "Fiscal",
+        "Housing",
+        "Education"
       ]
     },
     {
       "id": "S10",
       "order": [
+        "Environment",
+        "Transport",
+        "Healthcare",
         "Housing",
         "Fiscal",
-        "Environment",
-        "Healthcare",
-        "Transport",
         "Education"
       ]
     },
@@ -196,22 +196,22 @@
       "id": "S11",
       "order": [
         "Fiscal",
-        "Environment",
         "Healthcare",
-        "Transport",
         "Education",
-        "Housing"
+        "Environment",
+        "Housing",
+        "Transport"
       ]
     },
     {
       "id": "S12",
       "order": [
-        "Environment",
-        "Healthcare",
-        "Transport",
+        "Fiscal",
         "Education",
+        "Healthcare",
         "Housing",
-        "Fiscal"
+        "Environment",
+        "Transport"
       ]
     }
   ],

@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const check = process.argv.includes('--check');
+// Physical components can advance while app content is intentionally deferred.
+const includeApp = process.argv.includes('--include-app');
 const data = JSON.parse(readFileSync(root + 'docs/components/policy-deck.json', 'utf8'));
 const { categories, parties, scoringCards, policies, effects } = data;
 const key = (order) => order.join('|');
@@ -48,19 +50,38 @@ for (const plus of categories) for (const minus of categories) {
 for (const effect of effects) assert.equal(policies.filter((p) => p.effect === effect.id).length, 2);
 assert.equal(policies.filter((p) => effects.find((e) => e.id === p.effect).scope === 'Party').length, 26);
 for (const party of parties) assert.equal(policies.filter((p) => votes(p, true)[0] === party).length, 5);
+const score = (order, policy) => order.indexOf(policy.minus) - order.indexOf(policy.plus);
+function permutations(items) {
+  if (!items.length) return [[]];
+  return items.flatMap((item) => permutations(items.filter((other) => other !== item)).map((rest) => [item, ...rest]));
+}
+const neutralOrders = permutations(categories).filter((order) => parties.every((party) =>
+  Math.abs(policies.filter((policy) => score(party.order, policy) > 0)
+    .reduce((sum, policy) => sum + score(order, policy), 0)) === 1));
+assert.equal(neutralOrders.length, 12);
+assert.deepEqual(scoringCards.map((card) => card.order), neutralOrders);
+assert.deepEqual(scoringCards.map((card) => card.id), neutralOrders.map((_, i) => `S${String(i + 1).padStart(2, '0')}`));
+for (const card of scoringCards) {
+  assert(scoringCards.some((other) => key(other.order) === key([...card.order].reverse())));
+  for (const party of parties) {
+    const agreed = policies.filter((policy) => Math.sign(score(card.order, policy)) === Math.sign(score(party.order, policy)));
+    assert([14, 16].includes(agreed.length));
+    assert([34, 36].includes(agreed.reduce((sum, policy) => sum + Math.abs(score(card.order, policy)), 0)));
+  }
+}
 const escape = (value) => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('"', '&quot;');
 const effectFor = (card) => effects.find((e) => e.id === card.effect);
 function output(path, value) {
   if (check) assert.equal(readFileSync(root + path, 'utf8'), value, `${path} is stale`);
   else writeFileSync(root + path, value);
 }
-function page(title, body) {
-  return `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${title} — Bellwether</title><link rel="stylesheet" href="../styles.css"></head><body><header class="page-header"><div class="header-inner"><h1>${title}</h1><p class="meta">Policy component prototype · September 2026</p></div></header><main><nav class="breadcrumb"><a href="cards.html">Components</a><span>/</span>${title}</nav>${body}</main></body></html>\n`;
+function page(title, body, revision = 'September 2026') {
+  return `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${title} — Bellwether</title><link rel="stylesheet" href="../styles.css"></head><body><header class="page-header"><div class="header-inner"><h1>${title}</h1><p class="meta">Policy component prototype · ${revision}</p></div></header><main><nav class="breadcrumb"><a href="cards.html">Components</a><span>/</span>${title}</nav>${body}</main></body></html>\n`;
 }
 function table(headings, rows) {
   return `<div class="table-wrap"><table><thead><tr>${headings.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('\n')}</tbody></table></div>`;
 }
-output('packages/content/src/policy-data.ts', `export const POLICY_DATA = ${JSON.stringify({ ...data, policies: policies.map(card => ({ ...card,
+if (includeApp) output('packages/content/src/policy-data.ts', `export const POLICY_DATA = ${JSON.stringify({ ...data, policies: policies.map(card => ({ ...card,
   forPartyIds: votes(card, true).map(party => party.name.toLowerCase().replaceAll(' ', '-')),
   againstPartyIds: votes(card, false).map(party => party.name.toLowerCase().replaceAll(' ', '-')),
 })) }, null, 2)} as const;\n`);
@@ -77,16 +98,17 @@ output('docs/components/policy-cards.html', page('Policy cards', `
 <section><h2>Previous layout</h2><p><a href="../../archive/rules/before-party-laws-2026-09-16/policy-cards.html">Previous all-Global laws</a>.</p><p><a href="../../archive/components/policy-cards-before-vote-tiles-2026-09-15.html">Policy cards before the coloured vote tiles</a>.</p></section>
 <section><h2>Bonus interactions</h2><p>The firm freely orders the Bonus extra and all law extras together. Required Bonus extras must succeed or the entire card action is illegal. Midnight Leak skips if no matching rival is available in a neighboring district. Dig In refills its source if possible and otherwise skips. With Displacement, resolve Smear Bonuses normally against the same rival and original target district: Spin fills the vacated spot; Stonewall removes another matching rival there; Midnight Leak targets a neighbor of the original district.</p></section>`));
 output('docs/components/scoring-cards.html', page('Issue scoring cards', `
-<p class="intro">Twelve unique secret rankings. Shuffle and deal one card per human firm for the whole game at every player count. Leave unused cards concealed. <a href="printable-scoring-cards.html">Print all twelve cards</a>.</p>
+<p class="intro">Private Priorities · 2026-10-18. Twelve unique secret rankings. Shuffle and deal one card per human firm for the whole game at every player count. Leave unused cards concealed. <a href="printable-scoring-cards.html">Print all twelve cards</a> · <a href="../../assets/print/scoring-cards-a4.pdf">Print-ready PDF</a>.</p>
 <section><h2>Six issues, six values</h2><p>Top to bottom is worth 6, 5, 4, 3, 2, 1. Every issue occupies each scoring position twice across the deck. No card matches a public party order, including its reverse because that order belongs to its paired party. No two firms receive identical rankings.</p><p>At game end every enacted policy scores + issue value minus − issue value for every firm. For example, +Healthcare worth 6 and −Transport worth 2 scores 4. Failed policies do not score. Apply all enacted scoring laws to all enacted policies, then add the final hand-rank bonus. Negative totals are allowed.</p><p>Muted Priorities changes the printed 6 to 4; Broad Interests changes the printed 1 to 3, for gains and losses. Values change without reordering issues. Party voting positions stay fixed. <a href="policy-cards.html">Full policy component reference</a>.</p></section>
+<section><h2>Baseline party neutrality</h2><p>Enumerating all 720 rankings gives exactly these twelve cards closest to neutral against every public party across the complete thirty-policy deck. Each card agrees with each party’s vote on 14 or 16 policies out of 30. Weighting each policy by its absolute scoring value, agreement is 34 or 36 points out of 70 (48.57–51.43%). Equivalently, the card’s net score across each party’s fifteen For policies is −1 or +1. Zero is impossible: the 70 absolute points split into 35 across one direction of each issue pair, an odd total.</p><p>This measures direct issue scoring over the full deck, not strategic value from law effects, and does not guarantee neutrality among the twelve policies dealt in a game. Every issue still occupies each rank twice. The deck deliberately accepts six exact reverse pairs: paired firms have opposing baseline scores on every policy. No two cards are identical.</p><p>Scoring laws weaken this baseline guarantee. With only Muted Priorities or only Broad Interests, two policies score zero; card/party agreement ranges from 10 to 18 of the 28 nonzero policies, or 33.33–66.67% of absolute scoring points. With both laws, four policies score zero; agreement ranges from 12 to 14 of 26, or 42.11–57.89% of absolute points. These ranges cover all cards and parties over the full policy deck. Zero scores are excluded from agreement counts.</p><p>This revision updates physical components only. App scoring data remains on the previous deck pending separate implementation.</p></section>
 <section><h2>Complete scoring deck</h2>${table(['Card', '6 points', '5 points', '4 points', '3 points', '2 points', '1 point'], scoringCards.map((c) => [c.id, ...c.order]))}</section>
-<section><h2>Physical specification</h2><p>40 × 61 mm cards, twelve on one A4 portrait sheet. Use identical opaque sleeves or identical plain backs so rankings and card IDs cannot be identified from the back. Place the card sideways in the 61 × 40 mm Private Priorities well on the separate <a href="player-folios.html">private sheet</a>, behind the Firm shield. These cards do not count toward final hand rank.</p><p>The <a href="../../archive/components/before-policies-2026-09-15/scoring-cards.html">previous agenda deck</a> is archived.</p></section>`));
+<section><h2>Physical specification</h2><p>40 × 61 mm cards, twelve on one A4 portrait sheet. Use identical opaque sleeves or identical plain backs so rankings and card IDs cannot be identified from the back. Place the card sideways in the 61 × 40 mm Private Priorities well on the separate <a href="player-folios.html">private sheet</a>, behind the Firm shield. These cards do not count toward final hand rank.</p><p>The <a href="../../archive/components/before-party-neutral-priorities-2026-10-18/scoring-cards.html">previous issue-priority deck</a> and <a href="../../archive/components/before-policies-2026-09-15/scoring-cards.html">earlier agenda deck</a> are archived.</p></section>`, '2026-10-18'));
 function printPage(title, description, kind, cards, count) {
   const sheets = [];
   for (let i = 0; i < cards.length; i += count) sheets.push(`<section class="print-sheet ${kind}" aria-label="Sheet ${sheets.length + 1}">${cards.slice(i, i + count).join('\n')}</section>`);
   return `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${title} — Bellwether</title><link rel="stylesheet" href="../policy-cards-print.css"></head><body><header class="screen-header"><a href="cards.html">Component specification</a><h1>${title}</h1><p>${description} Print at 100% on A4 portrait paper.</p></header><main>${sheets.join('\n')}</main></body></html>\n`;
 }
-output('docs/components/printable-scoring-cards.html', printPage('Issue scoring cards', 'Twelve 40 × 61 mm cards on one sheet. Deal one secret card per firm. Use identical opaque sleeves.', 'scoring-sheet', scoringCards.map((c) => `<article class="scoring-card"><header><b>Private priorities</b><span>${c.id}</span></header><ol>${c.order.map((issue, i) => `<li><b>${6 - i}</b><span>${issue}</span></li>`).join('')}</ol><footer>Rev 27</footer></article>`), 12));
+output('docs/components/printable-scoring-cards.html', printPage('Issue scoring cards', 'Twelve 40 × 61 mm cards on one sheet. Deal one secret card per firm. Use identical opaque sleeves.', 'scoring-sheet', scoringCards.map((c) => `<article class="scoring-card"><header><b>Private priorities</b><span>${c.id}</span></header><ol>${c.order.map((issue, i) => `<li><b>${6 - i}</b><span>${issue}</span></li>`).join('')}</ol><footer>Priorities · 2026-10-18</footer></article>`), 12));
 const partyEmblems = {
   "honeycomb": "M32 7l21 12v26L32 57 11 45V19z",
   "old-shell": "M9 48c0-20 10-34 27-34 13 0 21 9 21 21 0 13-9 21-21 21-10 0-17-6-17-15 0-8 6-14 14-14 7 0 12 4 12 10 0 5-4 9-9 9-4 0-7-2-7-6",
