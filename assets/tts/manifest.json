@@ -165,9 +165,9 @@
       "height": 488
     },
     {
-      "path": "images/firm-4-faces-0427c8f954b1f16f.png",
-      "sha256": "0427c8f954b1f16f204ff4ef4fcaf2f1dd2ec268ea41a5d74b1c29b64bd71564",
-      "bytes": 154040,
+      "path": "images/firm-4-faces-aef94e92419a75c1.png",
+      "sha256": "aef94e92419a75c150d2262e82d6bec95114693d1968a7369465d31732ae79ba",
+      "bytes": 191299,
       "contentType": "image/png",
       "width": 960,
       "height": 976
@@ -333,9 +333,9 @@
       "height": 1269
     },
     {
-      "path": "images/firm-reference-4-49b4615775666f8f.png",
-      "sha256": "49b4615775666f8ffaa26f328ea0567161f2aace5d52bc4e432d84fd50fd22c2",
-      "bytes": 465376,
+      "path": "images/firm-reference-4-e55fb8d3d9bdbf2c.png",
+      "sha256": "e55fb8d3d9bdbf2cfe85a5daf36058617df310ab8ca6212d1854e7e49639d28f",
+      "bytes": 530175,
       "contentType": "image/png",
       "width": 1800,
       "height": 1269
@@ -1417,8 +1417,8 @@
       "category": "firm-cards",
       "count": 3,
       "face": {
-        "path": "images/firm-4-faces-0427c8f954b1f16f.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-4-faces-0427c8f954b1f16f.png"
+        "path": "images/firm-4-faces-aef94e92419a75c1.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-4-faces-aef94e92419a75c1.png"
       },
       "back": {
         "path": "images/firm-4-back-641b6944fa4e6b41.png",
@@ -2007,8 +2007,8 @@
       "kind": "reference",
       "count": 1,
       "image": {
-        "path": "images/firm-reference-4-49b4615775666f8f.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-4-49b4615775666f8f.png"
+        "path": "images/firm-reference-4-e55fb8d3d9bdbf2c.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-4-e55fb8d3d9bdbf2c.png"
       },
       "width": 1800,
       "height": 1269,
