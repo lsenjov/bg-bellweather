@@ -149,12 +149,12 @@
       "height": 488
     },
     {
-      "path": "images/firm-3-faces-fdb6867c79e31ec0.png",
-      "sha256": "fdb6867c79e31ec03ab1b01a852585634c7fcff84ac27c86886fe53a22b420d9",
-      "bytes": 1184917,
+      "path": "images/firm-3-faces-0cd3f18364c3e204.png",
+      "sha256": "0cd3f18364c3e20427ab2de560ad7e74acf4476d4dd40efb631b7f53571f3e48",
+      "bytes": 1383104,
       "contentType": "image/png",
-      "width": 1600,
-      "height": 1952
+      "width": 1920,
+      "height": 1464
     },
     {
       "path": "images/firm-3-back-0c9d90f1767e3774.png",
@@ -165,49 +165,49 @@
       "height": 488
     },
     {
-      "path": "images/firm-4-faces-aef94e92419a75c1.png",
-      "sha256": "aef94e92419a75c150d2262e82d6bec95114693d1968a7369465d31732ae79ba",
-      "bytes": 191299,
+      "path": "images/firm-4-faces-04b2bd392f2abc38.png",
+      "sha256": "04b2bd392f2abc388f859c2a2535b8881fbbc7828fb80fba907797afff5f920e",
+      "bytes": 188322,
       "contentType": "image/png",
       "width": 960,
       "height": 976
     },
     {
-      "path": "images/firm-4-back-641b6944fa4e6b41.png",
-      "sha256": "641b6944fa4e6b41be3b658d4010de03789447a64dc60f564e3e93ce1218df3e",
-      "bytes": 19962,
+      "path": "images/firm-4-back-630cb067c15bbf66.png",
+      "sha256": "630cb067c15bbf66763ca6ed1f20e89db833d8e284275d57c94e6b81ecbd17fb",
+      "bytes": 19940,
       "contentType": "image/png",
       "width": 320,
       "height": 488
     },
     {
-      "path": "images/firm-5-faces-715fac0f742407e2.png",
-      "sha256": "715fac0f742407e2f314fdd5bffafb8f5b78c467fe84293d2c4bc1a421a6ec2a",
-      "bytes": 238008,
+      "path": "images/firm-5-faces-5bff4734a8dc6a23.png",
+      "sha256": "5bff4734a8dc6a23905f01f768eed82a294ff426c35397ea933e46c348c4d64b",
+      "bytes": 229742,
       "contentType": "image/png",
       "width": 960,
       "height": 976
     },
     {
-      "path": "images/firm-5-back-c6c13ba6eaed0d6b.png",
-      "sha256": "c6c13ba6eaed0d6b8bdd6967fe78050d2452c0da6c7406e542bfd914b07b4ec1",
-      "bytes": 17681,
+      "path": "images/firm-5-back-2d9c0265677383d2.png",
+      "sha256": "2d9c0265677383d2d34b5f8fa421b5a00cc2da9361f1e0a85511fbab524c2822",
+      "bytes": 17621,
       "contentType": "image/png",
       "width": 320,
       "height": 488
     },
     {
-      "path": "images/firm-6-faces-ba1c758ed2380d9f.png",
-      "sha256": "ba1c758ed2380d9ff7500b2762634c61319b946fbd869fd96f641d1573886fa9",
-      "bytes": 125737,
+      "path": "images/firm-6-faces-eebd62fa0a965aea.png",
+      "sha256": "eebd62fa0a965aea6f10076ce950c5358a8dbabc88d064c38b4e1cf8018ae69b",
+      "bytes": 127592,
       "contentType": "image/png",
       "width": 960,
       "height": 488
     },
     {
-      "path": "images/firm-6-back-1e16afd9a33a9c88.png",
-      "sha256": "1e16afd9a33a9c886203e2c212d738763ef72061ce417c21377b3cc19984dc17",
-      "bytes": 16348,
+      "path": "images/firm-6-back-50e286e70402e57a.png",
+      "sha256": "50e286e70402e57a0c335717ad33182b77d77ab6e9ec8278c7581f6fc8c6ef7d",
+      "bytes": 16275,
       "contentType": "image/png",
       "width": 320,
       "height": 488
@@ -325,9 +325,9 @@
       "height": 1269
     },
     {
-      "path": "images/firm-reference-3-4715e26ca5b86a1b.png",
-      "sha256": "4715e26ca5b86a1b276a786425b8a4eb4c7c016aff4bb3bcfba410eb9eba3b1c",
-      "bytes": 648670,
+      "path": "images/firm-reference-3-90480b791a23381a.png",
+      "sha256": "90480b791a23381ad8b76b33df0a3bf6df10b187a9155397b906262ff6b4ef38",
+      "bytes": 699872,
       "contentType": "image/png",
       "width": 1800,
       "height": 1269
@@ -429,17 +429,17 @@
       "height": 256
     },
     {
-      "path": "images/small-token-7-bfc4c4c8cc196b3e.png",
-      "sha256": "bfc4c4c8cc196b3e2dffa231662a05db12189a411f2c7eb5905d1d9c2f55a3f9",
-      "bytes": 10598,
+      "path": "images/small-token-7-09a271a840bd57ed.png",
+      "sha256": "09a271a840bd57ed4e59a56ede2a2f1c38e146c323c49634ca2d5dcb8a16e47a",
+      "bytes": 10572,
       "contentType": "image/png",
       "width": 256,
       "height": 256
     },
     {
-      "path": "images/small-token-13-b5b0a93ac9d99a6e.png",
-      "sha256": "b5b0a93ac9d99a6ec451c577f8b1e591512a07fdd8236e7b438e064dbfb9435d",
-      "bytes": 20370,
+      "path": "images/small-token-13-e18f35d71d1854cd.png",
+      "sha256": "e18f35d71d1854cd83bc8b124e90ec2308f2990fec11062a091b180f2d23ed07",
+      "bytes": 20721,
       "contentType": "image/png",
       "width": 256,
       "height": 256
@@ -1315,18 +1315,18 @@
       "id": "firm-3",
       "name": "firm-3",
       "category": "firm-cards",
-      "count": 15,
+      "count": 17,
       "face": {
-        "path": "images/firm-3-faces-fdb6867c79e31ec0.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-3-faces-fdb6867c79e31ec0.png"
+        "path": "images/firm-3-faces-0cd3f18364c3e204.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-3-faces-0cd3f18364c3e204.png"
       },
       "back": {
         "path": "images/firm-3-back-0c9d90f1767e3774.png",
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-3-back-0c9d90f1767e3774.png"
       },
-      "width": 5,
-      "height": 4,
-      "number": 15,
+      "width": 6,
+      "height": 3,
+      "number": 17,
       "backIsHidden": true,
       "uniqueBack": false,
       "cards": [
@@ -1404,6 +1404,16 @@
           "index": 14,
           "id": "firm-cards-23",
           "name": "An Unwelcome Step"
+        },
+        {
+          "index": 15,
+          "id": "firm-cards-24",
+          "name": "An Unwelcome Step"
+        },
+        {
+          "index": 16,
+          "id": "firm-cards-25",
+          "name": "An Unwelcome Step"
         }
       ],
       "physicalSizeMm": {
@@ -1417,12 +1427,12 @@
       "category": "firm-cards",
       "count": 3,
       "face": {
-        "path": "images/firm-4-faces-aef94e92419a75c1.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-4-faces-aef94e92419a75c1.png"
+        "path": "images/firm-4-faces-04b2bd392f2abc38.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-4-faces-04b2bd392f2abc38.png"
       },
       "back": {
-        "path": "images/firm-4-back-641b6944fa4e6b41.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-4-back-641b6944fa4e6b41.png"
+        "path": "images/firm-4-back-630cb067c15bbf66.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-4-back-630cb067c15bbf66.png"
       },
       "width": 3,
       "height": 2,
@@ -1432,17 +1442,17 @@
       "cards": [
         {
           "index": 0,
-          "id": "firm-cards-24",
+          "id": "firm-cards-26",
           "name": "Crow"
         },
         {
           "index": 1,
-          "id": "firm-cards-25",
+          "id": "firm-cards-27",
           "name": "Cat"
         },
         {
           "index": 2,
-          "id": "firm-cards-26",
+          "id": "firm-cards-28",
           "name": "Toad"
         }
       ],
@@ -1457,12 +1467,12 @@
       "category": "firm-cards",
       "count": 3,
       "face": {
-        "path": "images/firm-5-faces-715fac0f742407e2.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-5-faces-715fac0f742407e2.png"
+        "path": "images/firm-5-faces-5bff4734a8dc6a23.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-5-faces-5bff4734a8dc6a23.png"
       },
       "back": {
-        "path": "images/firm-5-back-c6c13ba6eaed0d6b.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-5-back-c6c13ba6eaed0d6b.png"
+        "path": "images/firm-5-back-2d9c0265677383d2.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-5-back-2d9c0265677383d2.png"
       },
       "width": 3,
       "height": 2,
@@ -1472,17 +1482,17 @@
       "cards": [
         {
           "index": 0,
-          "id": "firm-cards-27",
+          "id": "firm-cards-29",
           "name": "Set the Stage"
         },
         {
           "index": 1,
-          "id": "firm-cards-28",
+          "id": "firm-cards-30",
           "name": "Set the Stage"
         },
         {
           "index": 2,
-          "id": "firm-cards-29",
+          "id": "firm-cards-31",
           "name": "Set the Stage"
         }
       ],
@@ -1497,12 +1507,12 @@
       "category": "firm-cards",
       "count": 2,
       "face": {
-        "path": "images/firm-6-faces-ba1c758ed2380d9f.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-6-faces-ba1c758ed2380d9f.png"
+        "path": "images/firm-6-faces-eebd62fa0a965aea.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-6-faces-eebd62fa0a965aea.png"
       },
       "back": {
-        "path": "images/firm-6-back-1e16afd9a33a9c88.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-6-back-1e16afd9a33a9c88.png"
+        "path": "images/firm-6-back-50e286e70402e57a.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-6-back-50e286e70402e57a.png"
       },
       "width": 3,
       "height": 1,
@@ -1512,12 +1522,12 @@
       "cards": [
         {
           "index": 0,
-          "id": "firm-cards-30",
+          "id": "firm-cards-32",
           "name": "Overnight Shipping"
         },
         {
           "index": 1,
-          "id": "firm-cards-31",
+          "id": "firm-cards-33",
           "name": "Overnight Shipping"
         }
       ],
@@ -1991,8 +2001,8 @@
       "kind": "reference",
       "count": 1,
       "image": {
-        "path": "images/firm-reference-3-4715e26ca5b86a1b.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-3-4715e26ca5b86a1b.png"
+        "path": "images/firm-reference-3-90480b791a23381a.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-3-90480b791a23381a.png"
       },
       "width": 1800,
       "height": 1269,
@@ -2187,8 +2197,8 @@
       "kind": "token",
       "count": 6,
       "image": {
-        "path": "images/small-token-7-bfc4c4c8cc196b3e.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/small-token-7-bfc4c4c8cc196b3e.png"
+        "path": "images/small-token-7-09a271a840bd57ed.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/small-token-7-09a271a840bd57ed.png"
       },
       "width": 256,
       "height": 256,
@@ -2201,10 +2211,10 @@
       "id": "small-token-13",
       "name": "Hecate district trap",
       "kind": "token",
-      "count": 1,
+      "count": 3,
       "image": {
-        "path": "images/small-token-13-b5b0a93ac9d99a6e.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/small-token-13-b5b0a93ac9d99a6e.png"
+        "path": "images/small-token-13-e18f35d71d1854cd.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/small-token-13-e18f35d71d1854cd.png"
       },
       "width": 256,
       "height": 256,

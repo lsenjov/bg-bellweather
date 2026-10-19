@@ -49,12 +49,12 @@ async function main() {
   try {
     const specs = [
       ['agents.html', [['.agent-pair',21,50.8,25.4],['.agent-face',42,25.4,25.4]]],
-      ['shared-state-tokens.html', [['.opening-card',12,40,61],['.small-token',13,16,16]]],
+      ['shared-state-tokens.html', [['.opening-card',12,40,61],['.small-token',15,16,16]]],
       ['firm-references.html', [['.reference-page',6,210,148]]],
       ['player-aids.html', [['.aid-page',2,148,210]]],
     ];
     for (const [file, checks] of specs) { const page = await inspect(browser, file, checks); await page.close(); }
-    for (const [file, count, sheets] of [['firm-cards.html',31,4],['reward-cards.html',6,2],['operation-cards.html',54,8],['bonus-cards.html',18,4]]) {
+    for (const [file, count, sheets] of [['firm-cards.html',33,6],['reward-cards.html',6,2],['operation-cards.html',54,8],['bonus-cards.html',18,4]]) {
       const page = await inspect(browser,file,[['.print-sheet',sheets,210,297],['.print-card.front',count,40,61],['.print-card.back',count,40,61]]);
       const problems = await page.evaluate(() => {
         const issues = [];

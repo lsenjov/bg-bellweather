@@ -53,11 +53,11 @@ for (const f of m.files) {
   assert(f.width <= 4096 && f.height <= 4096, `${f.path}: exceeds 4096`);
 }
 assert(m.decks.length === 16, "Expected 16 suit decks");
-assert(m.decks.reduce((n, d) => n + d.count, 0) === 151, "Expected 151 cards");
+assert(m.decks.reduce((n, d) => n + d.count, 0) === 153, "Expected 153 cards");
 const expected = {
   "operation-cards": 54,
   "bonus-cards": 18,
-  "firm-cards": 31,
+  "firm-cards": 33,
   "reward-cards": 6,
   policies: 30,
   priorities: 12,
@@ -136,7 +136,7 @@ assert(
 );
 const sharedReference = m.objects.find((o) => o.id === "shared-reference-1");
 assert(sharedReference?.imageSecondary, "Shared reference must have two faces");
-assert(count("token") === 15, "Expected 13 firm tokens and two public markers");
+assert(count("token") === 17, "Expected 15 firm tokens and two public markers");
 assert(
   count("reference") === 7,
   "Expected six firm references and double-sided shared aid",
