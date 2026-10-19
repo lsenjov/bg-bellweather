@@ -45,6 +45,17 @@ class PublisherTests(unittest.TestCase):
         self.assertNotIn('--delete', command)
         self.assertIn(f's3://{publisher.BUCKET}/{publisher.PREFIX}{self.name}', command)
 
+    def test_replaced_portrait_url_is_uploaded_without_immutable_caching(self):
+        stable_name = 'images/agent-16-asleep-cb0d4cbb9420abe8.png'
+        (self.root / 'images').mkdir()
+        (self.root / self.name).rename(self.root / stable_name)
+        self.payload['files'][0]['path'] = stable_name
+        self.write()
+        files = publisher.load_files(self.manifest, publisher.BASE_URL)
+        command = publisher.upload_command('aws', files[0])
+        self.assertIn(f's3://{publisher.BUCKET}/{publisher.PREFIX}{stable_name}', command)
+        self.assertEqual(command[command.index('--cache-control') + 1], 'no-cache')
+
     def test_traversal_and_checksum_mismatch_rejected(self):
         for mutation in [dict(path='../escape.png'), dict(sha256='0' * 64), dict(bytes=999), dict(path='/tmp/a.png')]:
             original = dict(self.payload['files'][0])

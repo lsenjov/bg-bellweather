@@ -120,6 +120,10 @@ assert(count("tile") === 54, "Expected six portraits and 48 private reminders");
 for (const portrait of m.objects.filter(
   (o) => o.id.startsWith("agent-") && o.kind === "tile",
 )) {
+  assert(portrait.imageSecondary?.path === 'images/agent-16-asleep-cb0d4cbb9420abe8.png',
+    'Asleep portrait must preserve the explicitly requested published URL');
+  assert(files.get(portrait.imageSecondary.path)?.width === 320 && files.get(portrait.imageSecondary.path)?.height === 320,
+    'Asleep portrait must remain 320 × 320');
   assert(
     portrait.imageSecondary &&
       portrait.image.path !== portrait.imageSecondary.path,

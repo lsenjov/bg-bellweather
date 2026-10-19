@@ -50,11 +50,11 @@ const slug = (s) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
-function asset(name, buffer) {
+function asset(name, buffer, fixedPath) {
   const sha256 = crypto.createHash("sha256").update(buffer).digest("hex");
-  const existing = manifest.files.find((file) => file.sha256 === sha256);
+  const existing = !fixedPath && manifest.files.find((file) => file.sha256 === sha256);
   if (existing) return { path: existing.path, url: baseUrl + existing.path };
-  const relative = `images/${slug(name)}-${sha256.slice(0, 16)}.png`;
+  const relative = fixedPath || `images/${slug(name)}-${sha256.slice(0, 16)}.png`;
   fs.writeFileSync(path.join(out, relative), buffer);
   manifest.files.push({
     path: relative,
@@ -380,6 +380,8 @@ async function main() {
               320,
               320,
             ),
+            // Keep the user's existing asleep-face URL when replacing the artwork.
+            "images/agent-16-asleep-cb0d4cbb9420abe8.png",
           )
         : image;
       const object = {
