@@ -30,8 +30,11 @@ class LoaderTests(unittest.TestCase):
 
     def test_unique_policy_backs_use_the_generic_hidden_slot(self):
         manifest = self.manifest()
-        manifest['decks'][0].update(uniqueBack=True, backIsHidden=False)
-        custom = loader.build_specs(manifest)[0]['custom']
+        manifest['decks'][0].update(id='policies', uniqueBack=True, backIsHidden=False)
+        specs = loader.build_specs(manifest)
+        self.assertTrue(specs[0]['showBackWhenFaceDown'])
+        self.assertNotIn('showBackWhenFaceDown', loader.build_specs(self.manifest())[0])
+        custom = specs[0]['custom']
         self.assertTrue(custom['unique_back'])
         self.assertFalse(custom['back_is_hidden'])
         self.assertEqual(custom['back'], 'https://example.com/back.png')
@@ -84,6 +87,7 @@ end}
 Wait = {condition = function(action, ready) assert(ready()); action() end}
 function spawnObject(parameters)
     local object = {spawning=true}
+    object.isDestroyed = function() return false end
     object.setCustomObject = function(custom)
         assert(object.spawning, "Custom asset was set after spawn completed without reload")
         object.custom = custom
@@ -112,6 +116,86 @@ assert(#objects == 1, "Repeated invocation created duplicate objects")
 '''
         result = subprocess.run(['lua', '-'],
                                 input=harness + loader.generate(self.manifest()) + assertions,
+                                text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    @unittest.skipUnless(shutil.which('lua'), 'Lua runtime unavailable')
+    def test_policy_backs_on_spawn_draw_restack_and_existing_table(self):
+        harness = r'''
+local policyUrl = "https://example.com/policies.png"
+local normalUrl = "https://example.com/normal.png"
+local function spec(url, policy)
+ return {type="DeckCustom",name="Cards",showBackWhenFaceDown=policy,
+  position={0,2,0},physicalSizeMm={width=63,height=88},
+  custom={face=url,back="https://example.com/backs.png",unique_back=policy,back_is_hidden=not policy}}
+end
+JSON={decode=function() return {spec(policyUrl,true),spec(normalUrl,false)} end}
+local waits, callbacks, spawned = {}, {}, {}
+Wait={condition=function(action,ready) waits[#waits+1]={action,ready} end}
+local function object(kind,url)
+ local o={type=kind,hide_when_face_down=true,spawning=true,loading_custom=true,customReads=0}
+ o.isDestroyed=function() return o.destroyed or false end
+ o.custom={face=url,unique_back=true,back_is_hidden=false}
+ o.getCustomObject=function()
+  assert(not o.destroyed,"Read destroyed object's custom data")
+  assert(o.type=="Card" or o.type=="Deck","Read unrelated custom data")
+  o.customReads=o.customReads+1;return o.custom
+ end
+ o.setCustomObject=function(custom) o.custom=custom end
+ o.getBoundsNormalized=function() return {size={x=3,y=1,z=4}} end
+ o.getScale=function() return {x=1,y=1,z=1} end
+ o.setScale=function(_) end
+ o.setName=function(_) end
+ return o
+end
+function spawnObject(parameters)
+ local o=object("Deck",nil)
+ spawned[#spawned+1]=o
+ onObjectSpawn(o)
+ callbacks[#callbacks+1]=function()
+  o.spawning=false;o.loading_custom=false;parameters.callback_function(o)
+ end
+ return o
+end
+local function flush()
+ local pending=waits;waits={}
+ for _,w in ipairs(pending) do
+  if w[2]() then w[1]() else waits[#waits+1]=w end
+ end
+end
+'''
+        assertions = r'''
+spawnBellwether()
+flush()
+assert(#waits==2 and spawned[1].hide_when_face_down and spawned[2].hide_when_face_down)
+for _,callback in ipairs(callbacks) do callback() end
+flush()
+assert(not spawned[1].hide_when_face_down and spawned[2].hide_when_face_down)
+assert(spawned[1].custom.unique_back and not spawned[1].custom.back_is_hidden)
+
+-- Drawn cards, the last remaining card and newly stacked decks each spawn as new objects.
+local drawn,remainder,stacked = object("Card",policyUrl),object("Card",policyUrl),object("Deck",policyUrl)
+local normal,stale,board = object("Card",normalUrl),object("Card","https://example.com/old.png"),object("Board",policyUrl)
+local destroyed=object("Card",policyUrl)
+for _,o in ipairs({drawn,remainder,stacked,normal,stale,board,destroyed}) do onObjectSpawn(o) end
+flush()
+assert(drawn.hide_when_face_down and remainder.hide_when_face_down and stacked.hide_when_face_down)
+for _,o in ipairs({drawn,remainder,stacked,normal,stale}) do o.spawning=false;o.loading_custom=false end
+destroyed.destroyed=true
+flush()
+assert(#waits==0 and not drawn.hide_when_face_down and not remainder.hide_when_face_down and not stacked.hide_when_face_down)
+assert(normal.hide_when_face_down and stale.hide_when_face_down and board.hide_when_face_down)
+assert(board.customReads==0 and destroyed.customReads==0)
+assert(drawn.custom.unique_back and not drawn.custom.back_is_hidden)
+
+local existingDeck,existingCard=object("Deck",policyUrl),object("Card",policyUrl)
+function getAllObjects() return {existingDeck,existingCard,normal,stale,board} end
+showBellwetherPolicyBacks()
+assert(not existingDeck.hide_when_face_down and not existingCard.hide_when_face_down)
+assert(normal.hide_when_face_down and stale.hide_when_face_down and board.customReads==0)
+assert(#spawned==2,"Repair spawned replacement components")
+'''
+        result = subprocess.run(['lua', '-'], input=harness + loader.generate(self.manifest()) + assertions,
                                 text=True, capture_output=True)
         self.assertEqual(result.returncode, 0, result.stderr)
 

@@ -47,6 +47,8 @@ def build_specs(manifest):
                                       width=width, height=height, number=number,
                                       unique_back=deck.get('uniqueBack', False),
                                       back_is_hidden=deck.get('backIsHidden', True))))
+        if deck.get('id') == 'policies':
+            specs[-1]['showBackWhenFaceDown'] = True
     for item in manifest['objects']:
         kind = item['kind']
         image = public_url(item['image'])
@@ -95,6 +97,38 @@ def generate(manifest):
 -- Physical convention: one world unit = 25.4 mm. Choose a sufficiently large table.
 local bellwetherSpecs = JSON.decode(''' + lua_long_string(payload) + ''')
 local bellwetherImported = false
+local bellwetherPolicyFaces = {}
+for _, spec in ipairs(bellwetherSpecs) do
+    if spec.showBackWhenFaceDown then bellwetherPolicyFaces[spec.custom.face] = true end
+end
+
+local function showBellwetherPolicyBack(object)
+    if object == nil or object.isDestroyed() then return false end
+    if object.type ~= "Card" and object.type ~= "Deck" then return false end
+    local custom = object.getCustomObject()
+    if not custom or not bellwetherPolicyFaces[custom.face] then return false end
+    -- Face-down concealment otherwise substitutes the hidden-zone image for the enacted back.
+    object.hide_when_face_down = false
+    return true
+end
+
+function onObjectSpawn(object)
+    if object == nil or object.isDestroyed() then return end
+    if object.type ~= "Card" and object.type ~= "Deck" then return end
+    Wait.condition(function()
+        showBellwetherPolicyBack(object)
+    end, function()
+        return object == nil or object.isDestroyed() or not (object.spawning or object.loading_custom)
+    end, 30)
+end
+
+function showBellwetherPolicyBacks()
+    local count = 0
+    for _, object in ipairs(getAllObjects()) do
+        if showBellwetherPolicyBack(object) then count = count + 1 end
+    end
+    print("Bellwether enacted backs enabled for " .. count .. " matching policy objects.")
+end
 
 local function sizeBellwetherObject(object, spec)
     Wait.condition(function()
@@ -150,6 +184,7 @@ function spawnBellwether()
             rotation = {0, 180, 0},
             callback_function = function(object)
                 object.setName(spec.name)
+                showBellwetherPolicyBack(object)
                 sizeBellwetherObject(object, spec)
                 if spec.locked then object.setLock(true) end
             end
