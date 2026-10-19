@@ -7,7 +7,7 @@ const firmCards=[];
 const add=(number,title,effect,count=1,extra={})=>{for(let i=0;i<count;i++)firmCards.push({firm:firms[number-1],title,effect,destination:'After use → New Year',...extra});};
 add(1,'Just Passing Through','Move the Fiddler one neighbouring district. If third, you may resolve this movement a second time.',2);
 add(1,'I Can Wait','Do nothing. This card uses one card slot.',2);
-add(2,'Parallel Paths','Move one doppelgänger one neighbouring district. On a declared mirroring turn, you may then move the other one step. Never share a district; obey mirroring restrictions.',4);
+add(2,'Parallel Paths','Move one doppelgänger to a neighbouring district, then you may move the other to a neighbouring district. They may never share a district.',4);
 add(3,'A Step Foreseen','Move one sister one neighbouring district.',3);
 const prophecy=(title,effect,extra={})=>add(3,title,effect,1,{destination:'On resolution or withdrawal → New Year',prophecy:true,...extra});
 for(const [label,description] of [['+5','+5 or greater'],['+1–4','+1 to +4'],['0','exactly 0'],['−1–4','−4 to −1'],['−5','−5 or lower']])prophecy('Election Prophecy',`Third slot only. Midterm years only. Place on a region. Predict its next Election’s final For-minus-Against margin is ${description}. Resolve after thinning and voting. On success, gain the standard prophecy reward.`,{label});
