@@ -26,7 +26,6 @@ const generatedPrintOutputs = new Set([
   "policy-cards-a4.pdf",
   "policy-district-map-a3.pdf",
   "bonus-cards-a4.pdf",
-  "bonus-card-candidates-a4.pdf",
 ].map((name) => join(repositoryRoot, "assets", "print", name)));
 
 function collectHtmlFiles(directory) {
