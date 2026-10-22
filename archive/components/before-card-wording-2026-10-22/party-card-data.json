@@ -1,0 +1,92 @@
+[
+  {
+    "party": "honeycomb",
+    "title": "Waggle Route",
+    "effect": "Resolve Organise. Then add another acting-party Support to a free spot in the destination district."
+  },
+  {
+    "party": "honeycomb",
+    "title": "Common Cause",
+    "effect": "Choose a district containing another party that shares Honeycomb\u2019s vote on its pending policy. Add one Honeycomb Support and one of that party\u2019s Support there. Requires two free spots."
+  },
+  {
+    "party": "honeycomb",
+    "title": "Every Bee Counts",
+    "effect": "Add acting-party Support to every district that contains exactly one acting-party Support and has a free spot."
+  },
+  {
+    "party": "old-shell",
+    "title": "Dig In",
+    "effect": "Resolve a movement Organise. Then add acting-party Support to the vacated source spot if possible; skip if full. Cannot recover an absent party."
+  },
+  {
+    "party": "old-shell",
+    "title": "Stonewall",
+    "effect": "Resolve Smear. Then remove a second Support belonging to that rival from the same district."
+  },
+  {
+    "party": "old-shell",
+    "title": "Institutional Memory",
+    "effect": "Choose a region and For or Against its pending policy. Add one Support of each party voting that way to that region, wherever space permits. Add at least one Support."
+  },
+  {
+    "party": "foxglove",
+    "title": "Spin",
+    "effect": "Resolve Smear. Then add acting-party Support to the spot vacated by the removed rival Support."
+  },
+  {
+    "party": "foxglove",
+    "title": "Whisper Network",
+    "effect": "Choose a district containing acting-party Support. Move one rival Support from there to a neighboring district with a free spot."
+  },
+  {
+    "party": "foxglove",
+    "title": "Shell Firm",
+    "effect": "Move the acting party\u2019s Firm marker and entire Operation pile to another party without a Firm marker. End this Lobby action."
+  },
+  {
+    "party": "riverworks",
+    "title": "Canal Network",
+    "effect": "Move any number of acting-party Support from one district to another with enough free spots, along a connected route. Each intermediate district must contain acting-party Support."
+  },
+  {
+    "party": "riverworks",
+    "title": "Public Works",
+    "effect": "Resolve Rally. Then add acting-party Support to a free spot in a neighboring district."
+  },
+  {
+    "party": "riverworks",
+    "title": "Mass Transit",
+    "effect": "Choose a chain of two to five neighboring districts with a free spot at one end. Move one Support of your choice from each other district one step toward that end."
+  },
+  {
+    "party": "many-wings",
+    "title": "Scatter the Flock",
+    "effect": "Resolve Rally. Then move as many acting-party Support as possible from that district into different neighboring districts with free spots, one per district. At least one must move."
+  },
+  {
+    "party": "many-wings",
+    "title": "Joint Campaign",
+    "effect": "Choose a region\u2019s pending policy and For or Against. Move up to three Support voting that way into one district in that region, each from a neighboring district. Requires room; move at least one."
+  },
+  {
+    "party": "many-wings",
+    "title": "Empty Every Nest",
+    "effect": "Move one acting-party Support from as many districts with two or more as possible. Each must go to a different district with a free spot and no acting-party Support."
+  },
+  {
+    "party": "night-parliament",
+    "title": "Quiet Hours",
+    "effect": "Resolve Rally. Then add acting-party Support to an otherwise empty district, including an empty Bellwether Centre."
+  },
+  {
+    "party": "night-parliament",
+    "title": "Midnight Leak",
+    "effect": "Resolve Smear. Then remove one additional Support of the same rival party from a district neighboring the Smear target district, if possible."
+  },
+  {
+    "party": "night-parliament",
+    "title": "Midnight Session",
+    "effect": "Choose a closed party. Place one of your returned Firm markers there. That party opens with an empty Operation pile."
+  }
+]

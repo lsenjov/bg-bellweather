@@ -2,91 +2,91 @@
   {
     "party": "honeycomb",
     "title": "Waggle Route",
-    "effect": "Resolve Organise. Then add another acting-party Support to a free spot in the destination district."
+    "effect": "Move one Support to a neighbouring district with two free spots. Then add a second Support of the same party there."
   },
   {
     "party": "honeycomb",
     "title": "Common Cause",
-    "effect": "Choose a district containing another party that shares Honeycomb\u2019s vote on its pending policy. Add one Honeycomb Support and one of that party\u2019s Support there. Requires two free spots."
+    "effect": "Choose a district with two free spots and Support of another party voting the same way as Honeycomb on that region’s pending policy. Add one Support each of Honeycomb and that party there."
   },
   {
     "party": "honeycomb",
     "title": "Every Bee Counts",
-    "effect": "Add acting-party Support to every district that contains exactly one acting-party Support and has a free spot."
+    "effect": "Choose a party. Wherever it has exactly one Support and there is space, add a second."
   },
   {
     "party": "old-shell",
     "title": "Dig In",
-    "effect": "Resolve a movement Organise. Then add acting-party Support to the vacated source spot if possible; skip if full. Cannot recover an absent party."
+    "effect": "Move one Support to a neighbouring district with space. Then add one Support of the same party to the district it left, if there is space."
   },
   {
     "party": "old-shell",
     "title": "Stonewall",
-    "effect": "Resolve Smear. Then remove a second Support belonging to that rival from the same district."
+    "effect": "Choose a party. In a district containing its Support or a neighbouring district, remove two Support belonging to a single rival party."
   },
   {
     "party": "old-shell",
     "title": "Institutional Memory",
-    "effect": "Choose a region and For or Against its pending policy. Add one Support of each party voting that way to that region, wherever space permits. Add at least one Support."
+    "effect": "Choose a district and either For or Against its region’s pending policy. Add up to one Support of each party voting that way to free spots in that district."
   },
   {
     "party": "foxglove",
     "title": "Spin",
-    "effect": "Resolve Smear. Then add acting-party Support to the spot vacated by the removed rival Support."
+    "effect": "Choose a party. In a district containing its Support or a neighbouring district, replace one rival Support with Support of your chosen party."
   },
   {
     "party": "foxglove",
     "title": "Whisper Network",
-    "effect": "Choose a district containing acting-party Support. Move one rival Support from there to a neighboring district with a free spot."
+    "effect": "Choose a party. Swap one of its Support with one rival Support in a neighbouring district."
   },
   {
     "party": "foxglove",
     "title": "Shell Firm",
-    "effect": "Move the acting party\u2019s Firm marker and entire Operation pile to another party without a Firm marker. End this Lobby action."
+    "effect": "Choose a party. Move its Firm marker and entire Operation pile to another party without a Firm marker. End your Lobby action."
   },
   {
     "party": "riverworks",
     "title": "Canal Network",
-    "effect": "Move any number of acting-party Support from one district to another with enough free spots, along a connected route. Each intermediate district must contain acting-party Support."
+    "effect": "Move any number of one party’s Support from one district to another with enough space. Every district along the route, except the destination, must contain that party’s Support."
   },
   {
     "party": "riverworks",
     "title": "Public Works",
-    "effect": "Resolve Rally. Then add acting-party Support to a free spot in a neighboring district."
+    "effect": "Choose a district containing a party’s Support. Add one Support of that party there and one in a neighbouring district. Both districts must have space."
   },
   {
     "party": "riverworks",
     "title": "Mass Transit",
-    "effect": "Choose a chain of two to five neighboring districts with a free spot at one end. Move one Support of your choice from each other district one step toward that end."
+    "effect": "Choose a chain of two to five neighbouring districts with space at one end. Move one Support from each other district one step towards that end, starting nearest the space."
   },
   {
     "party": "many-wings",
     "title": "Scatter the Flock",
-    "effect": "Resolve Rally. Then move as many acting-party Support as possible from that district into different neighboring districts with free spots, one per district. At least one must move."
+    "effect": "Add one Support to a district where that party already has Support and there is space. Then spread as many of that party’s Support as possible into neighbouring districts with space, one per district. Move at least one."
   },
   {
     "party": "many-wings",
     "title": "Joint Campaign",
-    "effect": "Choose a region\u2019s pending policy and For or Against. Move up to three Support voting that way into one district in that region, each from a neighboring district. Requires room; move at least one."
+    "effect": "Choose a district and either For or Against its region’s pending policy. Bring in one to three Support from neighbouring districts, belonging to parties voting that way. You need space for them."
   },
   {
     "party": "many-wings",
     "title": "Empty Every Nest",
-    "effect": "Move one acting-party Support from as many districts with two or more as possible. Each must go to a different district with a free spot and no acting-party Support."
+    "effect": "Choose a party. From as many districts as possible where it has at least two Support, move one to a different district where it has none and there is space. Use each destination only once."
   },
   {
     "party": "night-parliament",
     "title": "Quiet Hours",
-    "effect": "Resolve Rally. Then add acting-party Support to an otherwise empty district, including an empty Bellwether Centre."
+    "effect": "Add one Support to a district where that party already has Support and there is space. Then add one Support of the same party to a district containing no Support."
   },
   {
     "party": "night-parliament",
     "title": "Midnight Leak",
-    "effect": "Resolve Smear. Then remove one additional Support of the same rival party from a district neighboring the Smear target district, if possible."
+    "effect": "Choose a party. Remove one rival Support in or next to a district containing its Support. If possible, remove a second Support of that rival party from a district next to the first target."
   },
   {
     "party": "night-parliament",
     "title": "Midnight Session",
-    "effect": "Choose a closed party. Place one of your returned Firm markers there. That party opens with an empty Operation pile."
+    "effect": "Reopen a closed party by placing one of your returned Firm markers there. Its Operation pile starts empty."
   }
 ]
