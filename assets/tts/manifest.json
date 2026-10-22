@@ -5,9 +5,9 @@
   "prefix": "tabletop-simulator/",
   "files": [
     {
-      "path": "images/common-faces-a84e899be8a2ab33.png",
-      "sha256": "a84e899be8a2ab3391bfec7fa55f83e77e5ff6b6d91741ca8449c7ecb6083a4d",
-      "bytes": 2800940,
+      "path": "images/common-faces-20f2bddd13230995.png",
+      "sha256": "20f2bddd13230995bf07bce28b4f1ea4a015dc8c7cf6883eff55a1ee4356905a",
+      "bytes": 2655669,
       "contentType": "image/png",
       "width": 3200,
       "height": 2928
@@ -21,9 +21,9 @@
       "height": 488
     },
     {
-      "path": "images/party-honeycomb-faces-c32fe546c6b7356c.png",
-      "sha256": "c32fe546c6b7356c46a07e4643789bf21919e62a2905452e60c7b5b3be6efe83",
-      "bytes": 190055,
+      "path": "images/party-honeycomb-faces-e7bfdcfa0d4e671d.png",
+      "sha256": "e7bfdcfa0d4e671db6e7a8c606b644fc6d90e83b7d7fb001f557c71b11d7328d",
+      "bytes": 190523,
       "contentType": "image/png",
       "width": 960,
       "height": 976
@@ -37,9 +37,9 @@
       "height": 488
     },
     {
-      "path": "images/party-old-shell-faces-8a50e512989139d4.png",
-      "sha256": "8a50e512989139d4949449bb2889990b0f4011d0343de39f7e64e4bf133d5325",
-      "bytes": 202887,
+      "path": "images/party-old-shell-faces-f9e5e176619aeb75.png",
+      "sha256": "f9e5e176619aeb75c5c32978ae7d365432133e493f424f97b83d257f0275b1d9",
+      "bytes": 206389,
       "contentType": "image/png",
       "width": 960,
       "height": 976
@@ -53,9 +53,9 @@
       "height": 488
     },
     {
-      "path": "images/party-foxglove-faces-8c7f4ca2fc96fc0c.png",
-      "sha256": "8c7f4ca2fc96fc0cf2815de072989aa1e7fbb071886bc3ece438850521a93d04",
-      "bytes": 186897,
+      "path": "images/party-foxglove-faces-a9aea47fac3c329b.png",
+      "sha256": "a9aea47fac3c329bb6ff4dbddb78b581d248e45e4d2eca92be96b8cf4548cc72",
+      "bytes": 187485,
       "contentType": "image/png",
       "width": 960,
       "height": 976
@@ -69,9 +69,9 @@
       "height": 488
     },
     {
-      "path": "images/party-riverworks-faces-85430d97e4d337fd.png",
-      "sha256": "85430d97e4d337fd255c611f3562867cd93c25f2c889ba01af6fafe03260a357",
-      "bytes": 195295,
+      "path": "images/party-riverworks-faces-270e79b562b800d4.png",
+      "sha256": "270e79b562b800d4d36b85f27228332d83d013435c32f565b6b78c89aafebc93",
+      "bytes": 212560,
       "contentType": "image/png",
       "width": 960,
       "height": 976
@@ -85,9 +85,9 @@
       "height": 488
     },
     {
-      "path": "images/party-many-wings-faces-f30ac0d1f4835c02.png",
-      "sha256": "f30ac0d1f4835c026a475299f5bcaf2fdc07f67b4138cfa37a5ca06a307743f8",
-      "bytes": 225650,
+      "path": "images/party-many-wings-faces-dded78fd70f56b34.png",
+      "sha256": "dded78fd70f56b34135c6b4052812bf674216428597452ca770d34fd044c2f96",
+      "bytes": 240240,
       "contentType": "image/png",
       "width": 960,
       "height": 976
@@ -101,9 +101,9 @@
       "height": 488
     },
     {
-      "path": "images/party-night-parliament-faces-61c1755aba997bc5.png",
-      "sha256": "61c1755aba997bc5c4345a5234091d3f1cec93eecd3bfbfc32421358a977a15e",
-      "bytes": 195753,
+      "path": "images/party-night-parliament-faces-f6ab1340d7cdf4d3.png",
+      "sha256": "f6ab1340d7cdf4d380c7735b2ba6f7f43b738edc21266c82e5333ad27f429f52",
+      "bytes": 217073,
       "contentType": "image/png",
       "width": 960,
       "height": 976
@@ -117,9 +117,9 @@
       "height": 488
     },
     {
-      "path": "images/firm-1-faces-73c2a92a4addf03a.png",
-      "sha256": "73c2a92a4addf03a07a4a5b0e3fccf7ab94bdc0a2e9f74ff6a8d7c3614415e55",
-      "bytes": 199061,
+      "path": "images/firm-1-faces-fa857135bb2e63e2.png",
+      "sha256": "fa857135bb2e63e225e9d09802b3b3859b13a2fd4967be6717a11f39241283af",
+      "bytes": 207283,
       "contentType": "image/png",
       "width": 960,
       "height": 976
@@ -133,9 +133,9 @@
       "height": 488
     },
     {
-      "path": "images/firm-2-faces-a04908cc2332b932.png",
-      "sha256": "a04908cc2332b932349b8c5adf5cfa220cce69dc4c6e936827b89e466a237bc1",
-      "bytes": 266546,
+      "path": "images/firm-2-faces-d95c8dcb7608393e.png",
+      "sha256": "d95c8dcb7608393e9d8641fa7d2d2abc5551dfd737780453043345f4bc927f9c",
+      "bytes": 263179,
       "contentType": "image/png",
       "width": 960,
       "height": 976
@@ -149,9 +149,9 @@
       "height": 488
     },
     {
-      "path": "images/firm-3-faces-0cd3f18364c3e204.png",
-      "sha256": "0cd3f18364c3e20427ab2de560ad7e74acf4476d4dd40efb631b7f53571f3e48",
-      "bytes": 1383104,
+      "path": "images/firm-3-faces-eb806ea26c6ffe23.png",
+      "sha256": "eb806ea26c6ffe23ce2dc887a165f2da555942ea98ad5e8a0261471f1bb065d9",
+      "bytes": 1289874,
       "contentType": "image/png",
       "width": 1920,
       "height": 1464
@@ -181,9 +181,9 @@
       "height": 488
     },
     {
-      "path": "images/firm-5-faces-5bff4734a8dc6a23.png",
-      "sha256": "5bff4734a8dc6a23905f01f768eed82a294ff426c35397ea933e46c348c4d64b",
-      "bytes": 229742,
+      "path": "images/firm-5-faces-fa4f12b2548fe38b.png",
+      "sha256": "fa4f12b2548fe38b66e92441fb937c619b78199b1b73aa197135e99def49cf77",
+      "bytes": 182984,
       "contentType": "image/png",
       "width": 960,
       "height": 976
@@ -197,9 +197,9 @@
       "height": 488
     },
     {
-      "path": "images/firm-6-faces-eebd62fa0a965aea.png",
-      "sha256": "eebd62fa0a965aea6f10076ce950c5358a8dbabc88d064c38b4e1cf8018ae69b",
-      "bytes": 127592,
+      "path": "images/firm-6-faces-7d02dd147663cc7d.png",
+      "sha256": "7d02dd147663cc7da27a9841d598745f7bb559057c8a996547897451aae0d30b",
+      "bytes": 111497,
       "contentType": "image/png",
       "width": 960,
       "height": 488
@@ -213,9 +213,9 @@
       "height": 488
     },
     {
-      "path": "images/hecate-reward-faces-59c0b3e9efe9c026.png",
-      "sha256": "59c0b3e9efe9c026769c576a4ef72f7671916e08d752cc0668d1c5011526c211",
-      "bytes": 414469,
+      "path": "images/hecate-reward-faces-afc41d07c011071f.png",
+      "sha256": "afc41d07c011071f16440fbec449a7e1b437361a1d507beb363703ce966fc8ad",
+      "bytes": 403861,
       "contentType": "image/png",
       "width": 1280,
       "height": 976
@@ -325,9 +325,9 @@
       "height": 1269
     },
     {
-      "path": "images/firm-reference-3-90480b791a23381a.png",
-      "sha256": "90480b791a23381ad8b76b33df0a3bf6df10b187a9155397b906262ff6b4ef38",
-      "bytes": 699872,
+      "path": "images/firm-reference-3-d9c67cbdc6ff7190.png",
+      "sha256": "d9c67cbdc6ff7190fed2761a4eec3b80d59ca740c22d130c9cb6a2b744194e7b",
+      "bytes": 738075,
       "contentType": "image/png",
       "width": 1800,
       "height": 1269
@@ -357,9 +357,9 @@
       "height": 1269
     },
     {
-      "path": "images/shared-reference-1-f3ae6d89a6984886.png",
-      "sha256": "f3ae6d89a698488633153f59ae909134accdef0fa1081dd48858ded0095436b7",
-      "bytes": 700192,
+      "path": "images/shared-reference-1-a552e3d02afd8cdb.png",
+      "sha256": "a552e3d02afd8cdbb8725299d19c113150fec2c2652e4e9a6978049ad663a6e7",
+      "bytes": 843314,
       "contentType": "image/png",
       "width": 1200,
       "height": 1703
@@ -692,8 +692,8 @@
       "category": "operation-cards",
       "count": 54,
       "face": {
-        "path": "images/common-faces-a84e899be8a2ab33.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/common-faces-a84e899be8a2ab33.png"
+        "path": "images/common-faces-20f2bddd13230995.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/common-faces-20f2bddd13230995.png"
       },
       "back": {
         "path": "images/common-back-1add4688f0450b21.png",
@@ -987,8 +987,8 @@
       "category": "bonus-cards",
       "count": 3,
       "face": {
-        "path": "images/party-honeycomb-faces-c32fe546c6b7356c.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-honeycomb-faces-c32fe546c6b7356c.png"
+        "path": "images/party-honeycomb-faces-e7bfdcfa0d4e671d.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-honeycomb-faces-e7bfdcfa0d4e671d.png"
       },
       "back": {
         "path": "images/party-honeycomb-back-07a8dfca8fbf27bd.png",
@@ -1027,8 +1027,8 @@
       "category": "bonus-cards",
       "count": 3,
       "face": {
-        "path": "images/party-old-shell-faces-8a50e512989139d4.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-old-shell-faces-8a50e512989139d4.png"
+        "path": "images/party-old-shell-faces-f9e5e176619aeb75.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-old-shell-faces-f9e5e176619aeb75.png"
       },
       "back": {
         "path": "images/party-old-shell-back-c1e7c04855fa7744.png",
@@ -1067,8 +1067,8 @@
       "category": "bonus-cards",
       "count": 3,
       "face": {
-        "path": "images/party-foxglove-faces-8c7f4ca2fc96fc0c.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-foxglove-faces-8c7f4ca2fc96fc0c.png"
+        "path": "images/party-foxglove-faces-a9aea47fac3c329b.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-foxglove-faces-a9aea47fac3c329b.png"
       },
       "back": {
         "path": "images/party-foxglove-back-810f1622ad321719.png",
@@ -1107,8 +1107,8 @@
       "category": "bonus-cards",
       "count": 3,
       "face": {
-        "path": "images/party-riverworks-faces-85430d97e4d337fd.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-riverworks-faces-85430d97e4d337fd.png"
+        "path": "images/party-riverworks-faces-270e79b562b800d4.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-riverworks-faces-270e79b562b800d4.png"
       },
       "back": {
         "path": "images/party-riverworks-back-ed9065826187b0c0.png",
@@ -1147,8 +1147,8 @@
       "category": "bonus-cards",
       "count": 3,
       "face": {
-        "path": "images/party-many-wings-faces-f30ac0d1f4835c02.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-many-wings-faces-f30ac0d1f4835c02.png"
+        "path": "images/party-many-wings-faces-dded78fd70f56b34.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-many-wings-faces-dded78fd70f56b34.png"
       },
       "back": {
         "path": "images/party-many-wings-back-12bf2290816a82ac.png",
@@ -1187,8 +1187,8 @@
       "category": "bonus-cards",
       "count": 3,
       "face": {
-        "path": "images/party-night-parliament-faces-61c1755aba997bc5.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-night-parliament-faces-61c1755aba997bc5.png"
+        "path": "images/party-night-parliament-faces-f6ab1340d7cdf4d3.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/party-night-parliament-faces-f6ab1340d7cdf4d3.png"
       },
       "back": {
         "path": "images/party-night-parliament-back-eac57bad6bd2d85d.png",
@@ -1227,8 +1227,8 @@
       "category": "firm-cards",
       "count": 4,
       "face": {
-        "path": "images/firm-1-faces-73c2a92a4addf03a.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-1-faces-73c2a92a4addf03a.png"
+        "path": "images/firm-1-faces-fa857135bb2e63e2.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-1-faces-fa857135bb2e63e2.png"
       },
       "back": {
         "path": "images/firm-1-back-0c428a88f2a4b36c.png",
@@ -1272,8 +1272,8 @@
       "category": "firm-cards",
       "count": 4,
       "face": {
-        "path": "images/firm-2-faces-a04908cc2332b932.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-2-faces-a04908cc2332b932.png"
+        "path": "images/firm-2-faces-d95c8dcb7608393e.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-2-faces-d95c8dcb7608393e.png"
       },
       "back": {
         "path": "images/firm-2-back-2b31143ccb28e941.png",
@@ -1317,8 +1317,8 @@
       "category": "firm-cards",
       "count": 17,
       "face": {
-        "path": "images/firm-3-faces-0cd3f18364c3e204.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-3-faces-0cd3f18364c3e204.png"
+        "path": "images/firm-3-faces-eb806ea26c6ffe23.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-3-faces-eb806ea26c6ffe23.png"
       },
       "back": {
         "path": "images/firm-3-back-0c9d90f1767e3774.png",
@@ -1467,8 +1467,8 @@
       "category": "firm-cards",
       "count": 3,
       "face": {
-        "path": "images/firm-5-faces-5bff4734a8dc6a23.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-5-faces-5bff4734a8dc6a23.png"
+        "path": "images/firm-5-faces-fa4f12b2548fe38b.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-5-faces-fa4f12b2548fe38b.png"
       },
       "back": {
         "path": "images/firm-5-back-2d9c0265677383d2.png",
@@ -1507,8 +1507,8 @@
       "category": "firm-cards",
       "count": 2,
       "face": {
-        "path": "images/firm-6-faces-eebd62fa0a965aea.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-6-faces-eebd62fa0a965aea.png"
+        "path": "images/firm-6-faces-7d02dd147663cc7d.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-6-faces-7d02dd147663cc7d.png"
       },
       "back": {
         "path": "images/firm-6-back-50e286e70402e57a.png",
@@ -1542,8 +1542,8 @@
       "category": "reward-cards",
       "count": 6,
       "face": {
-        "path": "images/hecate-reward-faces-59c0b3e9efe9c026.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/hecate-reward-faces-59c0b3e9efe9c026.png"
+        "path": "images/hecate-reward-faces-afc41d07c011071f.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/hecate-reward-faces-afc41d07c011071f.png"
       },
       "back": {
         "path": "images/hecate-reward-back-9d450b71b2a950d1.png",
@@ -2001,8 +2001,8 @@
       "kind": "reference",
       "count": 1,
       "image": {
-        "path": "images/firm-reference-3-90480b791a23381a.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-3-90480b791a23381a.png"
+        "path": "images/firm-reference-3-d9c67cbdc6ff7190.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-3-d9c67cbdc6ff7190.png"
       },
       "width": 1800,
       "height": 1269,
@@ -2065,8 +2065,8 @@
       "kind": "reference",
       "count": 1,
       "image": {
-        "path": "images/shared-reference-1-f3ae6d89a6984886.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/shared-reference-1-f3ae6d89a6984886.png"
+        "path": "images/shared-reference-1-a552e3d02afd8cdb.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/shared-reference-1-a552e3d02afd8cdb.png"
       },
       "width": 1200,
       "height": 1703,
