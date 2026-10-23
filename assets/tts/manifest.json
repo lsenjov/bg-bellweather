@@ -309,49 +309,49 @@
       "height": 627
     },
     {
-      "path": "images/firm-reference-1-c45083d1a4324be9.png",
-      "sha256": "c45083d1a4324be92cbe299f5515f806fd29e09224eff2ea9e4b5b8855b1d2e6",
-      "bytes": 539946,
+      "path": "images/firm-reference-1-44257b788199db37.png",
+      "sha256": "44257b788199db375f656913c3cf2e6b495b827831796960bbc366a65a6eb772",
+      "bytes": 635792,
       "contentType": "image/png",
       "width": 1800,
       "height": 1269
     },
     {
-      "path": "images/firm-reference-2-7314d143e99be787.png",
-      "sha256": "7314d143e99be7872a50b15f52127aaed261ef96c4b3b4659524a74ef9120db6",
-      "bytes": 861385,
+      "path": "images/firm-reference-2-80f59a507041a396.png",
+      "sha256": "80f59a507041a3969de71df2b6e9d3c03ef955fc24a4f70f6c15447ffe592d75",
+      "bytes": 663189,
       "contentType": "image/png",
       "width": 1800,
       "height": 1269
     },
     {
-      "path": "images/firm-reference-3-d9c67cbdc6ff7190.png",
-      "sha256": "d9c67cbdc6ff7190fed2761a4eec3b80d59ca740c22d130c9cb6a2b744194e7b",
-      "bytes": 738075,
+      "path": "images/firm-reference-3-3c77fc69953e933e.png",
+      "sha256": "3c77fc69953e933edf481e15e745e52cb9bfa9da8eefbae75b1073ababf30cfc",
+      "bytes": 711738,
       "contentType": "image/png",
       "width": 1800,
       "height": 1269
     },
     {
-      "path": "images/firm-reference-4-e55fb8d3d9bdbf2c.png",
-      "sha256": "e55fb8d3d9bdbf2cfe85a5daf36058617df310ab8ca6212d1854e7e49639d28f",
-      "bytes": 530175,
+      "path": "images/firm-reference-4-cc3dc565955fdf92.png",
+      "sha256": "cc3dc565955fdf92b07e3452132d80d42498f18b504f2d68cd3f5558007413f6",
+      "bytes": 379119,
       "contentType": "image/png",
       "width": 1800,
       "height": 1269
     },
     {
-      "path": "images/firm-reference-5-0eaa03acf6dfbf3b.png",
-      "sha256": "0eaa03acf6dfbf3b26598bf3148f5a3d1c8beb94cddc472adddd284c644e1da5",
-      "bytes": 493974,
+      "path": "images/firm-reference-5-4b69d934eeb5fa63.png",
+      "sha256": "4b69d934eeb5fa6338e2becd7455629d344fca12fee3e1bfbd47e69f21d8c298",
+      "bytes": 439691,
       "contentType": "image/png",
       "width": 1800,
       "height": 1269
     },
     {
-      "path": "images/firm-reference-6-b75316373131a4fb.png",
-      "sha256": "b75316373131a4fb9f0cb5d7d1fa68c9673b19c96341050a43b6ccc691639df2",
-      "bytes": 539601,
+      "path": "images/firm-reference-6-3099436f866febbe.png",
+      "sha256": "3099436f866febbe985c5981ea5764f0f8690858441b64a14b2192379584989b",
+      "bytes": 558087,
       "contentType": "image/png",
       "width": 1800,
       "height": 1269
@@ -1969,8 +1969,8 @@
       "kind": "reference",
       "count": 1,
       "image": {
-        "path": "images/firm-reference-1-c45083d1a4324be9.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-1-c45083d1a4324be9.png"
+        "path": "images/firm-reference-1-44257b788199db37.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-1-44257b788199db37.png"
       },
       "width": 1800,
       "height": 1269,
@@ -1985,8 +1985,8 @@
       "kind": "reference",
       "count": 1,
       "image": {
-        "path": "images/firm-reference-2-7314d143e99be787.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-2-7314d143e99be787.png"
+        "path": "images/firm-reference-2-80f59a507041a396.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-2-80f59a507041a396.png"
       },
       "width": 1800,
       "height": 1269,
@@ -2001,8 +2001,8 @@
       "kind": "reference",
       "count": 1,
       "image": {
-        "path": "images/firm-reference-3-d9c67cbdc6ff7190.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-3-d9c67cbdc6ff7190.png"
+        "path": "images/firm-reference-3-3c77fc69953e933e.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-3-3c77fc69953e933e.png"
       },
       "width": 1800,
       "height": 1269,
@@ -2017,8 +2017,8 @@
       "kind": "reference",
       "count": 1,
       "image": {
-        "path": "images/firm-reference-4-e55fb8d3d9bdbf2c.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-4-e55fb8d3d9bdbf2c.png"
+        "path": "images/firm-reference-4-cc3dc565955fdf92.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-4-cc3dc565955fdf92.png"
       },
       "width": 1800,
       "height": 1269,
@@ -2033,8 +2033,8 @@
       "kind": "reference",
       "count": 1,
       "image": {
-        "path": "images/firm-reference-5-0eaa03acf6dfbf3b.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-5-0eaa03acf6dfbf3b.png"
+        "path": "images/firm-reference-5-4b69d934eeb5fa63.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-5-4b69d934eeb5fa63.png"
       },
       "width": 1800,
       "height": 1269,
@@ -2049,8 +2049,8 @@
       "kind": "reference",
       "count": 1,
       "image": {
-        "path": "images/firm-reference-6-b75316373131a4fb.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-6-b75316373131a4fb.png"
+        "path": "images/firm-reference-6-3099436f866febbe.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/firm-reference-6-3099436f866febbe.png"
       },
       "width": 1800,
       "height": 1269,
