@@ -29,12 +29,134 @@ const token=(f,s,label)=>`<article class="small-token" style="${style(f)}" aria-
 let tokens=Array(6).fill(token(firms[0],handshake,'Favour owed')).join('')+Array(6).fill(token(firms[0],door,'Primary opening history')).join('')+Array(3).fill(token(firms[2],trap,'Hecate district trap')).join('');
 save('docs/components/shared-state-tokens.html',page('Opening markers & firm tokens',`<section class="state-page"><h2>Opening markers & firm tokens</h2><div class="opening-grid">${markers}</div><div class="token-row">${tokens}</div><p>Six handshake favours · six permanent open-door history tokens · three Hecate district traps. All small tokens: 16 mm, single layer.</p><div class="public-markers"><div>EARLY BIRD</div><div>YEAR</div></div><p>Opening markers: 40 × 61 mm. Use one per firm at 4–6 players, both at 2–3. Retain existing Collection cubes and private reminder markers.</p></section>`,'firm-state.css','Single-sided A4 landscape. Cut twelve opening cards, fifteen small tokens, one 24 mm Early Bird and one 22 mm Year marker.'));
 const refs=[
-[['Setup','Place the Fiddler in any district first. Put three favours on different parties. Two Just Passing Through and two I Can Wait cards start in hand.'],['The Grand Tour','Make the first Party Opening. Your primary opening must use a different party each year; mark it with an open-door token. Your second opening at 2–3 players is unrestricted.'],['One More Thing','Cards played in a turn must have different names. If your third card is common or movement, optionally resolve it twice. Check legality again for the repeat; use the same party. Laws trigger once per card.'],['Favours Owed','A third-slot common or party card places one favour on its party, maximum one per party. After openings each year, spend or discard all favours in any order: move one step, or perform one law-modified common Operation for that party through your agent. Closed-party favours buy movement only. No crescendo or new favours from these actions. Year 6 favours have no later payout.']],
-[['Setup & movement','Place two interchangeable agents in distinct districts. Four Parallel Paths cards each move one agent to a neighbouring district, then optionally the other to a neighbouring district. Choose either first and move sequentially; neither may enter the other’s current district. Neighbouring agents are allowed. Other players’ agents never restrict movement or mirroring.'],['Mirror the pile','Only your first common card on each acting party each turn can mirror. Before resolving it, note the top common card already in that party’s pile. Choose one agent to resolve the played Operation, then optionally use the other for the noted Operation with the same acting party. Check legality and choose parameters when each resolves; each Smear may choose its own legal rival.'],['Resolve sequentially','Each agent performs at most one of the two Operations. Both require normal positioning and obey the acting party’s laws. Include voluntary Organise transport; keep agents in distinct districts. Laws trigger at most once for the whole played card; choose an eligible resolution. The played card uses one slot and enters the pile once after resolution, covering the copied card, which stays in the pile.'],['One opportunity per party','Empty piles and declined or illegal copies still spend the opportunity. Later common cards on that party use one agent normally. Opportunities reset at your next turn; three parties can each provide a mirror. Copy only the Operation: no extra card or slot, no card play, no further mirror and no prophecy card-play credit. Party and firm cards neither spend opportunities nor mirror. Party cards resolve once and bypass agents. No declaration or isolation applies.']],
-[['Setup & supply','Place three sisters anywhere, sharing allowed. Start with three movement cards and fourteen prophecies in hand. Six reward cards—two of each Operation—begin in a separate face-up supply. All sisters authorise every common Operation.'],['Place prophecies','Only as your third card, following two non-prophecy cards. No fulfilment on a turn when you place one; you cannot place one if you already fulfilled one that turn. Remote and public; maximum one on each region, district, party or firm. Withdraw to New Year for free at any time; no automatic expiry.'],['Success','Choose an available reward card into hand for a subsequent turn; lose the card reward if supply is empty. Independently, optionally move a sister one step. Successful Election prophecies repeat this entire reward twice, including both optional moves. Resolve after the triggering card. Reward Operations require agents and open parties; return to supply after use.'],['Fourteen prophecies','Five Election margins: place only in Years 1/3/5. Three pile sizes: next collection or Closure; your own collection fails. Three firm predictions: matching common card anywhere in its next common-card turn. Three district-entry traps: at most one placed trap per region, excluding Bellwether Centre. Election prophecies have a separate limit. Another player’s agent enters; owner sends a common card to New Year if able. See cards for full conditions.']],
-[['Setup','Place witch, crow, cat and toad together in one district. Start with Crow, Cat and Toad teleport cards.'],['Specialised familiars','Crow authorises Organise; cat Rally; toad Smear. The witch cannot authorise common Operations. Immediately before its assigned Operation, the familiar may move one neighbouring district. It must then perform a legal Operation: no movement-only common cards.'],['Three teleport cards','Each named card teleports either that familiar to the witch or the witch to that familiar, anywhere on the map. Before or after teleporting, you may move the named familiar to a neighbouring district once, whichever agent teleports. The teleport is required. Then send the card to New Year.'],['Support & party cards','Any of your agents may voluntarily accompany Organise from its source. Party cards bypass positioning and grant no free familiar step. Law extras require no additional familiar presence.']],
-[['Setup','Choose the puppeteer’s start, then move four times one neighbouring district, leaving a marionette in each departure district. Revisits and sharing are allowed. Three movement cards start in hand.'],['Only marionettes operate','Each of the four marionettes authorises every common Operation. The puppeteer itself cannot. Neither leader nor marionettes accompanies Organise.'],['Mandatory cycle','After the whole common card resolves, including laws: retrieve the used marionette, move the puppeteer exactly one neighbouring district, and leave that marionette in the departure district. Once per common card.'],['Personal movement','Retrieve any marionette, move the puppeteer one neighbouring district, then leave it behind. No Operation or Support required. Party cards do not trigger the cycle. Sharing is unrestricted.']],
-[['Setup','Place six portraits in six distinct districts. Choose three awake. Always three awake and three asleep. Two Overnight Shipping cards start in hand.'],['Perform, then rotate','An awake portrait authorises common Operations normally. Party cards may use any awake portrait, regardless of effect location. After the entire common or party card resolves, the used portrait sleeps and one that was asleep before the card wakes.'],['A network of openings','Awake portrait districts are adjacent for all effects. Your firm uses this freely. Another player pays you one common or party card from hand before using the connection. One toll per played card; separate effects pay separately. No payment means no access. Geographic neighbours remain free.'],['Overnight Shipping','Move any one portrait anywhere, preserving awake/asleep state. Portraits never accompany Organise. Later sharing is allowed.']]
+  [
+    [
+      "Setup",
+      "Place the Fiddler in any district. Start with no favours and four cards: two Just Passing Through and two I Can Wait."
+    ],
+    [
+      "The Grand Tour",
+      "Make the first Party Opening each year, choosing a party without one of your open-door tokens. Place a token there. At 2–3 players, this restriction does not apply to your second opening."
+    ],
+    [
+      "One More Thing",
+      "Each card you play in a turn must have a different name. If your third card is a common card or Just Passing Through, you may repeat its effect. Use the same party for a common card. Each law applies only once across both resolutions."
+    ],
+    [
+      "Earning favours",
+      "When your third card is a common or party card, place a favour on the party you chose for it. Each party can hold only one favour."
+    ],
+    [
+      "Spending favours",
+      "After Party Openings, spend last year’s favours in any order. Each lets you move the Fiddler to a neighbouring district or perform an Operation for that party, even if closed. No agent is needed; normal Support requirements and laws apply. Discard unused favours. These actions cannot repeat or earn favours."
+    ],
+    [
+      "Final favours",
+      "Start with no favours. At the end of Year 6, count each remaining favour as one card for final hand ranking."
+    ]
+  ],
+  [
+    [
+      "Setup & movement",
+      "Place your two doppelgängers in different districts. Start with four Parallel Paths cards. Each moves one doppelgänger to a neighbouring district, then optionally the other. Your doppelgängers cannot share a district."
+    ],
+    [
+      "Mirror the pile",
+      "The first time you play a common card for each party on your turn, note the top card already in its pile. You may also perform that card’s Operation. Resolve the two Operations in either order, using a different doppelgänger for each and the same party for both."
+    ],
+    [
+      "Resolve sequentially",
+      "Perform the Operations one at a time, following normal agent and law rules. Choose targets separately for each. Apply each law at most once across both Operations. Your doppelgängers may travel with Organise but cannot share a district."
+    ],
+    [
+      "One opportunity per party",
+      "Only your first common card for each party can mirror, even if its pile is empty or you don’t use the copy. You get a fresh opportunity for each party on your next turn."
+    ],
+    [
+      "One card played",
+      "The copy is an extra Operation, not another card played. After both Operations, place your played card on the pile. The copied card stays where it is. Party and firm cards do not use your mirror ability."
+    ]
+  ],
+  [
+    [
+      "Setup & supply",
+      "Start with three sisters anywhere, three movement cards and fourteen prophecies in hand. Sisters may share districts and perform any common Operation. Your six reward cards start face up in their supply, two of each Operation."
+    ],
+    [
+      "Playing a prophecy",
+      "Play a prophecy only as your third card, after two non-prophecy cards. You cannot both play a prophecy and fulfil one during the same turn."
+    ],
+    [
+      "Placed prophecies",
+      "Prophecies are public and need no nearby sister. Limit: one per regional Election, district, party or firm. They remain until resolved, but you may withdraw them to New Year at any time."
+    ],
+    [
+      "Success",
+      "When a prophecy succeeds, take one available reward card into hand and optionally move one sister to a neighbouring district. Election prophecies grant this reward twice. Take rewards after the triggering card finishes. Reward cards can be played from your next turn, following normal Operation rules, then return to their supply."
+    ],
+    [
+      "Prophecy types",
+      "<b>Election:</b> predict a region’s voting margin. Place in Years 1, 3 or 5.<br><b>Harvest:</b> predict how many pile cards another player will take.<br><b>Foretell:</b> predict a common card another firm will play.<br><b>Trap:</b> make another player send a common card to New Year when their agent enters the district.<br>Follow each card’s placement and success conditions."
+    ]
+  ],
+  [
+    [
+      "Setup",
+      "Place the witch, crow, cat and toad together in any district. Start with the Crow, Cat and Toad cards in hand."
+    ],
+    [
+      "Specialised familiars",
+      "Use the crow for Organise, the cat for Rally and the toad for Smear. The witch cannot perform common Operations."
+    ],
+    [
+      "Familiar movement",
+      "Before performing its common Operation, the familiar may move to a neighbouring district. It must then perform the Operation."
+    ],
+    [
+      "Three teleport cards",
+      "Each familiar’s card teleports it to the witch, or the witch to it. Before or after teleporting, you may move that familiar to a neighbouring district. Then send the card to New Year."
+    ]
+  ],
+  [
+    [
+      "Setup",
+      "Place the puppeteer in any district. Move him four times to a neighbouring district, leaving one marionette in each district he leaves. You may revisit districts. Start with three Set the Stage cards."
+    ],
+    [
+      "Only marionettes operate",
+      "Use a marionette for common Operations, never the puppeteer. Your agents cannot follow Support during Organise."
+    ],
+    [
+      "Mandatory cycle",
+      "After resolving a common card and its laws, retrieve the marionette that performed it. Move the puppeteer to a neighbouring district, leaving that marionette in the district he left."
+    ],
+    [
+      "Set the Stage",
+      "Play Set the Stage to retrieve any marionette. Move the puppeteer to a neighbouring district, leaving that marionette in the district he left."
+    ]
+  ],
+  [
+    [
+      "Setup",
+      "Place your six portraits in different districts. Choose three to be awake and three asleep. Start with two Overnight Shipping cards."
+    ],
+    [
+      "Perform, then rotate",
+      "Use an awake portrait to perform a common Operation. For a party card, choose any awake portrait. After resolving the card, put that portrait to sleep and wake one that was asleep before you played it."
+    ],
+    [
+      "Connected districts",
+      "Districts with awake portraits count as neighbours. You may use these connections freely."
+    ],
+    [
+      "Other players using connections",
+      "Other players must give you one common or party card from hand before using your connections. One payment covers all uses during a single played card. Normal neighbouring connections remain free."
+    ],
+    [
+      "Overnight Shipping",
+      "Overnight Shipping moves one portrait to any district without changing whether it is awake or asleep. Portraits cannot follow Support moved by Organise. They may share districts after setup."
+    ]
+  ]
 ];
 save('docs/components/firm-references.html',page('Firm references',firms.map((f,i)=>`<section class="reference-page" style="${style(f)}"><header><span class="firm-no">${f.number}</span>${icon(f)}<div><h2 class="firm-title">${f.name}</h2><p>${f.character} · “${f.motto}”</p></div></header><div class="reference-grid">${refs[i].map(([h,p])=>`<section><h2>${h}</h2><p>${p}</p></section>`).join('')}</div><footer>Personal kit does not double at low player counts · Firm cards → New Year unless placed · Agents persist across years</footer></section>`).join(''),'firm-reference.css','Six single-sided A5 landscape references. Print one per firm at actual size; keep beside the shield.'));
 const aid1=`<section class="aid-page"><h2 class="aid-title">Bellwether · Your turn</h2><h2>Choose one action</h2>
