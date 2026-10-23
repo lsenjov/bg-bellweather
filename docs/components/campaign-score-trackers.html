@@ -1,2 +1,89 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Final Score Ledger — Bellwether</title><link rel="stylesheet" href="../styles.css"><style>@page {size:A4 landscape;margin:12mm} @media print {html,body {min-height:0;height:auto} .page-header,nav {display:none} main {margin:0;padding:0;max-width:none} td {height:20mm} } td {height:65px}</style></head><body><header class="page-header"><div class="header-inner"><h1>Final score ledger</h1></div></header><main><nav><a href="board.html">Policy map and Year tracker</a> · <a href="../../assets/print/public-score-tracker-a4.pdf">Print PDF</a></nav><h2>Bellwether · Policy prototype</h2><table><thead><tr><th>Firm / human player</th><th>Policy gains</th><th>Policy losses</th><th>Net policy score</th><th>Hand rank bonus</th><th>Final total</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></main></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Final Score Ledger — Bellwether</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    @page { size: A4 landscape; margin: 6mm 8mm; }
+    main { max-width: none; overflow-x: auto; }
+    .score-sheet { width: 281mm; height: 99mm; margin: 0 auto; padding: 2mm 0; }
+    .score-sheet + .score-sheet { border-top: 1px dashed #888; }
+    .score-sheet h2 { max-width: none; margin: 0 0 2mm; padding: 0; border: 0; font: 700 12pt/1.2 var(--body); letter-spacing: 0; }
+    .score-sheet table { table-layout: fixed; min-width: 0; width: 100%; background: white; }
+    .issue-column { width: 34mm; }
+    .tally-column { width: 13mm; }
+    .priority-column { width: 18mm; }
+    .score-column { width: 21mm; }
+    .score-sheet th, .score-sheet td { padding: 0 1mm; border: 0.25mm solid #555; vertical-align: middle; }
+    .score-sheet th { background: #eee; color: #171612; font: 700 9pt/1.1 var(--body); letter-spacing: 0; text-transform: none; text-align: center; }
+    .score-sheet thead tr { height: 6mm; }
+    .score-sheet tbody tr, .score-sheet tfoot tr { height: 7.5mm; }
+    .score-sheet tbody th, .score-sheet tfoot th { width: auto; text-align: left; }
+    .score-sheet td { background: white; }
+    .score-sheet .unused { background: #eee; }
+    .score-sheet .firm-start { border-left: 0.5mm solid #171612; }
+    .score-sheet tfoot tr:first-child > * { border-top: 0.5mm solid #171612; }
+    .score-sheet tfoot tr:last-child > * { border-bottom: 0.5mm solid #171612; }
+    @media print {
+      html, body { min-height: 0; height: auto; }
+      .page-header, nav { display: none; }
+      main { width: 281mm; max-width: none; margin: 0; padding: 0; overflow: visible; }
+      .score-sheet { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header"><div class="header-inner"><h1>Final score ledger</h1></div></header>
+  <main>
+    <nav><a href="board.html">Policy map and Year tracker</a> · <a href="../../assets/print/public-score-tracker-a4.pdf">Print PDF</a></nav>
+    <section class="score-sheet">
+      <h2>Bellwether · Final score</h2>
+      <table aria-label="Final score ledger">
+        <colgroup><col class="issue-column"><col class="tally-column"><col class="priority-column"><col class="score-column"><col class="priority-column"><col class="score-column"><col class="priority-column"><col class="score-column"><col class="priority-column"><col class="score-column"><col class="priority-column"><col class="score-column"><col class="priority-column"><col class="score-column"></colgroup>
+        <thead>
+          <tr><th rowspan="2" scope="col">Issue</th><th rowspan="2" scope="col">+/−</th><th colspan="2" scope="colgroup" class="firm-start">Firm 1</th><th colspan="2" scope="colgroup" class="firm-start">Firm 2</th><th colspan="2" scope="colgroup" class="firm-start">Firm 3</th><th colspan="2" scope="colgroup" class="firm-start">Firm 4</th><th colspan="2" scope="colgroup" class="firm-start">Firm 5</th><th colspan="2" scope="colgroup" class="firm-start">Firm 6</th></tr>
+          <tr><th scope="col" class="firm-start">Priority</th><th scope="col">Score</th><th scope="col" class="firm-start">Priority</th><th scope="col">Score</th><th scope="col" class="firm-start">Priority</th><th scope="col">Score</th><th scope="col" class="firm-start">Priority</th><th scope="col">Score</th><th scope="col" class="firm-start">Priority</th><th scope="col">Score</th><th scope="col" class="firm-start">Priority</th><th scope="col">Score</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Healthcare</th><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td></tr>
+          <tr><th scope="row">Transport</th><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td></tr>
+          <tr><th scope="row">Education</th><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td></tr>
+          <tr><th scope="row">Housing</th><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td></tr>
+          <tr><th scope="row">Environment</th><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td></tr>
+          <tr><th scope="row">Fiscal</th><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td></tr>
+        </tbody>
+        <tfoot>
+          <tr><th scope="row">Policy total</th><td class="unused"></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td></tr>
+          <tr><th scope="row">Hand rank bonus</th><td class="unused"></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td></tr>
+          <tr><th scope="row">Final total</th><td class="unused"></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td></tr>
+        </tfoot>
+      </table>
+    </section>
+    <section class="score-sheet">
+      <h2>Bellwether · Final score</h2>
+      <table aria-label="Final score ledger">
+        <colgroup><col class="issue-column"><col class="tally-column"><col class="priority-column"><col class="score-column"><col class="priority-column"><col class="score-column"><col class="priority-column"><col class="score-column"><col class="priority-column"><col class="score-column"><col class="priority-column"><col class="score-column"><col class="priority-column"><col class="score-column"></colgroup>
+        <thead>
+          <tr><th rowspan="2" scope="col">Issue</th><th rowspan="2" scope="col">+/−</th><th colspan="2" scope="colgroup" class="firm-start">Firm 1</th><th colspan="2" scope="colgroup" class="firm-start">Firm 2</th><th colspan="2" scope="colgroup" class="firm-start">Firm 3</th><th colspan="2" scope="colgroup" class="firm-start">Firm 4</th><th colspan="2" scope="colgroup" class="firm-start">Firm 5</th><th colspan="2" scope="colgroup" class="firm-start">Firm 6</th></tr>
+          <tr><th scope="col" class="firm-start">Priority</th><th scope="col">Score</th><th scope="col" class="firm-start">Priority</th><th scope="col">Score</th><th scope="col" class="firm-start">Priority</th><th scope="col">Score</th><th scope="col" class="firm-start">Priority</th><th scope="col">Score</th><th scope="col" class="firm-start">Priority</th><th scope="col">Score</th><th scope="col" class="firm-start">Priority</th><th scope="col">Score</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Healthcare</th><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td></tr>
+          <tr><th scope="row">Transport</th><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td></tr>
+          <tr><th scope="row">Education</th><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td></tr>
+          <tr><th scope="row">Housing</th><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td></tr>
+          <tr><th scope="row">Environment</th><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td></tr>
+          <tr><th scope="row">Fiscal</th><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td><td class="firm-start"></td><td></td></tr>
+        </tbody>
+        <tfoot>
+          <tr><th scope="row">Policy total</th><td class="unused"></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td></tr>
+          <tr><th scope="row">Hand rank bonus</th><td class="unused"></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td></tr>
+          <tr><th scope="row">Final total</th><td class="unused"></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td><td class="unused firm-start"></td><td></td></tr>
+        </tfoot>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
