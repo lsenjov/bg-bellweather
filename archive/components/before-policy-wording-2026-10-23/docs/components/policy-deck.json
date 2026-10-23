@@ -1,0 +1,582 @@
+{
+  "categories": [
+    "Healthcare",
+    "Transport",
+    "Education",
+    "Housing",
+    "Environment",
+    "Fiscal"
+  ],
+  "parties": [
+    {
+      "name": "Honeycomb",
+      "short": "HC",
+      "order": [
+        "Healthcare",
+        "Housing",
+        "Education",
+        "Environment",
+        "Transport",
+        "Fiscal"
+      ]
+    },
+    {
+      "name": "Old Shell",
+      "short": "OS",
+      "order": [
+        "Environment",
+        "Education",
+        "Housing",
+        "Healthcare",
+        "Fiscal",
+        "Transport"
+      ]
+    },
+    {
+      "name": "Foxglove",
+      "short": "FG",
+      "order": [
+        "Fiscal",
+        "Transport",
+        "Environment",
+        "Education",
+        "Housing",
+        "Healthcare"
+      ]
+    },
+    {
+      "name": "Riverworks",
+      "short": "RW",
+      "order": [
+        "Transport",
+        "Fiscal",
+        "Healthcare",
+        "Housing",
+        "Education",
+        "Environment"
+      ]
+    },
+    {
+      "name": "Many Wings",
+      "short": "MW",
+      "order": [
+        "Education",
+        "Environment",
+        "Transport",
+        "Fiscal",
+        "Healthcare",
+        "Housing"
+      ]
+    },
+    {
+      "name": "Night Parliament",
+      "short": "NP",
+      "order": [
+        "Housing",
+        "Healthcare",
+        "Fiscal",
+        "Transport",
+        "Environment",
+        "Education"
+      ]
+    }
+  ],
+  "scoringCards": [
+    {
+      "id": "S01",
+      "order": [
+        "Healthcare",
+        "Environment",
+        "Fiscal",
+        "Transport",
+        "Education",
+        "Housing"
+      ]
+    },
+    {
+      "id": "S02",
+      "order": [
+        "Healthcare",
+        "Fiscal",
+        "Environment",
+        "Education",
+        "Transport",
+        "Housing"
+      ]
+    },
+    {
+      "id": "S03",
+      "order": [
+        "Transport",
+        "Housing",
+        "Environment",
+        "Education",
+        "Healthcare",
+        "Fiscal"
+      ]
+    },
+    {
+      "id": "S04",
+      "order": [
+        "Transport",
+        "Environment",
+        "Housing",
+        "Healthcare",
+        "Education",
+        "Fiscal"
+      ]
+    },
+    {
+      "id": "S05",
+      "order": [
+        "Education",
+        "Housing",
+        "Fiscal",
+        "Transport",
+        "Healthcare",
+        "Environment"
+      ]
+    },
+    {
+      "id": "S06",
+      "order": [
+        "Education",
+        "Fiscal",
+        "Housing",
+        "Healthcare",
+        "Transport",
+        "Environment"
+      ]
+    },
+    {
+      "id": "S07",
+      "order": [
+        "Housing",
+        "Transport",
+        "Education",
+        "Environment",
+        "Fiscal",
+        "Healthcare"
+      ]
+    },
+    {
+      "id": "S08",
+      "order": [
+        "Housing",
+        "Education",
+        "Transport",
+        "Fiscal",
+        "Environment",
+        "Healthcare"
+      ]
+    },
+    {
+      "id": "S09",
+      "order": [
+        "Environment",
+        "Healthcare",
+        "Transport",
+        "Fiscal",
+        "Housing",
+        "Education"
+      ]
+    },
+    {
+      "id": "S10",
+      "order": [
+        "Environment",
+        "Transport",
+        "Healthcare",
+        "Housing",
+        "Fiscal",
+        "Education"
+      ]
+    },
+    {
+      "id": "S11",
+      "order": [
+        "Fiscal",
+        "Healthcare",
+        "Education",
+        "Environment",
+        "Housing",
+        "Transport"
+      ]
+    },
+    {
+      "id": "S12",
+      "order": [
+        "Fiscal",
+        "Education",
+        "Healthcare",
+        "Housing",
+        "Environment",
+        "Transport"
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": 1,
+      "name": "Grassroots Expansion",
+      "text": "Rally may place its Support in a neighboring district instead of its source district.",
+      "scope": "Party"
+    },
+    {
+      "id": 6,
+      "name": "Fresh Start",
+      "text": "When Organise or Rally restores a party absent from the map, place two Support instead of one, together or separately. Place both if possible; otherwise place one.",
+      "scope": "Party"
+    },
+    {
+      "id": 7,
+      "name": "Carpooling",
+      "text": "Organise may move two Support together from the same source to the same destination.",
+      "scope": "Party"
+    },
+    {
+      "id": 9,
+      "name": "Established Networks",
+      "text": "Organise may move between any two districts already containing acting-party Support, regardless of distance.",
+      "scope": "Party"
+    },
+    {
+      "id": 10,
+      "name": "Political Exchange",
+      "text": "Organise may swap moving Support with rival Support at the destination. Each arrival needs a free spot or a rival to swap back to the source.",
+      "scope": "Party"
+    },
+    {
+      "id": 11,
+      "name": "Long-Reach Campaigns",
+      "text": "Smear may target a district up to two adjacency steps from acting-party Support.",
+      "scope": "Party"
+    },
+    {
+      "id": 14,
+      "name": "Displacement",
+      "text": "Instead of removing its target, Smear may move that Support to a free spot in a neighboring district.",
+      "scope": "Party"
+    },
+    {
+      "id": 17,
+      "name": "Cross-Region Campaigns",
+      "text": "After Organise moves Support across a region boundary, add one acting-party Support in the source district.",
+      "scope": "Party"
+    },
+    {
+      "id": 19,
+      "name": "Muted Priorities",
+      "text": "At final scoring, each firm treats its printed 6-point issue as worth 4 for both gains and losses. Party votes do not change.",
+      "scope": "Global"
+    },
+    {
+      "id": 20,
+      "name": "Broad Interests",
+      "text": "At final scoring, each firm treats its printed 1-point issue as worth 3 for both gains and losses. Party votes do not change.",
+      "scope": "Global"
+    },
+    {
+      "id": 22,
+      "name": "New Constituencies",
+      "text": "Rally may place its Support anywhere in its source region, provided the destination has no acting-party Support.",
+      "scope": "Party"
+    },
+    {
+      "id": 28,
+      "name": "Chain Migration",
+      "text": "After Organise moves Support, move a different acting-party Support from a neighboring district into a spot vacated in the source district.",
+      "scope": "Party"
+    },
+    {
+      "id": 29,
+      "name": "Bridge Campaign",
+      "text": "After Organise moves Support across a region boundary, add one acting-party Support at its destination.",
+      "scope": "Party"
+    },
+    {
+      "id": 30,
+      "name": "Regional Express",
+      "text": "Organise may move to any district in its source region, regardless of distance.",
+      "scope": "Party"
+    },
+    {
+      "id": 35,
+      "name": "Crowded Airwaves",
+      "text": "Smear may target any full district, regardless of acting-party presence or distance.",
+      "scope": "Party"
+    }
+  ],
+  "policies": [
+    {
+      "id": "P01",
+      "plus": "Healthcare",
+      "minus": "Transport",
+      "effect": 6,
+      "name": "Mobile Clinics",
+      "frontFlavour": "The outer burrows have waited eleven years for a clinic. The Council offers them six converted buses and a promise to keep the engines running.",
+      "backFlavour": "Mrs Brindle’s knees were seen to on Tuesday. Getting to the shops now takes her most of Wednesday."
+    },
+    {
+      "id": "P02",
+      "plus": "Transport",
+      "minus": "Healthcare",
+      "effect": 9,
+      "name": "Transport Hubs",
+      "frontFlavour": "At Millbank, changing buses requires a long walk and considerable faith. A proper interchange is ready to build. So is the clinic extension.",
+      "backFlavour": "The interchange has a roof, clear signs, and somewhere to sit. Patients waiting outside the clinic have asked for the same."
+    },
+    {
+      "id": "P03",
+      "plus": "Healthcare",
+      "minus": "Education",
+      "effect": 35,
+      "name": "Hospital Accountability",
+      "frontFlavour": "The hospital insists every complaint is investigated. The families meeting above the bakery would like to know by whom. School inspectors may soon have a new assignment.",
+      "backFlavour": "For the first time, the hospital published its waiting times. The Gazette printed them beside last year’s promises."
+    },
+    {
+      "id": "P04",
+      "plus": "Education",
+      "minus": "Healthcare",
+      "effect": 19,
+      "name": "Common Curriculum",
+      "frontFlavour": "At North Bellwether School, the atlas still shows the old border. The headteacher wants new books before another generation learns it incorrectly. The hospital has also submitted a list.",
+      "backFlavour": "Every classroom received the same new atlas. The hospital’s replacement equipment remains on a map of future improvements."
+    },
+    {
+      "id": "P05",
+      "plus": "Healthcare",
+      "minus": "Housing",
+      "effect": 28,
+      "name": "Community Care Routes",
+      "frontFlavour": "The new estates have show homes, sales offices, and nowhere to dress a wound. Reserve a few ground-floor flats for neighbourhood nurses.",
+      "backFlavour": "The nurse knows every stairwell on the estate. The housing office would still like its six flats back."
+    },
+    {
+      "id": "P06",
+      "plus": "Housing",
+      "minus": "Healthcare",
+      "effect": 22,
+      "name": "New Estate Outreach",
+      "frontFlavour": "Families keep arriving at the estate office with keys that fit nothing. A permanent housing adviser could help—if the community health team can spare the office and salary.",
+      "backFlavour": "By winter, every family had a working key and someone to call about the damp. The visiting nurse now comes once a month."
+    },
+    {
+      "id": "P07",
+      "plus": "Healthcare",
+      "minus": "Environment",
+      "effect": 20,
+      "name": "Universal Care Charter",
+      "frontFlavour": "Mrs Brindle brought her rejected claim to the Council and read it aloud. The proposed care guarantee has fifty signatures. The river restoration fund has the money.",
+      "backFlavour": "The clinic stopped asking whether patients could afford treatment. Downstream, the river wardens were told to make their remaining grant last."
+    },
+    {
+      "id": "P08",
+      "plus": "Environment",
+      "minus": "Healthcare",
+      "effect": 14,
+      "name": "Clean Air Relocation",
+      "frontFlavour": "Laundry on Cinder Lane comes in greyer than it went out. Residents want the municipal incinerator moved. The proposed hospital wing can wait, they say; their lungs cannot.",
+      "backFlavour": "For the first time in years, Cinder Lane hung out white sheets. The hospital architect put the wing’s drawings back in their tube."
+    },
+    {
+      "id": "P09",
+      "plus": "Healthcare",
+      "minus": "Fiscal",
+      "effect": 6,
+      "name": "Emergency Recruitment",
+      "frontFlavour": "The night ward has one nurse, two kettles, and a vacancy notice faded almost white. The hospital wants permission to offer wages someone might accept.",
+      "backFlavour": "Four new nurses arrived before winter. On their first night, the old kettle finally had time to go cold."
+    },
+    {
+      "id": "P10",
+      "plus": "Fiscal",
+      "minus": "Healthcare",
+      "effect": 19,
+      "name": "Spending Restraint",
+      "frontFlavour": "The Treasurer has circled the hospital wage bill in red. The matron has returned it with the unfilled shifts circled in blue.",
+      "backFlavour": "The accounts balanced. The matron pinned another blank rota to the staffroom door and began making calls."
+    },
+    {
+      "id": "P11",
+      "plus": "Transport",
+      "minus": "Education",
+      "effect": 7,
+      "name": "Shared Commuting",
+      "frontFlavour": "School coaches sit idle while the early shift walks to Millbank. The Council proposes a shared service; the headteacher has asked to see the timetable.",
+      "backFlavour": "Workers reached the gates before the whistle. School breakfast now begins twenty minutes earlier."
+    },
+    {
+      "id": "P12",
+      "plus": "Education",
+      "minus": "Transport",
+      "effect": 11,
+      "name": "Public Broadcasting",
+      "frontFlavour": "Bellwether Radio wants to teach evening classes to every kitchen in town. The money would come from the cheap-fare scheme that gets people to the college.",
+      "backFlavour": "Algebra reached the outer burrows at seven each evening. The last discounted bus to the college disappeared from the timetable."
+    },
+    {
+      "id": "P13",
+      "plus": "Transport",
+      "minus": "Housing",
+      "effect": 29,
+      "name": "Bridge Construction",
+      "frontFlavour": "A direct crossing. A shorter commute. A brighter future. Lantern Row does not appear in the artist’s impression.",
+      "backFlavour": "The opening ceremony lasted an hour. Former residents of Lantern Row watched from the far bank."
+    },
+    {
+      "id": "P14",
+      "plus": "Housing",
+      "minus": "Transport",
+      "effect": 30,
+      "name": "Neighbourhood Connections",
+      "frontFlavour": "The bypass plan leaves two halves of a neighbourhood facing a cutting. Residents have submitted another drawing: homes, a courtyard, and the old street joined up again.",
+      "backFlavour": "Children can walk to their grandparents without crossing the ring road. Through-traffic is still looking for a shortcut."
+    },
+    {
+      "id": "P15",
+      "plus": "Transport",
+      "minus": "Environment",
+      "effect": 17,
+      "name": "Regional Corridors",
+      "frontFlavour": "Millbank’s carriers lose half a day on the winding northern road. Their proposed express route is beautifully straight on paper, right through the alder woods.",
+      "backFlavour": "Deliveries arrived before noon. That spring, residents along the new road began putting up signs for wandering wildlife."
+    },
+    {
+      "id": "P16",
+      "plus": "Environment",
+      "minus": "Transport",
+      "effect": 1,
+      "name": "Walkable Communities",
+      "frontFlavour": "The market square has room for forty parked cars or a hundred things worth visiting. The traders agree on that much. They disagree about which brings customers.",
+      "backFlavour": "The first saplings went in on Monday. By Saturday, someone had put a table beneath each one."
+    },
+    {
+      "id": "P17",
+      "plus": "Transport",
+      "minus": "Fiscal",
+      "effect": 29,
+      "name": "Public Bridge Fund",
+      "frontFlavour": "Three mayors have promised to repair Bellwether’s crossings. This one has brought a borrowing agreement and a photograph of the missing planks.",
+      "backFlavour": "The weight restrictions came down. The repayments will outlast the mayor’s portrait in the council chamber."
+    },
+    {
+      "id": "P18",
+      "plus": "Fiscal",
+      "minus": "Transport",
+      "effect": 9,
+      "name": "Existing Infrastructure",
+      "frontFlavour": "The Treasurer proposes mending what Bellwether owns before building anything new. Residents beyond the last bus stop have noted the distinction.",
+      "backFlavour": "The old station roof no longer leaks. Beyond the terminus, the faded sign still promises a future extension."
+    },
+    {
+      "id": "P19",
+      "plus": "Education",
+      "minus": "Housing",
+      "effect": 20,
+      "name": "Lifelong Learning",
+      "frontFlavour": "There are lights on in the vacant flats above the market: someone has started teaching bookkeeping. The college wants to make it official. The housing office wants the keys.",
+      "backFlavour": "Evening classes filled every room. On the housing register, the same addresses were crossed out in pencil."
+    },
+    {
+      "id": "P20",
+      "plus": "Housing",
+      "minus": "Education",
+      "effect": 10,
+      "name": "Housing Exchange",
+      "frontFlavour": "The old school has fewer pupils each year and more roof than it can afford. A proposal would move the children across town and turn the classrooms into homes.",
+      "backFlavour": "Twelve households moved in before winter. The former headteacher helped one family hang curtains where the blackboard had been."
+    },
+    {
+      "id": "P21",
+      "plus": "Education",
+      "minus": "Environment",
+      "effect": 11,
+      "name": "Distance Learning",
+      "frontFlavour": "Beyond the ridge, a college place means leaving home. A new teaching network could bring lectures into every burrow, provided the hillside makes room for its humming machinery.",
+      "backFlavour": "The first graduates collected their certificates without moving away. Above their homes, the server hall glowed through the night."
+    },
+    {
+      "id": "P22",
+      "plus": "Environment",
+      "minus": "Education",
+      "effect": 1,
+      "name": "Community Gardens",
+      "frontFlavour": "After twenty years behind a “School Extension Coming Soon” sign, the vacant lot has acquired beans, beehives, and a fiercely organised gardening committee.",
+      "backFlavour": "The gardeners won their lease. The headteacher accepted a basket of tomatoes without withdrawing her objection."
+    },
+    {
+      "id": "P23",
+      "plus": "Education",
+      "minus": "Fiscal",
+      "effect": 22,
+      "name": "New Campus Outreach",
+      "frontFlavour": "The outer districts send their brightest students away and rarely get them back. A local campus has enthusiastic support and a building estimate nobody will read aloud.",
+      "backFlavour": "The campus opened with borrowed furniture and a full first-year class. For once, the graduation photographs might be taken close to home."
+    },
+    {
+      "id": "P24",
+      "plus": "Fiscal",
+      "minus": "Education",
+      "effect": 35,
+      "name": "Public Spending Scrutiny",
+      "frontFlavour": "The auditors want every college course to justify its cost. The pottery tutor has invited them to explain “measurable public benefit” to her Wednesday class.",
+      "backFlavour": "The college met its savings target. The Wednesday class began meeting above the bakery, bringing its own clay."
+    },
+    {
+      "id": "P25",
+      "plus": "Housing",
+      "minus": "Environment",
+      "effect": 28,
+      "name": "Moving Chains",
+      "frontFlavour": "Mrs Brindle would gladly leave her draughty house for a smaller one. Build beyond the meadow, says the developer, and half the housing queue could move along behind her.",
+      "backFlavour": "Mrs Brindle moved into a warm little bungalow. Three households moved in her wake. From her new window, she watches the last strip of meadow."
+    },
+    {
+      "id": "P26",
+      "plus": "Environment",
+      "minus": "Housing",
+      "effect": 7,
+      "name": "Shared Travel Scheme",
+      "frontFlavour": "A shared vehicle depot could serve the whole estate. Its proposed site is currently labelled “future homes”; the planners say fewer cars will eventually mean more space.",
+      "backFlavour": "The estate’s second cars began disappearing. The promised homes beside the depot remained a dotted outline on the plan."
+    },
+    {
+      "id": "P27",
+      "plus": "Housing",
+      "minus": "Fiscal",
+      "effect": 30,
+      "name": "Connected Neighbourhoods",
+      "frontFlavour": "The developer delivered the houses and disappeared before the drains. Residents want the Council to finish the neighbourhood they were sold.",
+      "backFlavour": "The streetlights came on in November. Residents stood at their windows to watch; the Council began arguing over the bill."
+    },
+    {
+      "id": "P28",
+      "plus": "Fiscal",
+      "minus": "Housing",
+      "effect": 10,
+      "name": "Property Exchange",
+      "frontFlavour": "The Treasurer calls the riverside flats an underperforming asset. The tenants’ association has submitted a list of everyone who lives in it.",
+      "backFlavour": "The sale cleared a substantial debt. The tenants’ association spent the following month helping its members find somewhere else to live."
+    },
+    {
+      "id": "P29",
+      "plus": "Environment",
+      "minus": "Fiscal",
+      "effect": 17,
+      "name": "Green Corridors",
+      "frontFlavour": "The last two alder woods are separated by fences, sheds, and a strip of land whose owner has suddenly discovered its value. The wardens want to buy a way through.",
+      "backFlavour": "By spring, the first tracks crossed the restored strip. The purchase price was still being debated in the Gazette."
+    },
+    {
+      "id": "P30",
+      "plus": "Fiscal",
+      "minus": "Environment",
+      "effect": 14,
+      "name": "Managed Relocation",
+      "frontFlavour": "Selling the central works yard would clear a year’s deficit. Its replacement would stand beyond the town boundary, on land the survey calls scrub and the wardens call home.",
+      "backFlavour": "The old yard fetched more than expected. At the new one, workers regularly stop the machinery to let displaced wildlife pass."
+    }
+  ]
+}
