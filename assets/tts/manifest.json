@@ -357,17 +357,17 @@
       "height": 1269
     },
     {
-      "path": "images/shared-reference-1-a552e3d02afd8cdb.png",
-      "sha256": "a552e3d02afd8cdbb8725299d19c113150fec2c2652e4e9a6978049ad663a6e7",
-      "bytes": 843314,
+      "path": "images/shared-reference-1-1c4721f939f00081.png",
+      "sha256": "1c4721f939f00081f2bec35a04ce390b89030e90e1bf1e5d67fbfa9b99aec506",
+      "bytes": 1084943,
       "contentType": "image/png",
       "width": 1200,
       "height": 1703
     },
     {
-      "path": "images/shared-reference-2-6f73cfbce9c21854.png",
-      "sha256": "6f73cfbce9c21854bb748564ea9022a38bfa5f8154fbec6528ba445e94e17e79",
-      "bytes": 848497,
+      "path": "images/shared-reference-2-68c630af45af2d2c.png",
+      "sha256": "68c630af45af2d2c889329e14ba5f7067694e8bf17751208f348c82162fd53e4",
+      "bytes": 1197602,
       "contentType": "image/png",
       "width": 1200,
       "height": 1703
@@ -2065,14 +2065,14 @@
       "kind": "reference",
       "count": 1,
       "image": {
-        "path": "images/shared-reference-1-a552e3d02afd8cdb.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/shared-reference-1-a552e3d02afd8cdb.png"
+        "path": "images/shared-reference-1-1c4721f939f00081.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/shared-reference-1-1c4721f939f00081.png"
       },
       "width": 1200,
       "height": 1703,
       "imageSecondary": {
-        "path": "images/shared-reference-2-6f73cfbce9c21854.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/shared-reference-2-6f73cfbce9c21854.png"
+        "path": "images/shared-reference-2-68c630af45af2d2c.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/shared-reference-2-68c630af45af2d2c.png"
       },
       "physicalSizeMm": {
         "width": 148,
