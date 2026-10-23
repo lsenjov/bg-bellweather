@@ -237,9 +237,9 @@
       "height": 2640
     },
     {
-      "path": "images/policies-back-969a5f10e53aef11.png",
-      "sha256": "969a5f10e53aef1184cd35e9003c0d03c59404257109da4bcb8afc4d924fa53c",
-      "bytes": 2682314,
+      "path": "images/policies-back-583e4c88f2a0f85e.png",
+      "sha256": "583e4c88f2a0f85efb9c15b8a5f6e44fdb71d6e9292b74a1fa1722adcf7a1f8f",
+      "bytes": 2581638,
       "contentType": "image/png",
       "width": 2646,
       "height": 2640
@@ -1601,8 +1601,8 @@
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/policies-faces-9242b5244ec8f636.png"
       },
       "back": {
-        "path": "images/policies-back-969a5f10e53aef11.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/policies-back-969a5f10e53aef11.png"
+        "path": "images/policies-back-583e4c88f2a0f85e.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/policies-back-583e4c88f2a0f85e.png"
       },
       "width": 7,
       "height": 5,
