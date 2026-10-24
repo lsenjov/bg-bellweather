@@ -50,7 +50,7 @@ async function main() {
     const specs = [
       ['agents.html', [['.agent-pair',21,50.8,25.4],['.agent-face',42,25.4,25.4]]],
       ['shared-state-tokens.html', [['.opening-card',12,40,61],['.small-token',15,16,16]]],
-      ['firm-references.html', [['.reference-page',6,210,148]]],
+      ['firm-references.html', [['.reference-sheet',3,210,297],['.reference-page',6,210,148]]],
       ['player-aids.html', [['.aid-page',2,148,210]]],
     ];
     for (const [file, checks] of specs) { const page = await inspect(browser, file, checks); await page.close(); }
