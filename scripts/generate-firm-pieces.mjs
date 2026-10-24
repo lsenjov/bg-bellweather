@@ -158,7 +158,8 @@ const refs=[
     ]
   ]
 ];
-const firmReferences=firms.map((f,i)=>`<section class="reference-page" style="${style(f)}"><header><span class="firm-no">${f.number}</span>${icon(f)}<div><h2 class="firm-title">${f.name}</h2><p>${f.character} · “${f.motto}”</p></div></header><div class="reference-grid">${refs[i].map(([h,p])=>`<section><h2>${h}</h2><p>${p}</p></section>`).join('')}</div><footer>Personal kit does not double at low player counts · Firm cards → New Year unless placed · Agents persist across years</footer></section>`);
+const firmComplexities=[3,2,3,1,1,2];
+const firmReferences=firms.map((f,i)=>`<section class="reference-page" style="${style(f)}"><header><span class="firm-no">${f.number}</span>${icon(f)}<div><h2 class="firm-title">${f.name}</h2><p>${f.character} · “${f.motto}”</p></div><span class="complexity">Complexity ${firmComplexities[i]}/3</span></header><div class="reference-grid">${refs[i].map(([h,p])=>`<section><h2>${h}</h2><p>${p}</p></section>`).join('')}</div></section>`);
 save('docs/components/firm-references.html',page('Firm references',Array.from({length:firmReferences.length/2},(_,i)=>`<section class="reference-sheet">${firmReferences.slice(i*2,i*2+2).join('')}</section>`).join(''),'firm-reference.css','Six single-sided landscape firm references on three A4 portrait sheets, two per sheet. Print at actual size, cut between the references and keep one per firm beside the shield.'));
 const aid1=`<section class="aid-page"><h2 class="aid-title">Bellwether · Your turn</h2><h2>Choose one action</h2>
 <p><b>Operate:</b> play one to three cards, finishing each before choosing another. For each common card, choose an open party and an agent positioned to perform its Operation. Party cards need an open party but no nearby agent. Firm cards need no party. You may choose a different party for each card.</p>
