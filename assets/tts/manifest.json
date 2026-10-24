@@ -565,14 +565,6 @@
       "height": 256
     },
     {
-      "path": "images/year-2fa708ba31973de9.png",
-      "sha256": "2fa708ba31973de9f2c8967a1da6bbbdfdebb13cad4697dc69da50980e08516d",
-      "bytes": 6671,
-      "contentType": "image/png",
-      "width": 256,
-      "height": 256
-    },
-    {
       "path": "images/agent-1-0ec8e5f5f072690e.png",
       "sha256": "0ec8e5f5f072690e924365b13fe5e851087b89cf99c3ecf42f071ffc4e8d1626",
       "bytes": 16101,
@@ -661,12 +653,20 @@
       "height": 320
     },
     {
-      "path": "images/district-map-338aa1abae344c7a.png",
-      "sha256": "338aa1abae344c7ab0d2a49c30581a956228a680993409686d01f145924f22eb",
-      "bytes": 376578,
+      "path": "images/district-map-de78e44710e5ee87.png",
+      "sha256": "de78e44710e5ee873f4ee4e11a3342ebd9ab2e2d8be633e638c75c1d8cd58670",
+      "bytes": 411287,
       "contentType": "image/png",
       "width": 4096,
-      "height": 2897
+      "height": 2896
+    },
+    {
+      "path": "images/year-8f9ecd43ab5c0f16.png",
+      "sha256": "8f9ecd43ab5c0f164b571b563ac69c85388d0175356d54ad9286f80ba50895cc",
+      "bytes": 12571,
+      "contentType": "image/png",
+      "width": 256,
+      "height": 256
     }
   ],
   "decks": [
@@ -1843,8 +1843,8 @@
       "kind": "board",
       "count": 1,
       "image": {
-        "path": "images/district-map-338aa1abae344c7a.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/district-map-338aa1abae344c7a.png"
+        "path": "images/district-map-de78e44710e5ee87.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/district-map-de78e44710e5ee87.png"
       },
       "physicalSizeMm": {
         "width": 420,
@@ -2439,12 +2439,12 @@
       "kind": "token",
       "count": 1,
       "image": {
-        "path": "images/year-2fa708ba31973de9.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/year-2fa708ba31973de9.png"
+        "path": "images/year-8f9ecd43ab5c0f16.png",
+        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/year-8f9ecd43ab5c0f16.png"
       },
       "physicalSizeMm": {
-        "width": 22,
-        "height": 22
+        "width": 12,
+        "height": 12
       }
     },
     {

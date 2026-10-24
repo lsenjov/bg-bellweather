@@ -49,8 +49,12 @@ class PhysicalMapTests(unittest.TestCase):
             self.assertLess(float(labels[0].attrib['y']), float(labels[1].attrib['y']))
             self.assertEqual(group.find('svg:polygon', ns).attrib['fill'], physical_map.COLORS[capacity])
         wells = root.findall('.//svg:rect[@class="policy-well"]', ns)
-        self.assertEqual(len(wells), 4)
-        self.assertTrue(all((well.attrib['width'], well.attrib['height']) == ('63', '88') for well in wells))
+        self.assertEqual(len(wells), 0)
+        self.assertEqual({g.attrib['data-policy-region'] for g in root.findall('svg:g[@data-policy-region]', ns)},
+                         {'Urban', 'Outlying', 'Industrial Belt', 'Centre'})
+        self.assertNotIn('Support /', ET.tostring(root, encoding='unicode'))
+        years = root.findall('.//svg:rect[@class="year-well"]', ns)
+        self.assertTrue(all((well.attrib['width'], well.attrib['height']) == ('15', '15') for well in years))
         self.assertEqual(len(root.findall('.//svg:rect[@class="year-well"]', ns)), 6)
 
 

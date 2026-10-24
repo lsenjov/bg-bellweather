@@ -11,7 +11,7 @@ function physicalSize(item) {
   if (id.startsWith('opening-marker-')) return { width: 40, height: 61 };
   if (id.startsWith('agent-')) return item.kind === 'figurine'
     ? { width: 25.4 } : { width: 25.4, height: 25.4 };
-  const size = id === 'early-bird' ? 24 : id === 'year' ? 22
+  const size = id === 'early-bird' ? 24 : id === 'year' ? 12
     : id.startsWith('small-token-') || id.startsWith('reminder-') ? 16 : null;
   if (size) return { width: size, height: size };
   throw Error(`Missing physical dimensions: ${id}`);

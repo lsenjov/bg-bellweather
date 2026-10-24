@@ -13,7 +13,7 @@ spec = importlib.util.spec_from_file_location('concepts', ROOT / 'scripts/genera
 concepts = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(concepts)
 
-MAP_X, MAP_Y, MAP_WIDTH, MAP_HEIGHT = 78, 34, 264, 210
+MAP_X, MAP_Y, MAP_WIDTH, MAP_HEIGHT = 20, 25, 380, 264
 INK = '#19354b'
 COLORS = {2: '#dbe6cd', 4: '#ead499', 6: '#e6b6a6', 3: '#e4dfea'}
 
@@ -54,15 +54,14 @@ def text(x, y, value, size=3.5, anchor='middle', weight='normal'):
 def render(study):
     svg = ['<svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="297mm" viewBox="0 0 420 297" role="img" aria-labelledby="title desc">',
            '<title id="title">Bellwether — district capacity physical board</title>',
-           '<desc id="desc">Continuous land with district retention/capacity labels, district-type colours, thick scoring-region borders, four 63 by 88 mm policy wells and a six-year tracker. Shared borders define adjacency; point contacts do not.</desc>',
+           '<desc id="desc">Continuous land with district retention/capacity labels, district-type colours, thick scoring-region borders, four side labels for policies beside the board and a six-year tracker over the bottom edge. Shared borders define adjacency; point contacts do not.</desc>',
            f'<style>text{{font-family:Arial,sans-serif;fill:{INK}}}</style>',
            '<rect width="420" height="297" fill="white"/>',
            text(8, 13, 'BELLWETHER', 7, 'start', 'bold')]
     for key, node in study['nodes'].items():
         district = study['districts'][key]
         polygon = [print_point(p) for p in node['polygon']]
-        label_x, label_y = node['print_label']
-        label = (label_x, label_y + {'A': 2, 'C': 4, 'I': 4, 'N': 5}.get(key, 0))
+        label = node['print_label']
         retained = district['capacity'] if key == 'X' else district['capacity'] // 2
         points = ' '.join(f'{x:.6f},{y:.6f}' for x, y in polygon)
         svg.append(f'<g data-district="{key}"><polygon points="{points}" fill="{COLORS[district["capacity"]]}" stroke="{INK}" stroke-width=".3" stroke-linejoin="round"/>')
@@ -73,21 +72,18 @@ def render(study):
     for start, end in region_borders(study):
         a, b = print_point(start), print_point(end)
         svg.append(f'<path class="region-border" d="M{a[0]:.6f},{a[1]:.6f} L{b[0]:.6f},{b[1]:.6f}" fill="none" stroke="{INK}" stroke-width="1.1" stroke-linecap="round"/>')
-    for x, y, region, capacity, votes in [(8, 44, 'Urban', 18, 9), (8, 154, 'Outlying', 16, 8), (349, 44, 'Industrial Belt', 14, 7), (349, 154, 'Centre', 3, 3)]:
-        svg.append(f'<g data-policy-region="{region}"><rect x="{x}" y="{y-10}" width="63" height="8" rx="1" fill="#eef0f1"/>')
-        svg.append(text(x+31.5, y-4.5, region, 4, weight='bold'))
-        svg.append(f'<rect class="policy-well" x="{x}" y="{y}" width="63" height="88" rx="3" fill="#fffefa" stroke="{INK}" stroke-width=".35" stroke-dasharray="2 1.5"/>')
-        svg.append(text(x+31.5, y+41, 'Pending policy', 3.5))
-        svg.append(text(x+31.5, y+47, f'{capacity} Support / {votes} votes', 3))
+    for x, y, angle, region in [(10, 75, -90, 'Urban'), (10, 205, -90, 'Outlying'), (410, 75, 90, 'Industrial Belt'), (410, 205, 90, 'Centre')]:
+        svg.append(f'<g data-policy-region="{region}" transform="rotate({angle} {x} {y})">')
+        svg.append(text(x, y, region, 4, weight='bold'))
         svg.append('</g>')
-    svg.append(text(78, 255, 'ROUND / YEAR', 3.5, 'start', 'bold'))
+    svg.append(text(251, 270, 'ROUND / YEAR', 3, 'start', 'bold'))
     for year in range(1, 7):
-        x = 78 + (year-1)*26
+        x = 251 + (year-1)*16
         fill = '#e4dfea' if year % 2 == 0 else '#f2f5f6'
-        svg.append(f'<rect class="year-well" x="{x}" y="260" width="24" height="24" rx="1.5" fill="{fill}" stroke="{INK}" stroke-width=".35"/>')
-        svg.append(text(x+12, 271, str(year), 6, weight='bold'))
+        svg.append(f'<rect class="year-well" x="{x}" y="273" width="15" height="15" rx="1" fill="{fill}" stroke="{INK}" stroke-width=".35"/>')
+        svg.append(text(x+7.5, 280, str(year), 5, weight='bold'))
         if year % 2 == 0:
-            svg.append(text(x+12, 280, f'Election {year//2}', 2.8))
+            svg.append(text(x+7.5, 286, f'Election {year//2}', 2.3))
     svg.append('</svg>\n')
     return '\n'.join(svg)
 
@@ -113,7 +109,7 @@ def main():
         assert path.read_text() == svg, f'{path} is stale'
     else:
         path.write_text(svg)
-    print(f'Physical map: 264 × 210 mm, district retention/capacity labels, four 63 × 88 mm policy wells; {len(edges)} adjacencies.')
+    print(f'Physical map: 380 × 264 mm, district retention/capacity labels, four policy side labels, 15 mm Year spaces; {len(edges)} adjacencies.')
 
 
 if __name__ == '__main__':
