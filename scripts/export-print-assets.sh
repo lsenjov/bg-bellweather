@@ -108,7 +108,7 @@ validate_pdf() {
 
 html_exports=(
   "reward-cards|docs/components/reward-cards.html|assets/print/reward-cards-a4.pdf|2|594.96|841.92"
-  "agents|docs/components/agents.html|assets/print/agents-a4.pdf|2|594.96|841.92"
+  "agents|docs/components/agents.html|assets/print/agents-a4.pdf|1|594.96|841.92"
   "firm-cards|docs/components/firm-cards.html|assets/print/firm-cards-a4.pdf|6|594.96|841.92"
   "firm-references|docs/components/firm-references.html|assets/print/firm-references-a4.pdf|3|594.96|841.92"
   "player-aids|docs/components/player-aids.html|assets/print/player-helper-a4.pdf|2|841.92|594.96"

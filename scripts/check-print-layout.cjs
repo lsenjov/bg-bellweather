@@ -48,7 +48,7 @@ async function main() {
   const browser = await chromium.launch({ headless: true });
   try {
     const specs = [
-      ['agents.html', [['.agent-pair',21,50.8,25.4],['.agent-face',42,25.4,25.4]]],
+      ['agents.html', [['.piece-page',1,210,297],['.agent-grid',1,186,225.8],['.agent-pair',21,50.8,25.4],['.agent-face',42,25.4,25.4]]],
       ['shared-state-tokens.html', [['.opening-card',12,40,61],['.small-token',15,16,16]]],
       ['firm-references.html', [['.reference-sheet',3,210,297],['.reference-page',6,210,148]]],
       ['player-aids.html', [['.aid-sheet',2,297,210],['.aid-page',4,148,210]]],

@@ -19,8 +19,8 @@ firms.forEach((f,i)=>roles[i].forEach(role=>{
   };
   agents.push(`<article class="agent-pair" aria-label="Firm ${f.number} ${role}">${face('Awake')}${face('Asleep')}</article>`);
 }));
-let agentSheets='';for(let i=0;i<agents.length;i+=12)agentSheets+=`<section class="piece-page"><h2>Agent pieces · ${i/12+1}/2</h2><p>Fold on the dashed centre line; glue blank backs together. Finished square: 25.4 mm.</p><div class="agent-grid">${agents.slice(i,i+12).join('')}</div><footer>Firms 1–5: identical faces, standee clip at bottom. Firm 6: figure awake, empty frame asleep; flip flat tokens in play.</footer></section>`;
-save('docs/components/agents.html',page('Agents · fold and glue',agentSheets,'firm-pieces.css','Print two A4 portrait sheets single-sided at 100%. Each adjacent pair folds to one 25.4 × 25.4 mm piece. Cut each pair as a rectangle, score the central dashed line, fold and glue. Fifteen pieces use standee bases; six portraits lie flat.'));
+const agentSheet=`<section class="piece-page" aria-label="Agent pieces"><div class="agent-grid">${agents.join('')}</div></section>`;
+save('docs/components/agents.html',page('Agents · fold and glue',agentSheet,'firm-pieces.css','Print one A4 portrait sheet single-sided at 100%. Each adjacent pair folds to one 25.4 × 25.4 mm piece. Cut each pair as a rectangle, score the central dashed line, fold and glue blank backs together. Fifteen pieces use standee bases with the clip area at the bottom; six portraits lie flat and flip between a figure awake and an empty frame asleep.'));
 const handshake='<path d="m8 32 12-12 9 3 8-3 19 14-12 17-11-2-15-10M21 24l10 9 9-7M22 42l7-7M29 47l7-8M36 49l7-8"/>';
 const door='<path d="M14 56V8h34v48M21 56V15l20 7v34M32 36h2M8 56h48"/>';
 const trap='<path stroke-width="4" d="M32 6 58 54H6zM32 22v16M32 45v3"/>';
