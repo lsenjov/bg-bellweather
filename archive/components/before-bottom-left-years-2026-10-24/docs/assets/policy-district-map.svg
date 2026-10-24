@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="297mm" viewBox="0 0 420 297" role="img" aria-labelledby="title desc">
+<title id="title">Bellwether — district capacity physical board</title>
+<desc id="desc">Continuous land with district retention/capacity labels, district-type colours, thick scoring-region borders, four side labels for policies beside the board and a six-year tracker over the bottom edge. Shared borders define adjacency; point contacts do not.</desc>
+<style>text{font-family:Arial,sans-serif;fill:#19354b}</style>
+<rect width="420" height="297" fill="white"/>
+<text x="8" y="13" font-size="7" text-anchor="start" font-weight="bold">BELLWETHER</text>
+<g data-district="A"><polygon points="95.451264,74.811321 28.574007,81.603774 20.000000,81.603774 20.000000,25.000000 102.310469,25.000000 102.310469,36.320755" fill="#e6b6a6" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="61.742" y="32.071" font-size="4" text-anchor="middle" font-weight="bold">3/6</text>
+<text x="61.742" y="37.571" font-size="3.5" text-anchor="middle" font-weight="bold">Harbormouth</text>
+</g>
+<g data-district="B"><polygon points="95.451264,74.811321 102.310469,36.320755 102.310469,25.000000 212.057762,25.000000 215.487365,81.603774 177.761733,113.301887 155.469314,95.188679" fill="#e6b6a6" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="159.621" y="37.1" font-size="4" text-anchor="middle" font-weight="bold">3/6</text>
+<text x="159.621" y="42.6" font-size="3.5" text-anchor="middle" font-weight="bold">Grand Market</text>
+</g>
+<g data-district="C"><polygon points="95.451264,74.811321 155.469314,95.188679 177.761733,113.301887 177.761733,135.943396 143.465704,149.528302 85.162455,142.735849 20.000000,131.415094 20.000000,81.603774 28.574007,81.603774" fill="#e6b6a6" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="105.644" y="88.014" font-size="4" text-anchor="middle" font-weight="bold">3/6</text>
+<text x="105.644" y="93.514" font-size="3.5" text-anchor="middle" font-weight="bold">Ironwood</text>
+</g>
+<g data-district="D"><polygon points="321.805054,25.000000 400.000000,25.000000 400.000000,95.188679 321.805054,95.188679" fill="#e6b6a6" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="361.136" y="38.357" font-size="4" text-anchor="middle" font-weight="bold">3/6</text>
+<text x="361.136" y="43.857" font-size="3.5" text-anchor="middle" font-weight="bold">Northgate</text>
+</g>
+<g data-district="E"><polygon points="321.805054,95.188679 400.000000,95.188679 400.000000,158.584906 332.093863,158.584906 263.501805,194.811321 239.494585,113.301887 280.649819,113.301887" fill="#ead499" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="312.917" y="115.043" font-size="4" text-anchor="middle" font-weight="bold">2/4</text>
+<text x="312.917" y="120.543" font-size="3.5" text-anchor="middle" font-weight="bold">Canal Ward</text>
+</g>
+<g data-district="F"><polygon points="212.057762,25.000000 321.805054,25.000000 321.805054,95.188679 280.649819,113.301887 239.494585,113.301887 215.487365,81.603774" fill="#dbe6cd" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="266.856" y="54.7" font-size="4" text-anchor="middle" font-weight="bold">1/2</text>
+<text x="266.856" y="60.2" font-size="3.5" text-anchor="middle" font-weight="bold">Crown Road</text>
+</g>
+<g data-district="H"><polygon points="332.093863,158.584906 400.000000,158.584906 400.000000,289.000000 347.527076,289.000000 342.382671,235.566038 280.649819,212.924528 263.501805,194.811321" fill="#dbe6cd" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="369.773" y="177.271" font-size="4" text-anchor="middle" font-weight="bold">1/2</text>
+<text x="369.773" y="182.771" font-size="3.5" text-anchor="middle" font-weight="bold">Meadow</text>
+</g>
+<g data-district="I"><polygon points="229.205776,199.339623 263.501805,194.811321 280.649819,212.924528 246.353791,249.150943 184.620939,226.509434 170.902527,226.509434 177.761733,212.924528 177.761733,190.283019" fill="#dbe6cd" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="225.833" y="208.071" font-size="4" text-anchor="middle" font-weight="bold">1/2</text>
+<text x="225.833" y="213.571" font-size="3.5" text-anchor="middle" font-weight="bold">Westfield</text>
+</g>
+<g data-district="J"><polygon points="280.649819,212.924528 342.382671,235.566038 347.527076,289.000000 249.783394,289.000000 246.353791,249.150943" fill="#ead499" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="297.803" y="237.614" font-size="4" text-anchor="middle" font-weight="bold">2/4</text>
+<text x="297.803" y="243.114" font-size="3.5" text-anchor="middle" font-weight="bold">Eastfield</text>
+</g>
+<g data-district="K"><polygon points="246.353791,249.150943 249.783394,289.000000 164.043321,289.000000 177.761733,262.735849 184.620939,226.509434" fill="#dbe6cd" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="212.159" y="245.157" font-size="4" text-anchor="middle" font-weight="bold">1/2</text>
+<text x="212.159" y="250.657" font-size="3.5" text-anchor="middle" font-weight="bold">Marsh</text>
+</g>
+<g data-district="L"><polygon points="20.000000,131.415094 85.162455,142.735849 97.166065,154.056604 86.877256,210.660377 26.859206,176.698113 20.000000,176.698113" fill="#dbe6cd" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="60.303" y="158.414" font-size="4" text-anchor="middle" font-weight="bold">1/2</text>
+<text x="60.303" y="163.914" font-size="3.5" text-anchor="middle" font-weight="bold">Heath</text>
+</g>
+<g data-district="M"><polygon points="143.465704,149.528302 177.761733,190.283019 177.761733,212.924528 170.902527,226.509434 153.754513,235.566038 86.877256,210.660377 97.166065,154.056604 85.162455,142.735849" fill="#dbe6cd" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="131.553" y="167.214" font-size="4" text-anchor="middle" font-weight="bold">1/2</text>
+<text x="131.553" y="172.714" font-size="3.5" text-anchor="middle" font-weight="bold">Downs</text>
+</g>
+<g data-district="N"><polygon points="86.877256,210.660377 153.754513,235.566038 170.902527,226.509434 184.620939,226.509434 177.761733,262.735849 164.043321,289.000000 86.877256,289.000000 86.877256,278.584906" fill="#dbe6cd" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="113.561" y="229.443" font-size="4" text-anchor="middle" font-weight="bold">1/2</text>
+<text x="113.561" y="234.943" font-size="3.5" text-anchor="middle" font-weight="bold">Vale</text>
+</g>
+<g data-district="O"><polygon points="86.877256,210.660377 86.877256,278.584906 86.877256,289.000000 20.000000,289.000000 20.000000,176.698113 26.859206,176.698113" fill="#dbe6cd" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="55.985" y="222.529" font-size="4" text-anchor="middle" font-weight="bold">1/2</text>
+<text x="55.985" y="228.029" font-size="3.5" text-anchor="middle" font-weight="bold">Coast</text>
+</g>
+<g data-district="X"><polygon points="177.761733,113.301887 215.487365,81.603774 239.494585,113.301887 263.501805,194.811321 229.205776,199.339623 177.761733,190.283019 143.465704,149.528302 177.761733,135.943396" fill="#e4dfea" stroke="#19354b" stroke-width=".3" stroke-linejoin="round"/>
+<text x="208.561" y="140.814" font-size="4" text-anchor="middle" font-weight="bold">3/3</text>
+<text x="208.561" y="146.314" font-size="3.5" text-anchor="middle" font-weight="bold">Bellwether Centre</text>
+</g>
+<path class="region-border" d="M212.057762,25.000000 L215.487365,81.603774" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M177.761733,113.301887 L215.487365,81.603774" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M20.000000,131.415094 L85.162455,142.735849" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M85.162455,142.735849 L143.465704,149.528302" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M143.465704,149.528302 L177.761733,135.943396" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M177.761733,113.301887 L177.761733,135.943396" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M239.494585,113.301887 L263.501805,194.811321" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M215.487365,81.603774 L239.494585,113.301887" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M263.501805,194.811321 L280.649819,212.924528" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M280.649819,212.924528 L342.382671,235.566038" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M342.382671,235.566038 L347.527076,289.000000" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M177.761733,190.283019 L229.205776,199.339623" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M229.205776,199.339623 L263.501805,194.811321" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<path class="region-border" d="M143.465704,149.528302 L177.761733,190.283019" fill="none" stroke="#19354b" stroke-width="1.1" stroke-linecap="round"/>
+<g data-policy-region="Urban" transform="rotate(-90 10 75)">
+<text x="10" y="75" font-size="4" text-anchor="middle" font-weight="bold">Urban</text>
+</g>
+<g data-policy-region="Outlying" transform="rotate(-90 10 205)">
+<text x="10" y="205" font-size="4" text-anchor="middle" font-weight="bold">Outlying</text>
+</g>
+<g data-policy-region="Industrial Belt" transform="rotate(90 410 75)">
+<text x="410" y="75" font-size="4" text-anchor="middle" font-weight="bold">Industrial Belt</text>
+</g>
+<g data-policy-region="Centre" transform="rotate(90 410 205)">
+<text x="410" y="205" font-size="4" text-anchor="middle" font-weight="bold">Centre</text>
+</g>
+<text x="251" y="270" font-size="3" text-anchor="start" font-weight="bold">ROUND / YEAR</text>
+<rect class="year-well" x="251" y="273" width="15" height="15" rx="1" fill="#f2f5f6" stroke="#19354b" stroke-width=".35"/>
+<text x="258.5" y="280" font-size="5" text-anchor="middle" font-weight="bold">1</text>
+<rect class="year-well" x="267" y="273" width="15" height="15" rx="1" fill="#e4dfea" stroke="#19354b" stroke-width=".35"/>
+<text x="274.5" y="280" font-size="5" text-anchor="middle" font-weight="bold">2</text>
+<text x="274.5" y="286" font-size="2.3" text-anchor="middle" font-weight="normal">Election 1</text>
+<rect class="year-well" x="283" y="273" width="15" height="15" rx="1" fill="#f2f5f6" stroke="#19354b" stroke-width=".35"/>
+<text x="290.5" y="280" font-size="5" text-anchor="middle" font-weight="bold">3</text>
+<rect class="year-well" x="299" y="273" width="15" height="15" rx="1" fill="#e4dfea" stroke="#19354b" stroke-width=".35"/>
+<text x="306.5" y="280" font-size="5" text-anchor="middle" font-weight="bold">4</text>
+<text x="306.5" y="286" font-size="2.3" text-anchor="middle" font-weight="normal">Election 2</text>
+<rect class="year-well" x="315" y="273" width="15" height="15" rx="1" fill="#f2f5f6" stroke="#19354b" stroke-width=".35"/>
+<text x="322.5" y="280" font-size="5" text-anchor="middle" font-weight="bold">5</text>
+<rect class="year-well" x="331" y="273" width="15" height="15" rx="1" fill="#e4dfea" stroke="#19354b" stroke-width=".35"/>
+<text x="338.5" y="280" font-size="5" text-anchor="middle" font-weight="bold">6</text>
+<text x="338.5" y="286" font-size="2.3" text-anchor="middle" font-weight="normal">Election 3</text>
+</svg>

@@ -76,12 +76,12 @@ def render(study):
         svg.append(f'<g data-policy-region="{region}" transform="rotate({angle} {x} {y})">')
         svg.append(text(x, y, region, 4, weight='bold'))
         svg.append('</g>')
-    svg.append(text(251, 270, 'ROUND / YEAR', 3, 'start', 'bold'))
     for year in range(1, 7):
-        x = 251 + (year-1)*16
+        x = 22 + (year-1)*16
         fill = '#e4dfea' if year % 2 == 0 else '#f2f5f6'
         svg.append(f'<rect class="year-well" x="{x}" y="273" width="15" height="15" rx="1" fill="{fill}" stroke="{INK}" stroke-width=".35"/>')
-        svg.append(text(x+7.5, 280, str(year), 5, weight='bold'))
+        svg.append(text(x+7.5, 277, 'Year', 2.5))
+        svg.append(text(x+7.5, 282, str(year), 5, weight='bold'))
         if year % 2 == 0:
             svg.append(text(x+7.5, 286, f'Election {year//2}', 2.3))
     svg.append('</svg>\n')
