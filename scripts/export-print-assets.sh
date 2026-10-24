@@ -111,7 +111,7 @@ html_exports=(
   "agents|docs/components/agents.html|assets/print/agents-a4.pdf|2|594.96|841.92"
   "firm-cards|docs/components/firm-cards.html|assets/print/firm-cards-a4.pdf|6|594.96|841.92"
   "firm-references|docs/components/firm-references.html|assets/print/firm-references-a4.pdf|3|594.96|841.92"
-  "player-aids|docs/components/player-aids.html|assets/print/player-helper-a5.pdf|2|420|594.96"
+  "player-aids|docs/components/player-aids.html|assets/print/player-helper-a4.pdf|2|841.92|594.96"
   "party-boards|docs/components/party-boards.html|assets/print/party-boards-a4.pdf|3|841.92|594.96"
   "player-folios|docs/components/player-folios.html|assets/print/player-folios-a4.pdf|2|594.96|841.92"
   "player-shields|docs/components/player-shields.html|assets/print/player-shields-a4.pdf|6|841.92|594.96"

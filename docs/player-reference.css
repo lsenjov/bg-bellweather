@@ -1,5 +1,6 @@
 @import url('firm-pieces.css');
-.aid-page{width:148mm;height:210mm;background:#fffdf7;padding:6mm}
+.aid-sheet{width:297mm;height:210mm;display:flex;gap:1mm;background:#fffdf7}
+.aid-page{flex:none;width:148mm;height:210mm;background:#fffdf7;padding:6mm}
 .aid-page h2{font:bold 12pt 'Liberation Serif',serif;margin:1.5mm 0 .6mm}
 .aid-page p,.aid-page li,.aid-page th,.aid-page td{font-size:9pt;line-height:1.1}
 .aid-page p,.aid-page li{margin:0 0 .7mm}
@@ -9,7 +10,7 @@
 .aid-page th{white-space:nowrap}
 .aid-page thead th{white-space:normal}
 .aid-page .aid-title{font:bold 19pt/1.05 'Liberation Serif',serif;margin:0 0 2mm;border-bottom:.5mm solid #333;padding-bottom:2mm}
-@page{size:A5 portrait;margin:0}
-@media print{.aid-page{break-after:page}.aid-page:last-child{break-after:auto}}
+@page{size:A4 landscape;margin:0}
+@media print{.aid-sheet{break-after:page}.aid-sheet:last-child{break-after:auto}}
 
 .aid-year p,.aid-year li{margin-bottom:.3mm}

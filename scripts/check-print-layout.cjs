@@ -51,9 +51,25 @@ async function main() {
       ['agents.html', [['.agent-pair',21,50.8,25.4],['.agent-face',42,25.4,25.4]]],
       ['shared-state-tokens.html', [['.opening-card',12,40,61],['.small-token',15,16,16]]],
       ['firm-references.html', [['.reference-sheet',3,210,297],['.reference-page',6,210,148]]],
-      ['player-aids.html', [['.aid-page',2,148,210]]],
+      ['player-aids.html', [['.aid-sheet',2,297,210],['.aid-page',4,148,210]]],
     ];
     for (const [file, checks] of specs) { const page = await inspect(browser, file, checks); await page.close(); }
+    const helpers = await inspect(browser, 'player-aids.html', []);
+    const helperProblems = await helpers.evaluate(() => {
+      const sheets = [...document.querySelectorAll('.aid-sheet')];
+      const fronts = [...sheets[0].children], backs = [...sheets[1].children];
+      const f = sheets[0].getBoundingClientRect(), r = sheets[1].getBoundingClientRect();
+      const issues = [];
+      if (fronts[0].innerHTML !== fronts[1].innerHTML || backs[0].innerHTML !== backs[1].innerHTML) issues.push('Copies differ');
+      if (fronts.some(face => face.classList.contains('aid-year')) || backs.some(face => !face.classList.contains('aid-year'))) issues.push('Incorrect front/back order');
+      fronts.forEach((front, index) => {
+        const a = front.getBoundingClientRect(), b = backs[1-index].getBoundingClientRect();
+        if (Math.abs((a.left-f.left)+(b.right-r.left)-f.width) > .8 || Math.abs((a.top-f.top)-(b.top-r.top)) > .8) issues.push(`helper ${index}: short-edge duplex mismatch`);
+      });
+      return issues;
+    });
+    assert.deepEqual(helperProblems, [], 'Player helper copies and duplex alignment');
+    await helpers.close();
     const reminders = await inspect(browser, 'shared-state-tokens-duplex.html', [['.print-sheet',2,297,210],['.vote-marker',48,16,16],['.range-marker',0]]);
     const reminderProblems = await reminders.evaluate(() => {
       const sheets = [...document.querySelectorAll('.reminder-sheet')];

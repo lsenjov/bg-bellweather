@@ -281,7 +281,7 @@ async function main() {
     );
     await objects(
       "player-aids",
-      ".aid-page",
+      ".aid-sheet > .aid-page:first-child",
       "reference",
       "shared-reference",
       1200,
