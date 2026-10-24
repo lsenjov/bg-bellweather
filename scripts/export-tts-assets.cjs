@@ -310,7 +310,6 @@ async function main() {
     await load(page, "shared-state-tokens-duplex");
     for (const [kind, front, back] of [
       ["vote", "yes", "no"],
-      ["range", "low", "high"],
     ]) {
       const image = asset(
         "reminder-" + kind + "-front",

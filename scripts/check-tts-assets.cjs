@@ -116,7 +116,7 @@ assert(
     .reduce((n, o) => n + o.count, 0) === 6,
   "Expected six portraits",
 );
-assert(count("tile") === 54, "Expected six portraits and 48 private reminders");
+assert(count("tile") === 30, "Expected six portraits and 24 private vote reminders");
 for (const portrait of m.objects.filter(
   (o) => o.id.startsWith("agent-") && o.kind === "tile",
 )) {

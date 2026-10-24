@@ -557,22 +557,6 @@
       "height": 256
     },
     {
-      "path": "images/reminder-range-front-89a41940238b489e.png",
-      "sha256": "89a41940238b489e65c1cebe09023de3b90218c58314d43aa2684f11e90ad941",
-      "bytes": 7587,
-      "contentType": "image/png",
-      "width": 256,
-      "height": 256
-    },
-    {
-      "path": "images/reminder-range-back-6050b7ea28409c57.png",
-      "sha256": "6050b7ea28409c57a6d97efa8886faed45a8ce27e33083275e5bf24ce0452593",
-      "bytes": 7229,
-      "contentType": "image/png",
-      "width": 256,
-      "height": 256
-    },
-    {
       "path": "images/early-bird-0de99c4e4b383203.png",
       "sha256": "0de99c4e4b383203b6d466da7491f41b903342948ed1d02d77ec7eb4364bfa24",
       "bytes": 9596,
@@ -2427,26 +2411,6 @@
       "imageSecondary": {
         "path": "images/reminder-vote-back-8ea2bfedd973a470.png",
         "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/reminder-vote-back-8ea2bfedd973a470.png"
-      },
-      "width": 256,
-      "height": 256,
-      "physicalSizeMm": {
-        "width": 16,
-        "height": 16
-      }
-    },
-    {
-      "id": "reminder-range",
-      "name": "Private range reminder",
-      "kind": "tile",
-      "count": 24,
-      "image": {
-        "path": "images/reminder-range-front-89a41940238b489e.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/reminder-range-front-89a41940238b489e.png"
-      },
-      "imageSecondary": {
-        "path": "images/reminder-range-back-6050b7ea28409c57.png",
-        "url": "https://lsenjov-boardgame-bellwether.s3.ap-southeast-2.amazonaws.com/tabletop-simulator/images/reminder-range-back-6050b7ea28409c57.png"
       },
       "width": 256,
       "height": 256,

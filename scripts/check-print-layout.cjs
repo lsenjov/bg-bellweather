@@ -54,6 +54,19 @@ async function main() {
       ['player-aids.html', [['.aid-page',2,148,210]]],
     ];
     for (const [file, checks] of specs) { const page = await inspect(browser, file, checks); await page.close(); }
+    const reminders = await inspect(browser, 'shared-state-tokens-duplex.html', [['.print-sheet',2,297,210],['.vote-marker',48,16,16],['.range-marker',0]]);
+    const reminderProblems = await reminders.evaluate(() => {
+      const sheets = [...document.querySelectorAll('.reminder-sheet')];
+      const fronts = [...sheets[0].querySelectorAll('.vote-marker')];
+      const backs = [...sheets[1].querySelectorAll('.vote-marker')];
+      const f = sheets[0].getBoundingClientRect(), r = sheets[1].getBoundingClientRect();
+      return fronts.flatMap((front, index) => {
+        const a = front.getBoundingClientRect(), b = backs[Math.floor(index / 6) * 6 + 5 - index % 6].getBoundingClientRect();
+        return front.dataset.face !== 'yes' || backs[index].dataset.face !== 'no' || Math.abs((a.left-f.left)+(b.right-r.left)-f.width) > .8 || Math.abs((a.top-f.top)-(b.top-r.top)) > .8 ? [`vote marker ${index}: face or duplex alignment mismatch`] : [];
+      });
+    });
+    assert.deepEqual(reminderProblems, [], 'Vote reminder duplex alignment');
+    await reminders.close();
     for (const [file, count, sheets] of [['firm-cards.html',33,6],['reward-cards.html',6,2],['operation-cards.html',54,8],['bonus-cards.html',18,4]]) {
       const page = await inspect(browser,file,[['.print-sheet',sheets,210,297],['.print-card.front',count,40,61],['.print-card.back',count,40,61]]);
       const problems = await page.evaluate(() => {
