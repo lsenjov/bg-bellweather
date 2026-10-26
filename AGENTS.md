@@ -1,3 +1,5 @@
+The app side is currently legacy and will be updated in future. For now, ignore the app.
+
 ## Planning
 
 Write plans for complex implementation work under `plans/`.
