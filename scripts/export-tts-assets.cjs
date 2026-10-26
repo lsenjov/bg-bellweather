@@ -74,7 +74,7 @@ async function load(page, file) {
   await page.evaluate(() => document.fonts.ready);
   await page.addStyleTag({
     content:
-      ".clip-zone{display:none!important}.agent-face{border:0!important;padding-bottom:1mm!important}.agent-pair::after{display:none!important}",
+      ".clip-zone{display:none!important}.agent-face{border:0!important;padding-bottom:1mm!important}.agent-piece::after{display:none!important}",
   });
 }
 async function capture(page, selector, index, width) {
@@ -355,13 +355,13 @@ async function main() {
       });
     }
     await load(page, "agents");
-    const pairs = page.locator(".agent-pair");
+    const pairs = page.locator(".front-sheet .agent-piece");
     const agentDesigns = new Map();
     for (let i = 0; i < (await pairs.count()); i++) {
       const e = pairs.nth(i),
         name = await e.getAttribute("aria-label");
       const portrait = (await e.locator(".portrait").count()) > 0;
-      const design = await e.evaluate((node) => node.outerHTML);
+      const design = await e.evaluate((node) => node.innerHTML);
       const existing = agentDesigns.get(design);
       if (existing) {
         existing.count++;
@@ -375,7 +375,7 @@ async function main() {
         ? asset(
             `agent-${i + 1}-asleep`,
             resize(
-              await e.locator(".agent-face").nth(1).screenshot(),
+              await page.locator(`.back-sheet .agent-piece[data-agent-id="${i + 1}"] .agent-face`).screenshot(),
               320,
               320,
             ),

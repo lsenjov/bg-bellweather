@@ -17,10 +17,10 @@ firms.forEach((f,i)=>roles[i].forEach(role=>{
     const emptyPortrait=role==='Portrait'&&state==='Asleep';
     return `<div class="agent-face ${role==='Portrait'?'portrait':''}${emptyPortrait?' portrait-empty':''}" style="${style(f)}">${emptyPortrait?'':`<span class="agent-number">${f.number}</span>`}${role==='Portrait'?`<svg viewBox="0 0 64 64" aria-hidden="true">${portrait(state==='Awake')}</svg>`:roleIcon(role)}${emptyPortrait?'':`<strong>${role==='Portrait'?state:role}</strong>`}${role!=='Portrait'?'<span class="clip-zone">clip</span>':''}</div>`;
   };
-  agents.push(`<article class="agent-pair" aria-label="Firm ${f.number} ${role}">${face('Awake')}${face('Asleep')}</article>`);
+  agents.push({label:`Firm ${f.number} ${role}`,front:face('Awake'),back:face('Asleep')});
 }));
-const agentSheet=`<section class="piece-page" aria-label="Agent pieces"><div class="agent-grid">${agents.join('')}</div></section>`;
-save('docs/components/agents.html',page('Agents · fold and glue',agentSheet,'firm-pieces.css','Print one A4 portrait sheet single-sided at 100%. Each adjacent pair folds to one 25.4 × 25.4 mm piece. Cut each pair as a rectangle, score the central dashed line, fold and glue blank backs together. Fifteen pieces use standee bases with the clip area at the bottom; six portraits lie flat and flip between a figure awake and an empty frame asleep.'));
+const agentSheet=side=>`<section class="piece-page ${side}-sheet" aria-label="Agent ${side}s"><div class="agent-grid">${agents.map((agent,index)=>`<article class="agent-piece" data-agent-id="${index+1}" aria-label="${agent.label}" style="grid-row:${Math.floor(index/3)+1};grid-column:${side==='front'?index%3+1:3-index%3}">${agent[side]}</article>`).join('')}</div></section>`;
+save('docs/components/agents.html',page('Agents · double sided',agentSheet('front')+agentSheet('back'),'firm-pieces.css','Print these two A4 portrait pages double sided on one sheet at 100% actual size; flip on the long edge. Cut along the shared solid edges into 21 pieces, each 25.4 × 25.4 mm. Fifteen pieces use standee bases with the clip area at the bottom; six portraits lie flat and flip between a figure awake and an empty frame asleep.'));
 const handshake='<path d="m8 32 12-12 9 3 8-3 19 14-12 17-11-2-15-10M21 24l10 9 9-7M22 42l7-7M29 47l7-8M36 49l7-8"/>';
 const door='<path d="M14 56V8h34v48M21 56V15l20 7v34M32 36h2M8 56h48"/>';
 const trap='<path stroke-width="4" d="M32 6 58 54H6zM32 22v16M32 45v3"/>';

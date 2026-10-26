@@ -48,12 +48,35 @@ async function main() {
   const browser = await chromium.launch({ headless: true });
   try {
     const specs = [
-      ['agents.html', [['.piece-page',1,210,297],['.agent-grid',1,186,225.8],['.agent-pair',21,50.8,25.4],['.agent-face',42,25.4,25.4]]],
+      ['agents.html', [['.piece-page',2,210,297],['.agent-grid',2,76.2,177.8],['.agent-piece',42,25.4,25.4],['.agent-face',42,25.4,25.4]]],
       ['shared-state-tokens.html', [['.opening-card',12,40,61],['.small-token',15,16,16]]],
       ['firm-references.html', [['.reference-sheet',3,210,297],['.reference-page',6,210,148]]],
       ['player-aids.html', [['.aid-sheet',2,297,210],['.aid-page',4,148,210]]],
     ];
     for (const [file, checks] of specs) { const page = await inspect(browser, file, checks); await page.close(); }
+    const agents = await inspect(browser, 'agents.html', []);
+    const agentProblems = await agents.evaluate(() => {
+      const front = document.querySelector('.front-sheet'), back = document.querySelector('.back-sheet');
+      const f = front.getBoundingClientRect(), r = back.getBoundingClientRect();
+      const issues = [];
+      for (const [index, piece] of [...front.querySelectorAll('.agent-piece')].entries()) {
+        const match = back.querySelector(`[data-agent-id="${piece.dataset.agentId}"]`);
+        const a = piece.getBoundingClientRect(), b = match.getBoundingClientRect();
+        if (piece.getAttribute('aria-label') !== match.getAttribute('aria-label') || Math.abs((a.left-f.left)+(b.right-r.left)-f.width) > .8 || Math.abs((a.top-f.top)-(b.top-r.top)) > .8) issues.push(`agent ${index}: long-edge duplex mismatch`);
+        if (index < 15 ? piece.innerHTML !== match.innerHTML : !piece.querySelector('strong') || !match.querySelector('.portrait-empty') || match.querySelector('strong,.agent-number,.clip-zone')) issues.push(`agent ${index}: incorrect faces`);
+      }
+      for (const sheet of [front, back]) {
+        const pieces = [...sheet.querySelectorAll('.agent-piece')].sort((a,b) => Number(a.style.gridRow)-Number(b.style.gridRow) || Number(a.style.gridColumn)-Number(b.style.gridColumn));
+        pieces.forEach((piece,index) => {
+          const a = piece.getBoundingClientRect();
+          if (index % 3 && Math.abs(a.left-pieces[index-1].getBoundingClientRect().right) > .1) issues.push(`agent ${index}: horizontal gap`);
+          if (index >= 3 && Math.abs(a.top-pieces[index-3].getBoundingClientRect().bottom) > .1) issues.push(`agent ${index}: vertical gap`);
+        });
+      }
+      return issues;
+    });
+    assert.deepEqual(agentProblems, [], 'Agent faces, shared cuts and duplex alignment');
+    await agents.close();
     const helpers = await inspect(browser, 'player-aids.html', []);
     const helperProblems = await helpers.evaluate(() => {
       const sheets = [...document.querySelectorAll('.aid-sheet')];
