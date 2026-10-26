@@ -102,7 +102,7 @@ const refs=[
   [
     [
       "Setup",
-      "Place the witch, crow, cat and toad together in any district. Start with the Crow, Cat and Toad cards in hand."
+      "Place the witch, crow, cat and toad each in any district independently. Sharing is allowed; no adjacency is required. Start with the Crow, Cat and Toad cards in hand."
     ],
     [
       "Specialised familiars",
